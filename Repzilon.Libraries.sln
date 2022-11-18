@@ -5,6 +5,8 @@ VisualStudioVersion = 25.0.1703.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Libraries.Core", "Repzilon.Libraries.Core\Repzilon.Libraries.Core.csproj", "{A43D9999-8346-491E-AA39-0ABEC8BFB525}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Matrix", "Repzilon.Tests.Matrix\Repzilon.Tests.Matrix.csproj", "{93424704-FCF0-4027-A3F6-6803A6EE1BF3}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -15,11 +17,20 @@ Global
 		{A43D9999-8346-491E-AA39-0ABEC8BFB525}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A43D9999-8346-491E-AA39-0ABEC8BFB525}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A43D9999-8346-491E-AA39-0ABEC8BFB525}.Release|Any CPU.Build.0 = Release|Any CPU
+		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
 	EndGlobalSection
 	GlobalSection(ExtensibilityGlobals) = postSolution
 		SolutionGuid = {7FD906CC-855D-4B91-9EC4-7AF06F55961C}
+	EndGlobalSection
+	GlobalSection(MonoDevelopProperties) = preSolution
+		Policies = $0
+		$0.StandardHeader = $1
+		$1.Text = @ \n ${FileName}\n \n Author:\n      ${AuthorName} <${AuthorEmail}>\n\nCopyright (C) ${Year} ${CopyrightHolder}\n\nThis program is free software: you can redistribute it and/or modify\nit under the terms of the GNU Affero General Public License as published by\nthe Free Software Foundation, either version 3 of the License, or\n(at your option) any later version.\n\nThis program is distributed in the hope that it will be useful,\nbut WITHOUT ANY WARRANTY; without even the implied warranty of\nMERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the\nGNU Affero General Public License for more details.\n\nYou should have received a copy of the GNU Affero General Public License\nalong with this program.  If not, see <https://www.gnu.org/licenses/>.\n
 	EndGlobalSection
 EndGlobal
