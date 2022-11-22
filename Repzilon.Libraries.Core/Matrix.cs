@@ -21,6 +21,37 @@ namespace Repzilon.Libraries.Core
 {
 	public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>> where T : struct, IConvertible, IEquatable<T>
 	{
+		#region Static members
+		private static readonly Func<T, T, T> add = BuildAdder();
+		private static readonly Func<T, T, T> sub = BuildSubtractor();
+
+		private static Func<T, T, T> BuildAdder()
+		{
+			// Declare the parameters
+			var paramA = Expression.Parameter(typeof(T), "a");
+			var paramB = Expression.Parameter(typeof(T), "b");
+
+			// Add the parameters together
+			BinaryExpression body = Expression.Add(paramA, paramB);
+
+			// Compile it
+			return Expression.Lambda<Func<T, T, T>>(body, paramA, paramB).Compile();
+		}
+
+		private static Func<T, T, T> BuildSubtractor()
+		{
+			// Declare the parameters
+			var paramA = Expression.Parameter(typeof(T), "a");
+			var paramB = Expression.Parameter(typeof(T), "b");
+
+			// Add the parameters together
+			BinaryExpression body = Expression.Subtract(paramA, paramB);
+
+			// Compile it
+			return Expression.Lambda<Func<T, T, T>>(body, paramA, paramB).Compile();
+		}
+		#endregion
+
 		public readonly byte Lines;
 		public readonly byte Columns;
 		private readonly T[,] m_values;
@@ -176,23 +207,9 @@ namespace Repzilon.Libraries.Core
 		}
 
 		#region Operators
-		private static Func<T, T, T> BuildAdder()
-		{
-			// Declare the parameters
-			var paramA = Expression.Parameter(typeof(T), "a");
-			var paramB = Expression.Parameter(typeof(T), "b");
-
-			// Add the parameters together
-			BinaryExpression body = Expression.Add(paramA, paramB);
-
-			// Compile it
-			return Expression.Lambda<Func<T, T, T>>(body, paramA, paramB).Compile();
-		}
-
 		public static Matrix<T> operator +(Matrix<T> a, Matrix<T> b)
 		{
 			if (b.SameSize(a)) {
-				var add = BuildAdder();
 				var m = new Matrix<T>(a.Lines, a.Columns);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < a.Columns; j++) {
@@ -205,25 +222,11 @@ namespace Repzilon.Libraries.Core
 				 "To add matrices, their dimensions must be identical. They are {0}x{1} and {2}x{3}.",
 				 a.Lines, a.Columns, b.Lines, b.Columns));
 			}
-		}
-
-		private static Func<T, T, T> BuildSubtractor()
-		{
-			// Declare the parameters
-			var paramA = Expression.Parameter(typeof(T), "a");
-			var paramB = Expression.Parameter(typeof(T), "b");
-
-			// Add the parameters together
-			BinaryExpression body = Expression.Subtract(paramA, paramB);
-
-			// Compile it
-			return Expression.Lambda<Func<T, T, T>>(body, paramA, paramB).Compile();
-		}
+		}		
 
 		public static Matrix<T> operator -(Matrix<T> a, Matrix<T> b)
 		{
 			if (b.SameSize(a)) {
-				var sub = BuildSubtractor();
 				var m = new Matrix<T>(a.Lines, a.Columns);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < a.Columns; j++) {
@@ -276,7 +279,6 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> operator *(Matrix<T> a, Matrix<T> b)
 		{
 			if (a.Columns == b.Lines) {
-				var add = BuildAdder();
 				var mul = BuildMultiplier<T>();
 				var c = new Matrix<T>(a.Lines, b.Columns);
 				for (byte i = 0; i < c.Lines; i++) {
