@@ -241,7 +241,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		private static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct, IConvertible, IEquatable<T>
+		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct, IConvertible, IEquatable<T>
 		{
 			// Declare the parameters
 			var paramA = Expression.Parameter(typeof(TScalar), "a");
@@ -254,26 +254,9 @@ namespace Repzilon.Libraries.Core
 			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
 		}
 
-		public static Matrix<T> Multiply<TScalar>(TScalar k, Matrix<T> m) where TScalar : struct, IConvertible, IEquatable<T>
-		{
-			var mul = BuildMultiplier<TScalar>();
-			var mm = new Matrix<T>(m.Lines, m.Columns);
-			for (byte i = 0; i < m.Lines; i++) {
-				for (byte j = 0; j < m.Columns; j++) {
-					mm[i, j] = mul(k, m[i, j]);
-				}
-			}
-			return mm;
-		}
-
 		public static Matrix<T> operator *(T k, Matrix<T> m)
 		{
-			return Multiply(k, m);
-		}
-
-		public Matrix<T> Multiply<TScalar>(TScalar k) where TScalar : struct, IConvertible, IEquatable<T>
-		{
-			return Multiply(k, this);
+			return m.Multiply(k);
 		}
 
 		public static Matrix<T> operator *(Matrix<T> a, Matrix<T> b)
@@ -298,5 +281,22 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 		#endregion
+	}
+
+	public static class MatrixExtensionMethods
+	{
+		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
+		where T : struct, IConvertible, IEquatable<T>
+		where TScalar : struct, IConvertible, IEquatable<T>
+		{
+			var mul = Matrix<T>.BuildMultiplier<TScalar>();
+			var mm = new Matrix<T>(m.Lines, m.Columns);
+			for (byte i = 0; i < m.Lines; i++) {
+				for (byte j = 0; j < m.Columns; j++) {
+					mm[i, j] = mul(k, m[i, j]);
+				}
+			}
+			return mm;
+		}
 	}
 }
