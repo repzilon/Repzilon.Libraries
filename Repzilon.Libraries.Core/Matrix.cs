@@ -54,14 +54,26 @@ namespace Repzilon.Libraries.Core
 
 		public readonly byte Lines;
 		public readonly byte Columns;
+		private readonly byte? m_bytAugmentedColumn;
 		private readonly T[,] m_values;
 
 		#region Constructors
-		public Matrix(byte lines, byte columns)
+		public Matrix(byte lines, byte columns, byte? augmentedColumn)
 		{
+			if (lines < 1) {
+				throw new ArgumentOutOfRangeException("lines", lines, "There must be at least one line in the matrix.");
+			}
+			if (columns < 1) {
+				throw new ArgumentOutOfRangeException("columns", columns, "There must be at least one column in the matrix.");
+			}
 			Lines = lines;
 			Columns = columns;
 			m_values = new T[lines, columns];
+			m_bytAugmentedColumn = augmentedColumn;
+		}
+
+		public Matrix(byte lines, byte columns) : this(lines, columns, (byte?)null)
+		{
 		}
 
 		public Matrix(byte lines, byte columns, params T[] lineByLineValues) : this(lines, columns)
@@ -182,6 +194,9 @@ namespace Repzilon.Libraries.Core
 				}
 
 				for (byte j = 0; j < this.Columns; j++) {
+					if (j == m_bytAugmentedColumn) {
+						stbDesc.Append('|');
+					}
 					if (j > 0) {
 						stbDesc.Append('\t');
 					}
@@ -236,7 +251,7 @@ namespace Repzilon.Libraries.Core
 				return m;
 			} else {
 				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
-				 "To subtract matrices, their dimensions must be identical.",
+				 "To subtract matrices, their dimensions must be identical. They are {0}x{1} and {2}x{3}.",
 				 a.Lines, a.Columns, b.Lines, b.Columns));
 			}
 		}
@@ -297,6 +312,28 @@ namespace Repzilon.Libraries.Core
 				}
 			}
 			return mm;
+		}
+
+		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
+		where T : struct, IConvertible, IEquatable<T>
+		{
+			if (values.Lines == coefficients.Lines) {
+				var augmented = new Matrix<T>(coefficients.Lines,
+				 checked((byte)(coefficients.Columns + values.Columns)), coefficients.Columns);
+				for (byte i = 0; i < coefficients.Lines; i++) {
+					for (byte jc = 0; jc < coefficients.Columns; jc++) {
+						augmented[i, jc] = coefficients[i, jc];
+					}
+					for (byte jv = 0; jv < values.Columns; jv++) {
+						augmented[i, (byte)(jv + coefficients.Columns)] = values[i, jv];
+					}
+				}
+				return augmented;
+			} else {
+				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
+				 "Cannot augment a {0}-line matrix with a {1}-line matrix.",
+				 coefficients.Lines, values.Lines));
+			}
 		}
 	}
 }

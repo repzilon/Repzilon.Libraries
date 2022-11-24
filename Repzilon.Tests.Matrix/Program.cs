@@ -50,6 +50,16 @@ namespace Repzilon.Tests.Matrix
 			Console.WriteLine(pap_c);
 			Console.WriteLine(pap_d);
 
+			var ex88_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
+			var ex88_b = new Matrix<short>(3, 1, 1, 16, 9);
+			var ex88_plus = ex88_a.Augment(ex88_b);
+			Console.WriteLine(ex88_a);
+			Console.WriteLine(ex88_b);
+			Console.WriteLine(ex88_plus);
+
+			var ex88_forinvert = ex88_a.Augment(Matrix<short>.Identity(ex88_a.Lines));
+			Console.WriteLine(ex88_forinvert);
+
 			Console.WriteLine("Press Enter to exit...");
 			Console.ReadLine();
 		}
