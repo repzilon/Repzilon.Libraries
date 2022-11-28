@@ -106,6 +106,11 @@ namespace Repzilon.Libraries.Core
 			set { m_values[l, c] = value; }
 		}
 
+		public bool IsSquare
+		{
+			get { return Columns == Lines; }
+		}
+
 		#region ICloneable members
 		public Matrix<T> Clone()
 		{
@@ -166,9 +171,10 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = 1317424563;
+			int hashCode = 1832363379;
 			hashCode = hashCode * -1521134295 + Lines.GetHashCode();
 			hashCode = hashCode * -1521134295 + Columns.GetHashCode();
+			hashCode = hashCode * -1521134295 + m_bytAugmentedColumn.GetHashCode();
 			hashCode = hashCode * -1521134295 + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
 			return hashCode;
 		}
@@ -181,6 +187,7 @@ namespace Repzilon.Libraries.Core
 
 		public override string ToString()
 		{
+			// TODO : Align number output
 			StringBuilder stbDesc = new StringBuilder();
 			for (byte i = 0; i < this.Lines; i++) {
 				if (this.Lines == 1) {
@@ -296,6 +303,55 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 		#endregion
+
+		public void RunCommand(byte destinationLine, params Nullable<T>[] coefficients)
+		{
+			if (destinationLine >= this.Lines) {
+				throw new ArgumentOutOfRangeException("destinationLine", destinationLine,
+				 "The specified destination line is over the number of lines of the matrix.");
+			}
+			if (coefficients == null) {
+				throw new ArgumentNullException("coefficients");
+			}
+			if (coefficients.Length != this.Lines) {
+				throw new ArrayTypeMismatchException(String.Format(
+				 "The coefficients array must have the same number of elements as the number " +
+				 "of lines of the matrix, which is {0}. If a line is not involved in the " +
+				 "command, pass null as its value.", this.Lines));
+			} else {
+				var accumulator = new T[this.Columns];
+				var mul = BuildMultiplier<T>();
+				byte j;
+				for (byte i = 0; i < coefficients.Length; i++) {
+					if (coefficients[i].HasValue) {
+						for (j = 0; j < this.Columns; j++) {
+							accumulator[j] = add(accumulator[j], mul(coefficients[i].Value, this[i, j]));
+						}
+					}
+				}
+				for (j = 0; j < this.Columns; j++) {
+					this[destinationLine, j] = accumulator[j];
+				}
+			}
+		}
+
+		public void SwapLines(byte first, byte second)
+		{
+			const string kOutOfRange = "The line index is bigger than the number of lines in the matrix.";
+			if (first >= this.Lines) {
+				throw new ArgumentOutOfRangeException("first", first, kOutOfRange);
+			}
+			if (second >= this.Lines) {
+				throw new ArgumentOutOfRangeException("second", second, kOutOfRange);
+			}
+			if (second != first) {
+				for (byte j = 0; j < this.Columns; j++) {
+					T temp = this[first, j];
+					this[first, j] = this[second, j];
+					this[second, j] = temp;
+				}
+			}
+		}		
 	}
 
 	public static class MatrixExtensionMethods
