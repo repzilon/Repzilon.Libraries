@@ -94,8 +94,22 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Identity(byte size)
 		{
 			var m = new Matrix<T>(size, size);
+			T one = (T)Convert.ChangeType(1, typeof(T));
 			for (byte i = 0; i < size; i++) {
-				m[i, i] = (T)Convert.ChangeType(1, typeof(T));
+				m[i, i] = one;
+			}
+			return m;
+		}
+
+		public static Matrix<T> Signature(byte size)
+		{
+			var m = new Matrix<T>(size, size);
+			T plusOne = (T)Convert.ChangeType(1, typeof(T));
+			T minusOne = (T)Convert.ChangeType(-1, typeof(T));
+			for (byte i = 0; i < size; i++) {
+				for (byte j = 0; j < size; j++) {
+					m[i, j] = i + j % 2 == 0 ? plusOne : minusOne;
+				}
 			}
 			return m;
 		}
@@ -106,8 +120,7 @@ namespace Repzilon.Libraries.Core
 			set { m_values[l, c] = value; }
 		}
 
-		public bool IsSquare
-		{
+		public bool IsSquare {
 			get { return Columns == Lines; }
 		}
 
@@ -244,7 +257,7 @@ namespace Repzilon.Libraries.Core
 				 "To add matrices, their dimensions must be identical. They are {0}x{1} and {2}x{3}.",
 				 a.Lines, a.Columns, b.Lines, b.Columns));
 			}
-		}		
+		}
 
 		public static Matrix<T> operator -(Matrix<T> a, Matrix<T> b)
 		{
@@ -281,6 +294,13 @@ namespace Repzilon.Libraries.Core
 			return m.Multiply(k);
 		}
 
+		/// <summary>
+		/// Returns the scalar product of two matrices
+		/// </summary>
+		/// <param name="a">First matrix</param>
+		/// <param name="b">Second matrix</param>
+		/// <returns>The scalar product in a new matrix.</returns>
+		/// <exception cref="ArrayTypeMismatchException">Thrown when the number of columns of the first matrix is different from the number of lines of the second matrix.</exception>
 		public static Matrix<T> operator *(Matrix<T> a, Matrix<T> b)
 		{
 			if (a.Columns == b.Lines) {
@@ -290,7 +310,7 @@ namespace Repzilon.Libraries.Core
 					for (byte j = 0; j < c.Columns; j++) {
 						T sumOfCell = default(T);
 						for (byte x = 0; x < b.Lines; x++) {
-							sumOfCell = add(sumOfCell, mul(a[i,x], b[x,j]));
+							sumOfCell = add(sumOfCell, mul(a[i, x], b[x, j]));
 						}
 						c[i, j] = sumOfCell;
 					}
@@ -351,7 +371,51 @@ namespace Repzilon.Libraries.Core
 					this[second, j] = temp;
 				}
 			}
-		}		
+		}
+
+		public T Determinant()
+		{
+			if (!this.IsSquare) {
+				throw new ArrayTypeMismatchException("A determinant is possible for square matrices only.");
+			} else {
+				var l = this.Lines;
+				Func<T, T, T> mul = null;
+				if (l == 0) {
+					throw new InvalidOperationException("This zero-sized matrix should not exist.");
+				} else if (l == 1) {
+					return m_values[0, 0];
+				} else if (l == 2) { // we already know it is a square matrix
+					mul = BuildMultiplier<T>();
+					return sub(mul(m_values[0, 0], m_values[1, 1]), mul(m_values[0, 1], m_values[1, 0]));
+				} else {
+					var c = this.Columns;
+					T plusOne = (T)Convert.ChangeType(1, typeof(T));
+					T minusOne = (T)Convert.ChangeType(-1, typeof(T));
+					T det = default(T);
+					mul = BuildMultiplier<T>();
+					for (byte j = 0; j < c; j++) {
+						// Build sub-matrix
+						byte subSize = checked((byte)(l - 1));
+						var numarSubValues = new T[checked(subSize * subSize)];
+						var k = 0;
+						for (byte ia = 1; ia < l; ia++) {
+							for (byte ja = 0; ja < c; ja++) {
+								if (ja != j) {
+									numarSubValues[k] = m_values[ia, ja];
+									k++;
+								}
+							}
+						}
+						var subMatrix = new Matrix<T>(subSize, subSize, numarSubValues);
+
+						// Accumulate determinant value at column
+						// det += m_values[0, j] * (-1)^(i+j) * det(subMatrix)
+						det = add(det, mul(mul(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
+					}
+					return det;
+				}
+			}
+		}
 	}
 
 	public static class MatrixExtensionMethods

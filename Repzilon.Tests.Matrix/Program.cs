@@ -60,6 +60,11 @@ namespace Repzilon.Tests.Matrix
 			var ex88_forinvert = ex88_a.Augment(Matrix<short>.Identity(ex88_a.Lines));
 			Console.WriteLine(ex88_forinvert);
 
+			var ex_89 = new Matrix<short>(2, 2, 3, 7, 2, 4);
+			Console.WriteLine("{0} det(M) = {1}", ex_89, ex_89.Determinant());
+			var ex_90 = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
+			Console.WriteLine("{0} det(M) = {1}", ex_90, ex_90.Determinant());
+
 			Console.WriteLine("Press Enter to exit...");
 			Console.ReadLine();
 		}
