@@ -108,7 +108,7 @@ namespace Repzilon.Libraries.Core
 			T minusOne = (T)Convert.ChangeType(-1, typeof(T));
 			for (byte i = 0; i < size; i++) {
 				for (byte j = 0; j < size; j++) {
-					m[i, j] = i + j % 2 == 0 ? plusOne : minusOne;
+					m[i, j] = (i + j) % 2 == 0 ? plusOne : minusOne;
 				}
 			}
 			return m;

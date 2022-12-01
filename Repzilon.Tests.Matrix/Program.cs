@@ -64,6 +64,9 @@ namespace Repzilon.Tests.Matrix
 			Console.WriteLine("{0} det(M) = {1}", ex_89, ex_89.Determinant());
 			var ex_90 = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
 			Console.WriteLine("{0} det(M) = {1}", ex_90, ex_90.Determinant());
+			Console.WriteLine("{0} det(M) = {1}", ex88_a, ex88_a.Determinant());
+
+			Console.WriteLine(Matrix<short>.Signature(3).ToString());
 
 			Console.WriteLine("Press Enter to exit...");
 			Console.ReadLine();
