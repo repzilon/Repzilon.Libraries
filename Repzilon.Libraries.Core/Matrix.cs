@@ -58,7 +58,7 @@ namespace Repzilon.Libraries.Core
 		private readonly T[,] m_values;
 
 		#region Constructors
-		public Matrix(byte lines, byte columns, byte? augmentedColumn)
+		internal Matrix(byte lines, byte columns, byte? augmentedColumn)
 		{
 			if (lines < 1) {
 				throw new ArgumentOutOfRangeException("lines", lines, "There must be at least one line in the matrix.");
@@ -146,7 +146,7 @@ namespace Repzilon.Libraries.Core
 		where TIn : struct, IConvertible, IEquatable<TIn>
 		where TOut : struct, IConvertible, IEquatable<TOut>
 		{
-			var other = new Matrix<TOut>(source.Lines, source.Columns);
+			var other = new Matrix<TOut>(source.Lines, source.Columns, source.m_bytAugmentedColumn);
 			for (byte i = 0; i < source.Lines; i++) {
 				for (byte j = 0; j < source.Columns; j++) {
 					other[i, j] = (TOut)Convert.ChangeType(source[i, j], typeof(TOut));
@@ -324,6 +324,14 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
+		/// <summary>
+		/// Runs a line command on an augmented matrix
+		/// </summary>
+		/// <param name="destinationLine">Zero-based destination line number</param>
+		/// <param name="coefficients">Multiplying coefficients of source lines. Specify null for that line to not include it in calculations.</param>
+		/// <exception cref="ArgumentOutOfRangeException"></exception>
+		/// <exception cref="ArgumentNullException"></exception>
+		/// <exception cref="ArrayTypeMismatchException"></exception>
 		public void RunCommand(byte destinationLine, params Nullable<T>[] coefficients)
 		{
 			if (destinationLine >= this.Lines) {
@@ -415,6 +423,39 @@ namespace Repzilon.Libraries.Core
 					return det;
 				}
 			}
+		}
+
+		public Matrix<T> Left()
+		{
+			if (!m_bytAugmentedColumn.HasValue) {
+				throw new ArrayTypeMismatchException("The current matrix is not an augmented matrix.");
+			}
+			var l = this.Lines;
+			var c = m_bytAugmentedColumn.Value;
+			var ml = new Matrix<T>(l, c, (byte?)null);
+			for (byte i = 0; i < l; i++) {
+				for (byte j = 0; j < c; j++) {
+					ml[i, j] = this[i, j];
+				}
+			}
+			return ml;
+		}
+
+		public Matrix<T> Right()
+		{
+			if (!m_bytAugmentedColumn.HasValue) {
+				throw new ArrayTypeMismatchException("The current matrix is not an augmented matrix.");
+			}
+			var l = this.Lines;
+			var a = m_bytAugmentedColumn.Value;
+			var c = (byte)(this.Columns - a);
+			var mr = new Matrix<T>(l, c, (byte?)null);
+			for (byte i = 0; i < l; i++) {
+				for (byte j = 0; j < c; j++) {
+					mr[i, j] = this[i, (byte)(j + a)];
+				}
+			}
+			return mr;
 		}
 	}
 
