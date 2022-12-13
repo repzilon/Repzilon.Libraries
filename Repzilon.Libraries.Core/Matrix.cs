@@ -496,5 +496,23 @@ namespace Repzilon.Libraries.Core
 				 coefficients.Lines, values.Lines));
 			}
 		}
+
+		public static void RoundErrors(this Matrix<float> matrix)
+		{
+			for (byte i = 0; i < matrix.Lines; i++) {
+				for (byte j = 0; j < matrix.Columns; j++) {
+					matrix[i, j] = Round.Error(matrix[i, j]);
+				}
+			}
+		}
+
+		public static void RoundErrors(this Matrix<double> matrix)
+		{
+			for (byte i = 0; i < matrix.Lines; i++) {
+				for (byte j = 0; j < matrix.Columns; j++) {
+					matrix[i, j] = Round.Error(matrix[i, j]);
+				}
+			}
+		}
 	}
 }
