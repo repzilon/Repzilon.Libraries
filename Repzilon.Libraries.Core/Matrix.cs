@@ -26,8 +26,8 @@ namespace Repzilon.Libraries.Core
 	where T : struct, IConvertible, IEquatable<T>
 	{
 		#region Static members
-		private static readonly Func<T, T, T> add = BuildAdder();
-		private static readonly Func<T, T, T> sub = BuildSubtractor();
+		internal static readonly Func<T, T, T> add = BuildAdder();
+		internal static readonly Func<T, T, T> sub = BuildSubtractor();
 
 		private static Func<T, T, T> BuildAdder()
 		{
