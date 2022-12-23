@@ -16,7 +16,7 @@ using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.Matrix
 {
-	public static class Program
+	internal static class Program
 	{
 		static void Main()
 		{

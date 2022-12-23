@@ -15,11 +15,15 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using System.Linq.Expressions;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>> where T : struct, IConvertible, IEquatable<T>
+	// TODO : Implement IFormattable to Matrix<T>
+	[StructLayout(LayoutKind.Auto)]
+	public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>
+	where T : struct, IConvertible, IEquatable<T>
 	{
 		#region Static members
 		private static readonly Func<T, T, T> add = BuildAdder();
@@ -94,7 +98,7 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Identity(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			T one = (T)Convert.ChangeType(1, typeof(T));
+			T one = 1.ConvertTo<T>();
 			for (byte i = 0; i < size; i++) {
 				m[i, i] = one;
 			}
@@ -104,8 +108,8 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Signature(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			T plusOne = (T)Convert.ChangeType(1, typeof(T));
-			T minusOne = (T)Convert.ChangeType(-1, typeof(T));
+			T plusOne = 1.ConvertTo<T>();
+			T minusOne = (-1).ConvertTo<T>();
 			for (byte i = 0; i < size; i++) {
 				for (byte j = 0; j < size; j++) {
 					m[i, j] = (i + j) % 2 == 0 ? plusOne : minusOne;
@@ -149,7 +153,7 @@ namespace Repzilon.Libraries.Core
 			var other = new Matrix<TOut>(source.Lines, source.Columns, source.m_bytAugmentedColumn);
 			for (byte i = 0; i < source.Lines; i++) {
 				for (byte j = 0; j < source.Columns; j++) {
-					other[i, j] = (TOut)Convert.ChangeType(source[i, j], typeof(TOut));
+					other[i, j] = source[i, j].ConvertTo<TOut>();
 				}
 			}
 			return other;
@@ -163,7 +167,7 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public bool Equals(Matrix<T> other)
 		{
-			if (this.SameSize(other)) {
+			if (this.SameSize(other) && (this.m_bytAugmentedColumn == other.m_bytAugmentedColumn)) {
 				for (byte i = 0; i < this.Lines; i++) {
 					for (byte j = 0; j < this.Columns; j++) {
 						if (!other[i, j].Equals(this[i, j])) {
@@ -179,6 +183,7 @@ namespace Repzilon.Libraries.Core
 
 		public override bool Equals(object obj)
 		{
+			// TODO : Support comparing with Matrix using other type of storage
 			return (obj != null) && (obj is Matrix<T>) && this.Equals((Matrix<T>)obj);
 		}
 
@@ -195,6 +200,16 @@ namespace Repzilon.Libraries.Core
 		public bool SameSize(Matrix<T> other)
 		{
 			return (other.Lines == this.Lines) && (other.Columns == this.Columns);
+		}
+
+		public static bool operator ==(Matrix<T> left, Matrix<T> right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(Matrix<T> left, Matrix<T> right)
+		{
+			return !(left == right);
 		}
 		#endregion
 
@@ -295,7 +310,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		/// <summary>
-		/// Returns the scalar product of two matrices
+		/// Returns the scalar product of two matrices. Watch out, this operation is not commutative.
 		/// </summary>
 		/// <param name="a">First matrix</param>
 		/// <param name="b">Second matrix</param>
@@ -325,13 +340,13 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		/// <summary>
-		/// Runs a line command on an augmented matrix
+		/// Runs a line command on an augmented matrix. This method mutates the matrix.
 		/// </summary>
 		/// <param name="destinationLine">Zero-based destination line number</param>
 		/// <param name="coefficients">Multiplying coefficients of source lines. Specify null for that line to not include it in calculations.</param>
-		/// <exception cref="ArgumentOutOfRangeException"></exception>
-		/// <exception cref="ArgumentNullException"></exception>
-		/// <exception cref="ArrayTypeMismatchException"></exception>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown when destinationLine is bigger or equal than the number of lines of the matrix.</exception>
+		/// <exception cref="ArgumentNullException">Thrown when coefficients array is null</exception>
+		/// <exception cref="ArrayTypeMismatchException">Thrown when coefficients array does not have the same number of vakues as the number of lines of the matrix</exception>
 		public void RunCommand(byte destinationLine, params Nullable<T>[] coefficients)
 		{
 			if (destinationLine >= this.Lines) {
@@ -363,6 +378,12 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		/// <summary>
+		/// Swap two lines of matrix, generally an augmented one. This method mutates the matrix.
+		/// </summary>
+		/// <param name="first">Zero-based rank of one line to swap.</param>
+		/// <param name="second">Zero-based rank of the other line to swap.</param>
+		/// <exception cref="ArgumentOutOfRangeException">Thrown when the line number are over the line count of the matrix</exception>
 		public void SwapLines(byte first, byte second)
 		{
 			const string kOutOfRange = "The line index is bigger than the number of lines in the matrix.";
@@ -397,8 +418,8 @@ namespace Repzilon.Libraries.Core
 					return sub(mul(m_values[0, 0], m_values[1, 1]), mul(m_values[0, 1], m_values[1, 0]));
 				} else {
 					var c = this.Columns;
-					T plusOne = (T)Convert.ChangeType(1, typeof(T));
-					T minusOne = (T)Convert.ChangeType(-1, typeof(T));
+					T plusOne = 1.ConvertTo<T>();
+					T minusOne = (-1).ConvertTo<T>();
 					T det = default(T);
 					mul = BuildMultiplier<T>();
 					for (byte j = 0; j < c; j++) {
@@ -497,6 +518,10 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		/// <summary>
+		/// Rounds off calculation errors of this matrix. This method mutates the matrix.
+		/// </summary>
+		/// <param name="matrix">Matrix to round</param>
 		public static void RoundErrors(this Matrix<float> matrix)
 		{
 			for (byte i = 0; i < matrix.Lines; i++) {
@@ -506,6 +531,10 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		/// <summary>
+		/// Rounds off calculation errors of this matrix. This method mutates the matrix.
+		/// </summary>
+		/// <param name="matrix">Matrix to round</param>
 		public static void RoundErrors(this Matrix<double> matrix)
 		{
 			for (byte i = 0; i < matrix.Lines; i++) {
@@ -513,6 +542,12 @@ namespace Repzilon.Libraries.Core
 					matrix[i, j] = Round.Error(matrix[i, j]);
 				}
 			}
+		}
+
+		internal static TOut ConvertTo<TOut>(this IConvertible value)
+		where TOut : struct, IConvertible, IEquatable<TOut>
+		{
+			return (TOut)Convert.ChangeType(value, typeof(TOut));
 		}
 	}
 }
