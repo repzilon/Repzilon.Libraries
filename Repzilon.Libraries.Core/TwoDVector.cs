@@ -91,7 +91,7 @@ namespace Repzilon.Libraries.Core
 	{
 		public static TwoDVector<T> Multiply<T, TScalar>(this TwoDVector<T> v, TScalar k)
 		where T : struct, IConvertible, IEquatable<T>
-		where TScalar : struct, IConvertible, IEquatable<T>
+		where TScalar : struct, IConvertible, IEquatable<TScalar>
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
 			return new TwoDVector<T>(mul(k, v.X), mul(k, v.Y));

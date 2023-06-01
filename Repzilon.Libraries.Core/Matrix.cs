@@ -291,7 +291,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct, IConvertible, IEquatable<T>
+		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct, IConvertible, IEquatable<TScalar>
 		{
 			// Declare the parameters
 			var paramA = Expression.Parameter(typeof(TScalar), "a");
@@ -484,7 +484,7 @@ namespace Repzilon.Libraries.Core
 	{
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
 		where T : struct, IConvertible, IEquatable<T>
-		where TScalar : struct, IConvertible, IEquatable<T>
+		where TScalar : struct, IConvertible, IEquatable<TScalar>
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
 			var mm = new Matrix<T>(m.Lines, m.Columns);
