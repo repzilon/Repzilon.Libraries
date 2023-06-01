@@ -43,11 +43,13 @@ namespace Repzilon.Libraries.Core
 		public T Value { get; private set; }
 		public AngleUnit Unit { get; private set; }
 
-		decimal IAngle.DecimalValue {
+		decimal IAngle.DecimalValue
+		{
 			get { return this.DecimalValue; }
 		}
 
-		private decimal DecimalValue {
+		private decimal DecimalValue
+		{
 			get { return Convert.ToDecimal(this.Value); }
 		}
 		#endregion
@@ -402,55 +404,6 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 		#endregion
-
-		#region Multiplication operator
-		private static Angle<T> MultiplyInteger<TInteger>(Angle<T> angle, TInteger multiplier)
-		where TInteger : struct, IConvertible, IEquatable<TInteger>
-		{
-			var mul = Matrix<T>.BuildMultiplier<TInteger>();
-			return new Angle<T>(mul(multiplier, angle.Value), angle.Unit);
-		}
-
-		public static Angle<T> operator *(Angle<T> angle, byte multiplier)
-		{
-			return MultiplyInteger<byte>(angle, multiplier);
-		}
-
-		public static Angle<T> operator *(Angle<T> angle, short multiplier)
-		{
-			return MultiplyInteger<short>(angle, multiplier);
-		}
-
-		public static Angle<T> operator *(Angle<T> angle, int multiplier)
-		{
-			return MultiplyInteger<int>(angle, multiplier);
-		}
-
-		public static Angle<T> operator *(Angle<T> angle, T multiplier)
-		{
-			return MultiplyInteger<T>(angle, multiplier);
-		}
-
-		public static Angle<long> operator *(Angle<T> angle, long multiplier)
-		{
-			return new Angle<long>(Convert.ToInt64(angle.Value) * multiplier, angle.Unit);
-		}
-
-		public static Angle<float> operator *(Angle<T> angle, float multiplier)
-		{
-			return new Angle<float>(Convert.ToSingle(angle.Value) * multiplier, angle.Unit);
-		}
-
-		public static Angle<double> operator *(Angle<T> angle, double multiplier)
-		{
-			return new Angle<double>(Convert.ToDouble(angle.Value) * multiplier, angle.Unit);
-		}
-
-		public static Angle<decimal> operator *(Angle<T> angle, decimal multiplier)
-		{
-			return new Angle<decimal>(Convert.ToDecimal(angle.Value) * multiplier, angle.Unit);
-		}
-		#endregion
 	}
 
 	public static class AngleExtensions
@@ -460,7 +413,39 @@ namespace Repzilon.Libraries.Core
 			return (unit == AngleUnit.Gradian) || (unit == AngleUnit.Degree) || (unit == AngleUnit.Radian);
 		}
 
-		#region Enlarging multiplications
+		#region Multiplications with possible enlargments
+		private static Angle<TAngle> MultiplyInteger<TAngle, TInteger>(Angle<TAngle> angle, TInteger multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		where TInteger : struct, IConvertible, IEquatable<TInteger>
+		{
+			var mul = Matrix<TAngle>.BuildMultiplier<TInteger>();
+			return new Angle<TAngle>(mul(multiplier, angle.Value), angle.Unit);
+		}
+
+		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, byte multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return MultiplyInteger(angle, multiplier);
+		}
+
+		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, short multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return MultiplyInteger(angle, multiplier);
+		}
+
+		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, int multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return MultiplyInteger(angle, multiplier);
+		}
+
+		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, TAngle multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return MultiplyInteger(angle, multiplier);
+		}
+
 		public static Angle<double> Multiply(this Angle<float> angle, long multiplier)
 		{
 			return new Angle<double>(angle.Value * multiplier, angle.Unit);
@@ -490,6 +475,30 @@ namespace Repzilon.Libraries.Core
 		where TMultiplier : struct, IConvertible, IEquatable<TMultiplier>, IComparable<TMultiplier>
 		{
 			return new Angle<decimal>(angle.Value * Convert.ToDecimal(multiplier), angle.Unit);
+		}
+
+		public static Angle<long> Multiply<TAngle>(this Angle<TAngle> angle, long multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return new Angle<long>(Convert.ToInt64(angle.Value) * multiplier, angle.Unit);
+		}
+
+		public static Angle<float> Multiply<TAngle>(this Angle<TAngle> angle, float multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return new Angle<float>(Convert.ToSingle(angle.Value) * multiplier, angle.Unit);
+		}
+
+		public static Angle<double> Multiply<TAngle>(this Angle<TAngle> angle, double multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return new Angle<double>(Convert.ToDouble(angle.Value) * multiplier, angle.Unit);
+		}
+
+		public static Angle<decimal> Multiply<TAngle>(this Angle<TAngle> angle, decimal multiplier)
+		where TAngle : struct, IConvertible, IEquatable<TAngle>, IComparable<TAngle>
+		{
+			return new Angle<decimal>(Convert.ToDecimal(angle.Value) * multiplier, angle.Unit);
 		}
 		#endregion
 	}
