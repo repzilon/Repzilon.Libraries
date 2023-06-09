@@ -23,7 +23,7 @@ namespace Repzilon.Libraries.Core
 	// TODO : Implement IFormattable to Matrix<T>
 	[StructLayout(LayoutKind.Auto)]
 	public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>
-	where T : struct, IConvertible, IEquatable<T>
+	where T : struct, IConvertible
 	{
 		#region Static members
 		internal static readonly Func<T, T, T> add = BuildAdder();
@@ -147,8 +147,8 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public static Matrix<TOut> Cast<TIn, TOut>(Matrix<TIn> source)
-		where TIn : struct, IConvertible, IEquatable<TIn>
-		where TOut : struct, IConvertible, IEquatable<TOut>
+		where TIn : struct, IConvertible
+		where TOut : struct, IConvertible
 		{
 			var other = new Matrix<TOut>(source.Lines, source.Columns, source.m_bytAugmentedColumn);
 			for (byte i = 0; i < source.Lines; i++) {
@@ -159,7 +159,7 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
-		public Matrix<TOut> Cast<TOut>() where TOut : struct, IConvertible, IEquatable<TOut>
+		public Matrix<TOut> Cast<TOut>() where TOut : struct, IConvertible
 		{
 			return Cast<T, TOut>(this);
 		}
@@ -291,7 +291,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct, IConvertible, IEquatable<TScalar>
+		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct, IConvertible
 		{
 			// Declare the parameters
 			var paramA = Expression.Parameter(typeof(TScalar), "a");
@@ -483,8 +483,8 @@ namespace Repzilon.Libraries.Core
 	public static class MatrixExtensionMethods
 	{
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
-		where T : struct, IConvertible, IEquatable<T>
-		where TScalar : struct, IConvertible, IEquatable<TScalar>
+		where T : struct, IConvertible
+		where TScalar : struct, IConvertible
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
 			var mm = new Matrix<T>(m.Lines, m.Columns);
@@ -497,7 +497,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
-		where T : struct, IConvertible, IEquatable<T>
+		where T : struct, IConvertible
 		{
 			if (values.Lines == coefficients.Lines) {
 				var augmented = new Matrix<T>(coefficients.Lines,
@@ -545,7 +545,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		internal static TOut ConvertTo<TOut>(this IConvertible value)
-		where TOut : struct, IConvertible, IEquatable<TOut>
+		where TOut : struct, IConvertible
 		{
 			return (TOut)Convert.ChangeType(value, typeof(TOut));
 		}
