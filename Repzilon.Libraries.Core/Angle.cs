@@ -107,34 +107,36 @@ namespace Repzilon.Libraries.Core
 		where TOut : struct, IConvertible, IFormattable, IComparable<TOut>, IEquatable<TOut>
 		{
 			var x = normalize ? this.Normalize() : this;
-			if (unit == this.Unit) {
-				return Angle<TOut>.FromOtherType(x.Value, unit);
+			var v = x.Value;
+			var tu = this.Unit;
+			if (unit == tu) {
+				return Angle<TOut>.FromOtherType(v, unit);
 			} else if (unit == AngleUnit.Degree) {
-				if (this.Unit == AngleUnit.Gradian) {
-					return Angle<TOut>.FromOtherType(x.Value, 0.9, unit);
-				} else if (this.Unit == AngleUnit.Radian) {
+				if (tu == AngleUnit.Gradian) {
+					return Angle<TOut>.FromOtherType(v, 0.9, unit);
+				} else if (tu == AngleUnit.Radian) {
 					const double kRad2Deg = 180 / Math.PI;
-					return Angle<TOut>.FromOtherType(x.Value, kRad2Deg, unit);
+					return Angle<TOut>.FromOtherType(v, kRad2Deg, unit);
 				} else {
 					throw NewConversionException(unit);
 				}
 			} else if (unit == AngleUnit.Gradian) {
-				if (this.Unit == AngleUnit.Degree) {
+				if (tu == AngleUnit.Degree) {
 					const double kDeg2Gon = 1.0 / 0.9;
-					return Angle<TOut>.FromOtherType(x.Value, kDeg2Gon, unit);
-				} else if (this.Unit == AngleUnit.Radian) {
+					return Angle<TOut>.FromOtherType(v, kDeg2Gon, unit);
+				} else if (tu == AngleUnit.Radian) {
 					const double kRad2Gon = 200 / Math.PI;
-					return Angle<TOut>.FromOtherType(x.Value, kRad2Gon, unit);
+					return Angle<TOut>.FromOtherType(v, kRad2Gon, unit);
 				} else {
 					throw NewConversionException(unit);
 				}
 			} else if (unit == AngleUnit.Radian) {
-				if (this.Unit == AngleUnit.Degree) {
+				if (tu == AngleUnit.Degree) {
 					const double kDeg2Rad = Math.PI / 180;
-					return Angle<TOut>.FromOtherType(x.Value, kDeg2Rad, unit);
-				} else if (this.Unit == AngleUnit.Gradian) {
+					return Angle<TOut>.FromOtherType(v, kDeg2Rad, unit);
+				} else if (tu == AngleUnit.Gradian) {
 					const double kGon2Rad = Math.PI / 200;
-					return Angle<TOut>.FromOtherType(x.Value, kGon2Rad, unit);
+					return Angle<TOut>.FromOtherType(v, kGon2Rad, unit);
 				} else {
 					throw NewConversionException(unit);
 				}
