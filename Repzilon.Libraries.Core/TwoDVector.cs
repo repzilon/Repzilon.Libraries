@@ -113,7 +113,7 @@ namespace Repzilon.Libraries.Core
 		where TOut : struct, IConvertible, IFormattable, IEquatable<TOut>, IComparable<TOut>
 		{
 			var tc = ((IConvertible)this.X).GetTypeCode(); // casting to IConvertible reduces IL size
-			// Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
+														   // Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
 			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
 		}
@@ -240,14 +240,12 @@ namespace Repzilon.Libraries.Core
 		{
 			var mul = Matrix<T>.BuildMultiplier<T>();
 			var add = Matrix<T>.add;
-			T squaredResult = add(mul(norm1, norm1), mul(norm2, norm2));
-			var cos = (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos();
-			var third = mul(mul(mul(norm1, norm2), cos.ConvertTo<T>()), (-2).ConvertTo<T>());
-			squaredResult = add(squaredResult, third);
+			var squaredResult = add(add(mul(norm1, norm1), mul(norm2, norm2)),
+			 mul(mul(mul(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
 			if (((IConvertible)squaredResult).GetTypeCode() == TypeCode.Decimal) {
-				return ExtraMath.Sqrt(squaredResult.ConvertTo<decimal>()).ConvertTo<T>();
+				return ExtraMath.Sqrt(Convert.ToDecimal(squaredResult)).ConvertTo<T>();
 			} else {
-				return Math.Sqrt(squaredResult.ConvertTo<double>()).ConvertTo<T>();
+				return Math.Sqrt(Convert.ToDouble(squaredResult)).ConvertTo<T>();
 			}
 		}
 
