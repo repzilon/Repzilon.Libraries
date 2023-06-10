@@ -279,22 +279,23 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
-			bool blnLongUnitName = (format.ToUpperInvariant() == format);
 			StringBuilder stbAngle = new StringBuilder();
-			stbAngle.Append(this.Value.ToString(format, formatProvider)).Append('\xA0');
-			if (blnLongUnitName) {
-				stbAngle.Append(this.Unit.ToString().ToLowerInvariant());
-				if (Math.Abs(Convert.ToInt32(this.Value)) != 0) {
+			var tu = this.Unit;
+			IFormattable tv = this.Value;
+			stbAngle.Append(tv.ToString(format, formatProvider)).Append('\xA0');
+			if (format.ToUpperInvariant() == format) { // is long unit name requested?
+				stbAngle.Append(tu.ToString().ToLowerInvariant());
+				if (Math.Abs(Convert.ToInt32(tv)) != 0) {
 					stbAngle.Append('s');
 				}
-			} else if (this.Unit == AngleUnit.Degree) {
+			} else if (tu == AngleUnit.Degree) {
 				stbAngle.Append('°');
-			} else if (this.Unit == AngleUnit.Gradian) {
+			} else if (tu == AngleUnit.Gradian) {
 				stbAngle.Append("gon");
-			} else if (this.Unit == AngleUnit.Radian) {
+			} else if (tu == AngleUnit.Radian) {
 				stbAngle.Append("rad");
 			} else {
-				stbAngle.AppendFormat(formatProvider, "({0})?", this.Unit);
+				stbAngle.AppendFormat(formatProvider, "({0})?", tu);
 			}
 			return stbAngle.ToString();
 		}
