@@ -30,28 +30,24 @@ namespace Repzilon.Libraries.Core
 
 		private static Func<T, T, T> BuildAdder()
 		{
+			var type = typeof(T);
 			// Declare the parameters
-			var paramA = Expression.Parameter(typeof(T), "a");
-			var paramB = Expression.Parameter(typeof(T), "b");
+			var paramA = Expression.Parameter(type, "a");
+			var paramB = Expression.Parameter(type, "b");
 
-			// Add the parameters together
-			BinaryExpression body = Expression.Add(paramA, paramB);
-
-			// Compile it
-			return Expression.Lambda<Func<T, T, T>>(body, paramA, paramB).Compile();
+			// Add the parameters together and compile it
+			return Expression.Lambda<Func<T, T, T>>(Expression.Add(paramA, paramB), paramA, paramB).Compile();
 		}
 
 		private static Func<T, T, T> BuildSubtractor()
 		{
+			var type = typeof(T);
 			// Declare the parameters
-			var paramA = Expression.Parameter(typeof(T), "a");
-			var paramB = Expression.Parameter(typeof(T), "b");
+			var paramA = Expression.Parameter(type, "a");
+			var paramB = Expression.Parameter(type, "b");
 
-			// Add the parameters together
-			BinaryExpression body = Expression.Subtract(paramA, paramB);
-
-			// Compile it
-			return Expression.Lambda<Func<T, T, T>>(body, paramA, paramB).Compile();
+			// Add the parameters together and compile it
+			return Expression.Lambda<Func<T, T, T>>(Expression.Subtract(paramA, paramB), paramA, paramB).Compile();
 		}
 		#endregion
 
@@ -130,9 +126,10 @@ namespace Repzilon.Libraries.Core
 		#region ICloneable members
 		public Matrix<T> Clone()
 		{
-			var other = new Matrix<T>(this.Lines, this.Columns);
+			var tc = this.Columns;
+			var other = new Matrix<T>(this.Lines, tc);
 			for (byte i = 0; i < this.Lines; i++) {
-				for (byte j = 0; j < this.Columns; j++) {
+				for (byte j = 0; j < tc; j++) {
 					other[i, j] = this[i, j];
 				}
 			}
@@ -149,9 +146,10 @@ namespace Repzilon.Libraries.Core
 		where TIn : struct, IConvertible, IFormattable
 		where TOut : struct, IConvertible, IFormattable
 		{
-			var other = new Matrix<TOut>(source.Lines, source.Columns, source.m_bytAugmentedColumn);
+			var sc = source.Columns;
+			var other = new Matrix<TOut>(source.Lines, sc, source.m_bytAugmentedColumn);
 			for (byte i = 0; i < source.Lines; i++) {
-				for (byte j = 0; j < source.Columns; j++) {
+				for (byte j = 0; j < sc; j++) {
 					other[i, j] = source[i, j].ConvertTo<TOut>();
 				}
 			}
@@ -166,24 +164,27 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public bool Equals(Matrix<T> other)
 		{
-			if (this.SameSize(other) && (this.m_bytAugmentedColumn == other.m_bytAugmentedColumn)) {
-				for (byte i = 0; i < this.Lines; i++) {
-					for (byte j = 0; j < this.Columns; j++) {
-						if (!other[i, j].Equals(this[i, j])) {
-							return false;
+			if (this.SameSize(other)) {
+				var tac = this.m_bytAugmentedColumn;
+				var oac = other.m_bytAugmentedColumn;
+				if ((tac.HasValue == oac.HasValue) && (tac.Value == oac.Value)) {
+					for (byte i = 0; i < this.Lines; i++) {
+						for (byte j = 0; j < this.Columns; j++) {
+							if (!other[i, j].Equals(this[i, j])) {
+								return false;
+							}
 						}
 					}
+					return true;
 				}
-				return true;
-			} else {
-				return false;
 			}
+			return false;
 		}
 
 		public override bool Equals(object obj)
 		{
 			// TODO : Support comparing with Matrix using other type of storage
-			return (obj != null) && (obj is Matrix<T>) && this.Equals((Matrix<T>)obj);
+			return (obj is Matrix<T>) && this.Equals((Matrix<T>)obj);
 		}
 
 		public override int GetHashCode()
@@ -228,19 +229,20 @@ namespace Repzilon.Libraries.Core
 			}
 			// TODO : Align number output
 			StringBuilder stbDesc = new StringBuilder();
-			for (byte i = 0; i < this.Lines; i++) {
-				if (this.Lines == 1) {
+			var tl = this.Lines;
+			for (byte i = 0; i < tl; i++) {
+				if (tl == 1) {
 					stbDesc.Append('[');
 				} else if (i == 0) {
 					stbDesc.Append('/');
-				} else if (i == this.Lines - 1) {
+				} else if (i == tl - 1) {
 					stbDesc.Append('\\');
 				} else {
 					stbDesc.Append('|');
 				}
 
 				for (byte j = 0; j < this.Columns; j++) {
-					if (j == m_bytAugmentedColumn) {
+					if (m_bytAugmentedColumn.HasValue && (j == m_bytAugmentedColumn.Value)) {
 						stbDesc.Append('|');
 					}
 					if (j > 0) {
@@ -249,21 +251,21 @@ namespace Repzilon.Libraries.Core
 					stbDesc.Append(this[i, j].ToString(format, formatProvider));
 				}
 
-				if (this.Lines == 1) {
+				if (tl == 1) {
 					stbDesc.Append(']');
 				} else if (i == 0) {
 					stbDesc.Append('\\');
-				} else if (i == this.Lines - 1) {
+				} else if (i == tl - 1) {
 					stbDesc.Append('/');
 				} else {
 					stbDesc.Append('|');
 				}
 
-				if (i < this.Lines - 1) {
+				if (i < tl - 1) {
 					stbDesc.Append(Environment.NewLine);
 				}
 			}
-			stbDesc.AppendFormat(" {0}x{1} of {2}", this.Lines, this.Columns, typeof(T));
+			stbDesc.AppendFormat(" {0}x{1} of {2}", tl, this.Columns, typeof(T));
 			return stbDesc.ToString();
 		}
 		#endregion
@@ -271,10 +273,11 @@ namespace Repzilon.Libraries.Core
 		#region Operators
 		public static Matrix<T> operator +(Matrix<T> a, Matrix<T> b)
 		{
+			var ac = a.Columns;
 			if (b.SameSize(a)) {
-				var m = new Matrix<T>(a.Lines, a.Columns);
+				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
-					for (byte j = 0; j < a.Columns; j++) {
+					for (byte j = 0; j < ac; j++) {
 						m[i, j] = add(a[i, j], b[i, j]);
 					}
 				}
@@ -282,16 +285,17 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
 				 "To add matrices, their dimensions must be identical. They are {0}x{1} and {2}x{3}.",
-				 a.Lines, a.Columns, b.Lines, b.Columns));
+				 a.Lines, ac, b.Lines, b.Columns));
 			}
 		}
 
 		public static Matrix<T> operator -(Matrix<T> a, Matrix<T> b)
 		{
+			var ac = a.Columns;
 			if (b.SameSize(a)) {
-				var m = new Matrix<T>(a.Lines, a.Columns);
+				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
-					for (byte j = 0; j < a.Columns; j++) {
+					for (byte j = 0; j < ac; j++) {
 						m[i, j] = sub(a[i, j], b[i, j]);
 					}
 				}
@@ -299,7 +303,7 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
 				 "To subtract matrices, their dimensions must be identical. They are {0}x{1} and {2}x{3}.",
-				 a.Lines, a.Columns, b.Lines, b.Columns));
+				 a.Lines, ac, b.Lines, b.Columns));
 			}
 		}
 
@@ -399,10 +403,11 @@ namespace Repzilon.Libraries.Core
 		public void SwapLines(byte first, byte second)
 		{
 			const string kOutOfRange = "The line index is bigger than the number of lines in the matrix.";
-			if (first >= this.Lines) {
+			var tl = this.Lines;
+			if (first >= tl) {
 				throw new ArgumentOutOfRangeException("first", first, kOutOfRange);
 			}
-			if (second >= this.Lines) {
+			if (second >= tl) {
 				throw new ArgumentOutOfRangeException("second", second, kOutOfRange);
 			}
 			if (second != first) {
@@ -512,14 +517,16 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IConvertible, IFormattable
 		{
 			if (values.Lines == coefficients.Lines) {
+				var cc = coefficients.Columns;
 				var augmented = new Matrix<T>(coefficients.Lines,
-				 checked((byte)(coefficients.Columns + values.Columns)), coefficients.Columns);
+				 checked((byte)(cc + values.Columns)), cc);
 				for (byte i = 0; i < coefficients.Lines; i++) {
-					for (byte jc = 0; jc < coefficients.Columns; jc++) {
-						augmented[i, jc] = coefficients[i, jc];
+					byte j;
+					for (j = 0; j < cc; j++) {
+						augmented[i, j] = coefficients[i, j];
 					}
-					for (byte jv = 0; jv < values.Columns; jv++) {
-						augmented[i, (byte)(jv + coefficients.Columns)] = values[i, jv];
+					for (j = 0; j < values.Columns; j++) {
+						augmented[i, (byte)(j + cc)] = values[i, j];
 					}
 				}
 				return augmented;

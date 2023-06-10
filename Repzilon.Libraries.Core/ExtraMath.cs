@@ -27,16 +27,16 @@ namespace Repzilon.Libraries.Core
 		public static ValueTuple<decimal, decimal>? SolveQuadratic(decimal a, decimal b, decimal c)
 		{
 			if (a == 0) {
-				throw new ArgumentOutOfRangeException("a");
+				throw new ArgumentOutOfRangeException("a", a, "a = 0 would cause a division by zero.");
 			}
 
 			var determinant = (b * b) - (4 * a * c);
 			if (determinant >= 0) {
 				decimal sqrt = Sqrt(determinant);
 				var halfA = 0.5m * a; // Avoid the SLOW division instruction on every CPU and FPU
-				var x1 = (sqrt - b) * halfA; // That's (-b + sqrt(d)) / 2a in fewer operations
-				var x2 = ((-1 * b) - sqrt) * halfA; // (-b - sqrt(d)) / 2a
-				return new ValueTuple<decimal, decimal>(x1, x2);
+				return new ValueTuple<decimal, decimal>(
+				 (sqrt - b) * halfA, // That's (-b + sqrt(d)) / 2a in fewer operations,
+				 ((-1 * b) - sqrt) * halfA); // (-b - sqrt(d)) / 2a);
 			} else {
 				return null;
 			}
@@ -46,7 +46,7 @@ namespace Repzilon.Libraries.Core
 		public static decimal Sqrt(decimal square)
 		{
 			if (square < 0) {
-				throw new ArgumentOutOfRangeException("square");
+				throw new ArgumentOutOfRangeException("square", square, "Cannot extract the square root of a negative number.");
 			}
 
 			decimal root = square / 3;
@@ -129,7 +129,7 @@ namespace Repzilon.Libraries.Core
 			for (var i = 1; i <= ae; i++) {
 				r *= b;
 			}
-			return (e > 0) ? Convert.ToDouble(r) : 1.0 / r;
+			return (e > 0) ? (double)r : 1.0 / r;
 		}
 	}
 }

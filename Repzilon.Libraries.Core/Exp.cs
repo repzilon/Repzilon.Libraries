@@ -34,6 +34,9 @@ namespace Repzilon.Libraries.Core
 			if ((mantissa <= -10) || (mantissa >= 10)) {
 				throw new ArgumentOutOfRangeException("mantissa", mantissa, "Absolute value of the mantissa must be under 10.");
 			}
+			if (numericBase < 2) {
+				throw new ArgumentOutOfRangeException("numericBase", numericBase, "A numeric base of 0 or 1 does not make sense.");
+			}
 			mantissaThousandths = Convert.ToInt16(mantissa * 1000);
 			Base = numericBase;
 			Exponent = exponent;
@@ -53,6 +56,7 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
+			// TODO : special case for [Ee][0-9]* format strings
 			StringBuilder stbExp = new StringBuilder();
 			stbExp.Append(this.Mantissa.ToString(format, formatProvider)).Append(" x ");
 			stbExp.Append(this.Base).Append('^').Append(this.Exponent);
@@ -108,9 +112,7 @@ namespace Repzilon.Libraries.Core
 			if (y.Base != b) {
 				throw new ArgumentException("Base must be identical");
 			} else {
-				var e2 = (SByte)(x.Exponent + y.Exponent);
-				var m2 = x.Mantissa * y.Mantissa;
-				return AdjustMantissaExponent(m2, b, e2);
+				return AdjustMantissaExponent(x.Mantissa * y.Mantissa, b, x.Exponent + y.Exponent);
 			}
 		}
 
@@ -120,20 +122,18 @@ namespace Repzilon.Libraries.Core
 			if (y.Base != b) {
 				throw new ArgumentException("Base must be identical");
 			} else {
-				var e2 = (SByte)(x.Exponent - y.Exponent);
-				var m2 = x.Mantissa / y.Mantissa;
-				return AdjustMantissaExponent(m2, b, e2);
+				return AdjustMantissaExponent(x.Mantissa / y.Mantissa, b, x.Exponent - y.Exponent);
 			}
 		}
 
-		private static Exp AdjustMantissaExponent(float m2, byte b, sbyte e2)
+		private static Exp AdjustMantissaExponent(float m2, byte b, int e2)
 		{
 			if ((m2 <= -b) || (m2 >= b) || ((m2 > -1) && (m2 < 1))) {
-				var magnitude = Convert.ToSByte(Math.Floor(Math.Log(Math.Abs(m2), b)));
+				var magnitude = (int)Math.Floor(Math.Log(Math.Abs(m2), b));
 				e2 += magnitude;
 				m2 = (float)(m2 * ExtraMath.Pow(b, (SByte)(-magnitude)));
 			}
-			return new Exp(m2, b, e2);
+			return new Exp(m2, b, (SByte)e2);
 		}
 	}
 }
