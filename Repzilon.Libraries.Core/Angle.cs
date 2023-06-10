@@ -438,7 +438,7 @@ namespace Repzilon.Libraries.Core
 			return (unit == AngleUnit.Gradian) || (unit == AngleUnit.Degree) || (unit == AngleUnit.Radian);
 		}
 
-		#region Multiplications with possible enlargments
+		#region Multiplications with possible enlargements
 		private static Angle<TAngle> MultiplyInteger<TAngle, TInteger>(Angle<TAngle> angle, TInteger multiplier)
 		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
 		where TInteger : struct, IConvertible, IEquatable<TInteger>

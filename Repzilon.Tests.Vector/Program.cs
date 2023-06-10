@@ -136,7 +136,7 @@ namespace Repzilon.Tests.Vector
 			var angle = new Angle<decimal>(270, AngleUnit.Degree) + new Angle<decimal>((decimal)Math.Atan2(4, 3), AngleUnit.Radian);
 			var exa69_v23 = new PolarVector<decimal>(exa69_f23, (Angle<decimal>)angle).ToCartesian();
 			var exa69_vr = exa69_v13 + exa69_v23;
-			var exa69_r = ExtraMath.Hypot(exa69_vr.X, exa69_vr.Y);
+			var exa69_r = ExtraMath.Hypoth(exa69_vr.X, exa69_vr.Y);
 			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, (double)exa69_r);
 			return exa69_r;
 		}

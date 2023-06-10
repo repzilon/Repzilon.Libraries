@@ -69,22 +69,22 @@ namespace Repzilon.Libraries.Core
 			 TimeSpan.FromMilliseconds(Math.Max(700, 400 + (text.Trim().Length * 70)));
 		}
 
-		public static double Hypot(double a, double b)
+		public static double Hypoth(double a, double b)
 		{
 			return Math.Sqrt((a * a) + (b * b));
 		}
 
-		public static double Hypot(double a, double b, double c)
+		public static double Hypoth(double a, double b, double c)
 		{
 			return Math.Sqrt((a * a) + (b * b) + (c * c));
 		}
 
-		public static decimal Hypot(decimal a, decimal b)
+		public static decimal Hypoth(decimal a, decimal b)
 		{
 			return Sqrt((a * a) + (b * b));
 		}
 
-		public static decimal Hypot(decimal a, decimal b, decimal c)
+		public static decimal Hypoth(decimal a, decimal b, decimal c)
 		{
 			return Sqrt((a * a) + (b * b) + (c * c));
 		}

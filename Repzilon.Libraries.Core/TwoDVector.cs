@@ -102,9 +102,9 @@ namespace Repzilon.Libraries.Core
 		public double Norm()
 		{
 			if (typeof(T) == typeof(decimal)) {
-				return (double)ExtraMath.Hypot(Convert.ToDecimal(X), Convert.ToDecimal(Y));
+				return (double)ExtraMath.Hypoth(Convert.ToDecimal(X), Convert.ToDecimal(Y));
 			} else {
-				return ExtraMath.Hypot(Convert.ToDouble(X), Convert.ToDouble(Y));
+				return ExtraMath.Hypoth(Convert.ToDouble(X), Convert.ToDouble(Y));
 			}
 		}
 

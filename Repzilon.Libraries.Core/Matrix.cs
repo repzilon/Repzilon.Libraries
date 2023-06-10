@@ -358,7 +358,7 @@ namespace Repzilon.Libraries.Core
 		/// <param name="coefficients">Multiplying coefficients of source lines. Specify null for that line to not include it in calculations.</param>
 		/// <exception cref="ArgumentOutOfRangeException">Thrown when destinationLine is bigger or equal than the number of lines of the matrix.</exception>
 		/// <exception cref="ArgumentNullException">Thrown when coefficients array is null</exception>
-		/// <exception cref="ArrayTypeMismatchException">Thrown when coefficients array does not have the same number of vakues as the number of lines of the matrix</exception>
+		/// <exception cref="ArrayTypeMismatchException">Thrown when coefficients array does not have the same number of values as the number of lines of the matrix</exception>
 		public void RunCommand(byte destinationLine, params Nullable<T>[] coefficients)
 		{
 			if (destinationLine >= this.Lines) {
