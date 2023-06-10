@@ -21,10 +21,13 @@ namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct PolarVector<T> : IFormattable, IEquatable<PolarVector<T>>
-#if (!NETCOREAPP1_0)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
 	, ICloneable
 #endif
-	where T : struct, IConvertible, IFormattable, IEquatable<T>, IComparable<T>
+	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
 	{
 		public readonly T Norm;
 		public readonly Angle<T> Angle;
@@ -49,7 +52,7 @@ namespace Repzilon.Libraries.Core
 			return new PolarVector<T>(Norm, Angle);
 		}
 
-#if (!NETCOREAPP1_0)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -58,7 +61,10 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public PolarVector<TOut> Cast<TOut>()
-		where TOut : struct, IConvertible, IFormattable, IEquatable<TOut>, IComparable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
 		{
 			var a = this.Angle;
 			return new PolarVector<TOut>(this.Norm.ConvertTo<TOut>(), a.Value.ConvertTo<TOut>(), a.Unit);
@@ -87,7 +93,11 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
+#if (NETSTANDARD1_1)
+			int hashCode = unchecked(1227039071 * -1521134295) + Norm.GetHashCode();
+#else
 			int hashCode = unchecked(1227039071 * -1521134295) + ((IConvertible)Norm).GetHashCode();
+#endif
 			return hashCode * -1521134295 + ((IComparable)Angle).GetHashCode();
 		}
 

@@ -27,7 +27,7 @@ namespace Repzilon.Libraries.Core
 	}
 
 	public interface IAngle : IComparable, IFormattable, IEquatable<IAngle>, IComparable<IAngle>
-#if (!NETCOREAPP1_0)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
 	, ICloneable
 #endif
 	{
@@ -41,7 +41,10 @@ namespace Repzilon.Libraries.Core
 
 	[StructLayout(LayoutKind.Auto)]
 	public struct Angle<T> : IAngle, IEquatable<Angle<T>>, IComparable<Angle<T>>
-	where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>
+	where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
 	{
 		#region Properties
 		public T Value { get; private set; }
@@ -68,13 +71,19 @@ namespace Repzilon.Libraries.Core
 		}
 
 		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, AngleUnit unit)
-		where TFrom : struct, IConvertible, IEquatable<TFrom>
+		where TFrom : struct, IEquatable<TFrom>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return new Angle<T>(valueInOtherDataType.ConvertTo<T>(), unit);
 		}
 
 		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, double conversionFactor, AngleUnit unit)
-		where TFrom : struct, IConvertible, IEquatable<TFrom>
+		where TFrom : struct, IEquatable<TFrom>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return FromOtherType(Convert.ToDouble(valueInOtherDataType) * conversionFactor, unit);
 		}
@@ -86,7 +95,7 @@ namespace Repzilon.Libraries.Core
 			return new Angle<T>(Value, Unit);
 		}
 
-#if (!NETCOREAPP1_0)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -106,7 +115,10 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public Angle<TOut> ConvertTo<TOut>(AngleUnit unit, bool normalize)
-		where TOut : struct, IConvertible, IFormattable, IComparable<TOut>, IEquatable<TOut>
+		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			var x = normalize ? this.Normalize() : this;
 			var v = x.Value;
@@ -153,7 +165,7 @@ namespace Repzilon.Libraries.Core
 			 "Cannot convert angle from {0} to {1}.", this.Unit, destinationUnit));
 		}
 
-#if (NETCOREAPP1_0)
+#if (NETCOREAPP1_0 || NETSTANDARD1_1)
 		private static ArgumentOutOfRangeException NewUnknownUnitException(AngleUnit unit)
 		{
 			return new ArgumentOutOfRangeException("unit", (int)unit, "Unknown angle unit.");
@@ -166,7 +178,10 @@ namespace Repzilon.Libraries.Core
 #endif
 
 		public Angle<TOut> Cast<TOut>()
-		where TOut : struct, IConvertible, IFormattable, IComparable<TOut>, IEquatable<TOut>
+		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return this.ConvertTo<TOut>(this.Unit, false);
 		}
@@ -234,7 +249,11 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
+#if (NETSTANDARD1_1)
+			int hashCode = unchecked(-177567199 * -1521134295) + Value.GetHashCode();
+#else
 			int hashCode = unchecked(-177567199 * -1521134295) + ((IConvertible)Value).GetHashCode();
+#endif
 			return hashCode * -1521134295 + (int)Unit;
 		}
 
@@ -450,33 +469,48 @@ namespace Repzilon.Libraries.Core
 
 		#region Multiplications with possible enlargements
 		private static Angle<TAngle> MultiplyInteger<TAngle, TInteger>(Angle<TAngle> angle, TInteger multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
-		where TInteger : struct, IConvertible, IEquatable<TInteger>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
+		where TInteger : struct, IEquatable<TInteger>
 		{
 			var mul = Matrix<TAngle>.BuildMultiplier<TInteger>();
 			return new Angle<TAngle>(mul(multiplier, angle.Value), angle.Unit);
 		}
 
 		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, byte multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return MultiplyInteger(angle, multiplier);
 		}
 
 		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, short multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return MultiplyInteger(angle, multiplier);
 		}
 
 		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, int multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return MultiplyInteger(angle, multiplier);
 		}
 
 		public static Angle<TAngle> Multiply<TAngle>(this Angle<TAngle> angle, TAngle multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return MultiplyInteger(angle, multiplier);
 		}
@@ -507,31 +541,43 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Angle<decimal> Multiply<TMultiplier>(this Angle<decimal> angle, TMultiplier multiplier)
-		where TMultiplier : struct, IConvertible, IEquatable<TMultiplier>, IComparable<TMultiplier>
+		where TMultiplier : struct, IEquatable<TMultiplier>, IComparable<TMultiplier>
 		{
 			return new Angle<decimal>(angle.Value * Convert.ToDecimal(multiplier), angle.Unit);
 		}
 
 		public static Angle<long> Multiply<TAngle>(this Angle<TAngle> angle, long multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return new Angle<long>(Convert.ToInt64(angle.Value) * multiplier, angle.Unit);
 		}
 
 		public static Angle<float> Multiply<TAngle>(this Angle<TAngle> angle, float multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return new Angle<float>(Convert.ToSingle(angle.Value) * multiplier, angle.Unit);
 		}
 
 		public static Angle<double> Multiply<TAngle>(this Angle<TAngle> angle, double multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return new Angle<double>(Convert.ToDouble(angle.Value) * multiplier, angle.Unit);
 		}
 
 		public static Angle<decimal> Multiply<TAngle>(this Angle<TAngle> angle, decimal multiplier)
-		where TAngle : struct, IConvertible, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
 		{
 			return new Angle<decimal>(Convert.ToDecimal(angle.Value) * multiplier, angle.Unit);
 		}

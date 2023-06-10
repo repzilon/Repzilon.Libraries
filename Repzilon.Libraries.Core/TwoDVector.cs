@@ -21,10 +21,13 @@ namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct TwoDVector<T> : IFormattable, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
-#if (!NETCOREAPP1_0)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
 	, ICloneable
 #endif
-	where T : struct, IConvertible, IFormattable, IEquatable<T>, IComparable<T>
+	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
 	{
 		public readonly T X;
 		public readonly T Y;
@@ -84,7 +87,7 @@ namespace Repzilon.Libraries.Core
 			return new TwoDVector<T>(X, Y);
 		}
 
-#if (!NETCOREAPP1_0)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -95,10 +98,16 @@ namespace Repzilon.Libraries.Core
 		#region ToPolar
 		public double Norm()
 		{
+#if (NETSTANDARD1_1)
+			object cx = this.X;
+			object cy = this.Y;
+			if (cx is decimal) {
+#else
 			IConvertible cx = this.X;
 			IConvertible cy = this.Y;
 			if (cx.GetTypeCode() == TypeCode.Decimal) {
-				return Convert.ToDouble(ExtraMath.Hypoth(Convert.ToDecimal(cx), Convert.ToDecimal(cy)));
+#endif
+				return Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy));
 			} else {
 				return ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy));
 			}
@@ -115,17 +124,29 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public PolarVector<TOut> ToPolar<TOut>()
-		where TOut : struct, IConvertible, IFormattable, IEquatable<TOut>, IComparable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
 		{
-			var tc = ((IConvertible)this.X).GetTypeCode(); // casting to IConvertible reduces IL size
-														   // Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
+#if (NETSTANDARD1_1)
+			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
+			 (X is decimal) || (X is double) || (X is float) ? AngleUnit.Radian : AngleUnit.Degree, false));
+#else
+			// casting to IConvertible reduces IL size
+			var tc = ((IConvertible)this.X).GetTypeCode();
+			// Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
 			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
+#endif
 		}
 		#endregion
 
 		public TwoDVector<TOut> Cast<TOut>()
-		where TOut : struct, IConvertible, IFormattable, IEquatable<TOut>, IComparable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
 		{
 			return new TwoDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>());
 		}
@@ -160,8 +181,13 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
+#if (NETSTANDARD1_1)
+			int hashCode = unchecked(1861411795 * -1521134295) + X.GetHashCode();
+			return hashCode * -1521134295 + Y.GetHashCode();
+#else
 			int hashCode = unchecked(1861411795 * -1521134295) + ((IConvertible)X).GetHashCode();
 			return hashCode * -1521134295 + ((IConvertible)Y).GetHashCode();
+#endif
 		}
 
 		public static bool operator ==(TwoDVector<T> left, TwoDVector<T> right)
@@ -247,7 +273,11 @@ namespace Repzilon.Libraries.Core
 			var add = Matrix<T>.add;
 			var squaredResult = add(add(mul(norm1, norm1), mul(norm2, norm2)),
 			 mul(mul(mul(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
+#if (NETSTANDARD1_1)
+			if (squaredResult is decimal) {
+#else
 			if (((IConvertible)squaredResult).GetTypeCode() == TypeCode.Decimal) {
+#endif
 				return ExtraMath.Sqrt(Convert.ToDecimal(squaredResult)).ConvertTo<T>();
 			} else {
 				return Math.Sqrt(Convert.ToDouble(squaredResult)).ConvertTo<T>();
@@ -263,8 +293,11 @@ namespace Repzilon.Libraries.Core
 	public static class TwoDVectorExtensions
 	{
 		public static TwoDVector<T> Multiply<T, TScalar>(this TwoDVector<T> v, TScalar k)
-		where T : struct, IConvertible, IFormattable, IEquatable<T>, IComparable<T>
-		where TScalar : struct, IConvertible, IEquatable<TScalar>
+		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
+		where TScalar : struct, IEquatable<TScalar>
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
 			return new TwoDVector<T>(mul(k, v.X), mul(k, v.Y));
