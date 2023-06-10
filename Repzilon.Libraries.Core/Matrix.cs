@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
 	, ICloneable
 #endif
 	where T : struct, IFormattable
@@ -142,7 +142,7 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
