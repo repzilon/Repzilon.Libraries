@@ -20,10 +20,9 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IFormattable to Matrix<T>
 	[StructLayout(LayoutKind.Auto)]
-	public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>
-	where T : struct, IConvertible
+	public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>, IFormattable
+	where T : struct, IConvertible, IFormattable
 	{
 		#region Static members
 		internal static readonly Func<T, T, T> add = BuildAdder();
@@ -147,8 +146,8 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public static Matrix<TOut> Cast<TIn, TOut>(Matrix<TIn> source)
-		where TIn : struct, IConvertible
-		where TOut : struct, IConvertible
+		where TIn : struct, IConvertible, IFormattable
+		where TOut : struct, IConvertible, IFormattable
 		{
 			var other = new Matrix<TOut>(source.Lines, source.Columns, source.m_bytAugmentedColumn);
 			for (byte i = 0; i < source.Lines; i++) {
@@ -159,7 +158,7 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
-		public Matrix<TOut> Cast<TOut>() where TOut : struct, IConvertible
+		public Matrix<TOut> Cast<TOut>() where TOut : struct, IConvertible, IFormattable
 		{
 			return Cast<T, TOut>(this);
 		}
@@ -213,8 +212,20 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
+		#region ToString
 		public override string ToString()
 		{
+			return ToString(null, null);
+		}
+
+		public string ToString(string format, IFormatProvider formatProvider)
+		{
+			if (String.IsNullOrWhiteSpace(format)) {
+				format = "G";
+			}
+			if (formatProvider == null) {
+				formatProvider = CultureInfo.CurrentCulture;
+			}
 			// TODO : Align number output
 			StringBuilder stbDesc = new StringBuilder();
 			for (byte i = 0; i < this.Lines; i++) {
@@ -235,7 +246,7 @@ namespace Repzilon.Libraries.Core
 					if (j > 0) {
 						stbDesc.Append('\t');
 					}
-					stbDesc.Append(this[i, j]);
+					stbDesc.Append(this[i, j].ToString(format, formatProvider));
 				}
 
 				if (this.Lines == 1) {
@@ -255,6 +266,7 @@ namespace Repzilon.Libraries.Core
 			stbDesc.AppendFormat(" {0}x{1} of {2}", this.Lines, this.Columns, typeof(T));
 			return stbDesc.ToString();
 		}
+		#endregion
 
 		#region Operators
 		public static Matrix<T> operator +(Matrix<T> a, Matrix<T> b)
@@ -483,7 +495,7 @@ namespace Repzilon.Libraries.Core
 	public static class MatrixExtensionMethods
 	{
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
-		where T : struct, IConvertible
+		where T : struct, IConvertible, IFormattable
 		where TScalar : struct, IConvertible
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
@@ -497,7 +509,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
-		where T : struct, IConvertible
+		where T : struct, IConvertible, IFormattable
 		{
 			if (values.Lines == coefficients.Lines) {
 				var augmented = new Matrix<T>(coefficients.Lines,
