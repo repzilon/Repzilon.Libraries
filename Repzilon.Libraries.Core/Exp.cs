@@ -78,11 +78,9 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = 1362180524;
-			hashCode = hashCode * -1521134295 + mantissaThousandths.GetHashCode();
-			hashCode = hashCode * -1521134295 + Base.GetHashCode();
-			hashCode = hashCode * -1521134295 + Exponent.GetHashCode();
-			return hashCode;
+			int hashCode = unchecked(1362180524 * -1521134295) + mantissaThousandths;
+			hashCode = hashCode * -1521134295 + Base;
+			return hashCode * -1521134295 + Exponent;
 		}
 
 		public static bool operator ==(Exp left, Exp right)

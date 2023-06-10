@@ -155,10 +155,8 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = 1861411795;
-			hashCode = hashCode * -1521134295 + X.GetHashCode();
-			hashCode = hashCode * -1521134295 + Y.GetHashCode();
-			return hashCode;
+			int hashCode = unchecked(1861411795 * -1521134295) + ((IConvertible)X).GetHashCode();
+			return hashCode * -1521134295 + ((IConvertible)Y).GetHashCode();
 		}
 
 		public static bool operator ==(TwoDVector<T> left, TwoDVector<T> right)

@@ -82,10 +82,8 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = 1227039071;
-			hashCode = hashCode * -1521134295 + Norm.GetHashCode();
-			hashCode = hashCode * -1521134295 + Angle.GetHashCode();
-			return hashCode;
+			int hashCode = unchecked(1227039071 * -1521134295) + ((IConvertible)Norm).GetHashCode();
+			return hashCode * -1521134295 + ((IComparable)Angle).GetHashCode();
 		}	
 
 		public static bool operator ==(PolarVector<T> left, PolarVector<T> right)
