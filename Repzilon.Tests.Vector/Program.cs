@@ -172,7 +172,7 @@ namespace Repzilon.Tests.Vector
 			var tsUnrounded = BenchExample69(false, implementation);
 			var tsRounded = BenchExample69(true, implementation);
 			Console.WriteLine("Exemple 69 {0,-7} : {1:f3}s non arrondi Δ {3:e}; {2:f3}s arrondi Δ {4:e}",
-			 typeof(T).Name, tsUnrounded.TotalSeconds, tsRounded.TotalSeconds,
+			 typeof(T), tsUnrounded.TotalSeconds, tsRounded.TotalSeconds,
 			 (InDecimal(ru) - referenceResult), (InDecimal(rr) - referenceResult));
 		}
 

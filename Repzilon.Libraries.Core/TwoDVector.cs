@@ -90,10 +90,12 @@ namespace Repzilon.Libraries.Core
 		#region ToPolar
 		public double Norm()
 		{
-			if (typeof(T) == typeof(decimal)) {
-				return (double)ExtraMath.Hypoth(Convert.ToDecimal(X), Convert.ToDecimal(Y));
+			IConvertible cx = this.X;
+			IConvertible cy = this.Y;
+			if (cx.GetTypeCode() == TypeCode.Decimal) {
+				return Convert.ToDouble(ExtraMath.Hypoth(Convert.ToDecimal(cx), Convert.ToDecimal(cy)));
 			} else {
-				return ExtraMath.Hypoth(Convert.ToDouble(X), Convert.ToDouble(Y));
+				return ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy));
 			}
 		}
 
@@ -244,7 +246,7 @@ namespace Repzilon.Libraries.Core
 			var cos = (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos();
 			var third = mul(mul(mul(norm1, norm2), cos.ConvertTo<T>()), (-2).ConvertTo<T>());
 			squaredResult = add(squaredResult, third);
-			if (squaredResult.GetTypeCode() == TypeCode.Decimal) {
+			if (((IConvertible)squaredResult).GetTypeCode() == TypeCode.Decimal) {
 				return ExtraMath.Sqrt(squaredResult.ConvertTo<decimal>()).ConvertTo<T>();
 			} else {
 				return Math.Sqrt(squaredResult.ConvertTo<double>()).ConvertTo<T>();
