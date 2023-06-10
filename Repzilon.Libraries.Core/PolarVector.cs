@@ -20,7 +20,10 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct PolarVector<T> : ICloneable, IFormattable, IEquatable<PolarVector<T>>
+	public struct PolarVector<T> : IFormattable, IEquatable<PolarVector<T>>
+#if (!NETCOREAPP1_0)
+	, ICloneable
+#endif
 	where T : struct, IConvertible, IFormattable, IEquatable<T>, IComparable<T>
 	{
 		public readonly T Norm;
@@ -46,10 +49,12 @@ namespace Repzilon.Libraries.Core
 			return new PolarVector<T>(Norm, Angle);
 		}
 
+#if (!NETCOREAPP1_0)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
 		}
+#endif
 		#endregion
 
 		public PolarVector<TOut> Cast<TOut>()
@@ -84,7 +89,7 @@ namespace Repzilon.Libraries.Core
 		{
 			int hashCode = unchecked(1227039071 * -1521134295) + ((IConvertible)Norm).GetHashCode();
 			return hashCode * -1521134295 + ((IComparable)Angle).GetHashCode();
-		}	
+		}
 
 		public static bool operator ==(PolarVector<T> left, PolarVector<T> right)
 		{

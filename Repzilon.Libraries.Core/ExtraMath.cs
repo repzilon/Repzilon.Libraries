@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Collections.Generic;
 
 namespace Repzilon.Libraries.Core
 {
@@ -24,7 +25,7 @@ namespace Repzilon.Libraries.Core
 		/// <param name="b">Coefficient for x</param>
 		/// <param name="c">Final constant of the equation</param>
 		/// <returns>The possible solutions, when they exist.</returns>
-		public static ValueTuple<decimal, decimal>? SolveQuadratic(decimal a, decimal b, decimal c)
+		public static KeyValuePair<decimal, decimal>? SolveQuadratic(decimal a, decimal b, decimal c)
 		{
 			if (a == 0) {
 				throw new ArgumentOutOfRangeException("a", a, "a = 0 would cause a division by zero.");
@@ -34,7 +35,7 @@ namespace Repzilon.Libraries.Core
 			if (determinant >= 0) {
 				decimal sqrt = Sqrt(determinant);
 				var halfA = 0.5m * a; // Avoid the SLOW division instruction on every CPU and FPU
-				return new ValueTuple<decimal, decimal>(
+				return new KeyValuePair<decimal, decimal>(
 				 (sqrt - b) * halfA, // That's (-b + sqrt(d)) / 2a in fewer operations,
 				 ((-1 * b) - sqrt) * halfA); // (-b - sqrt(d)) / 2a);
 			} else {

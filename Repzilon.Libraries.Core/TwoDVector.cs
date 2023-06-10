@@ -20,7 +20,10 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct TwoDVector<T> : ICloneable, IFormattable, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
+	public struct TwoDVector<T> : IFormattable, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
+#if (!NETCOREAPP1_0)
+	, ICloneable
+#endif
 	where T : struct, IConvertible, IFormattable, IEquatable<T>, IComparable<T>
 	{
 		public readonly T X;
@@ -81,10 +84,12 @@ namespace Repzilon.Libraries.Core
 			return new TwoDVector<T>(X, Y);
 		}
 
+#if (!NETCOREAPP1_0)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
 		}
+#endif
 		#endregion
 
 		#region ToPolar

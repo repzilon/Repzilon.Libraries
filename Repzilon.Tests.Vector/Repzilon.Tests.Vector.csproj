@@ -2,10 +2,19 @@
 
   <PropertyGroup>
     <OutputType>Exe</OutputType>
-    <TargetFramework>netcoreapp3.1</TargetFramework>
+    <TargetFrameworks>netcoreapp1.0;netcoreapp3.1;net6.0</TargetFrameworks>
   </PropertyGroup>
 
   <ItemGroup>
     <ProjectReference Include="..\Repzilon.Libraries.Core\Repzilon.Libraries.Core.csproj" />
   </ItemGroup>
+  <ProjectExtensions>
+    <MonoDevelop>
+      <Properties>
+        <Policies>
+          <StandardHeader IncludeInNewFiles="True" Text=" &#xA; ${FileName}&#xA; &#xA; Author:&#xA;      ${AuthorName} &lt;${AuthorEmail}&gt;&#xA;&#xA;Copyright (C) ${Year} ${CopyrightHolder}&#xA;&#xA;This Source Code Form is subject to the terms of the &#xA;Mozilla Public License, v. 2.0. If a copy of the MPL was &#xA;not distributed with this file, You can obtain one at &#xA;https://mozilla.org/MPL/2.0/." />
+        </Policies>
+      </Properties>
+    </MonoDevelop>
+  </ProjectExtensions>
 </Project>

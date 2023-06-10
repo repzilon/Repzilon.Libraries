@@ -26,7 +26,10 @@ namespace Repzilon.Libraries.Core
 		Radian = 57
 	}
 
-	public interface IAngle : IComparable, ICloneable, IFormattable, IEquatable<IAngle>, IComparable<IAngle>
+	public interface IAngle : IComparable, IFormattable, IEquatable<IAngle>, IComparable<IAngle>
+#if (!NETCOREAPP1_0)
+	, ICloneable
+#endif
 	{
 		AngleUnit Unit { get; }
 		decimal DecimalValue { get; }
@@ -44,13 +47,11 @@ namespace Repzilon.Libraries.Core
 		public T Value { get; private set; }
 		public AngleUnit Unit { get; private set; }
 
-		decimal IAngle.DecimalValue
-		{
+		decimal IAngle.DecimalValue {
 			get { return this.DecimalValue; }
 		}
 
-		private decimal DecimalValue
-		{
+		private decimal DecimalValue {
 			get { return Convert.ToDecimal(this.Value); }
 		}
 		#endregion
@@ -85,10 +86,12 @@ namespace Repzilon.Libraries.Core
 			return new Angle<T>(Value, Unit);
 		}
 
+#if (!NETCOREAPP1_0)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
 		}
+#endif
 		#endregion
 
 		#region ConvertTo method
@@ -150,10 +153,17 @@ namespace Repzilon.Libraries.Core
 			 "Cannot convert angle from {0} to {1}.", this.Unit, destinationUnit));
 		}
 
+#if (NETCOREAPP1_0)
+		private static ArgumentOutOfRangeException NewUnknownUnitException(AngleUnit unit)
+		{
+			return new ArgumentOutOfRangeException("unit", (int)unit, "Unknown angle unit.");
+		}
+#else
 		private static InvalidEnumArgumentException NewUnknownUnitException(AngleUnit unit)
 		{
 			return new InvalidEnumArgumentException("unit", (int)unit, typeof(AngleUnit));
 		}
+#endif
 
 		public Angle<TOut> Cast<TOut>()
 		where TOut : struct, IConvertible, IFormattable, IComparable<TOut>, IEquatable<TOut>

@@ -21,7 +21,10 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct Matrix<T> : ICloneable, IEquatable<Matrix<T>>, IFormattable
+	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable
+#if (!NETCOREAPP1_0)
+	, ICloneable
+#endif
 	where T : struct, IConvertible, IFormattable
 	{
 		#region Static members
@@ -136,10 +139,12 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
+#if (!NETCOREAPP1_0)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
 		}
+#endif
 		#endregion
 
 		public static Matrix<TOut> Cast<TIn, TOut>(Matrix<TIn> source)
