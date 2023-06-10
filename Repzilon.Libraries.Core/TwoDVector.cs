@@ -34,56 +34,45 @@ namespace Repzilon.Libraries.Core
 
 		public TwoDVector(PolarVector<T> vector)
 		{
-			double n = Convert.ToDouble(vector.Norm);
-			if (vector.Angle.Unit == AngleUnit.Degree) {
-				var vav = Convert.ToDouble(vector.Angle.Normalize().Value);
-				T nt = n.ConvertTo<T>();
-				T zt = 0.ConvertTo<T>();
-				T mnt = (-1 * n).ConvertTo<T>();
-				if (vav == 0) {
-					X = nt;
-					Y = zt;
-				} else if (vav == 90) {
-					X = zt;
-					Y = nt;
-				} else if (vav == 180) {
-					X = (-1 * n).ConvertTo<T>();
-					Y = zt;
-				} else if (vav == 270) {
-					X = zt;
-					Y = (-1 * n).ConvertTo<T>();
-				} else {
-					double theta = vector.Angle.ConvertTo<double>(AngleUnit.Radian, true).Value;
-					X = (n * Math.Cos(theta)).ConvertTo<T>();
-					Y = (n * Math.Sin(theta)).ConvertTo<T>();
-				}
-			} else if (vector.Angle.Unit == AngleUnit.Gradian) {
-				var vav = Convert.ToDouble(vector.Angle.Normalize().Value);
-				T nt = n.ConvertTo<T>();
-				T zt = 0.ConvertTo<T>();
-				T mnt = (-1 * n).ConvertTo<T>();
-				if (vav == 0) {
-					X = nt;
-					Y = zt;
-				} else if (vav == 100) {
-					X = zt;
-					Y = nt;
-				} else if (vav == 200) {
-					X = (-1 * n).ConvertTo<T>();
-					Y = zt;
-				} else if (vav == 300) {
-					X = zt;
-					Y = (-1 * n).ConvertTo<T>();
-				} else {
-					double theta = vector.Angle.ConvertTo<double>(AngleUnit.Radian, true).Value;
-					X = (n * Math.Cos(theta)).ConvertTo<T>();
-					Y = (n * Math.Sin(theta)).ConvertTo<T>();
-				}
+			var nt = vector.Norm;
+			var va = vector.Angle;
+			KeyValuePair<T, T> kvp;
+			var vau = va.Unit;
+			if (vau == AngleUnit.Degree) {
+				kvp = ToCartesian(90, nt, va);
+			} else if (vau == AngleUnit.Gradian) {
+				kvp = ToCartesian(100, nt, va);
 			} else {
-				double theta = vector.Angle.ConvertTo<double>(AngleUnit.Radian, true).Value;
-				X = (n * Math.Cos(theta)).ConvertTo<T>();
-				Y = (n * Math.Sin(theta)).ConvertTo<T>();
+				kvp = ToCartesian(Convert.ToDouble(nt), va);
 			}
+			X = kvp.Key;
+			Y = kvp.Value;
+		}
+
+		private static KeyValuePair<T, T> ToCartesian(byte quarterTurn, T nt, Angle<T> va)
+		{
+			var vav = Convert.ToDouble(va.Value);
+			var zt = default(T);
+			var n = Convert.ToDouble(nt);
+			var mnt = (-1 * n).ConvertTo<T>();
+			if (vav == 0) {
+				return new KeyValuePair<T, T>(nt, zt);
+			} else if (vav == quarterTurn) {
+				return new KeyValuePair<T, T>(zt, nt);
+			} else if (vav == 2 * quarterTurn) {
+				return new KeyValuePair<T, T>(mnt, zt);
+			} else if (vav == 3 * quarterTurn) {
+				return new KeyValuePair<T, T>(zt, mnt);
+			} else {
+				return ToCartesian(n, va);
+			}
+		}
+
+		private static KeyValuePair<T, T> ToCartesian(double n, Angle<T> va)
+		{
+			double theta = va.ConvertTo<double>(AngleUnit.Radian, true).Value;
+			return new KeyValuePair<T, T>((n * Math.Cos(theta)).ConvertTo<T>(),
+			 (n * Math.Sin(theta)).ConvertTo<T>());
 		}
 
 		#region ICloneable members
