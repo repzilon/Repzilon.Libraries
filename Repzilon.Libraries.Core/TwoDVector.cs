@@ -110,9 +110,10 @@ namespace Repzilon.Libraries.Core
 		public PolarVector<TOut> ToPolar<TOut>()
 		where TOut : struct, IConvertible, IFormattable, IEquatable<TOut>, IComparable<TOut>
 		{
-			var tc = this.X.GetTypeCode();
-			var au = ((tc == TypeCode.Decimal) || (tc == TypeCode.Double) || (tc == TypeCode.Single)) ? AngleUnit.Radian : AngleUnit.Degree;
-			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(au, false));
+			var tc = ((IConvertible)this.X).GetTypeCode(); // casting to IConvertible reduces IL size
+			// Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
+			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
+			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
 		}
 		#endregion
 
