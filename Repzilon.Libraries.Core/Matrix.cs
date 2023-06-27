@@ -133,7 +133,7 @@ namespace Repzilon.Libraries.Core
 		public Matrix<T> Clone()
 		{
 			var tc = this.Columns;
-			var other = new Matrix<T>(this.Lines, tc);
+			var other = new Matrix<T>(this.Lines, tc, this.m_bytAugmentedColumn);
 			for (byte i = 0; i < this.Lines; i++) {
 				for (byte j = 0; j < tc; j++) {
 					other[i, j] = this[i, j];
