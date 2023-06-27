@@ -18,6 +18,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Implement IEquatable<IConvertible>
+	// TODO : Implement IComparable<Exp>
+	// TODO : Implement IComparable<IConvertible>
+	// TODO : Implement IComparable
+	// TODO : Implement addition and subtraction operators
 	[StructLayout(LayoutKind.Auto), CLSCompliant(false)]
 	public struct Exp : IFormattable, IEquatable<Exp>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
@@ -28,17 +33,18 @@ namespace Repzilon.Libraries.Core
 		public readonly byte Base;
 		public readonly SByte Exponent;
 
-		public float Mantissa {
+		public float Mantissa
+		{
 			get { return (float)(mantissaThousandths * 0.001); }
 		}
 
 		public Exp(float mantissa, byte numericBase, SByte exponent)
 		{
-			if ((mantissa <= -10) || (mantissa >= 10)) {
-				throw new ArgumentOutOfRangeException("mantissa", mantissa, "Absolute value of the mantissa must be under 10.");
-			}
 			if (numericBase < 2) {
 				throw new ArgumentOutOfRangeException("numericBase", numericBase, "A numeric base of 0 or 1 does not make sense.");
+			}
+			if ((mantissa <= -10) || (mantissa >= 10)) {
+				throw new ArgumentOutOfRangeException("mantissa", mantissa, "Absolute value of the mantissa must be under 10.");
 			}
 			mantissaThousandths = Convert.ToInt16(mantissa * 1000);
 			Base = numericBase;
