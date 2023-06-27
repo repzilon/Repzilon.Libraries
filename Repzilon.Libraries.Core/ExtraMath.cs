@@ -25,6 +25,11 @@ namespace Repzilon.Libraries.Core
 		/// <param name="b">Coefficient for x</param>
 		/// <param name="c">Final constant of the equation</param>
 		/// <returns>The possible solutions, when they exist.</returns>
+		/// <remarks>
+		/// An overload with Double data type for arguments and return values
+		/// will not be implemented. Additional precision is needed to handle
+		/// very small numbers, in the 10^-20 range.
+		/// </remarks>
 		public static KeyValuePair<decimal, decimal>? SolveQuadratic(decimal a, decimal b, decimal c)
 		{
 			if (a == 0) {
