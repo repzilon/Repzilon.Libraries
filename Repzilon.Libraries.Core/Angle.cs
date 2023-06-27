@@ -90,6 +90,8 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region ICloneable members
+		public Angle(Angle<T> source) : this(source.Value, source.Unit) { }
+
 		public Angle<T> Clone()
 		{
 			return new Angle<T>(Value, Unit);

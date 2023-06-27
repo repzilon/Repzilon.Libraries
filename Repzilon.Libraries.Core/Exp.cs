@@ -20,6 +20,9 @@ namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto), CLSCompliant(false)]
 	public struct Exp : IFormattable, IEquatable<Exp>
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
+	, ICloneable
+#endif
 	{
 		private readonly short mantissaThousandths;
 		public readonly byte Base;
@@ -41,6 +44,29 @@ namespace Repzilon.Libraries.Core
 			Base = numericBase;
 			Exponent = exponent;
 		}
+
+		private Exp(short mantissa, byte numericBase, SByte exponent)
+		{
+			mantissaThousandths = mantissa;
+			Base = numericBase;
+			Exponent = exponent;
+		}
+
+		#region ICloneable members
+		public Exp(Exp source) : this(source.mantissaThousandths, source.Base, source.Exponent) { }
+
+		public Exp Clone()
+		{
+			return new Exp(this);
+		}
+
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
+		object ICloneable.Clone()
+		{
+			return this.Clone();
+		}
+#endif
+		#endregion
 
 		#region ToString
 		public override string ToString()

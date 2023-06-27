@@ -82,6 +82,8 @@ namespace Repzilon.Libraries.Core
 		}
 
 		#region ICloneable members
+		public TwoDVector(TwoDVector<T> source) : this(source.X, source.Y) { }
+
 		public TwoDVector<T> Clone()
 		{
 			return new TwoDVector<T>(X, Y);
