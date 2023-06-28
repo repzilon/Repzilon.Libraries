@@ -251,12 +251,14 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
+			unchecked {
 #if (NETSTANDARD1_1)
-			int hashCode = unchecked(-177567199 * -1521134295) + Value.GetHashCode();
+				int hashCode = (-177567199 * -1521134295) + Value.GetHashCode();
 #else
-			int hashCode = unchecked(-177567199 * -1521134295) + ((IConvertible)Value).GetHashCode();
+				int hashCode = (-177567199 * -1521134295) + ((IConvertible)Value).GetHashCode();
 #endif
-			return hashCode * -1521134295 + (int)Unit;
+				return hashCode * -1521134295 + (int)Unit;
+			}
 		}
 
 		public static bool operator ==(Angle<T> left, Angle<T> right)

@@ -205,10 +205,12 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = unchecked(1832363379 * -1521134295) + Lines;
-			hashCode = hashCode * -1521134295 + Columns;
-			hashCode = hashCode * -1521134295 + m_bytAugmentedColumn.GetHashCode();
-			return hashCode * -1521134295 + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
+			unchecked {
+				int hashCode = (1832363379 * -1521134295) + Lines;
+				hashCode = hashCode * -1521134295 + Columns;
+				hashCode = hashCode * -1521134295 + m_bytAugmentedColumn.GetHashCode();
+				return hashCode * -1521134295 + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
+			}
 		}
 
 		public bool SameSize(Matrix<T> other)
