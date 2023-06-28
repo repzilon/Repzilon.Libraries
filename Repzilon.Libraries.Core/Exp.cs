@@ -33,8 +33,7 @@ namespace Repzilon.Libraries.Core
 		public readonly byte Base;
 		public readonly SByte Exponent;
 
-		public float Mantissa
-		{
+		public float Mantissa {
 			get { return (float)(mantissaThousandths * 0.001); }
 		}
 
@@ -88,11 +87,15 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
-			// TODO : special case for [Ee][0-9]* format strings
-			StringBuilder stbExp = new StringBuilder();
-			stbExp.Append(this.Mantissa.ToString(format, formatProvider)).Append(" x ");
-			stbExp.Append(this.Base).Append('^').Append(this.Exponent);
-			return stbExp.ToString();
+			// Special case for [Ee][0-9]* format strings
+			if ((format[0] == 'e') || (format[0] == 'E')) {
+				return this.ToDecimal().ToString(format, formatProvider);
+			} else {
+				StringBuilder stbExp = new StringBuilder();
+				stbExp.Append(this.Mantissa.ToString(format, formatProvider)).Append(" x ");
+				stbExp.Append(this.Base).Append('^').Append(this.Exponent);
+				return stbExp.ToString();
+			}
 		}
 		#endregion
 
