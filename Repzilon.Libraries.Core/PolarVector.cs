@@ -94,11 +94,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-#if (NETSTANDARD1_1)
-				int hashCode = (1227039071 * -1521134295) + Norm.GetHashCode();
-#else
-				int hashCode = (1227039071 * -1521134295) + ((IConvertible)Norm).GetHashCode();
-#endif
+				int hashCode = (1227039071 * -1521134295) + ((IComparable<T>)Norm).GetHashCode();
 				return hashCode * -1521134295 + ((IComparable)Angle).GetHashCode();
 			}
 		}
