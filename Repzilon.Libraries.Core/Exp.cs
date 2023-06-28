@@ -25,7 +25,7 @@ namespace Repzilon.Libraries.Core
 	// TODO : Implement addition and subtraction operators
 	[StructLayout(LayoutKind.Auto), CLSCompliant(false)]
 	public struct Exp : IFormattable, IEquatable<Exp>
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
 	{
@@ -66,7 +66,7 @@ namespace Repzilon.Libraries.Core
 			return new Exp(this);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 		object ICloneable.Clone()
 		{
 			return this.Clone();

@@ -21,7 +21,7 @@ namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct TwoDVector<T> : IFormattable, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
@@ -89,7 +89,7 @@ namespace Repzilon.Libraries.Core
 			return new TwoDVector<T>(X, Y);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3)
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 		object ICloneable.Clone()
 		{
 			return this.Clone();
