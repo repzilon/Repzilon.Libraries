@@ -9,6 +9,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Matrix", "Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Vector", "Repzilon.Tests.Vector\Repzilon.Tests.Vector.csproj", "{BA62A248-A64C-401B-AAD3-846407E2B66C}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Pascal", "Repzilon.Tests.Pascal\Repzilon.Tests.Pascal.csproj", "{7440BF08-39B4-41BF-B384-68F17F2F882A}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -27,6 +29,10 @@ Global
 		{BA62A248-A64C-401B-AAD3-846407E2B66C}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{BA62A248-A64C-401B-AAD3-846407E2B66C}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{BA62A248-A64C-401B-AAD3-846407E2B66C}.Release|Any CPU.Build.0 = Release|Any CPU
+		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
