@@ -173,12 +173,12 @@ namespace Repzilon.Libraries.Core
 			if (String.IsNullOrWhiteSpace(value)) {
 				return 0;
 			} else {
-				double dblValue = ParseQty(value);
+				CultureInfo ci;
+				double dblValue = ParseQty(value, out ci);
 				if (dblValue == 0) {
 					return 1;
 				}
-				// FIXME : Get the real decimal separator
-				return Count(value, dblValue, new CultureInfo("fr-CA").NumberFormat);
+				return Count(value, dblValue, ci.NumberFormat);
 			}
 		}
 
@@ -239,7 +239,7 @@ namespace Repzilon.Libraries.Core
 			return bytDigits;
 		}
 
-		private static double ParseQty(string value)
+		private static double ParseQty(string value, out CultureInfo foundCulture)
 		{
 			const NumberStyles kNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent | NumberStyles.AllowCurrencySymbol;
 			
@@ -257,6 +257,7 @@ namespace Repzilon.Libraries.Core
 				var ci = karCultures[i];
 				double dblValue;
 				if (Double.TryParse(value.Replace(ci.NumberFormat.NumberGroupSeparator, ""), kNumberStyles, ci, out dblValue)) {
+					foundCulture = ci;
 					return dblValue;
 				} else {
 					i++;
