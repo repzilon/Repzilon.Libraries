@@ -26,6 +26,8 @@ namespace Repzilon.Libraries.Core
 
 	public static class SignificantDigits
 	{
+		#region Method Count
+		#region Count integer types overloads
 		public static byte Count(int value)
 		{
 			if (value == 0) {
@@ -47,14 +49,16 @@ namespace Repzilon.Libraries.Core
 			}
 			return (value >= -1) && (value <= 1) ? (byte)1 : (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
 		}
+		#endregion
 
+		#region Count real number types overloads
 		public static byte Count(float value)
 		{
 			if (value == 0) {
 				return 1;
 			}
 			var sngAbsolute = Math.Abs(value);
-			var sngDigitalPart = Round.Error((float)(sngAbsolute - Math.Floor(sngAbsolute)));
+			var sngDigitalPart = (sngAbsolute < 1) ? sngAbsolute : Round.Error((float)(sngAbsolute - Math.Floor(sngAbsolute)));
 			while ((value % 10) == 0) {
 				value /= 10;
 			}
@@ -84,19 +88,8 @@ namespace Repzilon.Libraries.Core
 				return 1;
 			}
 			var dblAbsolute = Math.Abs(value);
-			var dblDigitalPart = Round.Error(dblAbsolute - Math.Floor(dblAbsolute));
-			while ((value % 10) == 0) {
-				value /= 10;
-			}
-			byte bytDigits;
-			if (dblAbsolute < 1) {
-				bytDigits = (dblDigitalPart != 0) ? (byte)0 : (byte)1;
-			} else if (dblAbsolute == 1) {
-				bytDigits = 1;
-			} else {
-				// Do not replace Math.Abs(value) with sngAbsolute, because we changed value with the loop above
-				bytDigits = (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
-			}
+			var dblDigitalPart = (dblAbsolute < 1) ? dblAbsolute : Round.Error(dblAbsolute - Math.Floor(dblAbsolute));
+			byte bytDigits = IntegerPartDigits(value, dblAbsolute, dblDigitalPart);
 			if (dblDigitalPart != 0) {
 				// Microsoft recommends G17 instead of R for Double, but G17 causes trouble in fact.
 				var strForCount = dblDigitalPart.ToString("R", CultureInfo.InvariantCulture).Replace("0.", "");
@@ -124,7 +117,7 @@ namespace Repzilon.Libraries.Core
 			} else if (dcmAbsolute == 1) {
 				bytDigits = 1;
 			} else {
-				// Do not replace Math.Abs(value) with sngAbsolute, because we changed value with the loop above
+				// Do not replace Math.Abs(value) with dcmAbsolute, because we changed value with the loop above
 				bytDigits = (byte)Math.Ceiling(Math.Log10(Math.Abs((double)value)));
 			}
 			if (dcmDigitalPart != 0) {
@@ -137,7 +130,9 @@ namespace Repzilon.Libraries.Core
 			}
 			return bytDigits;
 		}
+		#endregion
 
+		#region Count IConvertible dispatch
 #if !NETSTANDARD1_1
 		public static byte Count(IConvertible value)
 		{
@@ -146,7 +141,7 @@ namespace Repzilon.Libraries.Core
 			}
 			var enuTC = value.GetTypeCode();
 			if (enuTC == TypeCode.String) {
-				throw new NotImplementedException("String support is planned.");
+				return Count((string)value);
 			} else if (enuTC == TypeCode.Boolean || enuTC == TypeCode.Char || enuTC == TypeCode.DateTime || enuTC == TypeCode.Empty || enuTC == TypeCode.Object) {
 				throw new ArgumentException("The argument is neither a number nor a string.", "value");
 			} else if (enuTC == TypeCode.Int32) {
@@ -170,18 +165,108 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 #endif
+		#endregion
 
-#if (false)
+		#region Count String overloads
 		public static byte Count(string value)
 		{
-
+			if (String.IsNullOrWhiteSpace(value)) {
+				return 0;
+			} else {
+				double dblValue = ParseQty(value);
+				if (dblValue == 0) {
+					return 1;
+				}
+				// FIXME : Get the real decimal separator
+				return Count(value, dblValue, new CultureInfo("fr-CA").NumberFormat);
+			}
 		}
 
 		public static byte Count(string value, CultureInfo culture)
 		{
-
+			const NumberStyles kNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowThousands;
+			double dblValue;
+			if (String.IsNullOrWhiteSpace(value)) {
+				return 0;
+			} else if (Double.TryParse(value, kNumberStyles, culture, out dblValue)) {
+				if (dblValue == 0) {
+					return 1;
+				}
+				if (culture == null) {
+					culture = CultureInfo.CurrentCulture;
+				}
+				return Count(value, dblValue, culture.NumberFormat);
+			} else {
+				return 0;
+			}
 		}
 
+		private static byte Count(string value, double asDouble, NumberFormatInfo nf)
+		{
+			var dblAbsolute = Math.Abs(asDouble);
+			var strTrimmed = value.Trim().TrimStart('0');
+			var strDecSep = nf.NumberDecimalSeparator;
+			var intDec = strTrimmed.IndexOf(strDecSep);
+			if (intDec != -1) {
+				var intExponent = strTrimmed.IndexOfAny(new char[] { 'e', 'E' });
+				if (intExponent != -1) {
+					strTrimmed = strTrimmed.Substring(0, intExponent);
+				}
+				strTrimmed = strTrimmed.Replace(strDecSep, "").Replace(" ", "").Replace(nf.NumberGroupSeparator, "");
+				return (dblAbsolute < 1) ? (byte)strTrimmed.TrimStart('0').Length : (byte)strTrimmed.Length;
+			} else {
+				var dblDigitalPart = Round.Error(dblAbsolute - Math.Floor(dblAbsolute));
+				return IntegerPartDigits(asDouble, dblAbsolute, dblDigitalPart);
+			}
+		}
+		#endregion
+
+		private static byte IntegerPartDigits(double value, double dblAbsolute, double dblDigitalPart)
+		{
+			while ((value % 10) == 0) {
+				value /= 10;
+			}
+			byte bytDigits;
+			if (dblAbsolute < 1) {
+				bytDigits = (dblDigitalPart != 0) ? (byte)0 : (byte)1;
+			} else if (dblAbsolute == 1) {
+				bytDigits = 1;
+			} else {
+				// Do not replace Math.Abs(value) with dblAbsolute, because we changed value with the loop above
+				bytDigits = (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
+			}
+
+			return bytDigits;
+		}
+
+		private static double ParseQty(string value)
+		{
+			const NumberStyles kNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent | NumberStyles.AllowCurrencySymbol;
+			
+			if (value != null) {
+				value = value.Trim().Replace(" ", "");
+			}
+
+#if NETSTANDARD2_0
+			var karCultures = new CultureInfo[] { CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture, CultureInfo.InstalledUICulture, CultureInfo.InvariantCulture };
+#else
+			var karCultures = new CultureInfo[] { CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture, CultureInfo.InvariantCulture };
+#endif
+			int i = 0;
+			while (i < karCultures.Length) {
+				var ci = karCultures[i];
+				double dblValue;
+				if (Double.TryParse(value.Replace(ci.NumberFormat.NumberGroupSeparator, ""), kNumberStyles, ci, out dblValue)) {
+					return dblValue;
+				} else {
+					i++;
+				}
+			}
+			throw new FormatException("Unable to parse text as a number.");
+		}
+		#endregion
+
+#if (false)
 		public static decimal Round(decimal value, byte figures, RoundingMode rounding)
 		{
 			
@@ -197,27 +282,5 @@ namespace Repzilon.Libraries.Core
 
 		}
 #endif
-
-		private static double ParseQty(string value)
-		{
-			const NumberStyles kNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent | NumberStyles.AllowCurrencySymbol;
-			double dblValue;
-
-			if (!Double.TryParse(value, kNumberStyles, CultureInfo.CurrentCulture, out dblValue)) {
-				if (!Double.TryParse(value, kNumberStyles, CultureInfo.CurrentUICulture, out dblValue)) {
-#if NETSTANDARD2_0
-					if (!Double.TryParse(value, kNumberStyles, CultureInfo.InstalledUICulture, out dblValue)) {
-#endif
-						if (!Double.TryParse(value, kNumberStyles, CultureInfo.InvariantCulture, out dblValue)) {
-							throw new FormatException("Unable to parse text as a number.");
-						}
-#if NETSTANDARD2_0
-					}
-#endif
-				}
-			}
-			return dblValue;
-		}
 	}
 }
-
