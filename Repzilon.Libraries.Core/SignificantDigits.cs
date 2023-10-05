@@ -36,7 +36,7 @@ namespace Repzilon.Libraries.Core
 			while ((value % 10) == 0) {
 				value /= 10;
 			}
-			return (value >= -1) && (value <= 1) ? (byte)1 : (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
+			return (value >= -1) && (value <= 1) ? (byte)1 : Magnitude(value);
 		}
 
 		public static byte Count(long value)
@@ -47,7 +47,7 @@ namespace Repzilon.Libraries.Core
 			while ((value % 10) == 0) {
 				value /= 10;
 			}
-			return (value >= -1) && (value <= 1) ? (byte)1 : (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
+			return (value >= -1) && (value <= 1) ? (byte)1 : Magnitude(value);
 		}
 		#endregion
 
@@ -62,23 +62,8 @@ namespace Repzilon.Libraries.Core
 			while ((value % 10) == 0) {
 				value /= 10;
 			}
-			byte bytDigits;
-			if (sngAbsolute < 1) {
-				bytDigits = (sngDigitalPart != 0) ? (byte)0 : (byte)1;
-			} else if (sngAbsolute == 1) {
-				bytDigits = 1;
-			} else {
-				// Do not replace Math.Abs(value) with sngAbsolute, because we changed value with the loop above
-				bytDigits = (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
-			}
-			if (sngDigitalPart != 0) {
-				// Microsoft recommends G9 instead of R for Single, but G9 causes trouble in fact.
-				var strForCount = sngDigitalPart.ToString("R", CultureInfo.InvariantCulture).Replace("0.", "");
-				if (sngAbsolute < 1) {
-					strForCount = strForCount.TrimStart('0');
-				}
-				bytDigits += (byte)strForCount.Length;
-			}
+			byte bytDigits = IntegerPartDigits(value, sngAbsolute < 1, sngAbsolute == 1, sngDigitalPart);
+			bytDigits += DecimalDigits(sngAbsolute < 1, sngDigitalPart, "R", false);
 			return bytDigits;
 		}
 
@@ -90,14 +75,7 @@ namespace Repzilon.Libraries.Core
 			var dblAbsolute = Math.Abs(value);
 			var dblDigitalPart = (dblAbsolute < 1) ? dblAbsolute : Round.Error(dblAbsolute - Math.Floor(dblAbsolute));
 			byte bytDigits = IntegerPartDigits(value, dblAbsolute, dblDigitalPart);
-			if (dblDigitalPart != 0) {
-				// Microsoft recommends G17 instead of R for Double, but G17 causes trouble in fact.
-				var strForCount = dblDigitalPart.ToString("R", CultureInfo.InvariantCulture).Replace("0.", "");
-				if (dblAbsolute < 1) {
-					strForCount = strForCount.TrimStart('0');
-				}
-				bytDigits += (byte)strForCount.Length;
-			}
+			bytDigits += DecimalDigits(dblAbsolute < 1, dblDigitalPart, "R", false);
 			return bytDigits;
 		}
 
@@ -111,24 +89,40 @@ namespace Repzilon.Libraries.Core
 			while ((value % 10) == 0) {
 				value /= 10;
 			}
-			byte bytDigits;
-			if (dcmAbsolute < 1) {
-				bytDigits = (dcmDigitalPart != 0) ? (byte)0 : (byte)1;
-			} else if (dcmAbsolute == 1) {
-				bytDigits = 1;
+			byte bytDigits = IntegerPartDigits(value, dcmAbsolute < 1, dcmAbsolute == 1, dcmDigitalPart);
+			bytDigits += DecimalDigits(dcmAbsolute < 1, dcmDigitalPart, "f17", true);
+			return bytDigits;
+		}
+
+		private static byte IntegerPartDigits<T>(T value, bool absoluteLessThanOne, bool absoluteEqualsOne, T digitalPart) where T : IEquatable<T>
+#if !NETSTANDARD1_1
+		, IConvertible
+#endif
+		{
+			if (absoluteLessThanOne) {
+				return digitalPart.Equals(default(T)) ? (byte)1 : (byte)0;
+			} else if (absoluteEqualsOne) {
+				return 1;
 			} else {
-				// Do not replace Math.Abs(value) with dcmAbsolute, because we changed value with the loop above
-				bytDigits = (byte)Math.Ceiling(Math.Log10(Math.Abs((double)value)));
+				return Magnitude(Convert.ToDouble(value));
 			}
-			if (dcmDigitalPart != 0) {
-				// Format with maximum decimals, then remove trailing zeros
-				var strForCount = dcmDigitalPart.ToString("f17", CultureInfo.InvariantCulture).Replace("0.", "").TrimEnd('0');
-				if (dcmAbsolute < 1) {
+		}
+
+		private static byte DecimalDigits<T>(bool absoluteLessThanOne, T digitalPart, string roundTrip, bool removeTrailingZeros) where T : IFormattable, IEquatable<T>
+		{
+			// Microsoft recommends G9 instead of R for Single and G17 for Double, but they cause trouble
+			if (!digitalPart.Equals(default(T))) {
+				var strForCount = digitalPart.ToString(roundTrip, CultureInfo.InvariantCulture).Replace("0.", "");
+				if (removeTrailingZeros) {
+					strForCount = strForCount.TrimEnd('0');
+				}
+				if (absoluteLessThanOne) {
 					strForCount = strForCount.TrimStart('0');
 				}
-				bytDigits += (byte)strForCount.Length;
+				return (byte)strForCount.Length;
+			} else {
+				return 0;
 			}
-			return bytDigits;
 		}
 		#endregion
 
@@ -219,30 +213,11 @@ namespace Repzilon.Libraries.Core
 				return IntegerPartDigits(asDouble, dblAbsolute, dblDigitalPart);
 			}
 		}
-		#endregion
-
-		private static byte IntegerPartDigits(double value, double dblAbsolute, double dblDigitalPart)
-		{
-			while ((value % 10) == 0) {
-				value /= 10;
-			}
-			byte bytDigits;
-			if (dblAbsolute < 1) {
-				bytDigits = (dblDigitalPart != 0) ? (byte)0 : (byte)1;
-			} else if (dblAbsolute == 1) {
-				bytDigits = 1;
-			} else {
-				// Do not replace Math.Abs(value) with dblAbsolute, because we changed value with the loop above
-				bytDigits = (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
-			}
-
-			return bytDigits;
-		}
 
 		private static double ParseQty(string value, out CultureInfo foundCulture)
 		{
 			const NumberStyles kNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent | NumberStyles.AllowCurrencySymbol;
-			
+
 			if (value != null) {
 				value = value.Trim().Replace(" ", "");
 			}
@@ -264,6 +239,26 @@ namespace Repzilon.Libraries.Core
 				}
 			}
 			throw new FormatException("Unable to parse text as a number.");
+		}
+		#endregion
+
+		private static byte IntegerPartDigits(double value, double absolute, double digitalPart)
+		{
+			while ((value % 10) == 0) {
+				value /= 10;
+			}
+			if (absolute < 1) {
+				return (digitalPart != 0) ? (byte)0 : (byte)1;
+			} else if (absolute == 1) {
+				return 1;
+			} else {
+				return Magnitude(value);
+			}
+		}
+
+		private static byte Magnitude(double value)
+		{
+			return (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
 		}
 		#endregion
 
