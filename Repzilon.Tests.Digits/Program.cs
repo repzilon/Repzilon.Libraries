@@ -53,6 +53,27 @@ namespace Repzilon.Tests.Digits
 				TestDigitCount(
 				 new string[] { "-2", "-1", "0", "1", "2", "123", "43,567", "0,0054", "0,124", "25,02", "2005", "3,00", "300,0", "2000", "325", "3002", "34 000", "40,40", "0,000 103 00", "2,005" + "\xA0" + "700e14", "5,4e-3", "3,000E2" },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 5, 2, 3, 4, 4, 3, 4, 1, 3, 4, 2, 4, 5, 7, 2, 4 }, toConsole);
+
+				Console.Write(Environment.NewLine);
+				Console.WriteLine("Testing Round method");
+				for (byte f = 2; f <= 4; f++) {
+					var sngRounded = SignificantDigits.Round(43.50872f, f, RoundingMode.ToEven);
+					var dblRounded = SignificantDigits.Round(43.50872, f, RoundingMode.ToEven);
+					var dcmRounded = SignificantDigits.Round(43.50872m, f, RoundingMode.ToEven);
+					Console.WriteLine("{0}\t{1}\t{2}\t{3}", 43.50872m, sngRounded, dblRounded, dcmRounded);
+				}
+				var x = 0.02015 * 0.25 - 0.001;
+				var xr = SignificantDigits.Round(x, 1, RoundingMode.ToEven);
+				Console.WriteLine("{0} -> {1}", x, xr);
+
+				double[] karFiveFiguresInput = new double[] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
+				double[] karFiveFiguresExpected = new double[] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
+				for (int i = 0; i < karFiveFiguresInput.Length; i++) {
+					var dblComputed = SignificantDigits.Round(karFiveFiguresInput[i], 5, RoundingMode.AwayFromZero);
+					Console.WriteLine((dblComputed == karFiveFiguresExpected[i]) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
+					 karFiveFiguresInput[i], dblComputed, karFiveFiguresExpected[i]);
+				}
+
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex);
 			}

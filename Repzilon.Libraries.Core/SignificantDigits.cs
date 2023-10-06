@@ -58,7 +58,7 @@ namespace Repzilon.Libraries.Core
 				return 1;
 			}
 			var sngAbsolute = Math.Abs(value);
-			var sngDigitalPart = (sngAbsolute < 1) ? sngAbsolute : Round.Error((float)(sngAbsolute - Math.Floor(sngAbsolute)));
+			var sngDigitalPart = (sngAbsolute < 1) ? sngAbsolute : RoundOff.Error((float)(sngAbsolute - Math.Floor(sngAbsolute)));
 			while ((value % 10) == 0) {
 				value /= 10;
 			}
@@ -73,7 +73,7 @@ namespace Repzilon.Libraries.Core
 				return 1;
 			}
 			var dblAbsolute = Math.Abs(value);
-			var dblDigitalPart = (dblAbsolute < 1) ? dblAbsolute : Round.Error(dblAbsolute - Math.Floor(dblAbsolute));
+			var dblDigitalPart = (dblAbsolute < 1) ? dblAbsolute : RoundOff.Error(dblAbsolute - Math.Floor(dblAbsolute));
 			byte bytDigits = IntegerPartDigits(value, dblAbsolute, dblDigitalPart);
 			bytDigits += DecimalDigits(dblAbsolute < 1, dblDigitalPart, "R", false);
 			return bytDigits;
@@ -209,7 +209,7 @@ namespace Repzilon.Libraries.Core
 				strTrimmed = strTrimmed.Replace(strDecSep, "").Replace(" ", "").Replace(nf.NumberGroupSeparator, "");
 				return (dblAbsolute < 1) ? (byte)strTrimmed.TrimStart('0').Length : (byte)strTrimmed.Length;
 			} else {
-				var dblDigitalPart = Round.Error(dblAbsolute - Math.Floor(dblAbsolute));
+				var dblDigitalPart = RoundOff.Error(dblAbsolute - Math.Floor(dblAbsolute));
 				return IntegerPartDigits(asDouble, dblAbsolute, dblDigitalPart);
 			}
 		}
@@ -262,21 +262,66 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-#if (false)
+		#region Method Round
 		public static decimal Round(decimal value, byte figures, RoundingMode rounding)
 		{
-			
+			if (figures == 0) {
+				figures = 1;
+			}
+			var power = (decimal)PowerOf((double)value);
+			var mantissa = (decimal)RoundWithMode((double)(value / power), figures - 1, rounding);
+			return mantissa * power;
 		}
 
 		public static double Round(double value, byte figures, RoundingMode rounding)
 		{
-
+			if (figures == 0) {
+				figures = 1;
+			}
+			double power = PowerOf(value);
+			var mantissa = RoundWithMode(value / power, figures - 1, rounding);
+			return mantissa * power;
 		}
 
 		public static float Round(float value, byte figures, RoundingMode rounding)
 		{
-
+			if (figures == 0) {
+				figures = 1;
+			}
+			var power = (float)PowerOf(value);
+			var mantissa = (float)RoundWithMode((float)(value / power), figures - 1, rounding);
+			return (float)(mantissa * power);
 		}
-#endif
+
+		private static double PowerOf(double value)
+		{
+			return Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(value))));
+		}
+
+		private static double RoundWithMode(double value, int digits, RoundingMode rounding)
+		{
+			if (rounding == RoundingMode.AwayFromZero) {
+				return Math.Round(value, digits, MidpointRounding.AwayFromZero);
+			} else if (rounding == RoundingMode.ToEven) {
+				return Math.Round(value, digits, MidpointRounding.ToEven);
+			} else if (rounding == RoundingMode.Ceiling) {
+				if (digits == 0) {
+					return Math.Ceiling(value);
+				} else {
+					var bubble = Math.Pow(10, digits);
+					return Math.Ceiling(value * bubble) / bubble;
+				}
+			} else if (rounding == RoundingMode.Floor) {
+				if (digits == 0) {
+					return Math.Floor(value);
+				} else {
+					var bubble = Math.Pow(10, digits);
+					return Math.Floor(value * bubble) / bubble;
+				}
+			} else {
+				throw new ArgumentOutOfRangeException("rounding");
+			}
+		}
+		#endregion
 	}
 }
