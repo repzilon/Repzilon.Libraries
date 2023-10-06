@@ -304,12 +304,12 @@ namespace Repzilon.Libraries.Core
 
 		public static TwoDVector<float> RoundError(this TwoDVector<float> v)
 		{
-			return new TwoDVector<float>(Round.Error(v.X), Round.Error(v.Y));
+			return new TwoDVector<float>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
 		}
 
 		public static TwoDVector<double> RoundError(this TwoDVector<double> v)
 		{
-			return new TwoDVector<double>(Round.Error(v.X), Round.Error(v.Y));
+			return new TwoDVector<double>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
 		}
 	}
 }

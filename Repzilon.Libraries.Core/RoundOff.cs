@@ -15,7 +15,7 @@ using System;
 
 namespace Repzilon.Libraries.Core
 {
-	public static class Round
+	public static class RoundOff
 	{
 		public static float Error(float value)
 		{

@@ -80,8 +80,8 @@ namespace Repzilon.Tests.Vector
 			var exa69_f13 = ExtraMath.CoulombLab(exa69_q1, exa69_q3, 0.03f);
 			var exa69_f23 = ExtraMath.CoulombLab(exa69_q2, exa69_q3, 0.05f);
 			if (roundErrors) {
-				exa69_f13 = Round.Error(exa69_f13);
-				exa69_f23 = Round.Error(exa69_f23);
+				exa69_f13 = RoundOff.Error(exa69_f13);
+				exa69_f23 = RoundOff.Error(exa69_f23);
 			}
 			var exa69_v13 = new PolarVector<float>(exa69_f13, 90, AngleUnit.Degree).ToCartesian();
 			var angle = new Angle<float>(270, AngleUnit.Degree) + new Angle<float>((float)Math.Atan2(4, 3), AngleUnit.Radian);
@@ -103,8 +103,8 @@ namespace Repzilon.Tests.Vector
 			var exa69_f13 = ExtraMath.CoulombLab(exa69_q1, exa69_q3, 0.03);
 			var exa69_f23 = ExtraMath.CoulombLab(exa69_q2, exa69_q3, 0.05);
 			if (roundErrors) {
-				exa69_f13 = Round.Error(exa69_f13);
-				exa69_f23 = Round.Error(exa69_f23);
+				exa69_f13 = RoundOff.Error(exa69_f13);
+				exa69_f23 = RoundOff.Error(exa69_f23);
 			}
 			TwoDVector<double> exa69_v13, exa69_v23;
 			double exa69_r;
@@ -151,8 +151,8 @@ namespace Repzilon.Tests.Vector
 			TwoDVector<double> exa69_v13, exa69_v23;
 			double exa69_r;
 			Example69PartCWithDouble(roundErrors,
-			 roundErrors ? Round.Error(exa69_f13.ToDouble()) : exa69_f13.ToDouble(),
-			 roundErrors ? Round.Error(exa69_f23.ToDouble()) : exa69_f23.ToDouble(),
+			 roundErrors ? RoundOff.Error(exa69_f13.ToDouble()) : exa69_f13.ToDouble(),
+			 roundErrors ? RoundOff.Error(exa69_f23.ToDouble()) : exa69_f23.ToDouble(),
 			 out exa69_v13, out exa69_v23, out exa69_r);
 			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, exa69_r);
 

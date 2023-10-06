@@ -567,7 +567,7 @@ namespace Repzilon.Libraries.Core
 		{
 			for (byte i = 0; i < matrix.Lines; i++) {
 				for (byte j = 0; j < matrix.Columns; j++) {
-					matrix[i, j] = Round.Error(matrix[i, j]);
+					matrix[i, j] = RoundOff.Error(matrix[i, j]);
 				}
 			}
 		}
@@ -580,7 +580,7 @@ namespace Repzilon.Libraries.Core
 		{
 			for (byte i = 0; i < matrix.Lines; i++) {
 				for (byte j = 0; j < matrix.Columns; j++) {
-					matrix[i, j] = Round.Error(matrix[i, j]);
+					matrix[i, j] = RoundOff.Error(matrix[i, j]);
 				}
 			}
 		}
