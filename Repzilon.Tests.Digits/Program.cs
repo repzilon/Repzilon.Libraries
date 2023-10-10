@@ -73,7 +73,6 @@ namespace Repzilon.Tests.Digits
 					Console.WriteLine((dblComputed == karFiveFiguresExpected[i]) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
 					 karFiveFiguresInput[i], dblComputed, karFiveFiguresExpected[i]);
 				}
-
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex);
 			}
