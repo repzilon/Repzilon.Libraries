@@ -20,19 +20,19 @@ namespace Repzilon.Libraries.Core
 		public static float AminoAcidIsoelectric(float pKa1, float pKa2,
 		byte cationCount_ph1andhalf, float pKaR)
 		{
-			if (cationCount_ph1andhalf == 0) {
-				return RoundOff.Error(0.5f * (pKa1 + pKa2));
-			} else if (cationCount_ph1andhalf == 1) {
-				if (pKaR > pKa2) {
-					return RoundOff.Error(0.5f * (pKa1 + pKa2));
-				} else {
-					return RoundOff.Error(0.5f * (pKa1 + pKaR));
-				}
-			} else if (cationCount_ph1andhalf == 2) {
-				return RoundOff.Error(0.5f * (pKa2 + pKaR));
-			} else {
+			if (cationCount_ph1andhalf > 2) {
 				throw new ArgumentOutOfRangeException("cationCount_ph1andhalf", cationCount_ph1andhalf,
-				 "The lateral chain of a amino acid can only form a cation, a dication or cation at all under very acidic conditions.");
+				 "The lateral chain of a amino acid can only form a cation, a dication or no cation at all under very acidic conditions.");
+			} else {
+				float sum;
+				if (cationCount_ph1andhalf == 2) {
+					sum = pKa2 + pKaR;
+				} else if ((cationCount_ph1andhalf == 1) && (pKaR < pKa2)) {
+					sum = pKa1 + pKaR;
+				} else {
+					sum = pKa1 + pKa2;
+				}
+				return RoundOff.Error(0.5f * sum);
 			}
 		}
 
