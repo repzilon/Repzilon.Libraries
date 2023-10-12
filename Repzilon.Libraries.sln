@@ -5,14 +5,6 @@ VisualStudioVersion = 25.0.1703.6
 MinimumVisualStudioVersion = 10.0.40219.1
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Libraries.Core", "Repzilon.Libraries.Core\Repzilon.Libraries.Core.csproj", "{A43D9999-8346-491E-AA39-0ABEC8BFB525}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Matrix", "Repzilon.Tests.Matrix\Repzilon.Tests.Matrix.csproj", "{93424704-FCF0-4027-A3F6-6803A6EE1BF3}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Vector", "Repzilon.Tests.Vector\Repzilon.Tests.Vector.csproj", "{BA62A248-A64C-401B-AAD3-846407E2B66C}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Pascal", "Repzilon.Tests.Pascal\Repzilon.Tests.Pascal.csproj", "{7440BF08-39B4-41BF-B384-68F17F2F882A}"
-EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Digits", "Repzilon.Tests.Digits\Repzilon.Tests.Digits.csproj", "{22CAC341-F910-4698-B8EB-E7E05303E18E}"
-EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.ForCoreLibrary", "Repzilon.Tests.ForCoreLibrary\Repzilon.Tests.ForCoreLibrary.csproj", "{175C1C42-260F-4C9D-8ACB-94AD45F40082}"
 EndProject
 Global
@@ -25,22 +17,6 @@ Global
 		{A43D9999-8346-491E-AA39-0ABEC8BFB525}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{A43D9999-8346-491E-AA39-0ABEC8BFB525}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{A43D9999-8346-491E-AA39-0ABEC8BFB525}.Release|Any CPU.Build.0 = Release|Any CPU
-		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{93424704-FCF0-4027-A3F6-6803A6EE1BF3}.Release|Any CPU.Build.0 = Release|Any CPU
-		{BA62A248-A64C-401B-AAD3-846407E2B66C}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{BA62A248-A64C-401B-AAD3-846407E2B66C}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{BA62A248-A64C-401B-AAD3-846407E2B66C}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{BA62A248-A64C-401B-AAD3-846407E2B66C}.Release|Any CPU.Build.0 = Release|Any CPU
-		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{7440BF08-39B4-41BF-B384-68F17F2F882A}.Release|Any CPU.Build.0 = Release|Any CPU
-		{22CAC341-F910-4698-B8EB-E7E05303E18E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{22CAC341-F910-4698-B8EB-E7E05303E18E}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{22CAC341-F910-4698-B8EB-E7E05303E18E}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{22CAC341-F910-4698-B8EB-E7E05303E18E}.Release|Any CPU.Build.0 = Release|Any CPU
 		{175C1C42-260F-4C9D-8ACB-94AD45F40082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
 		{175C1C42-260F-4C9D-8ACB-94AD45F40082}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{175C1C42-260F-4C9D-8ACB-94AD45F40082}.Release|Any CPU.ActiveCfg = Release|Any CPU

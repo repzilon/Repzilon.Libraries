@@ -14,11 +14,11 @@
 using System;
 using Repzilon.Libraries.Core;
 
-namespace Repzilon.Tests.Vector
+namespace Repzilon.Tests.ForCoreLibrary
 {
-	internal static class Program
+	static class VectorTest
 	{
-		static void Main(string[] args)
+		internal static void Run(string[] args)
 		{
 			var exa55b_i2 = TwoDVector<short>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_f4 = TwoDVector<float>.Sum(3, 4, 45, AngleUnit.Degree);
@@ -67,8 +67,6 @@ namespace Repzilon.Tests.Vector
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
 			ShowcaseExample69(exa69_ref, Example69WithExp);
-
-			Console.ReadLine();
 		}
 
 		#region Example 69 implementations

@@ -12,17 +12,60 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Collections.Generic;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
 	static class Program
 	{
-
-
 		static void Main(string[] args)
 		{
+			var dicTests = new SortedList<string, Action<string[]>>();
+			dicTests.Add("Significant Digits", DigitTest.Run);
+			dicTests.Add("Matrix", MatrixTest.Run);
+			dicTests.Add("Pascal Triangle", PascalTriangleTest.Run);
+			dicTests.Add("Vectors", VectorTest.Run);
 
+			DisplayMenu(dicTests);
+			var cki = Console.ReadKey();
+			while (Char.ToUpperInvariant(cki.KeyChar) != 'Q') {
+				if (Char.IsDigit(cki.KeyChar)) {
+					int intPressed = Convert.ToInt32(cki.KeyChar.ToString());
+					int i = 1;
+					bool blnRan = false;
+					DateTime dtmStart;
+					foreach (var kvp in dicTests) {
+						if (i == intPressed) {
+							dtmStart = DateTime.UtcNow;
+							kvp.Value(args);
+							TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
+							blnRan = true;
+							Console.WriteLine("{0} Test took {1:n3}s", kvp.Key, tsElapsed.TotalSeconds);
+						}
+						i++;
+					}
+					if (blnRan) {
+						DisplayMenu(dicTests);
+					}
+				}
+				cki = Console.ReadKey();
+			}
+		}
+
+		private static void DisplayMenu(IDictionary<string, Action<string[]>> allTests)
+		{
+			Console.WriteLine("====================================");
+			Console.WriteLine("Repzilon Libraries Interactive Tests");
+			Console.WriteLine("====================================");
+			Console.Write(Environment.NewLine);
+			int i = 1;
+			foreach (var kvp in allTests) {
+				Console.WriteLine(@"    ({0}) {1}", i, kvp.Key);
+				i++;
+			}
+
+			Console.Write(Environment.NewLine);
+			Console.Write("Press the number corresponding to the test, or Q to quit: ");
 		}
 	}
 }
-

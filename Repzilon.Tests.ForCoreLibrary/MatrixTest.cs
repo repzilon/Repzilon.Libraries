@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022 René Rhéaume
+// Copyright (C) 2022-2023 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -14,11 +14,11 @@
 using System;
 using Repzilon.Libraries.Core;
 
-namespace Repzilon.Tests.Matrix
+namespace Repzilon.Tests.ForCoreLibrary
 {
-	internal static class Program
+	static class MatrixTest
 	{
-		static void Main()
+		internal static void Run(string[] args)
 		{
 			var ex80_a = new Matrix<short>(3, 3, 2, -1, 5, -3, 4, 7, 1, -1, 0);
 			var ex80_b = new Matrix<short>(3, 3, 1, 4, 0, -3, 6, -5, 1, 0, -1);
@@ -119,9 +119,6 @@ namespace Repzilon.Tests.Matrix
 			var t2_8rf = t2_8ref.Right() * t2_8D.Cast<float>();
 			t2_8rf.RoundErrors();
 			Console.WriteLine(t2_8rf);
-
-			Console.WriteLine("Press Enter to exit...");
-			Console.ReadLine();
 		}
 	}
 }

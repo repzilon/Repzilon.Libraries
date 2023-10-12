@@ -11,15 +11,15 @@
 // not distributed with this file, You can obtain one at 
 // https://mozilla.org/MPL/2.0/.
 //
-using Repzilon.Libraries.Core;
 using System;
 using System.Globalization;
+using Repzilon.Libraries.Core;
 
-namespace Repzilon.Tests.Digits
+namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class Program
+	static class DigitTest
 	{
-		static void Main(string[] args)
+		internal static void Run(string[] args)
 		{
 			Action<string> toConsole = WriteCompact;
 			try {
@@ -78,8 +78,6 @@ namespace Repzilon.Tests.Digits
 			}
 
 			Console.Write(Environment.NewLine);
-			Console.WriteLine("Press Enter to exit...");
-			Console.ReadLine();
 		}
 
 		private static bool[] TestDigitCount<T>(

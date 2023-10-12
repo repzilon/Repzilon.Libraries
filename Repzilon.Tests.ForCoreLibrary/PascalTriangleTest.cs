@@ -11,20 +11,18 @@
 // not distributed with this file, You can obtain one at 
 // https://mozilla.org/MPL/2.0/.
 //
+using System;
 using Repzilon.Libraries.Core;
 
-namespace Repzilon.Tests.Pascal
+namespace Repzilon.Tests.ForCoreLibrary
 {
-	internal static class Program
+	static class PascalTriangleTest
 	{
-		static void Main()
+		internal static void Run(string[] args)
 		{
 			for (byte i = 4; i <= 12; i++) {
 				Console.WriteLine(PascalTriangle.Format(PascalTriangle.Make(i)));
 			}
-
-			Console.WriteLine("Press Enter to exit...");
-			Console.ReadLine();
 		}
 	}
 }
