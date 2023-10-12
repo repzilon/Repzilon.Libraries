@@ -13,6 +13,8 @@ Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Pascal", "Re
 EndProject
 Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.Digits", "Repzilon.Tests.Digits\Repzilon.Tests.Digits.csproj", "{22CAC341-F910-4698-B8EB-E7E05303E18E}"
 EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "Repzilon.Tests.ForCoreLibrary", "Repzilon.Tests.ForCoreLibrary\Repzilon.Tests.ForCoreLibrary.csproj", "{175C1C42-260F-4C9D-8ACB-94AD45F40082}"
+EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
 		Debug|Any CPU = Debug|Any CPU
@@ -39,6 +41,10 @@ Global
 		{22CAC341-F910-4698-B8EB-E7E05303E18E}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{22CAC341-F910-4698-B8EB-E7E05303E18E}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{22CAC341-F910-4698-B8EB-E7E05303E18E}.Release|Any CPU.Build.0 = Release|Any CPU
+		{175C1C42-260F-4C9D-8ACB-94AD45F40082}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{175C1C42-260F-4C9D-8ACB-94AD45F40082}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{175C1C42-260F-4C9D-8ACB-94AD45F40082}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{175C1C42-260F-4C9D-8ACB-94AD45F40082}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
