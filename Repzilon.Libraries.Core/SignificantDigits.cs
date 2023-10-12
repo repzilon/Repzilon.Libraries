@@ -58,12 +58,13 @@ namespace Repzilon.Libraries.Core
 				return 1;
 			}
 			var sngAbsolute = Math.Abs(value);
-			var sngDigitalPart = (sngAbsolute < 1) ? sngAbsolute : RoundOff.Error((float)(sngAbsolute - Math.Floor(sngAbsolute)));
+			var blnLessThanOne = sngAbsolute < 1;
+			var sngDigitalPart = blnLessThanOne ? sngAbsolute : RoundOff.Error((float)(sngAbsolute - Math.Floor(sngAbsolute)));
 			while ((value % 10) == 0) {
-				value /= 10;
+				value *= 0.1f;
 			}
-			byte bytDigits = IntegerPartDigits(value, sngAbsolute < 1, sngAbsolute == 1, sngDigitalPart);
-			bytDigits += DecimalDigits(sngAbsolute < 1, sngDigitalPart, "R", false);
+			byte bytDigits = IntegerPartDigits(value, blnLessThanOne, sngAbsolute == 1, sngDigitalPart);
+			bytDigits += DecimalDigits(blnLessThanOne, sngDigitalPart, "R", false);
 			return bytDigits;
 		}
 
@@ -73,9 +74,10 @@ namespace Repzilon.Libraries.Core
 				return 1;
 			}
 			var dblAbsolute = Math.Abs(value);
-			var dblDigitalPart = (dblAbsolute < 1) ? dblAbsolute : RoundOff.Error(dblAbsolute - Math.Floor(dblAbsolute));
+			var blnLessThanOne = dblAbsolute < 1;
+			var dblDigitalPart = blnLessThanOne ? dblAbsolute : RoundOff.Error(dblAbsolute - Math.Floor(dblAbsolute));
 			byte bytDigits = IntegerPartDigits(value, dblAbsolute, dblDigitalPart);
-			bytDigits += DecimalDigits(dblAbsolute < 1, dblDigitalPart, "R", false);
+			bytDigits += DecimalDigits(blnLessThanOne, dblDigitalPart, "R", false);
 			return bytDigits;
 		}
 
@@ -85,12 +87,14 @@ namespace Repzilon.Libraries.Core
 				return 1;
 			}
 			var dcmAbsolute = Math.Abs(value);
+			var blnLessThanOne = dcmAbsolute < 1;
 			var dcmDigitalPart = dcmAbsolute - Math.Floor(dcmAbsolute);
-			while ((value % 10) == 0) {
-				value /= 10;
+			decimal kTen = 10m;
+			while ((value % kTen) == 0) {
+				value /= kTen;
 			}
-			byte bytDigits = IntegerPartDigits(value, dcmAbsolute < 1, dcmAbsolute == 1, dcmDigitalPart);
-			bytDigits += DecimalDigits(dcmAbsolute < 1, dcmDigitalPart, "f17", true);
+			byte bytDigits = IntegerPartDigits(value, blnLessThanOne, dcmAbsolute == 1, dcmDigitalPart);
+			bytDigits += DecimalDigits(blnLessThanOne, dcmDigitalPart, "f17", true);
 			return bytDigits;
 		}
 
@@ -100,7 +104,8 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (absoluteLessThanOne) {
-				return digitalPart.Equals(default(T)) ? (byte)1 : (byte)0;
+				var z = default(T);
+				return digitalPart.Equals(z) ? (byte)1 : (byte)0;
 			} else if (absoluteEqualsOne) {
 				return 1;
 			} else {
@@ -111,13 +116,15 @@ namespace Repzilon.Libraries.Core
 		private static byte DecimalDigits<T>(bool absoluteLessThanOne, T digitalPart, string roundTrip, bool removeTrailingZeros) where T : IFormattable, IEquatable<T>
 		{
 			// Microsoft recommends G9 instead of R for Single and G17 for Double, but they cause trouble
-			if (!digitalPart.Equals(default(T))) {
+			var kDigitZero = new char[] { '0' };
+			var z = default(T);
+			if (!digitalPart.Equals(z)) {
 				var strForCount = digitalPart.ToString(roundTrip, CultureInfo.InvariantCulture).Replace("0.", "");
 				if (removeTrailingZeros) {
-					strForCount = strForCount.TrimEnd('0');
+					strForCount = strForCount.TrimEnd(kDigitZero);
 				}
 				if (absoluteLessThanOne) {
-					strForCount = strForCount.TrimStart('0');
+					strForCount = strForCount.TrimStart(kDigitZero);
 				}
 				return (byte)strForCount.Length;
 			} else {
@@ -169,10 +176,7 @@ namespace Repzilon.Libraries.Core
 			} else {
 				CultureInfo ci;
 				double dblValue = ParseQty(value, out ci);
-				if (dblValue == 0) {
-					return 1;
-				}
-				return Count(value, dblValue, ci.NumberFormat);
+				return (dblValue == 0) ? (byte)1 : Count(value, dblValue, ci.NumberFormat);
 			}
 		}
 
@@ -200,17 +204,15 @@ namespace Repzilon.Libraries.Core
 			var dblAbsolute = Math.Abs(asDouble);
 			var strTrimmed = value.Trim().TrimStart('0');
 			var strDecSep = nf.NumberDecimalSeparator;
-			var intDec = strTrimmed.IndexOf(strDecSep);
-			if (intDec != -1) {
-				var intExponent = strTrimmed.IndexOfAny(new char[] { 'e', 'E' });
+			if (strTrimmed.IndexOf(strDecSep) != -1) {
+				var intExponent = strTrimmed.IndexOfAny("eE".ToCharArray());
 				if (intExponent != -1) {
 					strTrimmed = strTrimmed.Substring(0, intExponent);
 				}
 				strTrimmed = strTrimmed.Replace(strDecSep, "").Replace(" ", "").Replace(nf.NumberGroupSeparator, "");
 				return (dblAbsolute < 1) ? (byte)strTrimmed.TrimStart('0').Length : (byte)strTrimmed.Length;
 			} else {
-				var dblDigitalPart = RoundOff.Error(dblAbsolute - Math.Floor(dblAbsolute));
-				return IntegerPartDigits(asDouble, dblAbsolute, dblDigitalPart);
+				return IntegerPartDigits(asDouble, dblAbsolute, RoundOff.Error(dblAbsolute - Math.Floor(dblAbsolute)));
 			}
 		}
 
@@ -244,15 +246,15 @@ namespace Repzilon.Libraries.Core
 
 		private static byte IntegerPartDigits(double value, double absolute, double digitalPart)
 		{
-			while ((value % 10) == 0) {
-				value /= 10;
-			}
-			if (absolute < 1) {
-				return (digitalPart != 0) ? (byte)0 : (byte)1;
-			} else if (absolute == 1) {
-				return 1;
-			} else {
+			var kOne = 1.0;
+			var kZero = 0.0;
+			if (absolute > kOne) {
+				while ((value % 10) == kZero) {
+					value *= 0.1;
+				}
 				return Magnitude(value);
+			} else {
+				return ((absolute == kOne) || (digitalPart == kZero)) ? (byte)1 : (byte)0;
 			}
 		}
 
@@ -300,6 +302,8 @@ namespace Repzilon.Libraries.Core
 
 		private static double RoundWithMode(double value, int digits, RoundingMode rounding)
 		{
+			var kTen = 10.0;
+			double bubble;
 			if (rounding == RoundingMode.AwayFromZero) {
 				return Math.Round(value, digits, MidpointRounding.AwayFromZero);
 			} else if (rounding == RoundingMode.ToEven) {
@@ -308,14 +312,14 @@ namespace Repzilon.Libraries.Core
 				if (digits == 0) {
 					return Math.Ceiling(value);
 				} else {
-					var bubble = Math.Pow(10, digits);
+					bubble = Math.Pow(kTen, digits);
 					return Math.Ceiling(value * bubble) / bubble;
 				}
 			} else if (rounding == RoundingMode.Floor) {
 				if (digits == 0) {
 					return Math.Floor(value);
 				} else {
-					var bubble = Math.Pow(10, digits);
+					bubble = Math.Pow(kTen, digits);
 					return Math.Floor(value * bubble) / bubble;
 				}
 			} else {
