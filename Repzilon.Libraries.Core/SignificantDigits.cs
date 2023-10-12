@@ -143,11 +143,9 @@ namespace Repzilon.Libraries.Core
 			var enuTC = value.GetTypeCode();
 			if (enuTC == TypeCode.String) {
 				return Count((string)value);
-			} else if (enuTC == TypeCode.Boolean || enuTC == TypeCode.Char || enuTC == TypeCode.DateTime || enuTC == TypeCode.Empty || enuTC == TypeCode.Object) {
-				throw new ArgumentException("The argument is neither a number nor a string.", "value");
 			} else if (enuTC == TypeCode.Int32) {
 				return Count((int)value);
-			} else if (enuTC == TypeCode.Byte || enuTC == TypeCode.Int16 || enuTC == TypeCode.SByte || enuTC == TypeCode.UInt16) {
+			} else if (enuTC >= TypeCode.SByte && enuTC <= TypeCode.UInt16) {
 				return Count(Convert.ToInt32(value));
 			} else if (enuTC == TypeCode.Int64) {
 				return Count((long)value);
@@ -162,7 +160,7 @@ namespace Repzilon.Libraries.Core
 			} else if (enuTC == TypeCode.Decimal) {
 				return Count((decimal)value);
 			} else {
-				throw new NotSupportedException("The argument is of an unknown type.");
+				throw new ArgumentException("The argument is neither a number nor a string.", "value");
 			}
 		}
 #endif
