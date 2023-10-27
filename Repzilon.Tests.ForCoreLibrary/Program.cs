@@ -25,6 +25,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Matrix", MatrixTest.Run);
 			dicTests.Add("Pascal Triangle", PascalTriangleTest.Run);
 			dicTests.Add("Vectors", VectorTest.Run);
+			dicTests.Add("Linear Regression", LinearRegressionTest.Run);
 
 			DisplayMenu(dicTests);
 			var cki = Console.ReadKey();
