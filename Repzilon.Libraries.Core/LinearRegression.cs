@@ -151,12 +151,13 @@ namespace Repzilon.Libraries.Core
 			return this.ResidualStdDev() * Math.Sqrt((1.0 / n) + (x_ * x_ / ((n - 1) * sx * sx)));
 		}
 
-		public double YExtrapolationConfidenceFactor(double x0)
+		public double YExtrapolationConfidenceFactor(double x0, bool repeated)
 		{
 			var n = this.Count;
 			var diff = x0 - this.AverageX;
 			var sx = this.StdDevOfX;
-			return Math.Sqrt((1.0 / n) + (diff * diff / ((n - 1) * sx * sx)));
+			double f = repeated ? 0 : 1;
+			return Math.Sqrt(f + (1.0 / n) + (diff * diff / ((n - 1) * sx * sx)));
 		}
 
 		public double StdDevForYc(double yc, int k)

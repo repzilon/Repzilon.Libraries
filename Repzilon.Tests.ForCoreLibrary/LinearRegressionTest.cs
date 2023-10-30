@@ -71,8 +71,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Std. dev.: residual {0} slope {1} intercept {2}", lrp.ResidualStdDev(), lrp.SlopeStdDev(), lrp.InterceptStdDev());
 			Console.WriteLine("Confidence interval for b: {0}", new ErrorMargin(lrp.Slope, kTalpha0_025n4 * lrp.SlopeStdDev()));
 			Console.WriteLine("Confidence interval for a: {0}", new ErrorMargin(lrp.Intercept, kTalpha0_025n4 * lrp.InterceptStdDev()));
-			Console.WriteLine("Confidence interval for y^ when x={0}: {1}", 8,
-			 new ErrorMargin(lrp.ExtrapolateY(8), kTalpha0_025n4 * lrp.ResidualStdDev() * lrp.YExtrapolationConfidenceFactor(8)));
+			Console.WriteLine("Confidence interval for y^ when x={0}, repeated: {1}", 8,
+			 new ErrorMargin(lrp.ExtrapolateY(8), kTalpha0_025n4 * lrp.ResidualStdDev() * lrp.YExtrapolationConfidenceFactor(8, true)));
+			Console.WriteLine("Confidence interval for y^ when x={0}, once: {1}", 8,
+			 new ErrorMargin(lrp.ExtrapolateY(8), kTalpha0_025n4 * lrp.ResidualStdDev() * lrp.YExtrapolationConfidenceFactor(8, false)));
 			Console.WriteLine("Confidence interval for yc={0} k={1}: {2}", 7.5, 5,
 			 new ErrorMargin((7.5 - lrp.Intercept) / lrp.Slope, kTalpha0_025n4 * lrp.StdDevForYc(7.5, 5)));
 		}
