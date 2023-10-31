@@ -26,6 +26,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Pascal Triangle", PascalTriangleTest.Run);
 			dicTests.Add("Vectors", VectorTest.Run);
 			dicTests.Add("Linear Regression", LinearRegressionTest.Run);
+			dicTests.Add("Molar Mass", MolarMassTest.Run);
 
 			DisplayMenu(dicTests);
 			var cki = Console.ReadKey();
@@ -37,6 +38,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					DateTime dtmStart;
 					foreach (var kvp in dicTests) {
 						if (i == intPressed) {
+							Console.Write(Environment.NewLine);
 							dtmStart = DateTime.UtcNow;
 							kvp.Value(args);
 							TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
