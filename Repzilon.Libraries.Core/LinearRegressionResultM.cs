@@ -1,5 +1,5 @@
 ﻿//
-//  LinearRegression.cs
+//  LinearRegressionResult.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -11,35 +11,34 @@
 // not distributed with this file, You can obtain one at 
 // https://mozilla.org/MPL/2.0/.
 //
-using System;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct LinearRegressionResult : ILinearRegressionResult<double>
+	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>
 	{
 		public int Count;
-		public double Slope;
-		public double Intercept;
-		public double Correlation;
-		public double StdDevOfY;
-		public double StdDevOfX;
-		public double AverageX;
-		public double AverageY;
+		public decimal Slope;
+		public decimal Intercept;
+		public decimal Correlation;
+		public decimal StdDevOfY;
+		public decimal StdDevOfX;
+		public decimal AverageX;
+		public decimal AverageY;
 
-		public double GetSlope()
+		public decimal GetSlope()
 		{
 			return this.Slope;
 		}
 
-		public double GetIntercept()
+		public decimal GetIntercept()
 		{
 			return this.Intercept;
 		}
 
-		public double GetCorrelation()
+		public decimal GetCorrelation()
 		{
 			return this.Correlation;
 		}
@@ -51,88 +50,88 @@ namespace Repzilon.Libraries.Core
 			return stbFormula.ToString();
 		}
 
-		public double ExtrapolateY(double x)
+		public decimal ExtrapolateY(decimal x)
 		{
 			return this.Intercept + (x * this.Slope);
 		}
 
-		public double ExtrapolateX(double y)
+		public decimal ExtrapolateX(decimal y)
 		{
 			return (y - this.Intercept) / this.Slope;
 		}
 
-		public double TotalError(double x)
+		public decimal TotalError(decimal x)
 		{
-			return RoundOff.Error(ExtrapolateY(x) - x);
+			return RoundOff.Error(ExtrapolateY(x) - x); // Eat dirt
 		}
 
-		public double RelativeBias(double x)
+		public decimal RelativeBias(decimal x)
 		{
-			return RoundOff.Error((this.Slope - 1) * x);
+			return RoundOff.Error((this.Slope - 1) * x); // Eat dirt
 		}
 
-		public double TotalVariation()
+		public decimal TotalVariation()
 		{
 			var sy = this.StdDevOfY;
-			return RoundOff.Error((this.Count - 1) * sy * sy);
+			return RoundOff.Error((this.Count - 1) * sy * sy); // Eat dirt
 		}
 
-		public double ExplainedVariation()
+		public decimal ExplainedVariation()
 		{
 			var r = this.Correlation;
 			return r * r * this.TotalVariation();
 		}
 
-		public double UnexplainedVariation()
+		public decimal UnexplainedVariation()
 		{
 			var r = this.Correlation;
 			return (1 - (r * r)) * this.TotalVariation();
 		}
 
-		public double Determination()
+		public decimal Determination()
 		{
 			var r = this.Correlation;
 			return r * r;
 		}
 
-		public double ResidualStdDev()
+		public decimal ResidualStdDev()
 		{
 			var n = this.Count;
 			var r = this.Correlation;
 			var sy = this.StdDevOfY;
-			return Math.Sqrt((1.0 / (n - 2)) * (1 - (r * r)) * (n - 1) * sy * sy);
+			return ExtraMath.Sqrt(1.0m / (n - 2) * (1 - (r * r)) * (n - 1) * sy * sy);
 		}
 
-		public double SlopeStdDev()
+		public decimal SlopeStdDev()
 		{
 			var sx = this.StdDevOfX;
-			return this.ResidualStdDev() / Math.Sqrt((this.Count - 1) * sx * sx);
+			return this.ResidualStdDev() / ExtraMath.Sqrt((this.Count - 1) * sx * sx);
 		}
 
-		public double InterceptStdDev()
+		public decimal InterceptStdDev()
 		{
 			var n = this.Count;
 			var x_ = this.AverageX;
 			var sx = this.StdDevOfX;
-			return this.ResidualStdDev() * Math.Sqrt((1.0 / n) + (x_ * x_ / ((n - 1) * sx * sx)));
+			return this.ResidualStdDev() * ExtraMath.Sqrt((1.0m / n) + (x_ * x_ / ((n - 1) * sx * sx)));
 		}
 
-		public double YExtrapolationConfidenceFactor(double x0, bool repeated)
+		public decimal YExtrapolationConfidenceFactor(decimal x0, bool repeated)
 		{
 			var n = this.Count;
 			var diff = x0 - this.AverageX;
 			var sx = this.StdDevOfX;
-			double f = repeated ? 0 : 1;
-			return Math.Sqrt(f + (1.0 / n) + (diff * diff / ((n - 1) * sx * sx)));
+			decimal f = repeated ? 0 : 1;
+			return ExtraMath.Sqrt(f + (1.0m / n) + (diff * diff / ((n - 1) * sx * sx)));
 		}
 
-		public double StdDevForYc(double yc, int k)
+		public decimal StdDevForYc(decimal yc, int k)
 		{
 			var diff = yc - this.AverageY;
 			var b = this.Slope;
 			var n = this.Count;
 			var sx = this.StdDevOfX;
-			return this.ResidualStdDev() / b * Math.Sqrt((1.0 / k) + (1.0 / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
+			return this.ResidualStdDev() / b * ExtraMath.Sqrt((1.0m / k) + (1.0m / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
 		}
 	}
 }

@@ -1,5 +1,5 @@
 ﻿//
-//  Round.cs
+//  RoundOff.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Globalization;
 
 namespace Repzilon.Libraries.Core
 {
@@ -25,6 +26,13 @@ namespace Repzilon.Libraries.Core
 		public static double Error(double value)
 		{
 			return Math.Round(value, 15 - 2, MidpointRounding.ToEven);
+		}
+
+		public static decimal Error(decimal value)
+		{
+			var x = Math.Round(value, 25, MidpointRounding.ToEven);
+			var s = x.ToString(CultureInfo.InvariantCulture);
+			return s.Contains(".") ? Decimal.Parse(s.TrimEnd('0')) : x;
 		}
 	}
 }

@@ -18,6 +18,11 @@ namespace Repzilon.Libraries.Core
 {
 	public static class LinearRegression
 	{
+		public static LinearRegressionResult Compute(params PointD[] points)
+		{
+			return Compute((IEnumerable<PointD>)points);
+		}
+
 		public static LinearRegressionResult Compute(IEnumerable<PointD> points)
 		{
 			if (points == null) {
@@ -59,6 +64,55 @@ namespace Repzilon.Libraries.Core
 			lrp.StdDevOfX = dblStdDevX;
 			lrp.AverageX = dblAverageX;
 			lrp.AverageY = RoundOff.Error(dblAverageY);
+			return lrp;
+		}
+
+		public static DecimalLinearRegressionResult Compute(params PointM[] points)
+		{
+			return Compute((IEnumerable<PointM>)points);
+		}
+
+		public static DecimalLinearRegressionResult Compute(IEnumerable<PointM> points)
+		{
+			if (points == null) {
+				throw new ArgumentNullException("points");
+			}
+			int n = 0;
+			decimal dcmSumX = 0, dcmSumY = 0, dcmSumXY = 0;
+			foreach (var pt in points) {
+				n++;
+				dcmSumX += pt.X;
+				dcmSumY += pt.Y;
+				dcmSumXY += pt.X * pt.Y;
+			}
+			if (n < 1) {
+				throw new ArgumentNullException("points");
+			}
+			decimal dcmAverageX = dcmSumX / n;
+			decimal dcmAverageY = dcmSumY / n;
+			decimal dcmStdDevX = 0;
+			decimal dblStdDevY = 0;
+			foreach (var pt in points) {
+				var d = pt.X - dcmAverageX;
+				dcmStdDevX += d * d;
+				d = pt.Y - dcmAverageY;
+				dblStdDevY += d * d;
+			}
+			dcmStdDevX = ExtraMath.Sqrt(dcmStdDevX / (n - 1));
+			dblStdDevY = ExtraMath.Sqrt(dblStdDevY / (n - 1));
+			var b = (dcmSumXY - (n * dcmAverageX * dcmAverageY)) / ((n - 1) * dcmStdDevX * dcmStdDevX);
+			var a = dcmAverageY - (b * dcmAverageX);
+			var r = b * dcmStdDevX / dblStdDevY;
+
+			var lrp = new DecimalLinearRegressionResult();
+			lrp.Count = n;
+			lrp.Slope = b;
+			lrp.Intercept = RoundOff.Error(a); // Eat dirt
+			lrp.Correlation = r;
+			lrp.StdDevOfY = dblStdDevY;
+			lrp.StdDevOfX = dcmStdDevX;
+			lrp.AverageX = dcmAverageX;
+			lrp.AverageY = dcmAverageY;
 			return lrp;
 		}
 	}

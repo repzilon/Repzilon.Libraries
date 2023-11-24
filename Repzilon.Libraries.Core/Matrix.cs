@@ -55,6 +55,27 @@ namespace Repzilon.Libraries.Core
 			// Add the parameters together and compile it
 			return Expression.Lambda<Func<T, T, T>>(Expression.Subtract(paramA, paramB), paramA, paramB).Compile();
 		}
+
+		public static T AddScalars(T a, T b)
+		{
+			return add(a, b);
+		}
+
+		public static T SubtractScalars(T a, T b)
+		{
+			return sub(a, b);
+		}
+
+		public static T MultiplyScalars(T a, T b)
+		{
+			return BuildMultiplier<T>()(a, b);
+		}
+
+		public static T MultiplyScalars(T a, T b, T c)
+		{
+			var mul = BuildMultiplier<T>();
+			return mul(mul(a, b), c);
+		}
 		#endregion
 
 		public readonly byte Lines;
@@ -586,10 +607,10 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if (!NETSTANDARD1_1)
-		internal static TOut ConvertTo<TOut>(this IConvertible value)
+		public static TOut ConvertTo<TOut>(this IConvertible value)
 		where TOut : struct, IConvertible
 #else
-		internal static TOut ConvertTo<TOut>(this object value)
+		public static TOut ConvertTo<TOut>(this object value)
 		where TOut : struct
 #endif
 		{
