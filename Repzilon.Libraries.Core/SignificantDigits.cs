@@ -280,7 +280,11 @@ namespace Repzilon.Libraries.Core
 			}
 			double power = PowerOf(value);
 			var mantissa = RoundWithMode(value / power, figures - 1, rounding);
-			return mantissa * power;
+			var rounded = mantissa * power;
+			if (Math.Abs(rounded) > 1e-13) {
+				rounded = RoundOff.Error(rounded);
+			}
+			return rounded;
 		}
 
 		public static float Round(float value, byte figures, RoundingMode rounding)
