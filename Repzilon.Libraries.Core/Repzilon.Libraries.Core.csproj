@@ -10,6 +10,16 @@
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <LangVersion>3</LangVersion>
   </PropertyGroup>
+  <ItemGroup>
+    <None Remove="Modules\" />
+    <None Remove="Structures\" />
+    <None Remove="Interfaces\" />
+  </ItemGroup>
+  <ItemGroup>
+    <Folder Include="Modules\" />
+    <Folder Include="Structures\" />
+    <Folder Include="Interfaces\" />
+  </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
       <Properties>

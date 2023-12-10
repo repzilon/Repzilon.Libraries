@@ -104,8 +104,7 @@ namespace Repzilon.Libraries.Core
 			float M = 0;
 			var mccElements = Regex.Matches(formula, @"([A-Z][a-z]?)(?:<sub>([0-9]+)</sub>)?");
 			var c = mccElements.Count;
-			int i;
-			for (i = 0; i < c; i++) {
+			for (int i = 0; i < c; i++) {
 				var grcElement = mccElements[i].Groups;
 				var strElementCount = grcElement[2].Value;
 				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
