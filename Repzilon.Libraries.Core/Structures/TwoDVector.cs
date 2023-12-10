@@ -20,7 +20,7 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct TwoDVector<T> : IFormattable, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
+	public struct TwoDVector<T> : IFormattable, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>, IPoint<T>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
@@ -29,8 +29,8 @@ namespace Repzilon.Libraries.Core
 	, IConvertible
 #endif
 	{
-		public readonly T X;
-		public readonly T Y;
+		public T X { get; private set; }
+		public T Y { get; private set; }
 
 		public TwoDVector(T x, T y)
 		{

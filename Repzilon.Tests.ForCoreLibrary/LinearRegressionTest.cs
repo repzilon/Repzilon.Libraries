@@ -52,10 +52,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			Console.WriteLine(lrp);
 
-			T b = lrp.GetSlope();
+			T b = lrp.Slope;
 			T sr = lrp.ResidualStdDev();
 
-			Console.WriteLine("r = {0}", lrp.GetCorrelation());
+			Console.WriteLine("r = {0}", lrp.Correlation);
 			Console.WriteLine("x = {0} y^ = {1}", 8.25f, lrp.ExtrapolateY(8.25f.ConvertTo<T>()));
 			Console.WriteLine("y = {0} x^ = {1}", 3.4f, lrp.ExtrapolateX(3.4f.ConvertTo<T>()));
 			Console.WriteLine("Relative bias: {0:p}", Matrix<T>.SubtractScalars(b, 1.ConvertTo<T>()));
@@ -64,13 +64,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Determination: {0}", lrp.Determination());
 			Console.WriteLine("Std. dev.: residual {0} slope {1} intercept {2}", sr, lrp.SlopeStdDev(), lrp.InterceptStdDev());
 			Console.WriteLine("Confidence interval for b: {0}", new ErrorMargin<T>(b, Matrix<T>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())));
-			Console.WriteLine("Confidence interval for a: {0}", new ErrorMargin<T>(lrp.GetIntercept(), Matrix<T>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())));
+			Console.WriteLine("Confidence interval for a: {0}", new ErrorMargin<T>(lrp.Intercept, Matrix<T>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())));
 			Console.WriteLine("Confidence interval for y^ when x={0}, repeated: {1}", 8,
 			 new ErrorMargin<T>(lrp.ExtrapolateY(8.ConvertTo<T>()), Matrix<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(8.ConvertTo<T>(), true))));
 			Console.WriteLine("Confidence interval for y^ when x={0}, once: {1}", 8,
 			 new ErrorMargin<T>(lrp.ExtrapolateY(8.ConvertTo<T>()), Matrix<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(8.ConvertTo<T>(), false))));
 			Console.WriteLine("Confidence interval for yc={0} k={1}: {2}", 7.5f, 5,
-			 new ErrorMargin<T>(Divide(Matrix<T>.SubtractScalars(7.5f.ConvertTo<T>(), lrp.GetIntercept()), b), Matrix<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(7.5f.ConvertTo<T>(), 5))));
+			 new ErrorMargin<T>(Divide(Matrix<T>.SubtractScalars(7.5f.ConvertTo<T>(), lrp.Intercept), b), Matrix<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(7.5f.ConvertTo<T>(), 5))));
 		}
 
 		private static T Divide<T>(T dividend, T divisor) where T : struct, IConvertible

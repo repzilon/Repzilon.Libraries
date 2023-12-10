@@ -12,44 +12,44 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct LinearRegressionResult : ILinearRegressionResult<double>
+	public struct LinearRegressionResult : ILinearRegressionResult<double>,
+	IEquatable<LinearRegressionResult>, IFormattable
 	{
 		public int Count;
-		public double Slope;
-		public double Intercept;
-		public double Correlation;
+		public double Slope { get; set; }
+		public double Intercept { get; set; }
+		public double Correlation { get; set; }
 		public double StdDevOfY;
 		public double StdDevOfX;
 		public double AverageX;
 		public double AverageY;
 
-		public double GetSlope()
-		{
-			return this.Slope;
-		}
-
-		public double GetIntercept()
-		{
-			return this.Intercept;
-		}
-
-		public double GetCorrelation()
-		{
-			return this.Correlation;
-		}
-
+		#region ToString
 		public override string ToString()
 		{
+			return this.ToString(null, null);
+		}
+
+		public string ToString(string format, IFormatProvider formatProvider)
+		{
+			if (String.IsNullOrWhiteSpace(format)) {
+				format = "G";
+			}
+			if (formatProvider == null) {
+				formatProvider = CultureInfo.CurrentCulture;
+			}
 			var stbFormula = new StringBuilder();
-			stbFormula.Append("y = ").Append(this.Intercept).Append(" + ").Append(this.Slope).Append("x");
+			stbFormula.Append("y = ").Append(this.Intercept.ToString(format, formatProvider)).Append(" + ").Append(this.Slope.ToString(format, formatProvider)).Append("x");
 			return stbFormula.ToString();
 		}
+		#endregion
 
 		public double ExtrapolateY(double x)
 		{
@@ -134,5 +134,48 @@ namespace Repzilon.Libraries.Core
 			var sx = this.StdDevOfX;
 			return this.ResidualStdDev() / b * Math.Sqrt((1.0 / k) + (1.0 / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
 		}
+
+		#region Equals
+		public override bool Equals(object obj)
+		{
+			return obj is LinearRegressionResult && Equals((LinearRegressionResult)obj);
+		}
+
+		public bool Equals(LinearRegressionResult other)
+		{
+			return Count == other.Count &&
+				   Slope == other.Slope &&
+				   Intercept == other.Intercept &&
+				   Correlation == other.Correlation &&
+				   StdDevOfY == other.StdDevOfY &&
+				   StdDevOfX == other.StdDevOfX &&
+				   AverageX == other.AverageX &&
+				   AverageY == other.AverageY;
+		}
+
+		public override int GetHashCode()
+		{
+			int hashCode = 338248910;
+			hashCode = hashCode * -1521134295 + Count;
+			hashCode = hashCode * -1521134295 + Slope.GetHashCode();
+			hashCode = hashCode * -1521134295 + Intercept.GetHashCode();
+			hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
+			hashCode = hashCode * -1521134295 + StdDevOfY.GetHashCode();
+			hashCode = hashCode * -1521134295 + StdDevOfX.GetHashCode();
+			hashCode = hashCode * -1521134295 + AverageX.GetHashCode();
+			hashCode = hashCode * -1521134295 + AverageY.GetHashCode();
+			return hashCode;
+		}
+
+		public static bool operator ==(LinearRegressionResult left, LinearRegressionResult right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(LinearRegressionResult left, LinearRegressionResult right)
+		{
+			return !(left == right);
+		}
+		#endregion
 	}
 }

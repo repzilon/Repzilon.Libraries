@@ -11,44 +11,45 @@
 // not distributed with this file, You can obtain one at 
 // https://mozilla.org/MPL/2.0/.
 //
+using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>
+	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
+	IEquatable<DecimalLinearRegressionResult>, IFormattable
 	{
 		public int Count;
-		public decimal Slope;
-		public decimal Intercept;
-		public decimal Correlation;
+		public decimal Slope { get; set; }
+		public decimal Intercept { get; set; }
+		public decimal Correlation { get; set; }
 		public decimal StdDevOfY;
 		public decimal StdDevOfX;
 		public decimal AverageX;
 		public decimal AverageY;
 
-		public decimal GetSlope()
-		{
-			return this.Slope;
-		}
-
-		public decimal GetIntercept()
-		{
-			return this.Intercept;
-		}
-
-		public decimal GetCorrelation()
-		{
-			return this.Correlation;
-		}
-
+		#region ToString
 		public override string ToString()
 		{
+			return this.ToString(null, null);
+		}
+
+		public string ToString(string format, IFormatProvider formatProvider)
+		{
+			if (String.IsNullOrWhiteSpace(format)) {
+				format = "G";
+			}
+			if (formatProvider == null) {
+				formatProvider = CultureInfo.CurrentCulture;
+			}
 			var stbFormula = new StringBuilder();
-			stbFormula.Append("y = ").Append(this.Intercept).Append(" + ").Append(this.Slope).Append("x");
+			stbFormula.Append("y = ").Append(this.Intercept.ToString(format, formatProvider)).Append(" + ").Append(this.Slope.ToString(format, formatProvider)).Append("x");
 			return stbFormula.ToString();
 		}
+		#endregion
 
 		public decimal ExtrapolateY(decimal x)
 		{
@@ -133,5 +134,48 @@ namespace Repzilon.Libraries.Core
 			var sx = this.StdDevOfX;
 			return this.ResidualStdDev() / b * ExtraMath.Sqrt((1.0m / k) + (1.0m / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
 		}
+
+		#region Equals
+		public override bool Equals(object obj)
+		{
+			return obj is DecimalLinearRegressionResult && Equals((DecimalLinearRegressionResult)obj);
+		}
+
+		public bool Equals(DecimalLinearRegressionResult other)
+		{
+			return Count == other.Count &&
+				   Slope == other.Slope &&
+				   Intercept == other.Intercept &&
+				   Correlation == other.Correlation &&
+				   StdDevOfY == other.StdDevOfY &&
+				   StdDevOfX == other.StdDevOfX &&
+				   AverageX == other.AverageX &&
+				   AverageY == other.AverageY;
+		}
+
+		public override int GetHashCode()
+		{
+			int hashCode = 338248910;
+			hashCode = hashCode * -1521134295 + Count;
+			hashCode = hashCode * -1521134295 + Slope.GetHashCode();
+			hashCode = hashCode * -1521134295 + Intercept.GetHashCode();
+			hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
+			hashCode = hashCode * -1521134295 + StdDevOfY.GetHashCode();
+			hashCode = hashCode * -1521134295 + StdDevOfX.GetHashCode();
+			hashCode = hashCode * -1521134295 + AverageX.GetHashCode();
+			hashCode = hashCode * -1521134295 + AverageY.GetHashCode();
+			return hashCode;
+		}
+
+		public static bool operator ==(DecimalLinearRegressionResult left, DecimalLinearRegressionResult right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(DecimalLinearRegressionResult left, DecimalLinearRegressionResult right)
+		{
+			return !(left == right);
+		}
+		#endregion
 	}
 }

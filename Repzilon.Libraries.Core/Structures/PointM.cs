@@ -12,16 +12,17 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct PointM : IEquatable<PointM>
+	public struct PointM : IEquatable<PointM>, IFormattable, IPoint<decimal>
 	{
-		public decimal X;
-		public decimal Y;
+		public decimal X { get; private set; }
+		public decimal Y { get; private set; }
 
 		public PointM(decimal x, decimal y)
 		{
@@ -29,6 +30,23 @@ namespace Repzilon.Libraries.Core
 			Y = y;
 		}
 
+		#region ICloneable members
+		public PointM(PointM source) : this(source.X, source.Y) { }
+
+		public PointM Clone()
+		{
+			return new PointM(X, Y);
+		}
+
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+		object ICloneable.Clone()
+		{
+			return this.Clone();
+		}
+#endif
+		#endregion
+
+		#region Equals
 		public override bool Equals(object obj)
 		{
 			return obj is PointM && Equals((PointM)obj);
@@ -45,14 +63,7 @@ namespace Repzilon.Libraries.Core
 			hashCode = hashCode * -1521134295 + X.GetHashCode();
 			hashCode = hashCode * -1521134295 + Y.GetHashCode();
 			return hashCode;
-		}
-
-		public override string ToString()
-		{
-			var stbCoord = new StringBuilder();
-			stbCoord.Append('{').Append(this.X).Append("; ").Append(this.Y).Append('}');
-			return stbCoord.ToString();
-		}
+		}	
 
 		public static bool operator ==(PointM left, PointM right)
 		{
@@ -63,5 +74,27 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
+		#endregion
+
+		#region ToString
+		public override string ToString()
+		{
+			return this.ToString(null, null);
+		}
+
+		public string ToString(string format, IFormatProvider formatProvider)
+		{
+			if (String.IsNullOrWhiteSpace(format)) {
+				format = "G";
+			}
+			if (formatProvider == null) {
+				formatProvider = CultureInfo.CurrentCulture;
+			}
+			var stbCoord = new StringBuilder();
+			stbCoord.Append('{').Append(this.X.ToString(format, formatProvider)).Append("; ")
+			 .Append(this.Y.ToString(format, formatProvider)).Append('}');
+			return stbCoord.ToString();
+		}
+		#endregion
 	}
 }

@@ -232,7 +232,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = (-177567199 * -1521134295) + ((IComparable<T>)Value).GetHashCode();
+				int hashCode = (-177567199 * -1521134295) + Value.GetHashCode();
 				return hashCode * -1521134295 + (int)Unit;
 			}
 		}

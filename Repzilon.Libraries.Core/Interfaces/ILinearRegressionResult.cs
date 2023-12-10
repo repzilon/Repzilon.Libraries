@@ -15,14 +15,15 @@ using System;
 
 namespace Repzilon.Libraries.Core
 {
-	public interface ILinearRegressionResult<T> where T: struct
+	public interface ILinearRegressionResult<T> : IFormattable
+	where T : struct
 #if (!NETSTANDARD1_1)
 	, IConvertible
 #endif
 	{
-		T GetSlope();
-		T GetIntercept();
-		T GetCorrelation();
+		T Slope { get; }
+		T Intercept { get; }
+		T Correlation { get; }
 
 		T Determination();
 		T ExplainedVariation();
