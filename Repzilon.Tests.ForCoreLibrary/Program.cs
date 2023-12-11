@@ -13,6 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Runtime.InteropServices;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -69,6 +70,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Console.Write(Environment.NewLine);
 			Console.Write("Press the number corresponding to the test, or Q to quit: ");
+		}
+
+		internal static void OutputSizeOf<T>() where T : struct
+		{
+			try {
+				Console.WriteLine("Size of struct {0} is {1} bytes", typeof(T).Name, Marshal.SizeOf<T>());
+			} catch (ArgumentException) {
+				// do nothing
+			}
 		}
 	}
 }

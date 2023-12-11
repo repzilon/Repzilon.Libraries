@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Runtime.InteropServices;
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -51,7 +52,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			var exa63_u = new PolarVector<float>(2, 45, AngleUnit.Degree);
 			var exa63_v = new PolarVector<float>(4, -30, AngleUnit.Degree);
-			var exa63_a = ((Angle<float>)(exa63_u.Angle - exa63_v.Angle));
+			var exa63_a = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
 			var exa63_ng = TwoDVector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
 			var exa63_s = exa63_u + exa63_v;
 			Console.WriteLine("Exemple 63  : ||R||={0} u+v={1} ||u+v||={2}", exa63_ng, exa63_s, exa63_s.Norm());
@@ -59,7 +60,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa68_u = new PolarVector<float>(9, 35, AngleUnit.Degree);
 			var exa68_v = new PolarVector<float>(5, 90 + 20, AngleUnit.Degree);
 			var exa68_w = new PolarVector<float>(3, 180 + 50, AngleUnit.Degree);
-			var exa68_r = ((exa68_u + exa68_v) + exa68_w).ToPolar().ConvertTo(AngleUnit.Degree);
+			var exa68_r = (exa68_u + exa68_v + exa68_w).ToPolar().ConvertTo(AngleUnit.Degree);
 			Console.WriteLine("Exemple 68  : R={0:g}", exa68_r);
 
 			var exa69_ref = Example69WithDecimal(false, false);
@@ -67,6 +68,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
 			ShowcaseExample69(exa69_ref, Example69WithExp);
+
+			Program.OutputSizeOf<Exp>();
 		}
 
 		#region Example 69 implementations

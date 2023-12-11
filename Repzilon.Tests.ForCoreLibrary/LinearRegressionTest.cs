@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Runtime.InteropServices;
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -32,6 +33,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			Console.WriteLine("Double data type");
 			Console.WriteLine("----------------");
+			Program.OutputSizeOf<PointD>();
+			Program.OutputSizeOf<LinearRegressionResult>();
 			OutputLinearRegression(kTalpha0_025n4, lrp);
 
 			var dlrp = LinearRegression.Compute(
@@ -44,6 +47,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			Console.WriteLine("Decimal data type");
 			Console.WriteLine("-----------------");
+			Program.OutputSizeOf<PointM>();
+			Program.OutputSizeOf<DecimalLinearRegressionResult>();
 			OutputLinearRegression((decimal)kTalpha0_025n4, dlrp);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 		}

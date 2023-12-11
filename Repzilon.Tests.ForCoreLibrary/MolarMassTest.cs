@@ -150,6 +150,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.WriteLine("{0,9:n3} {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
 			}
 
+			Program.OutputSizeOf<AminoAcid>();
 			var lstAminoAcids = new List<AminoAcid>(20)
 			{
 				AminoAcid.Create('D', "Asp", "Acide aspartique").SetPkas(2.1f, 9.8f, 3.9f, false),
