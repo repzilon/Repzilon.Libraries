@@ -26,7 +26,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Pascal Triangle", PascalTriangleTest.Run);
 			dicTests.Add("Vectors", VectorTest.Run);
 			dicTests.Add("Linear Regression", LinearRegressionTest.Run);
-			dicTests.Add("Molar Mass", MolarMassTest.Run);
+			dicTests.Add("Chemistry", MolarMassTest.Run);
 
 			DisplayMenu(dicTests);
 			var cki = Console.ReadKey();
