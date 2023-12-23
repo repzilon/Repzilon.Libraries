@@ -8,11 +8,11 @@
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-using System.Runtime.InteropServices;
+using System.Globalization;
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -35,7 +35,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("----------------");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
-			OutputLinearRegression(kTalpha0_025n4, lrp);
+			OutputLinearRegression2(lrp, kTalpha0_025n4, "G", true, 8.25f, 3.4);
+			// x can also be 7 or 8, and y can also be 7.5
 
 			var dlrp = LinearRegression.Compute(
 				new PointM(2.00m, 2.1m),
@@ -45,37 +46,83 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointM(10.00m, 10.8m),
 				new PointM(12.00m, 12.9m)
 			);
+			Console.Write(Environment.NewLine);
 			Console.WriteLine("Decimal data type");
 			Console.WriteLine("-----------------");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
-			OutputLinearRegression((decimal)kTalpha0_025n4, dlrp);
+			OutputLinearRegression2(dlrp, (decimal)kTalpha0_025n4, "G18", true, 7, 7.5m);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Revision");
+			Console.WriteLine("--------");
+			var lrrRev5 = LinearRegression.Compute(
+				new PointM(0, 0.06m),
+				new PointM(5, 1.25m),
+				new PointM(10, 2.38m),
+				new PointM(15, 3.58m),
+				new PointM(20, 4.61m)
+			);
+			OutputLinearRegression2(lrrRev5, 3.1824m, "G7", false, 12, 4.154m);
 		}
 
-		private static void OutputLinearRegression<T>(T studentLawValue, ILinearRegressionResult<T> lrp) where T : struct, IConvertible, IFormattable
+		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
+		string numberFormat, bool checkBiaises, T? xForYExtrapolation, T? yForXExtrapolation)
+		where T : struct, IConvertible, IFormattable
 		{
-			Console.WriteLine(lrp);
+			var ciCu = CultureInfo.CurrentCulture;
+			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
 
 			T b = lrp.Slope;
 			T sr = lrp.ResidualStdDev();
 
-			Console.WriteLine("r = {0}", lrp.Correlation);
-			Console.WriteLine("x = {0} y^ = {1}", 8.25f, lrp.ExtrapolateY(8.25f.ConvertTo<T>()));
-			Console.WriteLine("y = {0} x^ = {1}", 3.4f, lrp.ExtrapolateX(3.4f.ConvertTo<T>()));
-			Console.WriteLine("Relative bias: {0:p}", Matrix<T>.SubtractScalars(b, 1.ConvertTo<T>()));
-			Console.WriteLine("x = {0} total error: {1} relative bias: {2}", 7, lrp.TotalError(7.ConvertTo<T>()), lrp.RelativeBias(7.ConvertTo<T>()));
-			Console.WriteLine("SCT: {0} SCreg: {1} SCres: {2}", lrp.TotalVariation(), lrp.ExplainedVariation(), lrp.UnexplainedVariation());
-			Console.WriteLine("Determination: {0}", lrp.Determination());
-			Console.WriteLine("Std. dev.: residual {0} slope {1} intercept {2}", sr, lrp.SlopeStdDev(), lrp.InterceptStdDev());
-			Console.WriteLine("Confidence interval for b: {0}", new ErrorMargin<T>(b, Matrix<T>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())));
-			Console.WriteLine("Confidence interval for a: {0}", new ErrorMargin<T>(lrp.Intercept, Matrix<T>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())));
-			Console.WriteLine("Confidence interval for y^ when x={0}, repeated: {1}", 8,
-			 new ErrorMargin<T>(lrp.ExtrapolateY(8.ConvertTo<T>()), Matrix<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(8.ConvertTo<T>(), true))));
-			Console.WriteLine("Confidence interval for y^ when x={0}, once: {1}", 8,
-			 new ErrorMargin<T>(lrp.ExtrapolateY(8.ConvertTo<T>()), Matrix<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(8.ConvertTo<T>(), false))));
-			Console.WriteLine("Confidence interval for yc={0} k={1}: {2}", 7.5f, 5,
-			 new ErrorMargin<T>(Divide(Matrix<T>.SubtractScalars(7.5f.ConvertTo<T>(), lrp.Intercept), b), Matrix<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(7.5f.ConvertTo<T>(), 5))));
+			Console.Write("r = {0}\tr^2 = {1}", lrp.Correlation.ToString(numberFormat, ciCu), lrp.Determination().ToString(numberFormat, ciCu));
+			if (checkBiaises) {
+				Console.WriteLine("\trelative bias: {0:p}", Matrix<T>.SubtractScalars(b, 1.ConvertTo<T>()));
+			} else {
+				Console.Write(Environment.NewLine);
+			}
+			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, ciCu), lrp.ExplainedVariation().ToString(numberFormat, ciCu), lrp.UnexplainedVariation().ToString(numberFormat, ciCu));
+			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu), lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
+			Console.WriteLine("b = {0}", new ErrorMargin<T>(b, Matrix<T>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
+			Console.WriteLine("a = {0}", new ErrorMargin<T>(lrp.Intercept, Matrix<T>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
+			if (xForYExtrapolation.HasValue) {
+				var x = xForYExtrapolation.Value;
+				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, true);
+				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, false);
+				if (checkBiaises) {
+					Console.WriteLine("x = {0}\t\ttotal error: {1}\trelative bias: {2}",
+					 x.ToString(numberFormat, ciCu),
+					 lrp.TotalError(x).ToString(numberFormat, ciCu),
+					 lrp.RelativeBias(x).ToString(numberFormat, ciCu));
+				}
+			}
+			if (yForXExtrapolation.HasValue) {
+				var yc = yForXExtrapolation.Value;
+				OutputXExtrapolation(lrp, studentLawValue, numberFormat, ciCu, yc, 5, b);
+			}
+		}
+
+		private static void OutputYExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
+		string numberFormat, IFormatProvider culture, T x, T sr, bool repeated)
+		where T : struct, IConvertible, IFormattable
+		{
+			Console.WriteLine("x = {0} k = {1}\ty^ = {2}",
+			 x.ToString(numberFormat, culture),
+			 repeated ? "Infinity" : "1\t",
+			 new ErrorMargin<T>(lrp.ExtrapolateY(x),
+			 Matrix<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
+		}
+
+		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
+		string numberFormat, IFormatProvider culture, T yc, int k, T b)
+		where T : struct, IConvertible, IFormattable
+		{
+			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
+			 yc.ToString(numberFormat, culture),
+			 k.ToString(numberFormat, culture),
+			 new ErrorMargin<T>(Divide(Matrix<T>.SubtractScalars(yc, lrp.Intercept), b), Matrix<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
 		}
 
 		private static T Divide<T>(T dividend, T divisor) where T : struct, IConvertible

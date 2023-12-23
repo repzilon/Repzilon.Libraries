@@ -80,13 +80,13 @@ namespace Repzilon.Libraries.Core
 		public double ExplainedVariation()
 		{
 			var r = this.Correlation;
-			return r * r * this.TotalVariation();
+			return RoundOff.Error(r * r * this.TotalVariation());
 		}
 
 		public double UnexplainedVariation()
 		{
 			var r = this.Correlation;
-			return (1 - (r * r)) * this.TotalVariation();
+			return RoundOff.Error((1 - (r * r)) * this.TotalVariation());
 		}
 
 		public double Determination()
