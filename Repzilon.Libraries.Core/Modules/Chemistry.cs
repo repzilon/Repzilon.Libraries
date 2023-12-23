@@ -20,7 +20,7 @@ namespace Repzilon.Libraries.Core
 {
 	public static class Chemistry
 	{
-		private static readonly IReadOnlyDictionary<string, float> s_dicElementMasses = InitElementMasses();
+		public static readonly IReadOnlyDictionary<string, float> ElementMasses = InitElementMasses();
 
 		public static float AminoAcidIsoelectric(float pKa1, float pKa2,
 		byte cationCount_ph1andhalf, float pKaR)
@@ -73,27 +73,39 @@ namespace Repzilon.Libraries.Core
 			return new ReadOnlyDictionary<string, float>(dicMasses);
 		}
 
-		public static float MolarMass(string formula)
+		private static MatchCollection MatchChemicalGroups(string formula, out int c)
 		{
 			if ((formula == null) || (formula.Length < 0)) {
 				throw new ArgumentNullException("formula");
 			}
 
-			float M = 0;
 			// Count chemical groups first
 			var mccChemicalGroups = Regex.Matches(formula, @"[(]([A-Za-z0-9<>/=-]+)[)](?:<sub>([0-9]+)</sub>)?");
-			var c = mccChemicalGroups.Count;
-			int i;
-			for (i = 0; i < c; i++) {
-				var grcIter = mccChemicalGroups[i].Groups;
-				M += CoreMolarMass(grcIter[1].Value) * Int32.Parse(grcIter[2].Value);
-			}
+			c = mccChemicalGroups.Count;
+			return mccChemicalGroups;
+		}
+
+		private static string RemoveChemicalGroups(string formula, MatchCollection mccChemicalGroups, int c)
+		{
 			// Remove them from the string
-			for (i = c - 1; i >= 0; i--) {
+			for (int i = c - 1; i >= 0; i--) {
 				var mtc = mccChemicalGroups[i];
 				var ix = mtc.Index;
 				formula = formula.Substring(0, ix) + formula.Substring(ix + mtc.Length);
 			}
+			return formula;
+		}
+
+		public static float MolarMass(string formula)
+		{
+			float M = 0;
+			int c;
+			var mccChemicalGroups = MatchChemicalGroups(formula, out c);
+			for (int i = 0; i < c; i++) {
+				var grcIter = mccChemicalGroups[i].Groups;
+				M += CoreMolarMass(grcIter[1].Value) * Int32.Parse(grcIter[2].Value);
+			}
+			formula = RemoveChemicalGroups(formula, mccChemicalGroups, c);
 			// Add what is left
 			M += CoreMolarMass(formula);
 			return (float)Math.Round(M, 3);
@@ -108,9 +120,42 @@ namespace Repzilon.Libraries.Core
 				var grcElement = mccElements[i].Groups;
 				var strElementCount = grcElement[2].Value;
 				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
-				M += s_dicElementMasses[grcElement[1].Value] * intElementCount;
+				M += ElementMasses[grcElement[1].Value] * intElementCount;
 			}
 			return M;
+		}
+
+		public static IDictionary<string, int> ElementComposition(string formula)
+		{
+			IDictionary<string, int> dicElements = new Dictionary<string, int>();
+			int c;
+			var mccChemicalGroups = MatchChemicalGroups(formula, out c);
+			for (int i = 0; i < c; i++) {
+				var grcIter = mccChemicalGroups[i].Groups;
+				CoreElementComposition(dicElements, grcIter[1].Value, Int32.Parse(grcIter[2].Value));
+			}
+			formula = RemoveChemicalGroups(formula, mccChemicalGroups, c);
+			// Add what is left
+			CoreElementComposition(dicElements, formula, 1);
+			return dicElements;
+		}
+
+		private static void CoreElementComposition(IDictionary<string, int> counts, string formula, int multiplicator)
+		{
+			var mccElements = Regex.Matches(formula, @"([A-Z][a-z]?)(?:<sub>([0-9]+)</sub>)?");
+			var c = mccElements.Count;
+			for (int i = 0; i < c; i++) {
+				var grcElement = mccElements[i].Groups;
+				var strElementCount = grcElement[2].Value;
+				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
+				var strSymbol = grcElement[1].Value;
+				int e;
+				if (counts.TryGetValue(strSymbol, out e)) {
+					counts[strSymbol] = e + (intElementCount * multiplicator);
+				} else {
+					counts.Add(strSymbol, intElementCount * multiplicator);
+				}
+			}
 		}
 	}
 }
