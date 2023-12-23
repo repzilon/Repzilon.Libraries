@@ -81,7 +81,7 @@ namespace Repzilon.Libraries.Core
 
 			float M = 0;
 			// Count chemical groups first
-			var mccChemicalGroups = Regex.Matches(formula, @"[(]([A-Za-z0-9<>]+)[)](?:<sub>([0-9]+)</sub>)?");
+			var mccChemicalGroups = Regex.Matches(formula, @"[(]([A-Za-z0-9<>/=-]+)[)](?:<sub>([0-9]+)</sub>)?");
 			var c = mccChemicalGroups.Count;
 			int i;
 			for (i = 0; i < c; i++) {
@@ -96,7 +96,7 @@ namespace Repzilon.Libraries.Core
 			}
 			// Add what is left
 			M += CoreMolarMass(formula);
-			return RoundOff.Error(M);
+			return (float)Math.Round(M, 3);
 		}
 
 		private static float CoreMolarMass(string formula)
