@@ -18,6 +18,8 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Implement IEquatable<IPoint<T>>, IEquatable<IPoint<TOther>>
+	// TODO : Add method ToDecimal
 	[StructLayout(LayoutKind.Auto)]
 	public struct PointD : IEquatable<PointD>, IFormattable, IPoint<double>
 	{

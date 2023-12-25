@@ -390,6 +390,9 @@ namespace Repzilon.Libraries.Core
 				 a.Lines, a.Columns, b.Lines, b.Columns));
 			}
 		}
+
+		// TOOO : operator | to augment a matrix
+		// TOOD : operator ~ to negate a matrix
 		#endregion
 
 		/// <summary>

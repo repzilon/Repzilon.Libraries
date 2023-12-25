@@ -17,6 +17,8 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Implement Cast Method
+	// TODO : Implement IEquatable<ErrorMargin<TOther>>
 	public struct ErrorMargin<T> : IEquatable<ErrorMargin<T>>, IFormattable
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable

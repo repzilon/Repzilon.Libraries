@@ -18,6 +18,8 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Implement IEquatable<ILinearRegressionResult<double>>, IEquatable<LinearRegressionResult>
+	// TODO : Add method ToDecimal
 	[StructLayout(LayoutKind.Auto)]
 	public struct LinearRegressionResult : ILinearRegressionResult<double>,
 	IEquatable<LinearRegressionResult>, IFormattable

@@ -18,6 +18,8 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Implement IEquatable<TwoDVector<T>>, IEquatable<TwoDVector<TOther>>
+	// TODO : Implement IEquatable<PolarVector<TOther>>
 	[StructLayout(LayoutKind.Auto)]
 	public struct PolarVector<T> : IFormattable, IEquatable<PolarVector<T>>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
