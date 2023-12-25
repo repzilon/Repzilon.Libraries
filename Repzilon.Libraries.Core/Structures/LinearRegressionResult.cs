@@ -155,16 +155,18 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = 338248910;
-			hashCode = hashCode * -1521134295 + Count;
-			hashCode = hashCode * -1521134295 + Slope.GetHashCode();
-			hashCode = hashCode * -1521134295 + Intercept.GetHashCode();
-			hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
-			hashCode = hashCode * -1521134295 + StdDevOfY.GetHashCode();
-			hashCode = hashCode * -1521134295 + StdDevOfX.GetHashCode();
-			hashCode = hashCode * -1521134295 + AverageX.GetHashCode();
-			hashCode = hashCode * -1521134295 + AverageY.GetHashCode();
-			return hashCode;
+			unchecked {
+				int hashCode = 338248910;
+				hashCode = hashCode * -1521134295 + Count;
+				hashCode = hashCode * -1521134295 + Slope.GetHashCode();
+				hashCode = hashCode * -1521134295 + Intercept.GetHashCode();
+				hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
+				hashCode = hashCode * -1521134295 + StdDevOfY.GetHashCode();
+				hashCode = hashCode * -1521134295 + StdDevOfX.GetHashCode();
+				hashCode = hashCode * -1521134295 + AverageX.GetHashCode();
+				hashCode = hashCode * -1521134295 + AverageY.GetHashCode();
+				return hashCode;
+			}
 		}
 
 		public static bool operator ==(LinearRegressionResult left, LinearRegressionResult right)

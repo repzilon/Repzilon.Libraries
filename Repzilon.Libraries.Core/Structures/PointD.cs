@@ -59,10 +59,12 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = 1861411795;
-			hashCode = hashCode * -1521134295 + X.GetHashCode();
-			hashCode = hashCode * -1521134295 + Y.GetHashCode();
-			return hashCode;
+			unchecked {
+				int hashCode = 1861411795;
+				hashCode = hashCode * -1521134295 + X.GetHashCode();
+				hashCode = hashCode * -1521134295 + Y.GetHashCode();
+				return hashCode;
+			}
 		}
 
 		public static bool operator ==(PointD left, PointD right)

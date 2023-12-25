@@ -102,10 +102,12 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			int hashCode = 1348611219;
-			hashCode = hashCode * -1521134295 + Middle.GetHashCode();
-			hashCode = hashCode * -1521134295 + Margin.GetHashCode();
-			return hashCode;
+			unchecked {
+				int hashCode = 1348611219;
+				hashCode = hashCode * -1521134295 + Middle.GetHashCode();
+				hashCode = hashCode * -1521134295 + Margin.GetHashCode();
+				return hashCode;
+			}
 		}
 
 		public static bool operator ==(ErrorMargin<T> left, ErrorMargin<T> right)
