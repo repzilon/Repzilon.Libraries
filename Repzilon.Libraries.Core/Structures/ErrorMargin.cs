@@ -17,7 +17,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement Cast Method
 	// TODO : Implement IEquatable<ErrorMargin<TOther>>
 	public struct ErrorMargin<T> : IEquatable<ErrorMargin<T>>, IFormattable
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
@@ -52,6 +51,15 @@ namespace Repzilon.Libraries.Core
 		}
 #endif
 		#endregion
+
+		public ErrorMargin<TOut> Cast<TOut>()
+		where TOut : struct, IFormattable
+#if (!NETSTANDARD1_1)
+		, IConvertible
+#endif
+		{
+			return new ErrorMargin<TOut>(this.Middle.ConvertTo<TOut>(), this.Margin.ConvertTo<TOut>());
+		}
 
 		public T Min()
 		{

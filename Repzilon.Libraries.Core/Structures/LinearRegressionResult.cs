@@ -19,7 +19,6 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	// TODO : Implement IEquatable<ILinearRegressionResult<double>>, IEquatable<LinearRegressionResult>
-	// TODO : Add method ToDecimal
 	[StructLayout(LayoutKind.Auto)]
 	public struct LinearRegressionResult : ILinearRegressionResult<double>,
 	IEquatable<LinearRegressionResult>, IFormattable
@@ -52,6 +51,20 @@ namespace Repzilon.Libraries.Core
 			return stbFormula.ToString();
 		}
 		#endregion
+
+		public DecimalLinearRegressionResult ToDecimal()
+		{
+			var dlrr = new DecimalLinearRegressionResult();
+			dlrr.Count = this.Count;
+			dlrr.Slope = (decimal)this.Slope;
+			dlrr.Intercept = (decimal)this.Intercept;
+			dlrr.Correlation = (decimal)this.Correlation;
+			dlrr.StdDevOfX = (decimal)this.StdDevOfX;
+			dlrr.StdDevOfY = (decimal)this.StdDevOfY;
+			dlrr.AverageX = (decimal)this.AverageX;
+			dlrr.AverageY = (decimal)this.AverageY;
+			return dlrr;
+		}
 
 		public double ExtrapolateY(double x)
 		{

@@ -19,7 +19,6 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	// TODO : Implement IEquatable<IPoint<T>>, IEquatable<IPoint<TOther>>
-	// TODO : Add method ToDecimal
 	[StructLayout(LayoutKind.Auto)]
 	public struct PointM : IEquatable<PointM>, IFormattable, IPoint<decimal>
 	{
@@ -47,6 +46,11 @@ namespace Repzilon.Libraries.Core
 		}
 #endif
 		#endregion
+
+		public PointD ToDouble()
+		{
+			return new PointD((double)this.X, (double)this.Y);
+		}
 
 		#region Equals
 		public override bool Equals(object obj)
