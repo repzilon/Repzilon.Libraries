@@ -20,10 +20,7 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct TwoDVector<T> : IFormattable, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>, IPoint<T>
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
-	, ICloneable
-#endif
+	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
 #if (!NETSTANDARD1_1)
 	, IConvertible
@@ -97,7 +94,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		#endregion
 
-		#region ToPolar
+		#region ICartesianVector members
 		public double Norm()
 		{
 #if (NETSTANDARD1_1)
@@ -115,6 +112,33 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		public TwoDVector<TOut> Cast<TOut>()
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+#if (!NETSTANDARD1_1)
+	, IConvertible
+#endif
+		{
+			return new TwoDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>());
+		}
+
+		ICartesianVector<TOut> ICartesianVector<T>.Cast<TOut>()
+		{
+			return this.Cast<TOut>();
+		}
+
+		ICartesianVector<T> ICartesianVector<T>.ToUnitary()
+		{
+			return this.ToUnitary();
+		}
+
+		public TwoDVector<T> ToUnitary()
+		{
+			var f = 1.0 / this.Norm();
+			return new TwoDVector<T>((f * Convert.ToDouble(X)).ConvertTo<T>(), (f * Convert.ToDouble(Y)).ConvertTo<T>());
+		}
+		#endregion
+
+		#region ToPolar
 		public Angle<double> Angle()
 		{
 			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian).Normalize();
@@ -143,21 +167,6 @@ namespace Repzilon.Libraries.Core
 #endif
 		}
 		#endregion
-
-		public TwoDVector<TOut> Cast<TOut>()
-		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
-		{
-			return new TwoDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>());
-		}
-
-		public TwoDVector<T> ToUnitary()
-		{
-			var f = 1.0 / this.Norm();
-			return new TwoDVector<T>((f * Convert.ToDouble(X)).ConvertTo<T>(), (f * Convert.ToDouble(Y)).ConvertTo<T>());
-		}
 
 		#region Equals
 		public override bool Equals(object obj)
@@ -257,8 +266,9 @@ namespace Repzilon.Libraries.Core
 			return TwoDVectorExtensions.Multiply(v, k);
 		}
 
-		// TODO : scalar product operator
-		// TODO : vector product operator
+		// https://www.haroldserrano.com/blog/developing-a-math-engine-in-c-implementing-vectors
+		// TODO : scalar (dot) product operator (*) and named method
+		// TODO : vector (cross) product operator (%) and named method
 		// TODO : implement operators between TwoDVector and PolarVector
 		#endregion
 
@@ -310,6 +320,11 @@ namespace Repzilon.Libraries.Core
 		public static TwoDVector<double> RoundError(this TwoDVector<double> v)
 		{
 			return new TwoDVector<double>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
+		}
+
+		public static TwoDVector<decimal> RoundError(this TwoDVector<decimal> v)
+		{
+			return new TwoDVector<decimal>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
 		}
 	}
 }
