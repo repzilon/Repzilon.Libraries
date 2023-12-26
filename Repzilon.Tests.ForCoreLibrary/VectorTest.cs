@@ -77,7 +77,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa68_r = (exa68_u + exa68_v + exa68_w).ToPolar().ConvertTo(AngleUnit.Degree);
 			Console.WriteLine("Exemple 68  : R={0:g4}", exa68_r);
 
-			var exa69_ref = Example69WithDecimal(false, false);
+			decimal exa69_ref = ExtraMath.Sqrt(692.64m);
 			ShowcaseExample69(exa69_ref, Example69WithSingle);
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
@@ -148,7 +148,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return exa69_r;
 		}
 
-		private static void Example69PartCWithDouble(bool roundErrors, double exa69_f13, double exa69_f23, out TwoDVector<double> exa69_v13, out TwoDVector<double> exa69_v23, out double exa69_r)
+		private static void Example69PartCWithDouble(bool roundErrors, double exa69_f13, double exa69_f23,
+		out TwoDVector<double> exa69_v13, out TwoDVector<double> exa69_v23, out double exa69_r)
 		{
 			exa69_v13 = new PolarVector<double>(exa69_f13, 90, AngleUnit.Degree).ToCartesian();
 			var angle = new Angle<double>(270, AngleUnit.Degree) + new Angle<double>(Math.Atan2(4, 3), AngleUnit.Radian);
@@ -167,9 +168,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			const decimal exa69_q3 = 0.000001m;
 			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, 0.03m);
 			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, 0.05m);
+			if (roundErrors) {
+				exa69_f13 = RoundOff.Error(exa69_f13);
+				exa69_f23 = RoundOff.Error(exa69_f23);
+			}
 			var exa69_v13 = new PolarVector<decimal>(exa69_f13, 90, AngleUnit.Degree).ToCartesian();
 			var angle = new Angle<decimal>(270, AngleUnit.Degree) + new Angle<decimal>((decimal)Math.Atan2(4, 3), AngleUnit.Radian);
 			var exa69_v23 = new PolarVector<decimal>(exa69_f23, (Angle<decimal>)angle).ToCartesian();
+			if (roundErrors) {
+				exa69_v13 = exa69_v13.RoundError();
+				exa69_v23 = exa69_v23.RoundError();
+			}
 			var exa69_vr = exa69_v13 + exa69_v23;
 			var exa69_r = ExtraMath.Hypoth(exa69_vr.X, exa69_vr.Y);
 			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, (double)exa69_r);
@@ -185,6 +194,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, new Exp(5, 10, -2));
 			TwoDVector<double> exa69_v13, exa69_v23;
 			double exa69_r;
+			// FIXME : Stop using a conversion to double
 			Example69PartCWithDouble(roundErrors,
 			 roundErrors ? RoundOff.Error(exa69_f13.ToDouble()) : exa69_f13.ToDouble(),
 			 roundErrors ? RoundOff.Error(exa69_f23.ToDouble()) : exa69_f23.ToDouble(),
@@ -225,7 +235,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return DateTime.UtcNow - dtmStart;
 		}
 
-		private static void Example69Console<TC, TV>(bool consoleOutput, TC exa69_f13, TC exa69_f23, TwoDVector<TV> exa69_v13, TwoDVector<TV> exa69_v23, double exa69_r)
+		private static void Example69Console<TC, TV>(bool consoleOutput, TC exa69_f13, TC exa69_f23,
+		TwoDVector<TV> exa69_v13, TwoDVector<TV> exa69_v23, double exa69_r)
 		where TV : struct, IConvertible, IFormattable, IEquatable<TV>, IComparable<TV>
 		{
 			if (consoleOutput) {
