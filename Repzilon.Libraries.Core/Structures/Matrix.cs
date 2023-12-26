@@ -20,6 +20,7 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Matrix resolution with Cramer method, then fallback to inversion
 	[StructLayout(LayoutKind.Auto)]
 	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
@@ -397,7 +398,7 @@ namespace Repzilon.Libraries.Core
 			return MatrixExtensionMethods.Augment(coefficients, values);
 		}
 
-		// TODO : operator ~ to negate a matrix
+		// TODO : operator ~ to invert a matrix
 		#endregion
 
 		/// <summary>

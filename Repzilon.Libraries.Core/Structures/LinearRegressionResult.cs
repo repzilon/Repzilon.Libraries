@@ -18,6 +18,8 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Replace Extrapolate method by Interpolate methods which will have bounds checkings
+	// TODO : Have something to convert the formula when the regression was used with a non-linear model
 	[StructLayout(LayoutKind.Auto)]
 	public struct LinearRegressionResult : ILinearRegressionResult<double>,
 	IEquatable<LinearRegressionResult>, IEquatable<DecimalLinearRegressionResult>,
