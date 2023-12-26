@@ -18,7 +18,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<IPoint<T>>, IEquatable<IPoint<TOther>>
 	[StructLayout(LayoutKind.Auto)]
 	public struct PointM : IEquatable<PointM>, IFormattable, IPoint<decimal>
 	{
@@ -55,10 +54,35 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is PointM && Equals((PointM)obj);
+			if (obj is PointM) {
+				return Equals((PointM)obj);
+			} else if (obj is PointD) {
+				return Equals((PointD)obj);
+			} else if (obj is IPoint<double>) {
+				return Equals((IPoint<double>)obj);
+			} else if (obj is IPoint<decimal>) {
+				return Equals((IPoint<decimal>)obj);
+			} else {
+				return false;
+			}
 		}
 
 		public bool Equals(PointM other)
+		{
+			return X == other.X && Y == other.Y;
+		}
+
+		public bool Equals(IPoint<double> other)
+		{
+			return X == (decimal)other.X && Y == (decimal)other.Y;
+		}
+
+		public bool Equals(PointD other)
+		{
+			return X == (decimal)other.X && Y == (decimal)other.Y;
+		}
+
+		public bool Equals(IPoint<decimal> other)
 		{
 			return X == other.X && Y == other.Y;
 		}
@@ -79,6 +103,16 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static bool operator !=(PointM left, PointM right)
+		{
+			return !(left == right);
+		}
+
+		public static bool operator ==(PointM left, PointD right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(PointM left, PointD right)
 		{
 			return !(left == right);
 		}

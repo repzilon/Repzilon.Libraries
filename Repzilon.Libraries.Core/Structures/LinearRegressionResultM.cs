@@ -18,10 +18,10 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<ILinearRegressionResult<double>>, IEquatable<LinearRegressionResult>
 	[StructLayout(LayoutKind.Auto)]
 	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
-	IEquatable<DecimalLinearRegressionResult>, IFormattable
+	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>,
+	IFormattable
 	{
 		public int Count;
 		public decimal Slope { get; set; }
@@ -66,6 +66,7 @@ namespace Repzilon.Libraries.Core
 			return lrr;
 		}
 
+		#region Science-related methods
 		public decimal ExtrapolateY(decimal x)
 		{
 			return this.Intercept + (x * this.Slope);
@@ -76,6 +77,14 @@ namespace Repzilon.Libraries.Core
 			return (y - this.Intercept) / this.Slope;
 		}
 
+		public decimal Determination()
+		{
+			var r = this.Correlation;
+			return r * r;
+		}
+		#endregion
+
+		#region Statistics-related methods
 		public decimal TotalError(decimal x)
 		{
 			return RoundOff.Error(ExtrapolateY(x) - x); // Eat dirt
@@ -102,13 +111,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var r = this.Correlation;
 			return RoundOff.Error((1 - (r * r)) * this.TotalVariation()); // Eat dirt
-		}
-
-		public decimal Determination()
-		{
-			var r = this.Correlation;
-			return r * r;
-		}
+		}	
 
 		public decimal ResidualStdDev()
 		{
@@ -149,11 +152,18 @@ namespace Repzilon.Libraries.Core
 			var sx = this.StdDevOfX;
 			return this.ResidualStdDev() / b * ExtraMath.Sqrt((1.0m / k) + (1.0m / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
 		}
+		#endregion
 
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is DecimalLinearRegressionResult && Equals((DecimalLinearRegressionResult)obj);
+			if (obj is LinearRegressionResult) {
+				return Equals((LinearRegressionResult)obj);
+			} else if (obj is DecimalLinearRegressionResult) {
+				return Equals((DecimalLinearRegressionResult)obj);
+			} else {
+				return false;
+			}
 		}
 
 		public bool Equals(DecimalLinearRegressionResult other)
@@ -184,12 +194,34 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		public bool Equals(LinearRegressionResult other)
+		{
+			return Count == other.Count &&
+				   Slope == (decimal)other.Slope &&
+				   Intercept == (decimal)other.Intercept &&
+				   Correlation == (decimal)other.Correlation &&
+				   StdDevOfY == (decimal)other.StdDevOfY &&
+				   StdDevOfX == (decimal)other.StdDevOfX &&
+				   AverageX == (decimal)other.AverageX &&
+				   AverageY == (decimal)other.AverageY;
+		}
+
 		public static bool operator ==(DecimalLinearRegressionResult left, DecimalLinearRegressionResult right)
 		{
 			return left.Equals(right);
 		}
 
 		public static bool operator !=(DecimalLinearRegressionResult left, DecimalLinearRegressionResult right)
+		{
+			return !(left == right);
+		}
+
+		public static bool operator ==(DecimalLinearRegressionResult left, LinearRegressionResult right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(DecimalLinearRegressionResult left, LinearRegressionResult right)
 		{
 			return !(left == right);
 		}

@@ -18,10 +18,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<TwoDVector<T>>, IEquatable<TwoDVector<TOther>>
+	// TODO : Implement IEquatable<TwoDVector<TOther>>
 	// TODO : Implement IEquatable<PolarVector<TOther>>
 	[StructLayout(LayoutKind.Auto)]
-	public struct PolarVector<T> : IFormattable, IEquatable<PolarVector<T>>
+	public struct PolarVector<T> : IFormattable,
+	IEquatable<PolarVector<T>>, IEquatable<TwoDVector<T>>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
@@ -84,7 +85,13 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is PolarVector<T> && Equals((PolarVector<T>)obj);
+			if (obj is PolarVector<T>) {
+				return Equals((PolarVector<T>)obj);
+			} else if (obj is TwoDVector<T>) {
+				return Equals((TwoDVector<T>)obj);
+			} else {
+				return false;
+			} 
 		}
 
 		public bool Equals(PolarVector<T> other)
@@ -92,11 +99,16 @@ namespace Repzilon.Libraries.Core
 			return Norm.Equals(other.Norm) && Angle.Equals(other.Angle);
 		}
 
+		public bool Equals(TwoDVector<T> other)
+		{
+			return this.Cast<double>().Equals(other.ToPolar());
+		}
+
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = (1227039071 * -1521134295) + ((IComparable<T>)Norm).GetHashCode();
-				return hashCode * -1521134295 + ((IComparable)Angle).GetHashCode();
+				int hashCode = (1227039071 * -1521134295) + Norm.GetHashCode();
+				return hashCode * -1521134295 + Angle.GetHashCode();
 			}
 		}
 
@@ -106,6 +118,16 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static bool operator !=(PolarVector<T> left, PolarVector<T> right)
+		{
+			return !(left == right);
+		}
+
+		public static bool operator ==(PolarVector<T> left, TwoDVector<T> right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(PolarVector<T> left, TwoDVector<T> right)
 		{
 			return !(left == right);
 		}
@@ -129,7 +151,7 @@ namespace Repzilon.Libraries.Core
 			stbVector.Append(this.Norm.ToString(format, formatProvider));
 			stbVector.Append('∠').Append(this.Angle.ToString(format, formatProvider));
 			return stbVector.ToString();
-		}
+		}		
 		#endregion
 
 		#region Operators

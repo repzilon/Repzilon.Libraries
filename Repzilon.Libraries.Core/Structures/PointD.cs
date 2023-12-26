@@ -18,9 +18,10 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<IPoint<T>>, IEquatable<IPoint<TOther>>
 	[StructLayout(LayoutKind.Auto)]
-	public struct PointD : IEquatable<PointD>, IFormattable, IPoint<double>
+	public struct PointD : IPoint<double>,
+	IEquatable<PointD>, IEquatable<IPoint<double>>, IEquatable<PointM>, IEquatable<IPoint<decimal>>,
+	IFormattable
 	{
 		public double X { get; private set; }
 		public double Y { get; private set; }
@@ -55,12 +56,37 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is PointD && Equals((PointD)obj);
+			if (obj is PointD) {
+				return Equals((PointD)obj);
+			} else if (obj is PointM) {
+				return Equals((PointM)obj);
+			} else if (obj is IPoint<double>) {
+				return Equals((IPoint<double>)obj);
+			} else if (obj is IPoint<decimal>) {
+				return Equals((IPoint<decimal>)obj);
+			} else {
+				return false;
+			}
 		}
 
 		public bool Equals(PointD other)
 		{
 			return X == other.X && Y == other.Y;
+		}
+
+		public bool Equals(IPoint<double> other)
+		{
+			return X == other.X && Y == other.Y;
+		}
+
+		public bool Equals(PointM other)
+		{
+			return (decimal)X == other.X && (decimal)Y == other.Y;
+		}
+
+		public bool Equals(IPoint<decimal> other)
+		{
+			return (decimal)X == other.X && (decimal)Y == other.Y;
 		}
 
 		public override int GetHashCode()
@@ -82,6 +108,16 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
+
+		public static bool operator ==(PointD left, PointM right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(PointD left, PointM right)
+		{
+			return !(left == right);
+		}
 		#endregion
 
 		#region ToString
@@ -92,19 +128,17 @@ namespace Repzilon.Libraries.Core
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-			if (String.IsNullOrWhiteSpace(format))
-			{
+			if (String.IsNullOrWhiteSpace(format)) {
 				format = "G";
 			}
-			if (formatProvider == null)
-			{
+			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
 			var stbCoord = new StringBuilder();
 			stbCoord.Append('{').Append(this.X.ToString(format, formatProvider)).Append("; ")
 			 .Append(this.Y.ToString(format, formatProvider)).Append('}');
 			return stbCoord.ToString();
-		}	
+		}
 		#endregion
 	}
 }
