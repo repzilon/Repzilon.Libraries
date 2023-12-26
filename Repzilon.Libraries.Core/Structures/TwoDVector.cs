@@ -283,7 +283,6 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		// TODO : implement AreParallel static method
-		// TODO : implement AngleBetween static method
 
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{
@@ -336,6 +335,11 @@ namespace Repzilon.Libraries.Core
 			var sub = Matrix<T>.sub;
 			return new ThreeDVector<T>(default(T), default(T),
 			 sub(mul(u.X, v.Y), mul(u.Y, v.X)));
+		}
+
+		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)
+		{
+			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);
 		}
 	}
 

@@ -198,6 +198,16 @@ namespace Repzilon.Libraries.Core
 			 sub(mul(u.X, v.Y), mul(u.Y, v.X)));
 		}
 		#endregion
+
+		public static bool ArePerpendicular(ThreeDVector<T> a, ThreeDVector<T> b)
+		{
+			return Dot(a, b).Equals(default(T));
+		}
+
+		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)
+		{
+			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);
+		}
 	}
 
 	public static class ThreeDVectorExtensions

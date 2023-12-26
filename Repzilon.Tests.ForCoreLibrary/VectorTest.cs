@@ -12,7 +12,6 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-using System.Runtime.InteropServices;
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -57,17 +56,52 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa63_s = exa63_u + exa63_v;
 			Console.WriteLine("Exemple 63  : ||R||={0} u+v={1} ||u+v||={2}", exa63_ng, exa63_s, exa63_s.Norm());
 
+			var exa64_u = Vector.New(1.0f, 3.0f, 4.0f);
+			Console.WriteLine("Exemple 64  : ||u||={0:f3}", exa64_u.Norm());
+
+			var exa66_oa = Vector.New(1, 2, 3);
+			var exa66_ob = Vector.New(2, -3, 2);
+			var exa66_ab = exa66_ob - exa66_oa;
+			Console.WriteLine("Exemple 66b : AB=OB-OA={0}", exa66_ab);
+			var exa66_v = exa66_ab.Cast<float>().ToUnitary();
+			Console.WriteLine("Exemple 66c : v={0}", exa66_v);
+
+			var exa67_theta = new Angle<float>(40.0f, AngleUnit.Degree);
+			var exa67_A = 700 * exa67_theta.Cos() / exa67_theta.Sin();
+			var exa67_T = 700 / exa67_theta.Sin();
+			Console.WriteLine("Exemple 67  : ||A||={0:f2} ||T||={1:f2}", exa67_A, exa67_T);
+
 			var exa68_u = new PolarVector<float>(9, 35, AngleUnit.Degree);
 			var exa68_v = new PolarVector<float>(5, 90 + 20, AngleUnit.Degree);
 			var exa68_w = new PolarVector<float>(3, 180 + 50, AngleUnit.Degree);
 			var exa68_r = (exa68_u + exa68_v + exa68_w).ToPolar().ConvertTo(AngleUnit.Degree);
-			Console.WriteLine("Exemple 68  : R={0:g}", exa68_r);
+			Console.WriteLine("Exemple 68  : R={0:g4}", exa68_r);
 
 			var exa69_ref = Example69WithDecimal(false, false);
 			ShowcaseExample69(exa69_ref, Example69WithSingle);
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
 			ShowcaseExample69(exa69_ref, Example69WithExp);
+
+			Console.Write(Environment.NewLine);
+			var exa71_u = Vector.New(4, -2, 2);
+			var exa71_v = Vector.New(1, 3, 1);
+			Console.WriteLine("Exemple 71  : u={0} et v={1} perpendiculaires : {2}", exa71_u, exa71_v,
+			 ThreeDVector<int>.ArePerpendicular(exa71_u, exa71_v));
+
+			var exa72_u = Vector.New(3, -2, 5);
+			var exa72_v = Vector.New(-1, 3, 4);
+			Console.WriteLine("Exemple 72a : u={0} et v={1} perpendiculaires : {2}", exa72_u, exa72_v,
+			 ThreeDVector<int>.ArePerpendicular(exa72_u, exa72_v));
+			var exa72_theta = ThreeDVector<int>.AngleBetween(exa72_u, exa72_v).ConvertTo(AngleUnit.Degree);
+			Console.WriteLine("Exemple 72b : theta={0:g3}", exa72_theta);
+
+			var exa74_w = TwoDVector<float>.Dot(5, 12, 20, AngleUnit.Degree);
+			Console.WriteLine("Exemple 74  : W={0:f2}", exa74_w);
+
+			var exa78_u = Vector.New(-2, 3, 1);
+			var exa78_v = Vector.New(2, 5, -5);
+			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
 
 			Program.OutputSizeOf<Exp>();
 		}
