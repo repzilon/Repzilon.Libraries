@@ -227,10 +227,11 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
+				int magic = -1521134295;
 				int hashCode = (1832363379 * -1521134295) + Lines;
-				hashCode = hashCode * -1521134295 + Columns;
-				hashCode = hashCode * -1521134295 + m_bytAugmentedColumn.GetValueOrDefault();
-				return hashCode * -1521134295 + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
+				hashCode = hashCode * magic + Columns;
+				hashCode = hashCode * magic + m_bytAugmentedColumn.GetValueOrDefault();
+				return hashCode * magic + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
 			}
 		}
 

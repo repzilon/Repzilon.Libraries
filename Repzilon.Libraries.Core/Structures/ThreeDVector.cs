@@ -115,11 +115,10 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = -307843816;
-				hashCode = hashCode * -1521134295 + X.GetHashCode();
-				hashCode = hashCode * -1521134295 + Y.GetHashCode();
-				hashCode = hashCode * -1521134295 + Z.GetHashCode();
-				return hashCode;
+				int magic = -1521134295;
+				int hashCode = -307843816 * -1521134295 + X.GetHashCode();
+				hashCode = hashCode * magic + Y.GetHashCode();
+				return hashCode * magic + Z.GetHashCode();
 			}
 		}
 

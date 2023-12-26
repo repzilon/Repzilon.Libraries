@@ -181,16 +181,15 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = 338248910;
-				hashCode = hashCode * -1521134295 + Count;
-				hashCode = hashCode * -1521134295 + Slope.GetHashCode();
-				hashCode = hashCode * -1521134295 + Intercept.GetHashCode();
-				hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
-				hashCode = hashCode * -1521134295 + StdDevOfY.GetHashCode();
-				hashCode = hashCode * -1521134295 + StdDevOfX.GetHashCode();
-				hashCode = hashCode * -1521134295 + AverageX.GetHashCode();
-				hashCode = hashCode * -1521134295 + AverageY.GetHashCode();
-				return hashCode;
+				int magic = -1521134295;
+				int hashCode = 338248910 * -1521134295 + Count;
+				hashCode = hashCode * magic + Slope.GetHashCode();
+				hashCode = hashCode * magic + Intercept.GetHashCode();
+				hashCode = hashCode * magic + Correlation.GetHashCode();
+				hashCode = hashCode * magic + StdDevOfY.GetHashCode();
+				hashCode = hashCode * magic + StdDevOfX.GetHashCode();
+				hashCode = hashCode * magic + AverageX.GetHashCode();
+				return hashCode * magic + AverageY.GetHashCode();
 			}
 		}
 
