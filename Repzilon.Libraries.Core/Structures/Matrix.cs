@@ -392,8 +392,8 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		// TOOO : operator | to augment a matrix
-		// TOOD : operator ~ to negate a matrix
+		// TODO : operator | to augment a matrix
+		// TODO : operator ~ to negate a matrix
 		#endregion
 
 		/// <summary>
