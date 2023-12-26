@@ -96,33 +96,6 @@ namespace Repzilon.Libraries.Core
 			return Sqrt((a * a) + (b * b) + (c * c));
 		}
 
-		/// <summary>
-		/// Computes the force in newtons between two charges in an electric field
-		/// </summary>
-		/// <param name="qi">first electric charge (in coulombs)</param>
-		/// <param name="qj">second electric charge (in coulombs)</param>
-		/// <param name="rij">distance between 2 charges (in metres)</param>
-		/// <returns>The force between the two charges in newtons.</returns>
-		public static double CoulombLab(double qi, double qj, double rij)
-		{
-			return 9000000000.0 * Math.Abs(qi * qj) / (rij * rij);
-		}
-
-		public static decimal CoulombLab(decimal qi, decimal qj, decimal rij)
-		{
-			return 9000000000 * Math.Abs(qi * qj) / (rij * rij);
-		}
-
-		public static float CoulombLab(float qi, float qj, float rij)
-		{
-			return 9000000000.0f * Math.Abs(qi * qj) / (rij * rij);
-		}
-
-		public static Exp CoulombLab(Exp qi, Exp qj, Exp rij)
-		{
-			return new Exp(9, 10, 9) * Abs(qi * qj) / (rij * rij);
-		}
-
 		public static Exp Abs(Exp number)
 		{
 			return new Exp(Math.Abs(number.Mantissa), number.Base, number.Exponent);

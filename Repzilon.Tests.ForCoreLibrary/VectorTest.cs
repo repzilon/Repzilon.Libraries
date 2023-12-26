@@ -78,8 +78,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			const float exa69_q1 = 0.000003f;
 			const float exa69_q2 = -0.000002f;
 			const float exa69_q3 = 0.000001f;
-			var exa69_f13 = ExtraMath.CoulombLab(exa69_q1, exa69_q3, 0.03f);
-			var exa69_f23 = ExtraMath.CoulombLab(exa69_q2, exa69_q3, 0.05f);
+			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, 0.03f);
+			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, 0.05f);
 			if (roundErrors) {
 				exa69_f13 = RoundOff.Error(exa69_f13);
 				exa69_f23 = RoundOff.Error(exa69_f23);
@@ -101,8 +101,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			const double exa69_q1 = 0.000003;
 			const double exa69_q2 = -0.000002;
 			const double exa69_q3 = 0.000001;
-			var exa69_f13 = ExtraMath.CoulombLab(exa69_q1, exa69_q3, 0.03);
-			var exa69_f23 = ExtraMath.CoulombLab(exa69_q2, exa69_q3, 0.05);
+			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, 0.03);
+			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, 0.05);
 			if (roundErrors) {
 				exa69_f13 = RoundOff.Error(exa69_f13);
 				exa69_f23 = RoundOff.Error(exa69_f23);
@@ -131,8 +131,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			const decimal exa69_q1 = 0.000003m;
 			const decimal exa69_q2 = -0.000002m;
 			const decimal exa69_q3 = 0.000001m;
-			var exa69_f13 = ExtraMath.CoulombLab(exa69_q1, exa69_q3, 0.03m);
-			var exa69_f23 = ExtraMath.CoulombLab(exa69_q2, exa69_q3, 0.05m);
+			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, 0.03m);
+			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, 0.05m);
 			var exa69_v13 = new PolarVector<decimal>(exa69_f13, 90, AngleUnit.Degree).ToCartesian();
 			var angle = new Angle<decimal>(270, AngleUnit.Degree) + new Angle<decimal>((decimal)Math.Atan2(4, 3), AngleUnit.Radian);
 			var exa69_v23 = new PolarVector<decimal>(exa69_f23, (Angle<decimal>)angle).ToCartesian();
@@ -147,8 +147,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa69_q1 = new Exp(3, 10, -6);
 			var exa69_q2 = new Exp(-2, 10, -6);
 			var exa69_q3 = new Exp(1, 10, -6);
-			var exa69_f13 = ExtraMath.CoulombLab(exa69_q1, exa69_q3, new Exp(3, 10, -2));
-			var exa69_f23 = ExtraMath.CoulombLab(exa69_q2, exa69_q3, new Exp(5, 10, -2));
+			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, new Exp(3, 10, -2));
+			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, new Exp(5, 10, -2));
 			TwoDVector<double> exa69_v13, exa69_v23;
 			double exa69_r;
 			Example69PartCWithDouble(roundErrors,
