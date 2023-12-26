@@ -171,9 +171,19 @@ namespace Repzilon.Libraries.Core
 			return ThreeDVectorExtensions.Multiply(v, k);
 		}
 
-		// TODO : scalar product operator
 		// TODO : vector product operator
-		// TODO : implement operators between TwoDVector and PolarVector
+
+		public static T operator *(ThreeDVector<T> a, ThreeDVector<T> b)
+		{
+			return Dot(a, b);
+		}
+
+		public static T Dot(ThreeDVector<T> a, ThreeDVector<T> b)
+		{
+			var mul = Matrix<T>.BuildMultiplier<T>();
+			var add = Matrix<T>.add;
+			return add(add(mul(a.X, b.X), mul(a.Y, b.Y)), mul(a.Z, b.Z));
+		}
 		#endregion
 	}
 

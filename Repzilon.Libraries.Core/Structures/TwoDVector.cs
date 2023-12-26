@@ -268,13 +268,17 @@ namespace Repzilon.Libraries.Core
 		}
 
 		// https://www.haroldserrano.com/blog/developing-a-math-engine-in-c-implementing-vectors
-		// TODO : scalar (dot) product operator (*) and named method
+
+		public static T operator *(TwoDVector<T> a, TwoDVector<T> b)
+		{
+			return Dot(a, b);
+		}
+
 		// TODO : vector (cross) product operator (%) and named method
 		// TODO : implement operators between TwoDVector and PolarVector
 		#endregion
 
 		// TODO : implement AreParallel static method
-		// TODO : implement ArePerpendicular static method
 		// TODO : implement AngleBetween static method
 
 		public static T Sum(T norm1, T norm2, Angle<T> between)
@@ -297,6 +301,18 @@ namespace Repzilon.Libraries.Core
 		public static T Sum(T norm1, T norm2, T angleBetween, AngleUnit unit)
 		{
 			return Sum(norm1, norm2, new Angle<T>(angleBetween, unit));
+		}
+
+		public static T Dot(TwoDVector<T> a, TwoDVector<T> b)
+		{
+			var mul = Matrix<T>.BuildMultiplier<T>();
+			var add = Matrix<T>.add;
+			return add(mul(a.X, b.X), mul(a.Y, b.Y));
+		}
+
+		public static bool ArePerpendicular(TwoDVector<T> a, TwoDVector<T> b)
+		{
+			return Dot(a, b).Equals(default(T));
 		}
 	}
 
