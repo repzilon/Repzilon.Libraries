@@ -175,5 +175,9 @@ namespace Repzilon.Libraries.Core
 			return new TwoDVector<T>(a) - b;
 		}
 		#endregion
+
+		// TODO : implement AreParallel static method
+		// TODO : implement ArePerpendicular static method
+		// TODO : implement AngleBetween static method
 	}
 }
