@@ -392,7 +392,11 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		// TODO : operator | to augment a matrix
+		public static Matrix<T> operator |(Matrix<T> coefficients, Matrix<T> values)
+		{
+			return MatrixExtensionMethods.Augment(coefficients, values);
+		}
+
 		// TODO : operator ~ to negate a matrix
 		#endregion
 
