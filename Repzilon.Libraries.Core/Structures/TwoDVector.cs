@@ -262,19 +262,23 @@ namespace Repzilon.Libraries.Core
 			return a - new TwoDVector<T>(b);
 		}
 
+		// For product operators, see https://www.haroldserrano.com/blog/developing-a-math-engine-in-c-implementing-vectors
+
 		public static TwoDVector<T> operator *(T k, TwoDVector<T> v)
 		{
 			return TwoDVectorExtensions.Multiply(v, k);
 		}
-
-		// https://www.haroldserrano.com/blog/developing-a-math-engine-in-c-implementing-vectors
 
 		public static T operator *(TwoDVector<T> a, TwoDVector<T> b)
 		{
 			return Dot(a, b);
 		}
 
-		// TODO : vector (cross) product operator (%) and named method
+		public static ThreeDVector<T> operator %(TwoDVector<T> u, TwoDVector<T> v)
+		{
+			return Cross(u, v);
+		}
+
 		// TODO : implement operators between TwoDVector and PolarVector
 		#endregion
 
@@ -324,6 +328,14 @@ namespace Repzilon.Libraries.Core
 		public static bool ArePerpendicular(TwoDVector<T> a, TwoDVector<T> b)
 		{
 			return Dot(a, b).Equals(default(T));
+		}
+
+		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)
+		{
+			var mul = Matrix<T>.BuildMultiplier<T>();
+			var sub = Matrix<T>.sub;
+			return new ThreeDVector<T>(default(T), default(T),
+			 sub(mul(u.X, v.Y), mul(u.Y, v.X)));
 		}
 	}
 

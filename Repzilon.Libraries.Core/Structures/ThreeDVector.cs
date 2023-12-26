@@ -171,11 +171,14 @@ namespace Repzilon.Libraries.Core
 			return ThreeDVectorExtensions.Multiply(v, k);
 		}
 
-		// TODO : vector product operator
-
 		public static T operator *(ThreeDVector<T> a, ThreeDVector<T> b)
 		{
 			return Dot(a, b);
+		}
+
+		public static ThreeDVector<T> operator %(ThreeDVector<T> u, ThreeDVector<T> v)
+		{
+			return Cross(u, v);
 		}
 
 		public static T Dot(ThreeDVector<T> a, ThreeDVector<T> b)
@@ -183,6 +186,16 @@ namespace Repzilon.Libraries.Core
 			var mul = Matrix<T>.BuildMultiplier<T>();
 			var add = Matrix<T>.add;
 			return add(add(mul(a.X, b.X), mul(a.Y, b.Y)), mul(a.Z, b.Z));
+		}
+
+		public static ThreeDVector<T> Cross(ThreeDVector<T> u, ThreeDVector<T> v)
+		{
+			var mul = Matrix<T>.BuildMultiplier<T>();
+			var sub = Matrix<T>.sub;
+			return new ThreeDVector<T>(
+			 sub(mul(u.Y, v.Z), mul(u.Z, v.Y)),
+			 sub(mul(u.Z, v.X), mul(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
+			 sub(mul(u.X, v.Y), mul(u.Y, v.X)));
 		}
 		#endregion
 	}
