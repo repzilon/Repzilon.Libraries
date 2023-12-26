@@ -310,6 +310,17 @@ namespace Repzilon.Libraries.Core
 			return add(mul(a.X, b.X), mul(a.Y, b.Y));
 		}
 
+		public static T Dot(T norm1, T norm2, Angle<T> between)
+		{
+			var mul = Matrix<T>.BuildMultiplier<T>();
+			return mul(mul(norm1, norm2), between.Cos().ConvertTo<T>());
+		}
+
+		public static T Dot(T norm1, T norm2, T angleBetween, AngleUnit unit)
+		{
+			return Dot(norm1, norm2, new Angle<T>(angleBetween, unit));
+		}
+
 		public static bool ArePerpendicular(TwoDVector<T> a, TwoDVector<T> b)
 		{
 			return Dot(a, b).Equals(default(T));
