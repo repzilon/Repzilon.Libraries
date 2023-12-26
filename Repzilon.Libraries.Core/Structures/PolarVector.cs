@@ -155,24 +155,24 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Operators
-		public static TwoDVector<T> operator +(PolarVector<T> a, PolarVector<T> b)
+		public static TwoDVector<T> operator +(PolarVector<T> u, PolarVector<T> v)
 		{
-			return new TwoDVector<T>(a) + new TwoDVector<T>(b);
+			return new TwoDVector<T>(u) + new TwoDVector<T>(v);
 		}
 
-		public static TwoDVector<T> operator -(PolarVector<T> a, PolarVector<T> b)
+		public static TwoDVector<T> operator -(PolarVector<T> u, PolarVector<T> v)
 		{
-			return new TwoDVector<T>(a) - new TwoDVector<T>(b);
+			return new TwoDVector<T>(u) - new TwoDVector<T>(v);
 		}
 
-		public static TwoDVector<T> operator +(PolarVector<T> a, TwoDVector<T> b)
+		public static TwoDVector<T> operator +(PolarVector<T> u, TwoDVector<T> v)
 		{
-			return new TwoDVector<T>(a) + b;
+			return new TwoDVector<T>(u) + v;
 		}
 
-		public static TwoDVector<T> operator -(PolarVector<T> a, TwoDVector<T> b)
+		public static TwoDVector<T> operator -(PolarVector<T> u, TwoDVector<T> v)
 		{
-			return new TwoDVector<T>(a) - b;
+			return new TwoDVector<T>(u) - v;
 		}
 		#endregion
 

@@ -242,24 +242,24 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Operators
-		public static TwoDVector<T> operator +(TwoDVector<T> a, TwoDVector<T> b)
+		public static TwoDVector<T> operator +(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return new TwoDVector<T>(Matrix<T>.add(a.X, b.X), Matrix<T>.add(a.Y, b.Y));
+			return new TwoDVector<T>(Matrix<T>.add(u.X, v.X), Matrix<T>.add(u.Y, v.Y));
 		}
 
-		public static TwoDVector<T> operator -(TwoDVector<T> a, TwoDVector<T> b)
+		public static TwoDVector<T> operator -(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return new TwoDVector<T>(Matrix<T>.sub(a.X, b.X), Matrix<T>.sub(a.Y, b.Y));
+			return new TwoDVector<T>(Matrix<T>.sub(u.X, v.X), Matrix<T>.sub(u.Y, v.Y));
 		}
 
-		public static TwoDVector<T> operator +(TwoDVector<T> a, PolarVector<T> b)
+		public static TwoDVector<T> operator +(TwoDVector<T> u, PolarVector<T> v)
 		{
-			return a + new TwoDVector<T>(b);
+			return u + new TwoDVector<T>(v);
 		}
 
-		public static TwoDVector<T> operator -(TwoDVector<T> a, PolarVector<T> b)
+		public static TwoDVector<T> operator -(TwoDVector<T> u, PolarVector<T> v)
 		{
-			return a - new TwoDVector<T>(b);
+			return u - new TwoDVector<T>(v);
 		}
 
 		// For product operators, see https://www.haroldserrano.com/blog/developing-a-math-engine-in-c-implementing-vectors
@@ -269,9 +269,9 @@ namespace Repzilon.Libraries.Core
 			return TwoDVectorExtensions.Multiply(v, k);
 		}
 
-		public static T operator *(TwoDVector<T> a, TwoDVector<T> b)
+		public static T operator *(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return Dot(a, b);
+			return Dot(u, v);
 		}
 
 		public static ThreeDVector<T> operator %(TwoDVector<T> u, TwoDVector<T> v)
@@ -306,11 +306,11 @@ namespace Repzilon.Libraries.Core
 			return Sum(norm1, norm2, new Angle<T>(angleBetween, unit));
 		}
 
-		public static T Dot(TwoDVector<T> a, TwoDVector<T> b)
+		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var mul = Matrix<T>.BuildMultiplier<T>();
 			var add = Matrix<T>.add;
-			return add(mul(a.X, b.X), mul(a.Y, b.Y));
+			return add(mul(u.X, v.X), mul(u.Y, v.Y));
 		}
 
 		public static T Dot(T norm1, T norm2, Angle<T> between)
@@ -324,9 +324,9 @@ namespace Repzilon.Libraries.Core
 			return Dot(norm1, norm2, new Angle<T>(angleBetween, unit));
 		}
 
-		public static bool ArePerpendicular(TwoDVector<T> a, TwoDVector<T> b)
+		public static bool ArePerpendicular(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return Dot(a, b).Equals(default(T));
+			return Dot(u, v).Equals(default(T));
 		}
 
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)

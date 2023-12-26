@@ -156,14 +156,14 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Operators
-		public static ThreeDVector<T> operator +(ThreeDVector<T> a, ThreeDVector<T> b)
+		public static ThreeDVector<T> operator +(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return new ThreeDVector<T>(Matrix<T>.add(a.X, b.X), Matrix<T>.add(a.Y, b.Y), Matrix<T>.add(a.Z, b.Z));
+			return new ThreeDVector<T>(Matrix<T>.add(u.X, v.X), Matrix<T>.add(u.Y, v.Y), Matrix<T>.add(u.Z, v.Z));
 		}
 
-		public static ThreeDVector<T> operator -(ThreeDVector<T> a, ThreeDVector<T> b)
+		public static ThreeDVector<T> operator -(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return new ThreeDVector<T>(Matrix<T>.sub(a.X, b.X), Matrix<T>.sub(a.Y, b.Y), Matrix<T>.sub(a.Z, b.Z));
+			return new ThreeDVector<T>(Matrix<T>.sub(u.X, v.X), Matrix<T>.sub(u.Y, v.Y), Matrix<T>.sub(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> operator *(T k, ThreeDVector<T> v)
@@ -171,9 +171,9 @@ namespace Repzilon.Libraries.Core
 			return ThreeDVectorExtensions.Multiply(v, k);
 		}
 
-		public static T operator *(ThreeDVector<T> a, ThreeDVector<T> b)
+		public static T operator *(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return Dot(a, b);
+			return Dot(u, v);
 		}
 
 		public static ThreeDVector<T> operator %(ThreeDVector<T> u, ThreeDVector<T> v)
@@ -181,11 +181,11 @@ namespace Repzilon.Libraries.Core
 			return Cross(u, v);
 		}
 
-		public static T Dot(ThreeDVector<T> a, ThreeDVector<T> b)
+		public static T Dot(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			var mul = Matrix<T>.BuildMultiplier<T>();
 			var add = Matrix<T>.add;
-			return add(add(mul(a.X, b.X), mul(a.Y, b.Y)), mul(a.Z, b.Z));
+			return add(add(mul(u.X, v.X), mul(u.Y, v.Y)), mul(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> Cross(ThreeDVector<T> u, ThreeDVector<T> v)
@@ -199,9 +199,9 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-		public static bool ArePerpendicular(ThreeDVector<T> a, ThreeDVector<T> b)
+		public static bool ArePerpendicular(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return Dot(a, b).Equals(default(T));
+			return Dot(u, v).Equals(default(T));
 		}
 
 		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)
