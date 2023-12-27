@@ -18,6 +18,7 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Implement ICloneable
 	[StructLayout(LayoutKind.Auto)]
 	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
 	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>,

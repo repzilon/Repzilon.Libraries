@@ -23,6 +23,11 @@ namespace Repzilon.Libraries.Core
 	// TODO : Implement IComparable<IConvertible>
 	// TODO : Implement IComparable
 	// TODO : Implement addition and subtraction operators
+	// TODO : Add method Parse
+	// TODO : Add method TryParse
+	// TODO : Create a new version with a signed 18-bit mantissa (yes 18),
+	//		  a 6-bit adjusted base ([2; 65] stored as [0; 63]) and the
+	//        same signed 8-bit exponent, for more precision.
 	[StructLayout(LayoutKind.Auto), CLSCompliant(false)]
 	public struct Exp : IFormattable, IEquatable<Exp>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
