@@ -181,7 +181,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			var exa69_vr = exa69_v13 + exa69_v23;
 			var exa69_r = ExtraMath.Hypoth(exa69_vr.X, exa69_vr.Y);
-			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, (double)exa69_r);
+			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, exa69_r);
 			return exa69_r;
 		}
 
@@ -199,11 +199,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 roundErrors ? RoundOff.Error(exa69_f13.ToDouble()) : exa69_f13.ToDouble(),
 			 roundErrors ? RoundOff.Error(exa69_f23.ToDouble()) : exa69_f23.ToDouble(),
 			 out exa69_v13, out exa69_v23, out exa69_r);
-			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, exa69_r);
 
 			var exponent = Convert.ToSByte(Math.Floor(Math.Log10(exa69_r)));
 			var mantissa = (float)(exa69_r * ExtraMath.Pow(10, (sbyte)(-1 * exponent)));
 			var result = new Exp(mantissa, 10, exponent);
+			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, result);
 			return result;
 		}
 		#endregion
@@ -236,7 +236,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		private static void Example69Console<TC, TV>(bool consoleOutput, TC exa69_f13, TC exa69_f23,
-		TwoDVector<TV> exa69_v13, TwoDVector<TV> exa69_v23, double exa69_r)
+		TwoDVector<TV> exa69_v13, TwoDVector<TV> exa69_v23, TC exa69_r)
 		where TV : struct, IConvertible, IFormattable, IEquatable<TV>, IComparable<TV>
 		{
 			if (consoleOutput) {
