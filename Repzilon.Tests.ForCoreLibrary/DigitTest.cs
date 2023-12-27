@@ -1,5 +1,5 @@
 ﻿//
-//  Program.cs
+//  DigitTest.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>

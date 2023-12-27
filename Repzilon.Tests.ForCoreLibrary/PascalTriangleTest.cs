@@ -1,5 +1,5 @@
 ﻿//
-//  Program.cs
+//  PascalTriangleTest.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>

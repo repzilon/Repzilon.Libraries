@@ -1,5 +1,5 @@
 ﻿//
-//  Program.cs
+//  MatrixTest.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -122,4 +122,3 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 	}
 }
-
