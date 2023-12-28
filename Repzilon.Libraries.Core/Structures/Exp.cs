@@ -18,9 +18,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IComparable<Exp>
-	// TODO : Implement IComparable<IConvertible>
-	// TODO : Implement IComparable
 	// TODO : Implement addition and subtraction operators
 	// TODO : Add method Parse
 	// TODO : Add method TryParse
@@ -28,10 +25,11 @@ namespace Repzilon.Libraries.Core
 	//		  a 6-bit adjusted base ([2; 65] stored as [0; 63]) and the
 	//        same signed 8-bit exponent, for more precision.
 	[StructLayout(LayoutKind.Auto), CLSCompliant(false)]
-	public struct Exp : IFormattable, IEquatable<Exp>,
-	IEquatable<double>, IEquatable<decimal>
+	public struct Exp : IComparable, IFormattable, IEquatable<Exp>, IComparable<Exp>,
+	IEquatable<double>, IEquatable<decimal>,
+	IComparable<double>, IComparable<decimal>
 #if (!NETSTANDARD1_1)
-	, IEquatable<IConvertible>
+	, IEquatable<IConvertible>, IComparable<IConvertible>
 #endif
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
@@ -166,7 +164,7 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
-#endregion
+		#endregion
 
 		public double ToDouble()
 		{
@@ -207,5 +205,128 @@ namespace Repzilon.Libraries.Core
 			}
 			return new Exp(m2, b, (SByte)e2);
 		}
+
+		#region IComparable members
+		public int CompareTo(object obj)
+		{
+			if (obj is Exp) {
+				return CompareTo((Exp)obj);
+			} else if (obj is double) {
+				return CompareTo((double)obj);
+			} else if (obj is decimal) {
+				return CompareTo((decimal)obj);
+			} else {
+#if (NETSTANDARD1_1)
+				return 1;
+#else
+				return CompareTo(obj as IConvertible);
+#endif
+			}
+		}
+
+		public int CompareTo(Exp other)
+		{
+			return this.ToDouble().CompareTo(other.ToDouble());
+		}
+
+		public int CompareTo(double other)
+		{
+			return this.ToDouble().CompareTo(other);
+		}
+
+		public int CompareTo(decimal other)
+		{
+			return this.ToDecimal().CompareTo(other);
+		}
+
+#if (!NETSTANDARD1_1)
+		public int CompareTo(IConvertible other)
+		{
+			return this.ToDouble().CompareTo(Convert.ToDouble(other));
+		}
+#endif
+
+		public static bool operator <(Exp left, Exp right)
+		{
+			return left.CompareTo(right) < 0;
+		}
+
+		public static bool operator <=(Exp left, Exp right)
+		{
+			return left.CompareTo(right) <= 0;
+		}
+
+		public static bool operator >(Exp left, Exp right)
+		{
+			return left.CompareTo(right) > 0;
+		}
+
+		public static bool operator >=(Exp left, Exp right)
+		{
+			return left.CompareTo(right) >= 0;
+		}
+
+		public static bool operator <(Exp left, double right)
+		{
+			return left.CompareTo(right) < 0;
+		}
+
+		public static bool operator <=(Exp left, double right)
+		{
+			return left.CompareTo(right) <= 0;
+		}
+
+		public static bool operator >(Exp left, double right)
+		{
+			return left.CompareTo(right) > 0;
+		}
+
+		public static bool operator >=(Exp left, double right)
+		{
+			return left.CompareTo(right) >= 0;
+		}
+
+		public static bool operator <(Exp left, decimal right)
+		{
+			return left.CompareTo(right) < 0;
+		}
+
+		public static bool operator <=(Exp left, decimal right)
+		{
+			return left.CompareTo(right) <= 0;
+		}
+
+		public static bool operator >(Exp left, decimal right)
+		{
+			return left.CompareTo(right) > 0;
+		}
+
+		public static bool operator >=(Exp left, decimal right)
+		{
+			return left.CompareTo(right) >= 0;
+		}
+
+#if (!NETSTANDARD1_1)
+		public static bool operator <(Exp left, IConvertible right)
+		{
+			return left.CompareTo(right) < 0;
+		}
+
+		public static bool operator <=(Exp left, IConvertible right)
+		{
+			return left.CompareTo(right) <= 0;
+		}
+
+		public static bool operator >(Exp left, IConvertible right)
+		{
+			return left.CompareTo(right) > 0;
+		}
+
+		public static bool operator >=(Exp left, IConvertible right)
+		{
+			return left.CompareTo(right) >= 0;
+		}
+#endif
+		#endregion
 	}
 }
