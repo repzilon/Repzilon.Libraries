@@ -21,9 +21,6 @@ namespace Repzilon.Libraries.Core
 	[StructLayout(LayoutKind.Auto)]
 	public struct ThreeDVector<T> : ICartesianVector<T>, IEquatable<ThreeDVector<T>>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 	{
 		public T X { get; private set; }
 		public T Y { get; private set; }
@@ -55,17 +52,10 @@ namespace Repzilon.Libraries.Core
 		#region ICartesianVector members
 		public double Norm()
 		{
-#if (NETSTANDARD1_1)
-			object cx = this.X;
-			object cy = this.Y;
-			object cz = this.Z;
+			ValueType cx = this.X;
+			ValueType cy = this.Y;
+			ValueType cz = this.Z;
 			if (cx is decimal) {
-#else
-			IConvertible cx = this.X;
-			IConvertible cy = this.Y;
-			IConvertible cz = this.Z;
-			if (cx.GetTypeCode() == TypeCode.Decimal) {
-#endif
 				return Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy, (decimal)cz));
 			} else {
 				return ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy), Convert.ToDouble(cz));
@@ -74,9 +64,6 @@ namespace Repzilon.Libraries.Core
 
 		public ThreeDVector<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 		{
 			return new ThreeDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>(), Z.ConvertTo<TOut>());
 		}
@@ -214,9 +201,6 @@ namespace Repzilon.Libraries.Core
 	{
 		public static ThreeDVector<T> Multiply<T, TScalar>(this ThreeDVector<T> v, TScalar k)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 		where TScalar : struct, IEquatable<TScalar>
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();

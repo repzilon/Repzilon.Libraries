@@ -23,9 +23,6 @@ namespace Repzilon.Libraries.Core
 	[StructLayout(LayoutKind.Auto)]
 	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 	{
 		public T X { get; private set; }
 		public T Y { get; private set; }
@@ -98,15 +95,9 @@ namespace Repzilon.Libraries.Core
 		#region ICartesianVector members
 		public double Norm()
 		{
-#if (NETSTANDARD1_1)
-			object cx = this.X;
-			object cy = this.Y;
+			ValueType cx = this.X;
+			ValueType cy = this.Y;
 			if (cx is decimal) {
-#else
-			IConvertible cx = this.X;
-			IConvertible cy = this.Y;
-			if (cx.GetTypeCode() == TypeCode.Decimal) {
-#endif
 				return Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy));
 			} else {
 				return ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy));
@@ -115,9 +106,6 @@ namespace Repzilon.Libraries.Core
 
 		public TwoDVector<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 		{
 			return new TwoDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>());
 		}
@@ -152,9 +140,6 @@ namespace Repzilon.Libraries.Core
 
 		public PolarVector<TOut> ToPolar<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 		{
 #if (NETSTANDARD1_1)
 			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
@@ -347,9 +332,6 @@ namespace Repzilon.Libraries.Core
 	{
 		public static TwoDVector<T> Multiply<T, TScalar>(this TwoDVector<T> v, TScalar k)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 		where TScalar : struct, IEquatable<TScalar>
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();

@@ -20,9 +20,6 @@ namespace Repzilon.Libraries.Core
 	, ICloneable
 #endif
 	where T : struct
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 	{
 		T X { get; }
 		T Y { get; }

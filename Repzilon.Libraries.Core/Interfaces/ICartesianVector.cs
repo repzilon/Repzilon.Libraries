@@ -17,15 +17,8 @@ namespace Repzilon.Libraries.Core
 {
 	public interface ICartesianVector<T> : IPoint<T>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 	{
-		ICartesianVector<TOut> Cast<TOut>() where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
-		;
+		ICartesianVector<TOut> Cast<TOut>() where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>;
 		double Norm();
 		ICartesianVector<T> ToUnitary();
 	}

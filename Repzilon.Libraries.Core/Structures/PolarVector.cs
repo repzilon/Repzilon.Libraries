@@ -27,9 +27,6 @@ namespace Repzilon.Libraries.Core
 	, ICloneable
 #endif
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 	{
 		public readonly T Norm;
 		public readonly Angle<T> Angle;
@@ -64,9 +61,6 @@ namespace Repzilon.Libraries.Core
 
 		public PolarVector<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 		{
 			var a = this.Angle;
 			return new PolarVector<TOut>(this.Norm.ConvertTo<TOut>(), a.Value.ConvertTo<TOut>(), a.Unit);

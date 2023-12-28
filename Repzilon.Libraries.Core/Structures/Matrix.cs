@@ -27,9 +27,6 @@ namespace Repzilon.Libraries.Core
 	, ICloneable
 #endif
 	where T : struct, IFormattable
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 	{
 		#region Static members
 		internal static readonly Func<T, T, T> add = BuildAdder();
@@ -173,13 +170,8 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public static Matrix<TOut> Cast<TIn, TOut>(Matrix<TIn> source)
-#if (NETSTANDARD1_1)
 		where TIn : struct, IFormattable
 		where TOut : struct, IFormattable
-#else
-		where TIn : struct, IConvertible, IFormattable
-		where TOut : struct, IConvertible, IFormattable
-#endif
 		{
 			var sc = source.Columns;
 			var other = new Matrix<TOut>(source.Lines, sc, source.m_bytAugmentedColumn);
@@ -192,9 +184,6 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public Matrix<TOut> Cast<TOut>() where TOut : struct, IFormattable
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		{
 			return Cast<T, TOut>(this);
 		}
@@ -547,9 +536,6 @@ namespace Repzilon.Libraries.Core
 	{
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
 		where T : struct, IFormattable
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		where TScalar : struct
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
@@ -564,9 +550,6 @@ namespace Repzilon.Libraries.Core
 
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
 		where T : struct, IFormattable
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		{
 			if (values.Lines == coefficients.Lines) {
 				var cc = coefficients.Columns;
@@ -615,14 +598,8 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-#if (!NETSTANDARD1_1)
-		[CLSCompliant(false)]
-		public static TOut ConvertTo<TOut>(this IConvertible value)
-		where TOut : struct, IConvertible
-#else
-		public static TOut ConvertTo<TOut>(this object value)
+		public static TOut ConvertTo<TOut>(this ValueType value)
 		where TOut : struct
-#endif
 		{
 			return (TOut)Convert.ChangeType(value, typeof(TOut));
 		}

@@ -19,36 +19,24 @@ namespace Repzilon.Libraries.Core
 	{
 		public static TwoDVector<T> New<T>(T x, T y)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		{
 			return new TwoDVector<T>(x, y);
 		}
 
 		public static ThreeDVector<T> New<T>(T x, T y, T z)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		{
 			return new ThreeDVector<T>(x, y, z);
 		}
 
 		public static PolarVector<T> New<T>(T norm, T angle, AngleUnit unit)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		{
 			return new PolarVector<T>(norm, angle, unit);
 		}
 
 		public static PolarVector<T> New<T>(T norm, Angle<T> angle)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		{
 			return new PolarVector<T>(norm, angle);
 		}

@@ -23,9 +23,6 @@ namespace Repzilon.Libraries.Core
 	, ICloneable
 #endif
 	where T : struct, IFormattable
-#if (!NETSTANDARD1_1)
-	, IConvertible
-#endif
 	{
 		public T Middle { get; private set; }
 		public T Margin { get; private set; }
@@ -54,9 +51,6 @@ namespace Repzilon.Libraries.Core
 
 		public ErrorMargin<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable
-#if (!NETSTANDARD1_1)
-		, IConvertible
-#endif
 		{
 			return new ErrorMargin<TOut>(this.Middle.ConvertTo<TOut>(), this.Margin.ConvertTo<TOut>());
 		}
