@@ -616,6 +616,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if (!NETSTANDARD1_1)
+		[CLSCompliant(false)]
 		public static TOut ConvertTo<TOut>(this IConvertible value)
 		where TOut : struct, IConvertible
 #else

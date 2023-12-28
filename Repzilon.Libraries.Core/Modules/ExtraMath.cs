@@ -96,6 +96,7 @@ namespace Repzilon.Libraries.Core
 			return Sqrt((a * a) + (b * b) + (c * c));
 		}
 
+		[CLSCompliant(false)]
 		public static Exp Abs(Exp number)
 		{
 			return new Exp(Math.Abs(number.Mantissa), number.Base, number.Exponent);

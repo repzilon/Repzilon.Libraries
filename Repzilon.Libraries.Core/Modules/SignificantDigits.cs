@@ -135,6 +135,7 @@ namespace Repzilon.Libraries.Core
 
 		#region Count IConvertible dispatch
 #if !NETSTANDARD1_1
+		[CLSCompliant(false)]
 		public static byte Count(IConvertible value)
 		{
 			if (value == null) {
