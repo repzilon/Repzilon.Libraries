@@ -18,7 +18,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Replace Extrapolate method by Interpolate methods which will have bounds checkings
 	// TODO : Have something to convert the formula when the regression was used with a non-linear model
 	[StructLayout(LayoutKind.Auto)]
 	public struct LinearRegressionResult : ILinearRegressionResult<double>,
@@ -32,6 +31,10 @@ namespace Repzilon.Libraries.Core
 		public double StdDevOfX;
 		public double AverageX;
 		public double AverageY;
+		public double MinX;
+		public double MaxX;
+		public double MinY;
+		public double MaxY;
 
 		#region ICloneable members
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
@@ -52,6 +55,10 @@ namespace Repzilon.Libraries.Core
 			lrr.StdDevOfY = this.StdDevOfY;
 			lrr.AverageX = this.AverageX;
 			lrr.AverageY = this.AverageY;
+			lrr.MinX = this.MinX;
+			lrr.MaxX = this.MaxX;
+			lrr.MinY = this.MinY;
+			lrr.MaxY = this.MaxX;
 			return lrr;
 		}
 		#endregion
@@ -67,6 +74,10 @@ namespace Repzilon.Libraries.Core
 			dlrr.StdDevOfY = (decimal)this.StdDevOfY;
 			dlrr.AverageX = (decimal)this.AverageX;
 			dlrr.AverageY = (decimal)this.AverageY;
+			dlrr.MinX = (decimal)this.MinX;
+			dlrr.MaxX = (decimal)this.MaxX;
+			dlrr.MinY = (decimal)this.MinY;
+			dlrr.MaxY = (decimal)this.MaxX;
 			return dlrr;
 		}
 
@@ -91,16 +102,28 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Science-related methods
-		public double ExtrapolateY(double x)
+		public double InterpolateY(double x)
 		{
+			var min = this.MinX;
+			var max = this.MaxX;
+			if ((x < min) || (x > max)) {
+				throw new ArgumentOutOfRangeException("x",
+				 String.Format("x is outside the range [{0}; {1}]", min, max));
+			}
 			return this.Intercept + (x * this.Slope);
 		}
 
-		public double ExtrapolateX(double y)
+		public double InterpolateX(double y)
 		{
+			var min = this.MinY;
+			var max = this.MaxY;
+			if ((y < min) || (y > max)) {
+				throw new ArgumentOutOfRangeException("y",
+				 String.Format("y is outside the range [{0}; {1}]", min, max));
+			}
 			return (y - this.Intercept) / this.Slope;
 		}
-		
+
 		public double Determination()
 		{
 			var r = this.Correlation;
@@ -111,7 +134,7 @@ namespace Repzilon.Libraries.Core
 		#region Statistics-related methods
 		public double TotalError(double x)
 		{
-			return RoundOff.Error(ExtrapolateY(x) - x);
+			return RoundOff.Error(InterpolateY(x) - x);
 		}
 
 		public double RelativeBias(double x)
@@ -199,7 +222,11 @@ namespace Repzilon.Libraries.Core
 				   StdDevOfY == other.StdDevOfY &&
 				   StdDevOfX == other.StdDevOfX &&
 				   AverageX == other.AverageX &&
-				   AverageY == other.AverageY;
+				   AverageY == other.AverageY &&
+				   MinX == other.MinX &&
+				   MaxY == other.MaxX &&
+				   MinY == other.MinY &&
+				   MaxY == other.MaxY;
 		}
 
 		public override int GetHashCode()
@@ -213,7 +240,11 @@ namespace Repzilon.Libraries.Core
 				hashCode = hashCode * magic + StdDevOfY.GetHashCode();
 				hashCode = hashCode * magic + StdDevOfX.GetHashCode();
 				hashCode = hashCode * magic + AverageX.GetHashCode();
-				return hashCode * magic + AverageY.GetHashCode();
+				hashCode = hashCode * magic + AverageY.GetHashCode();
+				hashCode = hashCode * magic + MinX.GetHashCode();
+				hashCode = hashCode * magic + MaxX.GetHashCode();
+				hashCode = hashCode * magic + MinY.GetHashCode();
+				return hashCode * magic + MaxY.GetHashCode();
 			}
 		}
 
@@ -226,7 +257,11 @@ namespace Repzilon.Libraries.Core
 				   (decimal)StdDevOfY == other.StdDevOfY &&
 				   (decimal)StdDevOfX == other.StdDevOfX &&
 				   (decimal)AverageX == other.AverageX &&
-				   (decimal)AverageY == other.AverageY;
+				   (decimal)AverageY == other.AverageY &&
+				   (decimal)MinX == other.MinX &&
+				   (decimal)MaxY == other.MaxX &&
+				   (decimal)MinY == other.MinY &&
+				   (decimal)MaxY == other.MaxY;
 		}
 
 		public static bool operator ==(LinearRegressionResult left, LinearRegressionResult right)

@@ -111,7 +111,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("x = {0} k = {1}\ty^ = {2}",
 			 x.ToString(numberFormat, culture),
 			 repeated ? "Infinity" : "1\t",
-			 new ErrorMargin<T>(lrp.ExtrapolateY(x),
+			 new ErrorMargin<T>(lrp.InterpolateY(x),
 			 Matrix<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
 		}
 

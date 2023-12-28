@@ -27,8 +27,8 @@ namespace Repzilon.Libraries.Core
 
 		T Determination();
 		T ExplainedVariation();
-		T ExtrapolateX(T y);
-		T ExtrapolateY(T x);
+		T InterpolateX(T y);
+		T InterpolateY(T x);
 		T InterceptStdDev();
 		T RelativeBias(T x);
 		T ResidualStdDev();
