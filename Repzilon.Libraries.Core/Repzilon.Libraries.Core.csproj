@@ -1,20 +1,14 @@
 <Project Sdk="Microsoft.NET.Sdk">
-
   <PropertyGroup>
     <TargetFrameworks>netstandard2.0;netstandard1.6;netstandard1.3;netstandard1.1</TargetFrameworks>
+    <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
-
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
     <LangVersion>3</LangVersion>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
     <LangVersion>3</LangVersion>
   </PropertyGroup>
-  <ItemGroup>
-    <None Remove="Modules\" />
-    <None Remove="Structures\" />
-    <None Remove="Interfaces\" />
-  </ItemGroup>
   <ItemGroup>
     <Folder Include="Modules\" />
     <Folder Include="Structures\" />
