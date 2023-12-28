@@ -18,7 +18,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<IConvertible>
 	// TODO : Implement IComparable<Exp>
 	// TODO : Implement IComparable<IConvertible>
 	// TODO : Implement IComparable
@@ -29,7 +28,11 @@ namespace Repzilon.Libraries.Core
 	//		  a 6-bit adjusted base ([2; 65] stored as [0; 63]) and the
 	//        same signed 8-bit exponent, for more precision.
 	[StructLayout(LayoutKind.Auto), CLSCompliant(false)]
-	public struct Exp : IFormattable, IEquatable<Exp>
+	public struct Exp : IFormattable, IEquatable<Exp>,
+	IEquatable<double>, IEquatable<decimal>
+#if (!NETSTANDARD1_1)
+	, IEquatable<IConvertible>
+#endif
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
@@ -107,7 +110,19 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is Exp && Equals((Exp)obj);
+			if (obj is Exp) {
+				return Equals((Exp)obj);
+			} else if (obj is double) {
+				return Equals((double)obj);
+			} else if (obj is decimal) {
+				return Equals((decimal)obj);
+			} else {
+#if (NETSTANDARD1_1)
+				return false;
+#else
+				return Equals(obj as IConvertible);
+#endif
+			}
 		}
 
 		public bool Equals(Exp other)
@@ -115,6 +130,23 @@ namespace Repzilon.Libraries.Core
 			return (mantissaThousandths == other.mantissaThousandths) &&
 			 (Base == other.Base) && (Exponent == other.Exponent);
 		}
+
+		public bool Equals(double other)
+		{
+			return this.ToDouble() == other;
+		}
+
+		public bool Equals(decimal other)
+		{
+			return this.ToDecimal() == other;
+		}
+
+#if (!NETSTANDARD1_1)
+		public bool Equals(IConvertible other)
+		{
+			return (other != null) && (this.ToDouble() == Convert.ToDouble(other));
+		}
+#endif
 
 		public override int GetHashCode()
 		{
@@ -134,7 +166,7 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
-		#endregion
+#endregion
 
 		public double ToDouble()
 		{
