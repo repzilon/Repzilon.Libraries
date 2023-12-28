@@ -1,5 +1,5 @@
 ﻿//
-//  LinearRegressionResult.cs
+//  LinearRegressionResultM.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -18,11 +18,9 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement ICloneable
 	[StructLayout(LayoutKind.Auto)]
 	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
-	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>,
-	IFormattable
+	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
 	{
 		public int Count;
 		public decimal Slope { get; set; }
@@ -32,6 +30,43 @@ namespace Repzilon.Libraries.Core
 		public decimal StdDevOfX;
 		public decimal AverageX;
 		public decimal AverageY;
+
+		#region ICloneable members
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+		object ICloneable.Clone()
+		{
+			return this.Clone();
+		}
+#endif
+
+		public DecimalLinearRegressionResult Clone()
+		{
+			var dlrr = new DecimalLinearRegressionResult();
+			dlrr.Count = this.Count;
+			dlrr.Slope = this.Slope;
+			dlrr.Intercept = this.Intercept;
+			dlrr.Correlation = this.Correlation;
+			dlrr.StdDevOfX = this.StdDevOfX;
+			dlrr.StdDevOfY = this.StdDevOfY;
+			dlrr.AverageX = this.AverageX;
+			dlrr.AverageY = this.AverageY;
+			return dlrr;
+		}
+		#endregion
+
+		public LinearRegressionResult ToDouble()
+		{
+			var lrr = new LinearRegressionResult();
+			lrr.Count = this.Count;
+			lrr.Slope = (double)this.Slope;
+			lrr.Intercept = (double)this.Intercept;
+			lrr.Correlation = (double)this.Correlation;
+			lrr.StdDevOfX = (double)this.StdDevOfX;
+			lrr.StdDevOfY = (double)this.StdDevOfY;
+			lrr.AverageX = (double)this.AverageX;
+			lrr.AverageY = (double)this.AverageY;
+			return lrr;
+		}
 
 		#region ToString
 		public override string ToString()
@@ -52,20 +87,6 @@ namespace Repzilon.Libraries.Core
 			return stbFormula.ToString();
 		}
 		#endregion
-
-		public LinearRegressionResult ToDouble()
-		{
-			var lrr = new LinearRegressionResult();
-			lrr.Count = this.Count;
-			lrr.Slope = (double)this.Slope;
-			lrr.Intercept = (double)this.Intercept;
-			lrr.Correlation = (double)this.Correlation;
-			lrr.StdDevOfX = (double)this.StdDevOfX;
-			lrr.StdDevOfY = (double)this.StdDevOfY;
-			lrr.AverageX = (double)this.AverageX;
-			lrr.AverageY = (double)this.AverageY;
-			return lrr;
-		}
 
 		#region Science-related methods
 		public decimal ExtrapolateY(decimal x)

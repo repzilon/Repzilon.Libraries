@@ -16,6 +16,9 @@ using System;
 namespace Repzilon.Libraries.Core
 {
 	public interface ILinearRegressionResult<T> : IFormattable
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+	, ICloneable
+#endif
 	where T : struct
 #if (!NETSTANDARD1_1)
 	, IConvertible

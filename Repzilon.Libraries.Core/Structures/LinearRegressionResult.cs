@@ -1,5 +1,5 @@
 ﻿//
-//  LinearRegression.cs
+//  LinearRegressionResult.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -20,11 +20,9 @@ namespace Repzilon.Libraries.Core
 {
 	// TODO : Replace Extrapolate method by Interpolate methods which will have bounds checkings
 	// TODO : Have something to convert the formula when the regression was used with a non-linear model
-	// TODO : Implement ICloneable
 	[StructLayout(LayoutKind.Auto)]
 	public struct LinearRegressionResult : ILinearRegressionResult<double>,
-	IEquatable<LinearRegressionResult>, IEquatable<DecimalLinearRegressionResult>,
-	IFormattable
+	IEquatable<LinearRegressionResult>, IEquatable<DecimalLinearRegressionResult>
 	{
 		public int Count;
 		public double Slope { get; set; }
@@ -34,6 +32,43 @@ namespace Repzilon.Libraries.Core
 		public double StdDevOfX;
 		public double AverageX;
 		public double AverageY;
+
+		#region ICloneable members
+#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+		object ICloneable.Clone()
+		{
+			return this.Clone();
+		}
+#endif
+
+		public LinearRegressionResult Clone()
+		{
+			var lrr = new LinearRegressionResult();
+			lrr.Count = this.Count;
+			lrr.Slope = this.Slope;
+			lrr.Intercept = this.Intercept;
+			lrr.Correlation = this.Correlation;
+			lrr.StdDevOfX = this.StdDevOfX;
+			lrr.StdDevOfY = this.StdDevOfY;
+			lrr.AverageX = this.AverageX;
+			lrr.AverageY = this.AverageY;
+			return lrr;
+		}
+		#endregion
+
+		public DecimalLinearRegressionResult ToDecimal()
+		{
+			var dlrr = new DecimalLinearRegressionResult();
+			dlrr.Count = this.Count;
+			dlrr.Slope = (decimal)this.Slope;
+			dlrr.Intercept = (decimal)this.Intercept;
+			dlrr.Correlation = (decimal)this.Correlation;
+			dlrr.StdDevOfX = (decimal)this.StdDevOfX;
+			dlrr.StdDevOfY = (decimal)this.StdDevOfY;
+			dlrr.AverageX = (decimal)this.AverageX;
+			dlrr.AverageY = (decimal)this.AverageY;
+			return dlrr;
+		}
 
 		#region ToString
 		public override string ToString()
@@ -54,20 +89,6 @@ namespace Repzilon.Libraries.Core
 			return stbFormula.ToString();
 		}
 		#endregion
-
-		public DecimalLinearRegressionResult ToDecimal()
-		{
-			var dlrr = new DecimalLinearRegressionResult();
-			dlrr.Count = this.Count;
-			dlrr.Slope = (decimal)this.Slope;
-			dlrr.Intercept = (decimal)this.Intercept;
-			dlrr.Correlation = (decimal)this.Correlation;
-			dlrr.StdDevOfX = (decimal)this.StdDevOfX;
-			dlrr.StdDevOfY = (decimal)this.StdDevOfY;
-			dlrr.AverageX = (decimal)this.AverageX;
-			dlrr.AverageY = (decimal)this.AverageY;
-			return dlrr;
-		}
 
 		#region Science-related methods
 		public double ExtrapolateY(double x)
