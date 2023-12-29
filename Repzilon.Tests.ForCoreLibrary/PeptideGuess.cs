@@ -17,6 +17,83 @@ using System.Linq;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
+	/*	This was partly built using Regex.Replace
+		Match pattern:
+		AminoAcid.Create[(]'([A-Z])', "([A-Za-zé]+)", "([A-Za-z é]+)"[)].SetPkas[(][0-9.false,tru ]+[)]
+		Replace pattern:
+		///<summary>$3</summary>
+		$2 = (byte)'$1'
+	 */
+	/// <summary>
+	/// List of alpha amino acid three letter codes
+	/// </summary>
+	/// <remarks>
+	/// The numeric representation is the ASCII/ISO-8859-1/Unicode
+	/// code point of the single capital letter code.
+	/// </remarks>
+	enum AlphaAminoAcid : byte
+	{	
+		///<summary>Aspartic acid</summary>
+		Asp = (byte)'D',
+
+		///<summary>Glutamic acid</summary>
+		Glu = (byte)'E',
+
+		///<summary>Alanine</summary>
+		Ala = (byte)'A',
+
+		///<summary>Arginine</summary>
+		Arg = (byte)'R',
+
+		///<summary>Asparagine</summary>
+		Asn = (byte)'N',
+
+		///<summary>Cysteine</summary>
+		Cys = (byte)'C',
+
+		///<summary>Glutamine</summary>
+		Gln = (byte)'Q',
+
+		///<summary>Glycine</summary>
+		Gly = (byte)'G',
+
+		///<summary>Histidine</summary>
+		His = (byte)'H',
+
+		///<summary>Isoleucine</summary>
+		Ile = (byte)'I',
+
+		///<summary>Leucine</summary>
+		Leu = (byte)'L',
+
+		///<summary>Lysine</summary>
+		Lys = (byte)'K',
+
+		///<summary>Methionine</summary>
+		Met = (byte)'M',
+
+		///<summary>Phenylalanine</summary>
+		Phe = (byte)'F',
+
+		///<summary>Proline</summary>
+		Pro = (byte)'P',
+
+		///<summary>Serine</summary>
+		Ser = (byte)'S',
+
+		///<summary>Threonine</summary>
+		Thr = (byte)'T',
+
+		///<summary>Tryptophane</summary>
+		Trp = (byte)'W',
+
+		///<summary>Tyrosine</summary>
+		Tyr = (byte)'Y',
+
+		///<summary>Valine</summary>
+		Val = (byte)'V'
+	}
+
 	static class PeptideGuess
 	{
 		internal static void Run(string[] args)
