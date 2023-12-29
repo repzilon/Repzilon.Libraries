@@ -12,7 +12,8 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-using Measure = System.Collections.Generic.KeyValuePair<string, double>;
+using Coefficient = System.Single;
+using Measure = System.Collections.Generic.KeyValuePair<string, float>;
 
 namespace Repzilon.Libraries.Core
 {
@@ -28,19 +29,19 @@ namespace Repzilon.Libraries.Core
 				ValidateUnits(mother, child, blnInitialMotherVolume, mother,
 				 "Child solution volume unit is different from the mother solution.");
 
-				var childSolutionVolume = child.SolutionVolume.Value.Value;
-				var solute = childSolutionVolume * child.Concentration.Value / mother.Concentration.Value;
+				Coefficient childSolutionVolume = (Coefficient)child.SolutionVolume.Value.Value;
+				Coefficient solute = (Coefficient)(childSolutionVolume * child.Concentration.Value / mother.Concentration.Value);
 				child.SoluteVolume = solute;
 				child.SolventVolume = childSolutionVolume - solute;
 
-				double motherVolume;
+				Coefficient motherVolume;
 				if (blnInitialMotherVolume || mother.SolutionVolume.HasValue) {
 					var msvv = mother.SolutionVolume.Value.Value;
-					motherVolume = blnInitialMotherVolume ? msvv - solute : msvv + solute;
+					motherVolume = blnInitialMotherVolume ? (Coefficient)(msvv - solute) : (Coefficient)(msvv + solute);
 				} else {
 					motherVolume = solute;
 				}
-				mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, motherVolume);
+				mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, (Coefficient)motherVolume);
 
 				children[i] = child;
 			}
@@ -52,22 +53,22 @@ namespace Repzilon.Libraries.Core
 			ValidateLength(children);
 
 			Solution child;
-			double volumeFromPrevious = 0;
+			Coefficient volumeFromPrevious = 0;
 			for (int i = children.Length - 1; i >= 0; i--) {
 				child = children[i];
 				var adjacent = i > 0 ? children[i - 1] : mother;
 				ValidateUnits(mother, child, i > 0, adjacent,
 				 "Adjacent child solution volume units are different.");
 
-				var tempVolume = child.SolutionVolume.Value.Value + volumeFromPrevious;
-				volumeFromPrevious = child.Concentration.Value * tempVolume / adjacent.Concentration.Value;
+				Coefficient tempVolume = (Coefficient)(child.SolutionVolume.Value.Value + volumeFromPrevious);
+				volumeFromPrevious = (Coefficient)(child.Concentration.Value * tempVolume / adjacent.Concentration.Value);
 				child.SolventVolume = RoundOff.Error(tempVolume - volumeFromPrevious);
 				child.SoluteVolume = RoundOff.Error(volumeFromPrevious);
 
 				children[i] = child;
 			}
 			child = children[0];
-			mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, child.SoluteVolume.Value);
+			mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, (Coefficient)child.SoluteVolume.Value);
 			return children;
 		}
 

@@ -15,7 +15,8 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
-using Measure = System.Collections.Generic.KeyValuePair<string, double>;
+using Coefficient = System.Single;
+using Measure = System.Collections.Generic.KeyValuePair<string, float>;
 
 namespace Repzilon.Libraries.Core
 {
@@ -24,8 +25,8 @@ namespace Repzilon.Libraries.Core
 	{
 		public Measure Concentration;
 		public Measure? SolutionVolume;
-		public double? SolventVolume;
-		public double? SoluteVolume;
+		public Coefficient? SolventVolume;
+		public Coefficient? SoluteVolume;
 
 		#region Equals
 		public override bool Equals(object obj)
@@ -95,7 +96,7 @@ namespace Repzilon.Libraries.Core
 			return stbText.ToString();
 		}
 
-		private static void AppendMeasure(StringBuilder output, bool hasValue, double? volume, string volumeUnit, string kind)
+		private static void AppendMeasure(StringBuilder output, bool hasValue, Coefficient? volume, string volumeUnit, string kind)
 		{
 			if (hasValue) {
 				output.Append(volume).Append(' ').Append(volumeUnit).Append(kind);
@@ -108,34 +109,34 @@ namespace Repzilon.Libraries.Core
 		}
 
 		#region Factory methods
-		public static Solution Init(double concentration, string unit)
+		public static Solution Init(Coefficient concentration, string unit)
 		{
 			var sol = new Solution();
 			sol.Concentration = InitMeasure(concentration, unit);
 			return sol;
 		}
 
-		public static Solution Init(double concentration, string concentrationUnit,
-		double solutionVolume, string solutionUnit)
+		public static Solution Init(Coefficient concentration, string concentrationUnit,
+		Coefficient solutionVolume, string solutionUnit)
 		{
 			var sol = Init(concentration, concentrationUnit);
 			sol.SolutionVolume = InitMeasure(solutionVolume, solutionUnit);
 			return sol;
 		}
 
-		private static Measure InitMeasure(double value, string unit)
+		private static Measure InitMeasure(Coefficient value, string unit)
 		{
 			if (String.IsNullOrEmpty(unit)) {
 				throw new ArgumentNullException("unit");
 			}
-			if (Double.IsNaN(value)) {
+			if (Coefficient.IsNaN(value)) {
 				throw new ArgumentNullException("value");
 			}
 			return new Measure(unit, value);
 		}
 
-		public static Solution[] InitMany(double solutionVolume, string solutionUnit, string concentrationUnit,
-		params double[] concentrations)
+		public static Solution[] InitMany(Coefficient solutionVolume, string solutionUnit, string concentrationUnit,
+		params Coefficient[] concentrations)
 		{
 			if ((concentrations == null) || (concentrations.Length < 1)) {
 				throw new ArgumentNullException("concentrations");

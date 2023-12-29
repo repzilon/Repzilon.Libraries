@@ -24,7 +24,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 Solution.InitMany(200, "mL", "%", 2, 1));
 
 			PerformSerialDilution("Exemple 18 :", Solution.Init(5, "g/L"),
-			 Solution.Init(2, "g/L", 0.15, "L"), Solution.Init(0.5, "g/L", 0.10, "L"));
+			 Solution.Init(2, "g/L", 0.15f, "L"), Solution.Init(0.5f, "g/L", 0.10f, "L"));
 
 			var exer1_12_m = Solution.Init(20, "mol/L");
 			var exer1_12_f = Solution.InitMany(15, "mL", "mol/L", 8, 5);
@@ -32,13 +32,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			PerformSerialDilution("Exercices 1 #12 b) :", exer1_12_m, exer1_12_f);
 
 			PerformSerialDilution("Exercices 1 #13 :", Solution.Init(30, "%"),
-			 Solution.InitMany(0.5, "L", "%", 7, 5, 2));
+			 Solution.InitMany(0.5f, "L", "%", 7, 5, 2));
 
 			PerformDirectDilution("Exercices 1 #14 ", Solution.Init(1, "Cm"), true,
-			 Solution.InitMany(10, "µL", "Cm", 0.25, 0.2, 0.1));
+			 Solution.InitMany(10, "µL", "Cm", 0.25f, 0.2f, 0.1f));
 
 			PerformSerialDilution("Exercices 1 #15 ", Solution.Init(1, "Cm"),
-			 Solution.InitMany(150, "mL", "Cm", 0.5, 0.2, 0.05, 0.02));
+			 Solution.InitMany(150, "mL", "Cm", 0.5f, 0.2f, 0.05f, 0.02f));
 		}
 
 		private static void PerformDirectDilution(string title, Solution mother, bool outputMother, params Solution[] children)
