@@ -68,9 +68,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		public float Isoelectric()
 		{
-			return Single.IsNaN(this.pKaR) ?
-			 Chemistry.AminoAcidIsoelectric(this.pKa1, this.pKa2) :
-			 Chemistry.AminoAcidIsoelectric(this.pKa1, this.pKa2, this.DicationWhenVeryAcid ? (byte)2 : (byte)1, this.pKaR);
+			var ar = this.pKaR;
+			var a1 = this.pKa1;
+			var a2 = this.pKa2;
+			return Single.IsNaN(ar) ?
+			 Chemistry.AminoAcidIsoelectric(a1, a2) :
+			 Chemistry.AminoAcidIsoelectric(a1, a2, this.DicationWhenVeryAcid ? (byte)2 : (byte)1, ar);
 		}
 
 		#region Equals

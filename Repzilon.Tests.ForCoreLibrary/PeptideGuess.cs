@@ -100,22 +100,23 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var lstAminoAcids = AminoAcid.AlphaList;
 			var dicAminoAcids = new SortedDictionary<string, AminoAcid>();
-			for (var i = 0; i < lstAminoAcids.Count; i++) {
+			int i;
+			for (i = 0; i < lstAminoAcids.Count; i++) {
 				dicAminoAcids.Add(lstAminoAcids[i].Symbol, lstAminoAcids[i]);
 			}
 
 			const int kIterations = 270;
 			List<List<string>> lstRev10Sym = null;
 			DateTime dtmStart = DateTime.UtcNow;
-			for (int i = 0; i < kIterations; i++) {
-				lstRev10Sym = SolveRevision10WithSymbol(lstAminoAcids, dicAminoAcids);
+			for (i = 0; i < kIterations; i++) {
+				lstRev10Sym = SolveRevision10WithSymbol(dicAminoAcids);
 			}
 			TimeSpan tsSymbol = DateTime.UtcNow - dtmStart;
 			OutputArrangements("Révision #10 :", lstRev10Sym);
 			Console.WriteLine("{0} itérations en {1:n0}ms", kIterations, tsSymbol.TotalMilliseconds);
 		}
 
-		private static List<List<string>> SolveRevision10WithSymbol(IReadOnlyList<AminoAcid> lstAminoAcids, SortedDictionary<string, AminoAcid> dicAminoAcids)
+		private static List<List<string>> SolveRevision10WithSymbol(IReadOnlyDictionary<string, AminoAcid> dicAminoAcids)
 		{
 			string[] rev10_allowed = new string[] { "Asp", "Val", "Gly", "Tyr", "Ile", "Cys", "Arg", "Leu", "Ala" };
 
