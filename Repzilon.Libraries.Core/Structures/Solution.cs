@@ -35,10 +35,14 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(Solution other)
 		{
+			var vent = SolventVolume;
+			var ute = SoluteVolume;
+			var ovent = other.SolventVolume;
+			var oute = other.SoluteVolume;
 			return EqualityComparer<Measure>.Default.Equals(Concentration, other.Concentration) &&
 				   EqualityComparer<Measure?>.Default.Equals(SolutionVolume, other.SolutionVolume) &&
-				   EqualityComparer<double?>.Default.Equals(SolventVolume, other.SolventVolume) &&
-				   EqualityComparer<double?>.Default.Equals(SoluteVolume, other.SoluteVolume);
+				   (vent.HasValue == ovent.HasValue) && (vent.Value == ovent.Value) &&
+				   (ute.HasValue == oute.HasValue) && (ute.Value == oute.Value);
 		}
 
 		public override int GetHashCode()
@@ -66,24 +70,24 @@ namespace Repzilon.Libraries.Core
 		public override string ToString()
 		{
 			var stbText = new StringBuilder();
-			if (this.SolutionVolume.HasValue) {
-				AppendMeasure(stbText, this.SolutionVolume.Value).Append(' ');
+			var utionVhv = this.SolutionVolume.HasValue;
+			Measure utionVv = default(Measure);
+			if (utionVhv) {
+				utionVv = this.SolutionVolume.Value;
+				AppendMeasure(stbText, utionVv).Append(' ');
 			}
 			AppendMeasure(stbText.Append("@ "), this.Concentration);
-			if (this.SolutionVolume.HasValue) {
-				var volumeUnit = this.SolutionVolume.Value.Key;
+			if (utionVhv) {
+				var volumeUnit = utionVv.Key;
 				if (!String.IsNullOrEmpty(volumeUnit)) {
-					if (this.SoluteVolume.HasValue || this.SolventVolume.HasValue) {
-						stbText.Append(" (");
-						if (this.SoluteVolume.HasValue) {
-							stbText.Append(this.SoluteVolume.Value).Append(' ').Append(volumeUnit).Append(" solute");
-						}
-						if (this.SoluteVolume.HasValue && this.SolventVolume.HasValue) {
+					var u = this.SoluteVolume.HasValue;
+					var v = this.SolventVolume.HasValue;
+					if (u || v) {
+						AppendMeasure(stbText.Append(" ("), u, this.SoluteVolume, volumeUnit, " solute");
+						if (u && v) {
 							stbText.Append(" + ");
 						}
-						if (this.SolventVolume.HasValue) {
-							stbText.Append(this.SolventVolume.Value).Append(' ').Append(volumeUnit).Append(" solvent");
-						}
+						AppendMeasure(stbText, v, this.SolventVolume, volumeUnit, " solvent");
 						stbText.Append(')');
 					}
 				}
@@ -91,11 +95,19 @@ namespace Repzilon.Libraries.Core
 			return stbText.ToString();
 		}
 
+		private static void AppendMeasure(StringBuilder output, bool hasValue, double? volume, string volumeUnit, string kind)
+		{
+			if (hasValue) {
+				output.Append(volume).Append(' ').Append(volumeUnit).Append(kind);
+			}
+		}
+
 		private static StringBuilder AppendMeasure(StringBuilder output, Measure measure)
 		{
 			return output.Append(measure.Value).Append(' ').Append(measure.Key);
 		}
 
+		#region Factory methods
 		public static Solution Init(double concentration, string unit)
 		{
 			var sol = new Solution();
@@ -134,5 +146,6 @@ namespace Repzilon.Libraries.Core
 			}
 			return allSolutions;
 		}
+		#endregion
 	}
 }

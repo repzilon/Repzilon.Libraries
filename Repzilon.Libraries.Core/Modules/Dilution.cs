@@ -14,40 +14,33 @@
 using System;
 using Measure = System.Collections.Generic.KeyValuePair<string, double>;
 
-
 namespace Repzilon.Libraries.Core
 {
 	public static class Dilution
 	{
 		public static Solution[] Direct(ref Solution mother, params Solution[] children)
 		{
-			if ((children == null) || (children.Length < 1)) {
-				throw new ArgumentNullException("children");
-			}
+			ValidateLength(children);
 
 			var blnInitialMotherVolume = mother.SolutionVolume.HasValue;
 			for (int i = 0; i < children.Length; i++) {
 				var child = children[i];
-				if (child.Concentration.Key != mother.Concentration.Key) {
-					throw new ArgumentException("Child solution concentration unit is different from the mother solution.");
-				}
-				if (blnInitialMotherVolume) {
-					if (child.SolutionVolume.Value.Key != mother.SolutionVolume.Value.Key) {
-						throw new ArgumentException("Child solution volume unit is different from the mother solution.");
-					}
-				}
+				ValidateUnits(mother, child, blnInitialMotherVolume, mother,
+				 "Child solution volume unit is different from the mother solution.");
 
 				var childSolutionVolume = child.SolutionVolume.Value.Value;
-				child.SoluteVolume = childSolutionVolume * child.Concentration.Value / mother.Concentration.Value;
-				child.SolventVolume = childSolutionVolume - child.SoluteVolume;
+				var solute = childSolutionVolume * child.Concentration.Value / mother.Concentration.Value;
+				child.SoluteVolume = solute;
+				child.SolventVolume = childSolutionVolume - solute;
 
-				if (blnInitialMotherVolume) {
-					mother.SolutionVolume = new Measure(mother.SolutionVolume.Value.Key, mother.SolutionVolume.Value.Value - child.SoluteVolume.Value);
-				} else if (mother.SolutionVolume.HasValue) {
-					mother.SolutionVolume = new Measure(mother.SolutionVolume.Value.Key, mother.SolutionVolume.Value.Value + child.SoluteVolume.Value);
+				double motherVolume;
+				if (blnInitialMotherVolume || mother.SolutionVolume.HasValue) {
+					var msvv = mother.SolutionVolume.Value.Value;
+					motherVolume = blnInitialMotherVolume ? msvv - solute : msvv + solute;
 				} else {
-					mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, child.SoluteVolume.Value);
+					motherVolume = solute;
 				}
+				mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, motherVolume);
 
 				children[i] = child;
 			}
@@ -56,34 +49,45 @@ namespace Repzilon.Libraries.Core
 
 		public static Solution[] Serial(ref Solution mother, params Solution[] children)
 		{
-			if ((children == null) || (children.Length < 1)) {
-				throw new ArgumentNullException("children");
-			}
+			ValidateLength(children);
 
+			Solution child;
 			double volumeFromPrevious = 0;
 			for (int i = children.Length - 1; i >= 0; i--) {
-				var child = children[i];
-				if (child.Concentration.Key != mother.Concentration.Key) {
-					throw new ArgumentException("Child solution concentration unit is different from the mother solution.");
-				}
-				if (i >= 1) {
-					if (child.SolutionVolume.Value.Key != children[i - 1].SolutionVolume.Value.Key) {
-						throw new ArgumentException("Adjacent child solution volume units are different.");
-					}
-				}
+				child = children[i];
+				var adjacent = i > 0 ? children[i - 1] : mother;
+				ValidateUnits(mother, child, i > 0, adjacent,
+				 "Adjacent child solution volume units are different.");
 
-				var childSolutionVolume = child.SolutionVolume.Value.Value;
-				var tempVolume = childSolutionVolume + volumeFromPrevious;
-				volumeFromPrevious = child.Concentration.Value * tempVolume /
-				 ((i > 0) ? children[i - 1] : mother).Concentration.Value;
+				var tempVolume = child.SolutionVolume.Value.Value + volumeFromPrevious;
+				volumeFromPrevious = child.Concentration.Value * tempVolume / adjacent.Concentration.Value;
 				child.SolventVolume = RoundOff.Error(tempVolume - volumeFromPrevious);
 				child.SoluteVolume = RoundOff.Error(volumeFromPrevious);
 
 				children[i] = child;
 			}
-			mother.SolutionVolume = new Measure(children[0].SolutionVolume.Value.Key, children[0].SoluteVolume.Value);
+			child = children[0];
+			mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, child.SoluteVolume.Value);
 			return children;
+		}
+
+		private static void ValidateLength(Solution[] children)
+		{
+			if ((children == null) || (children.Length < 1)) {
+				throw new ArgumentNullException("children");
+			}
+		}
+
+		private static void ValidateUnits(Solution mother, Solution child, bool checkVolume, Solution other, string volumeUnitDifferentMessage)
+		{
+			if (child.Concentration.Key != mother.Concentration.Key) {
+				throw new ArgumentException("Child solution concentration unit is different from the mother solution.");
+			}
+			if (checkVolume) {
+				if (child.SolutionVolume.Value.Key != other.SolutionVolume.Value.Key) {
+					throw new ArgumentException(volumeUnitDifferentMessage);
+				}
+			}
 		}
 	}
 }
-

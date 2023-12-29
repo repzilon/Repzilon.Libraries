@@ -16,7 +16,6 @@ using System.Collections.Generic;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Add serial dilution
 	public static class ExtraMath
 	{
 		/// <summary>

@@ -20,58 +20,56 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
-			var exa17_m = Solution.Init(20, "%", 50, "mL");
-			var exa17_f = Solution.InitMany(200, "mL", "%", 2, 1);
-			var exa17_out = Dilution.Direct(ref exa17_m, exa17_f);
-			OutputDirectDilution("Exemple 17 :", exa17_out);
+			PerformDirectDilution("Exemple 17 :", Solution.Init(20, "%", 50, "mL"), true,
+			 Solution.InitMany(200, "mL", "%", 2, 1));
 
-			var exa18_m = Solution.Init(5, "g/L");
-			var exa18_s1 = Solution.Init(2, "g/L", 0.15, "L");
-			var exa18_s2 = Solution.Init(0.5, "g/L", 0.10, "L");
-			var exa18_out = Dilution.Serial(ref exa18_m, exa18_s1, exa18_s2);
-			OutputSerialDilution("Exemple 18 :", exa18_out);
+			PerformSerialDilution("Exemple 18 :", Solution.Init(5, "g/L"),
+			 Solution.Init(2, "g/L", 0.15, "L"), Solution.Init(0.5, "g/L", 0.10, "L"));
 
 			var exer1_12_m = Solution.Init(20, "mol/L");
 			var exer1_12_f = Solution.InitMany(15, "mL", "mol/L", 8, 5);
-			var exer1_12a_out = Dilution.Direct(ref exer1_12_m, exer1_12_f);
-			OutputDirectDilution("Exercices 1 #12 a) :", exer1_12a_out);
-			var exer1_12b_out = Dilution.Serial(ref exer1_12_m, exer1_12_f);
-			OutputSerialDilution("Exercices 1 #12 b) :", exer1_12b_out);
+			PerformDirectDilution("Exercices 1 #12 a) :", exer1_12_m, true, exer1_12_f);
+			PerformSerialDilution("Exercices 1 #12 b) :", exer1_12_m, exer1_12_f);
 
-			var exer1_13_m = Solution.Init(30, "%");
-			var exer1_13_f = Solution.InitMany(0.5, "L", "%", 7, 5, 2);
-			var exer1_13_out = Dilution.Serial(ref exer1_13_m, exer1_13_f);
-			OutputSerialDilution("Exercices 1 #13 :", exer1_13_out);
+			PerformSerialDilution("Exercices 1 #13 :", Solution.Init(30, "%"),
+			 Solution.InitMany(0.5, "L", "%", 7, 5, 2));
 
-			var exer1_14_m = Solution.Init(1, "Cm");
-			var exer1_14_f = Solution.InitMany(10, "µL", "Cm", 0.25, 0.2, 0.1);
-			var exer1_14_out = Dilution.Direct(ref exer1_14_m, exer1_14_f);
-			OutputDirectDilution("Exercices 1 #14 ", exer1_14_out);
+			PerformDirectDilution("Exercices 1 #14 ", Solution.Init(1, "Cm"), true,
+			 Solution.InitMany(10, "µL", "Cm", 0.25, 0.2, 0.1));
 
-			var exer1_15_m = Solution.Init(1, "Cm");
-			var exer1_15_f = Solution.InitMany(150, "mL", "Cm", 0.5, 0.2, 0.05, 0.02);
-			var exer1_15_out = Dilution.Serial(ref exer1_15_m, exer1_15_f);
-			OutputSerialDilution("Exercices 1 #15 ", exer1_15_out);
+			PerformSerialDilution("Exercices 1 #15 ", Solution.Init(1, "Cm"),
+			 Solution.InitMany(150, "mL", "Cm", 0.5, 0.2, 0.05, 0.02));
 		}
 
-		private static void OutputDirectDilution(string title, params Solution[] children)
+		private static void PerformDirectDilution(string title, Solution mother, bool outputMother, params Solution[] children)
 		{
-			Console.WriteLine(title);
-			for (int i = 0; i < children.Length; i++) {
-				var child = children[i];
-				Console.WriteLine("Pour la solution fille {0}, diluer {1} {2} de solution mère dans {3} {2} de solvant.",
-				 i + 1, child.SoluteVolume.Value, child.SolutionVolume.Value.Key, child.SolventVolume.Value);
+			var blnInitialMotherVolume = mother.SolutionVolume.HasValue;
+			OutputDilution(title,
+			 "Pour la solution fille {0}, diluer {1} {2} de solution mère dans {3} {2} de solvant.",
+			 Dilution.Direct(ref mother, children));
+			if (outputMother) {
+				var mutionv = mother.SolutionVolume.Value;
+				Console.WriteLine("Volume de solution mère {0} : {1} {2}",
+				 blnInitialMotherVolume ? "restant" : "requis",
+				 mutionv.Value, mutionv.Key);
 			}
 		}
 
-		private static void OutputSerialDilution(string title, params Solution[] children)
+		private static void PerformSerialDilution(string title, Solution mother, params Solution[] children)
+		{
+			OutputDilution(title,
+			 "Pour la solution fille {0}, prélever {1} {2} de la solution {4} pour la diluer dans {3} {2} de solvant.",
+			 Dilution.Serial(ref mother, children));
+		}
+
+		private static void OutputDilution(string title, string textPattern, params Solution[] children)
 		{
 			Console.WriteLine(title);
 			for (int i = 0; i < children.Length; i++) {
 				var child = children[i];
-				Console.WriteLine("Pour la solution fille {0}, prélever {1} {2} de la solution {3} pour la diluer dans {4} {2} de solvant.",
-				 i + 1, child.SoluteVolume.Value, child.SolutionVolume.Value.Key,
-				 (i < 1) ? "mère" : "fille " + i, child.SolventVolume.Value);
+				Console.WriteLine(textPattern,
+				 i + 1, child.SoluteVolume, child.SolutionVolume.Value.Key, child.SolventVolume,
+				 (i < 1) ? "mère" : "fille " + i);
 			}
 		}
 	}
