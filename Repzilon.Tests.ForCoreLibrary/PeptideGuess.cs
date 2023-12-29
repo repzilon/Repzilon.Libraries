@@ -71,8 +71,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}).Where(HasPartRev10Sequence).ToList();
 			var lstRev10_hexa_c4 = PermutationsForQuadSlots(rev10_hexa_c4);
 			var lstRev10_hexa_c2 = PermutationsForTwoSlots(rev10_hexa_c2);
-			var lstRev10_hexa = ConcatenatePermutations(lstRev10_hexa_c4, lstRev10_hexa_c2).Where(HasPartRev10Sequence).ToList();
-			return ConcatenatePermutations(lstRev10_tetra, lstRev10_hexa).Where(HasKeyRev10Sequence).ToList();
+			var lstRev10_hexa = ConcatenatePermutations(4 + 2, lstRev10_hexa_c4, lstRev10_hexa_c2).Where(HasPartRev10Sequence).ToList();
+			return ConcatenatePermutations(4 + 6, lstRev10_tetra, lstRev10_hexa).Where(HasKeyRev10Sequence).ToList();
 		}
 
 		private static void OutputArrangements(string title, List<List<string>> allArrangements)
@@ -92,20 +92,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
-		private static List<List<string>> ConcatenatePermutations(
+		private static List<List<string>> ConcatenatePermutations(int peptideLength,
 		List<List<string>> firstPermutations, List<List<string>> secondPermutations)
 		{
 			var lstOutput = new List<List<string>>();
 			for (int i = 0; i < firstPermutations.Count; i++) {
 				for (int j = 0; j < secondPermutations.Count; j++) {
-					var candidate = new List<string>();
+					var candidate = new List<string>(peptideLength);
 					candidate.AddRange(firstPermutations[i]);
 					candidate.AddRange(secondPermutations[j]);
 					if (UniqueExceptGly(candidate)) {
 						lstOutput.Add(candidate);
 					}
 
-					candidate = new List<string>();
+					candidate = new List<string>(peptideLength);
 					candidate.AddRange(secondPermutations[j]);
 					candidate.AddRange(firstPermutations[i]);
 					if (UniqueExceptGly(candidate)) {
@@ -261,6 +261,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 				return (x[0] == "Gly") && (x[1] == "Leu") &&
 				 ((x2 == "Cys") || (x2 == "Mét"));
 			}
-		}	 
+		}
 	}
 }
