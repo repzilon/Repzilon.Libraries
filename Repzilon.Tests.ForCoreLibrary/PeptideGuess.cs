@@ -98,69 +98,26 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
+			/*
 			var lstAminoAcids = AminoAcid.AlphaList;
 			var dicAminoAcids = new SortedDictionary<string, AminoAcid>();
 			int i;
 			for (i = 0; i < lstAminoAcids.Count; i++) {
 				dicAminoAcids.Add(lstAminoAcids[i].Symbol, lstAminoAcids[i]);
-			}
+			}// */
 
-			const int kIterations = 270;
-
-			List<List<string>> lstRev10Sym = null;
-			DateTime dtmStart = DateTime.UtcNow;
-			for (i = 0; i < kIterations; i++) {
-				lstRev10Sym = SolveRevision10WithSymbol(dicAminoAcids);
-			}
-			TimeSpan tsSymbol = DateTime.UtcNow - dtmStart;
+			const int kIterations = 440;
 
 			List<List<AlphaAminoAcid>> lstRev10Enum = null;
-			dtmStart = DateTime.UtcNow;
-			for (i = 0; i < kIterations; i++) {
+			DateTime dtmStart = DateTime.UtcNow;
+			for (int i = 0; i < kIterations; i++) {
 				lstRev10Enum = SolveRevision10WithEnum();
 			}
 			TimeSpan tsEnum = DateTime.UtcNow - dtmStart;
 
-			OutputArrangements("Révision #10 :", lstRev10Sym);
-			Console.WriteLine("{0} itérations en {1:n0}ms avec les codes, {2:n0}ms avec les enums",
-			 kIterations, tsSymbol.TotalMilliseconds, tsEnum.TotalMilliseconds);
-		}
-
-		private static List<List<string>> SolveRevision10WithSymbol(IReadOnlyDictionary<string, AminoAcid> dicAminoAcids)
-		{
-			string[] rev10_allowed = new string[] { "Asp", "Val", "Gly", "Tyr", "Ile", "Cys", "Arg", "Leu", "Ala" };
-
-			var c = rev10_allowed.Length;
-			var lstAllowed = new List<AminoAcid>(c);
-			int i;
-			for (i = 0; i < c; i++) {
-				lstAllowed.Add(dicAminoAcids[rev10_allowed[i]]);
-			}
-
-			var rev10_tetra = new List<string>[4];
-			rev10_tetra[rev10_tetra.Length - 1] = ExtractSymbols(dicAminoAcids, /*"Lys",*/ "Arg", "Ala");
-			Fill(rev10_tetra, lstAllowed);
-			//RestrictToAvailable(rev10_tetra, rev10_allowed);
-
-			var rev10_hexa_c2 = new List<string>[2];
-			rev10_hexa_c2[0] = ExtractSymbols(dicAminoAcids, /*"Phé",*/ "Tyr", /*"Trp",*/ "Ile"/*, "Sér", "Thr"*/);
-			rev10_hexa_c2[1] = ExtractSymbols(dicAminoAcids, /*"Lys",*/ "Arg", "Ala", /*"Phé",*/ "Tyr"/*, "Trp"*/);
-			//RestrictToAvailable(rev10_hexa_c2, rev10_allowed);
-
-			var rev10_hexa_c4 = new List<string>[4];
-			rev10_hexa_c4[0] = ExtractSymbols(dicAminoAcids, "Asp"/*, "Glu"*/);
-			rev10_hexa_c4[1] = ExtractSymbols(dicAminoAcids, "Val");
-			rev10_hexa_c4[rev10_hexa_c4.Length - 1] = ExtractSymbols(dicAminoAcids, /*"Lys",*/ "Arg", "Ala", /*"Phé",*/ "Tyr"/*, "Trp"*/);
-			Fill(rev10_hexa_c4, lstAllowed);
-			//RestrictToAvailable(rev10_hexa_c4, rev10_allowed);
-
-			var lstRev10_tetra = PermutationsForQuadSlots(rev10_tetra).Where(x => {
-				return x.Exists(IsAlkaliAminoSymbol);
-			}).Where(HasPartRev10Sequence).ToList();
-			var lstRev10_hexa_c4 = PermutationsForQuadSlots(rev10_hexa_c4);
-			var lstRev10_hexa_c2 = PermutationsForTwoSlots(rev10_hexa_c2);
-			var lstRev10_hexa = ConcatenatePermutations(4 + 2, lstRev10_hexa_c4, lstRev10_hexa_c2).Where(HasPartRev10Sequence).ToList();
-			return ConcatenatePermutations(4 + 6, lstRev10_tetra, lstRev10_hexa).Where(HasKeyRev10Sequence).ToList();
+			OutputArrangements("Révision #10 :", lstRev10Enum);
+			Console.WriteLine("{0} itérations en {1:n0}ms avec les enums",
+			 kIterations, tsEnum.TotalMilliseconds);
 		}
 
 		private static List<List<AlphaAminoAcid>> SolveRevision10WithEnum()
@@ -197,7 +154,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return ConcatenatePermutations(4 + 6, lstRev10_tetra, lstRev10_hexa).Where(HasKeyRev10Sequence).ToList();
 		}
 
-		private static void OutputArrangements(string title, List<List<string>> allArrangements)
+		private static void OutputArrangements(string title, List<List<AlphaAminoAcid>> allArrangements)
 		{
 			Console.WriteLine(title);
 			int n = 1;
@@ -212,31 +169,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(Environment.NewLine);
 				n++;
 			}
-		}
-
-		[Obsolete]
-		private static List<List<string>> ConcatenatePermutations(int peptideLength,
-		List<List<string>> firstPermutations, List<List<string>> secondPermutations)
-		{
-			var lstOutput = new List<List<string>>();
-			for (int i = 0; i < firstPermutations.Count; i++) {
-				for (int j = 0; j < secondPermutations.Count; j++) {
-					var candidate = new List<string>(peptideLength);
-					candidate.AddRange(firstPermutations[i]);
-					candidate.AddRange(secondPermutations[j]);
-					if (UniqueExceptGly(candidate)) {
-						lstOutput.Add(candidate);
-					}
-
-					candidate = new List<string>(peptideLength);
-					candidate.AddRange(secondPermutations[j]);
-					candidate.AddRange(firstPermutations[i]);
-					if (UniqueExceptGly(candidate)) {
-						lstOutput.Add(candidate);
-					}
-				}
-			}
-			return lstOutput;
 		}
 
 		private static List<List<AlphaAminoAcid>> ConcatenatePermutations(int peptideLength,
@@ -257,34 +189,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 					candidate.AddRange(firstPermutations[i]);
 					if (UniqueExceptGly(candidate)) {
 						lstOutput.Add(candidate);
-					}
-				}
-			}
-			return lstOutput;
-		}
-
-		[Obsolete]
-		private static List<List<string>> PermutationsForQuadSlots(List<string>[] quadSlotted)
-		{
-			if (quadSlotted.Length != 4) {
-				throw new ArgumentException("quadSlotted");
-			}
-
-			var lstOutput = new List<List<string>>();
-			for (int s0 = 0; s0 < quadSlotted[0].Count; s0++) {
-				for (int s1 = 0; s1 < quadSlotted[1].Count; s1++) {
-					for (int s2 = 0; s2 < quadSlotted[2].Count; s2++) {
-						for (int s3 = 0; s3 < quadSlotted[3].Count; s3++) {
-							var candidate = new List<string>(4) {
-								quadSlotted[0][s0],
-								quadSlotted[1][s1],
-								quadSlotted[2][s2],
-								quadSlotted[3][s3]
-							};
-							if (UniqueExceptGly(candidate)) {
-								lstOutput.Add(candidate);
-							}
-						}
 					}
 				}
 			}
@@ -318,28 +222,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return lstOutput;
 		}
 
-		[Obsolete]
-		private static List<List<string>> PermutationsForTwoSlots(List<string>[] doubleSlotted)
-		{
-			if (doubleSlotted.Length != 2) {
-				throw new ArgumentException("doubleSlotted");
-			}
-
-			var lstOutput = new List<List<string>>();
-			for (int s0 = 0; s0 < doubleSlotted[0].Count; s0++) {
-				for (int s1 = 0; s1 < doubleSlotted[1].Count; s1++) {
-					var candidate = new List<string>(2) {
-						doubleSlotted[0][s0],
-						doubleSlotted[1][s1]
-					};
-					if (UniqueExceptGly(candidate)) {
-						lstOutput.Add(candidate);
-					}
-				}
-			}
-			return lstOutput;
-		}
-
 		private static List<List<AlphaAminoAcid>> PermutationsForTwoSlots(List<AlphaAminoAcid>[] doubleSlotted)
 		{
 			if (doubleSlotted.Length != 2) {
@@ -361,47 +243,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return lstOutput;
 		}
 
-		[Obsolete]
-		private static List<string> ExtractSymbols(IReadOnlyDictionary<string, AminoAcid> keyed, params string[] codes)
-		{
-			var lstExtracted = new List<string>(codes.Length);
-			for (int i = 0; i < codes.Length; i++) {
-				lstExtracted.Add(keyed[codes[i]].Symbol);
-			}
-			return lstExtracted;
-		}
-
-		[Obsolete]
-		private static List<string> ExtractSymbols(IReadOnlyDictionary<string, AminoAcid> keyed, string singleCode)
-		{
-			return new List<string>(1) { keyed[singleCode].Symbol };
-		}
-
-		[Obsolete]
-		private static List<string> ExtractSymbols(IReadOnlyDictionary<string, AminoAcid> keyed, string first, string second)
-		{
-			return new List<string>(2) { keyed[first].Symbol, keyed[second].Symbol };
-		}
-
 		private static List<AlphaAminoAcid> PutSymbols(params AlphaAminoAcid[] symbols)
 		{
 			return new List<AlphaAminoAcid>(symbols);
-		}
-
-		[Obsolete]
-		private static void Fill(List<string>[] destination, IReadOnlyList<AminoAcid> source)
-		{
-			var c = source.Count;
-			List<string> lstSymbols = new List<string>(c);
-			int i;
-			for (i = 0; i < c; i++) {
-				lstSymbols.Add(source[i].Symbol);
-			}
-			for (i = 0; i < destination.Length; i++) {
-				if (destination[i] == null) {
-					destination[i] = lstSymbols;
-				}
-			}
 		}
 
 		private static void Fill(List<AlphaAminoAcid>[] destination, IReadOnlyList<AlphaAminoAcid> source)
@@ -431,27 +275,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return permutations;
 		}// */
 
-		[Obsolete]
-		private static bool UniqueExceptGly(List<string> candidateSequence)
-		{
-			var dicCounts = new Dictionary<string, int>();
-			int freq;
-			for (int i = 0; i < candidateSequence.Count; i++) {
-				var symbol = candidateSequence[i];
-				dicCounts.TryGetValue(symbol, out freq);
-				dicCounts[symbol] = freq + 1;
-			}
-			foreach (var kvp in dicCounts) {
-				freq = kvp.Value;
-				if (freq > 1) {
-					if ((kvp.Key != "Gly") || (freq > 2)) {
-						return false;
-					}
-				}
-			}
-			return true;
-		}
-
 		private static bool UniqueExceptGly(List<AlphaAminoAcid> candidateSequence)
 		{
 			var dicCounts = new Dictionary<AlphaAminoAcid, int>();
@@ -472,24 +295,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return true;
 		}
 
-		[Obsolete]
-		private static bool IsAlkaliAminoSymbol(string y)
-		{
-			return (y == "Lys") || (y == "Arg") || (y == "His");
-		}
-
 		private static bool IsAlkaliAminoSymbol(this AlphaAminoAcid y)
 		{
 			return (y == AlphaAminoAcid.Lys) || (y == AlphaAminoAcid.Arg) || (y == AlphaAminoAcid.His);
-		}
-
-		[Obsolete]
-		private static bool HasKeyRev10Sequence(List<string> x)
-		{
-			var x2 = x[2];
-			return (x[0] == "Gly") && (x[1] == "Leu") &&
-				 ((x2 == "Cys") || (x2 == "Mét")) &&
-				 (x[9] == "Ala");
 		}
 
 		private static bool HasKeyRev10Sequence(List<AlphaAminoAcid> x)
@@ -498,21 +306,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return (x[0] == AlphaAminoAcid.Gly) && (x[1] == AlphaAminoAcid.Leu) &&
 				 ((x2 == AlphaAminoAcid.Cys) || (x2 == AlphaAminoAcid.Met)) &&
 				 (x[9] == AlphaAminoAcid.Ala);
-		}
-
-		[Obsolete]
-		private static bool HasPartRev10Sequence(List<string> x)
-		{
-			// Important : do not replace x[x.Count - 1] with a fixed index like above,
-			// because it is used to test fragments, not the full sequence,
-			// which have different lengths.
-			if (x[x.Count - 1] == "Ala") {
-				return true;
-			} else {
-				var x2 = x[2];
-				return (x[0] == "Gly") && (x[1] == "Leu") &&
-				 ((x2 == "Cys") || (x2 == "Mét"));
-			}
 		}
 
 		private static bool HasPartRev10Sequence(List<AlphaAminoAcid> x)
