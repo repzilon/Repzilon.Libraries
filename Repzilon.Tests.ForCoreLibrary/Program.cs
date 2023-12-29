@@ -29,6 +29,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Linear Regression", LinearRegressionTest.Run);
 			dicTests.Add("Chemistry", MolarMassTest.Run);
 			dicTests.Add("Dilution", DilutionTest.Run);
+			dicTests.Add("Peptides", PeptideGuess.Run);
 
 			DisplayMenu(dicTests);
 			var cki = Console.ReadKey();
