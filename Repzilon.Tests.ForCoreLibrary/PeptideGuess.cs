@@ -39,8 +39,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			TimeSpan tsEnum = DateTime.UtcNow - dtmStart;
 
 			OutputArrangements("Révision #10 :", lstRev10Enum);
-			Console.WriteLine("{0} itérations en {1:n0}ms avec les enums",
-			 kIterations, tsEnum.TotalMilliseconds);
+			Console.WriteLine("{0} itérations en {1:f0}ms avec les enums, {2:f0}Hz",
+			 kIterations, tsEnum.TotalMilliseconds, Math.Floor(kIterations / tsEnum.TotalSeconds));
 		}
 
 		private static List<List<AlphaAminoAcid>> SolveRevision10WithEnum()
