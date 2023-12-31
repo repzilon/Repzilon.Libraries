@@ -13,13 +13,13 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
-using Repzilon.Libraries.Core;
 
-namespace Repzilon.Tests.ForCoreLibrary
+namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	struct AminoAcid : IEquatable<AminoAcid>
+	public struct AminoAcid : IEquatable<AminoAcid>
 	{
 		public float MolarMass;
 		public float pKa1;
@@ -79,7 +79,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is AminoAcid acid && Equals(acid);
+			return (obj is AminoAcid) && Equals((AminoAcid)obj);
 		}
 
 		public bool Equals(AminoAcid other)
@@ -97,17 +97,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		public override int GetHashCode()
 		{
-			HashCode hash = new HashCode();
-			hash.Add(MolarMass);
-			hash.Add(pKa1);
-			hash.Add(pKa2);
-			hash.Add(pKaR);
-			hash.Add(Letter);
-			hash.Add(DicationWhenVeryAcid);
-			hash.Add(Symbol);
-			hash.Add(Name);
-			hash.Add(Formula);
-			return hash.ToHashCode();
+			unchecked {
+				int magic = -1521134295;
+				int hashCode = -919792662 * magic + MolarMass.GetHashCode();
+				hashCode = hashCode * magic + pKa1.GetHashCode();
+				hashCode = hashCode * magic + pKa2.GetHashCode();
+				hashCode = hashCode * magic + pKaR.GetHashCode();
+				hashCode = hashCode * magic + Letter.GetHashCode();
+				hashCode = hashCode * magic + DicationWhenVeryAcid.GetHashCode();
+				hashCode = hashCode * magic + Symbol.GetHashCode();
+				hashCode = hashCode * magic + Name.GetHashCode();
+				return hashCode * magic + Formula.GetHashCode();
+			}
 		}
 
 		public static bool operator ==(AminoAcid left, AminoAcid right)
@@ -170,7 +171,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				AminoAcid.Create('Y', "Tyr", "Tyrosine").SetPkas(2.2f, 9.1f, 10.0f, false),
 				AminoAcid.Create('V', "Val", "Valine").SetPkas(2.3f, 9.7f)
 			};
-			return lstAminoAcids.AsReadOnly();
+			return new ReadOnlyCollection<AminoAcid>(lstAminoAcids);
 		}
 	}
 }
