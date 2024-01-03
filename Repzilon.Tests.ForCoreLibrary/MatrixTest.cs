@@ -144,6 +144,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex88_forinvert = ex88_a.Augment(Matrix<short>.Identity(ex88_a.Lines));
 			Console.WriteLine(ex88_forinvert);
 
+			Console.WriteLine("Exemple 89 :");
+			var ex89_a = new Matrix<short>(3, 3, 2, 1, -4, 3, 1, 5, -2, 8, 7);
+			OutputExample89(ex89_a, (short)2);
+			OutputExample89(ex89_a, (short)5);
+
 			Console.WriteLine("Exemple 90 :");
 			var ex_89 = new Matrix<short>(2, 2, 3, 7, 2, 4);
 			Console.WriteLine("{0} det(M) = {1}", ex_89, ex_89.Determinant());
@@ -205,6 +210,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var t2_8rf = t2_8ref.Right() * t2_8D.Cast<float>();
 			t2_8rf.RoundErrors();
 			Console.WriteLine(t2_8rf);
+		}
+
+		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
+		where T : struct, IFormattable
+		{
+			var coords = matrix.Find(valueToFind);
+			if (coords != null) {
+				Console.WriteLine("a({1};{2})={0} sig={3} M({1};{2})=", valueToFind, coords[0] + 1, coords[1] + 1,
+				 Matrix<short>.Signature(coords[0], coords[1]));
+				Console.WriteLine(matrix.Minor(coords[0], coords[1]));
+			}
 		}
 	}
 }

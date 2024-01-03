@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2023 René Rhéaume
+// Copyright (C) 2022-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -529,6 +529,52 @@ namespace Repzilon.Libraries.Core
 				}
 			}
 			return mr;
+		}
+
+		public static short Signature(byte i, byte j)
+		{
+			return (i + j) % 2 == 0 ? (short)1 : (short)-1;
+		}
+
+		public Matrix<T> Minor(byte i, byte j)
+		{
+			if (this.m_bytAugmentedColumn.HasValue) {
+				throw new ArrayTypeMismatchException("The Minor method cannot be called on augmented matrices.");
+			}
+			var l = this.Lines;
+			var c = this.Columns;
+			if (i >= l) {
+				throw new ArgumentOutOfRangeException("i");
+			}
+			if (j >= c) {
+				throw new ArgumentOutOfRangeException("j");
+			}
+
+			var tarValues = new T[checked((l - 1) * (c - 1))];
+			var n = 0;
+			for (byte x = 0; x < l; x++) {
+				for (byte y = 0; y < c; y++) {
+					if ((x != i) && (y != j)) {
+						tarValues[n] = this[x, y];
+						n++;
+					}
+				}
+			}
+			checked {
+				return new Matrix<T>((byte)(l - 1), (byte)(c - 1), tarValues);
+			}
+		}
+
+		public byte[] Find(T value)
+		{
+			for (byte i = 0; i < this.Lines; i++) {
+				for (byte j = 0; j < this.Columns; j++) {
+					if (this[i, j].Equals(value)) {
+						return new byte[] { i, j };
+					}
+				}
+			}
+			return null;
 		}
 	}
 
