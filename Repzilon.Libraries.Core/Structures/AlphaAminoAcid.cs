@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -12,7 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 
-namespace Repzilon.Tests.ForCoreLibrary
+namespace Repzilon.Libraries.Core
 {
 	/*	This was partly built using Regex.Replace
 		Match pattern:
