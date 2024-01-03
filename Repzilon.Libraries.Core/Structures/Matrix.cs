@@ -538,7 +538,7 @@ namespace Repzilon.Libraries.Core
 
 		public Matrix<T> Minor(byte i, byte j)
 		{
-			if (this.m_bytAugmentedColumn.HasValue) {
+			if (m_bytAugmentedColumn.HasValue) {
 				throw new ArrayTypeMismatchException("The Minor method cannot be called on augmented matrices.");
 			}
 			var l = this.Lines;
@@ -616,6 +616,12 @@ namespace Repzilon.Libraries.Core
 				 "Cannot augment a {0}-line matrix with a {1}-line matrix.",
 				 coefficients.Lines, values.Lines));
 			}
+		}
+
+		public static Matrix<T> AugmentWithIdentity<T>(this Matrix<T> coefficients)
+		where T : struct, IFormattable
+		{
+			return coefficients.Augment(Matrix<T>.Identity(coefficients.Lines));
 		}
 
 		/// <summary>

@@ -68,28 +68,28 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 83 :");
 			var ex83_c = new Matrix<short>(2, 2, 4, 3, 2, -1);
 			var ex83_s = new Matrix<short>(2, 1, -7, 9);
-			var ex83_plus = ex83_c.Augment(ex83_s);
+			var ex83_plus = ex83_c | ex83_s;
 			ex83_plus.RunCommand(1, 1, -2);
 			Console.WriteLine(ex83_plus);
 
 			Console.WriteLine("Exemple 84 :");
 			var ex84_ac = new Matrix<short>(3, 3, 1, -1, 1, -1, 2, 2, 2, 1, 3);
 			var ex84_as = new Matrix<short>(3, 1, -2, 1, 1);
-			var ex84_aa = ex84_ac.Augment(ex84_as);
+			var ex84_aa = ex84_ac | ex84_as;
 			ex84_aa.RunCommand(1, 1, 1, null);
 			ex84_aa.RunCommand(2, -2, null, 1);
 			ex84_aa.RunCommand(2, null, -3, 1);
 			Console.WriteLine(ex84_aa);
 			var ex84_bc = new Matrix<short>(3, 3, 3, 2, -2, 1, -1, 4, 8, 7, -10);
 			var ex84_bs = new Matrix<short>(3, 1, 1, -9, 5);
-			var ex84_ba = ex84_bc.Augment(ex84_bs);
+			var ex84_ba = ex84_bc | ex84_bs;
 			ex84_ba.RunCommand(1, 1, -3, null);
 			ex84_ba.RunCommand(2, 8, null, -3);
 			ex84_ba.RunCommand(2, null, 1, 1);
 			Console.WriteLine(ex84_ba);
 			var ex84_cc = new Matrix<short>(3, 3, 4, 9, -1, 1, 2, -1, 2, 5, 1);
 			var ex84_cs = new Matrix<short>(3, 1, 17, 4, 9);
-			var ex84_ca = ex84_cc.Augment(ex84_cs);
+			var ex84_ca = ex84_cc | ex84_cs;
 			ex84_ca.RunCommand(1, 1, -4, null);
 			ex84_ca.RunCommand(2, 1, null, -2);
 			ex84_ca.RunCommand(2, null, 1, 1);
@@ -98,14 +98,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 85 :");
 			var ex85_c = new Matrix<short>(3, 4, 4, 0, -1, 0, 10, 0, 0, -2, 0, 2, -2, -1);
 			var ex85_s = new Matrix<short>(3, 1, 0, 0, 0);
-			var ex85_a = ex85_c.Augment(ex85_s);
+			var ex85_a = ex85_c | ex85_s;
 			ex85_a.SwapLines(1, 2);
 			ex85_a.RunCommand(2, -10, null, 4);
 			Console.WriteLine(ex85_a);
 
 			Console.WriteLine("Exemple 86 :");
 			var ex86_s = new Matrix<float>(3, 1, 61.6f, 68.4f, 84.8f);
-			var ex86_a = ex82_m.Augment(ex86_s);
+			var ex86_a = ex82_m | ex86_s;
 			ex86_a.RunCommand(1, -1, 1, null);
 			ex86_a.RunCommand(2, 9, null, -7);
 			ex86_a.RunCommand(1, null, 0.5f, null);
@@ -116,7 +116,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Console.WriteLine("Exemple 87 :");
 			var ex87_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
-			var ex87_ai = ex87_a.Augment(Matrix<short>.Identity(ex87_a.Lines));
+			var ex87_ai = ex87_a.AugmentWithIdentity();
 			ex87_ai.RunCommand(1, -3, 2, null);
 			ex87_ai.RunCommand(2, -1, null, 2);
 			ex87_ai.RunCommand(2, null, -5, 9);
@@ -129,7 +129,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex87_aif.RunCommand(2, null, null, 0.5f);
 			Console.WriteLine(ex87_aif);
 			var ex87_b = new Matrix<short>(3, 3, 2, 1, -1, 0, -2, 1, 6, 1, -2);
-			var ex87_bi = ex87_b.Augment(Matrix<short>.Identity(ex87_b.Lines));
+			var ex87_bi = ex87_b.AugmentWithIdentity();
 			ex87_bi.RunCommand(2, -3, null, 1);
 			ex87_bi.RunCommand(2, null, 1, -1);
 			Console.WriteLine(ex87_bi);
@@ -137,11 +137,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 88 :");
 			var ex88_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
 			var ex88_b = new Matrix<short>(3, 1, 1, 16, 9);
-			var ex88_plus = ex88_a.Augment(ex88_b);
+			var ex88_plus = ex88_a | ex88_b;
 			Console.WriteLine(ex88_a);
 			Console.WriteLine(ex88_b);
 			Console.WriteLine(ex88_plus);
-			var ex88_forinvert = ex88_a.Augment(Matrix<short>.Identity(ex88_a.Lines));
+			var ex88_forinvert = ex88_a.AugmentWithIdentity();
 			Console.WriteLine(ex88_forinvert);
 
 			Console.WriteLine("Exemple 89 :");
@@ -160,7 +160,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Travail 2 #7 :");
 			var t2_7a_c = new Matrix<short>(3, 3, 3, -1, -2, 2, 6, -9, 1, -7, 7);
 			var t2_7a_r = new Matrix<short>(3, 1, 19, 68, -49);
-			var t2_7a_a = t2_7a_c.Augment(t2_7a_r);
+			var t2_7a_a = t2_7a_c | t2_7a_r;
 			t2_7a_a.RunCommand(1, -2, 3, null);
 			t2_7a_a.RunCommand(2, 1, null, -3);
 			t2_7a_a.RunCommand(2, null, 1, -1);
@@ -168,7 +168,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			var t2_7b_c = new Matrix<short>(3, 3, 3, -1, -2, 2, 6, -9, -12, 6, 7);
 			var t2_7b_r = new Matrix<short>(3, 1, 9, 68, -20);
-			var t2_7b_a = t2_7b_c.Augment(t2_7b_r);
+			var t2_7b_a = t2_7b_c | t2_7b_r;
 			t2_7b_a.RunCommand(1, 2, -3, null);
 			t2_7b_a.RunCommand(2, 4, null, 1);
 			t2_7b_a.RunCommand(2, null, 1, 10);
@@ -193,7 +193,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex.Message);
 			}
-			var t2_8re = t2_8A.Augment(Matrix<short>.Identity(t2_8A.Lines));
+			var t2_8re = t2_8A.AugmentWithIdentity();
 			t2_8re.RunCommand(1, 3, 1, null);
 			t2_8re.RunCommand(2, -4, null, 1);
 			t2_8re.RunCommand(2, null, 6, 7);
