@@ -255,16 +255,24 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
-			// TODO : Align number output
+			bool blnCI = (formatProvider == CultureInfo.InvariantCulture);
 			StringBuilder stbDesc = new StringBuilder();
 			var tl = this.Lines;
+
+			var nalarCols = new NumberAlignment[this.Columns];
+			for (byte j = 0; j < this.Columns; j++) {
+				for (byte i = 0; i < tl; i++) {
+					nalarCols[j].FromNumeric(this[i, j].ToString(format, formatProvider), formatProvider);
+				}
+			}
+
 			for (byte i = 0; i < tl; i++) {
 				if (tl == 1) {
 					stbDesc.Append('[');
 				} else if (i == 0) {
-					stbDesc.Append('/');
+					stbDesc.Append(blnCI ? '/' : '⎡');
 				} else if (i == tl - 1) {
-					stbDesc.Append('\\');
+					stbDesc.Append(blnCI ? '\\' : '⎣');
 				} else {
 					stbDesc.Append('|');
 				}
@@ -274,17 +282,17 @@ namespace Repzilon.Libraries.Core
 						stbDesc.Append('|');
 					}
 					if (j > 0) {
-						stbDesc.Append('\t');
+						stbDesc.Append("  ");
 					}
-					stbDesc.Append(this[i, j].ToString(format, formatProvider));
+					stbDesc.Append(nalarCols[j].Format(this[i, j], format, formatProvider));
 				}
 
 				if (tl == 1) {
 					stbDesc.Append(']');
 				} else if (i == 0) {
-					stbDesc.Append('\\');
+					stbDesc.Append(blnCI ? '\\' : '⎤');
 				} else if (i == tl - 1) {
-					stbDesc.Append('/');
+					stbDesc.Append(blnCI ? '/' : '⎦');
 				} else {
 					stbDesc.Append('|');
 				}
