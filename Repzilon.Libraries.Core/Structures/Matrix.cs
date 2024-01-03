@@ -576,6 +576,28 @@ namespace Repzilon.Libraries.Core
 			}
 			return null;
 		}
+
+		public IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> solutions, params string[] variables)
+		{
+			var det = this.Determinant();
+			if (det.Equals(default(T))) {
+				return null;
+			} else {
+				if ((variables == null) || (variables.Length < 1)) {
+					throw new ArgumentNullException("variables");
+				}
+				var dicSolved = new Dictionary<string, T>();
+				var idd = 1.0 / Convert.ToDouble(det);
+				for (byte a = 0; a < variables.Length; a++) {
+					var ma = this.Clone();
+					for (byte b = 0; b < ma.Lines; b++) {
+						ma[b, a] = solutions[b, 0];
+					}
+					dicSolved.Add(variables[a], (Convert.ToDouble(ma.Determinant()) * idd).ConvertTo<T>());
+				}
+				return dicSolved;
+			}
+		}
 	}
 
 	public static class MatrixExtensionMethods

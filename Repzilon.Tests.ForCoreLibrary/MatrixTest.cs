@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Collections.Generic;
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -68,7 +69,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 83 :");
 			var ex83_c = new Matrix<short>(2, 2, 4, 3, 2, -1);
 			var ex83_s = new Matrix<short>(2, 1, -7, 9);
-			var ex83_plus = ex83_c | ex83_s;
+			var ex83_plus = ex83_c | ex83_s;
 			ex83_plus.RunCommand(1, 1, -2);
 			Console.WriteLine(ex83_plus);
 
@@ -157,6 +158,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("{0} det(M) = {1}", ex88_a, ex88_a.Determinant());
 			Console.WriteLine(Matrix<short>.Signature(3));
 
+			Console.WriteLine("Exemple 92 :");
+			OutputSolution("a) ", ex83_c.SolveWithCramer(ex83_s, "x", "y"));
+			OutputSolution("b) ", ex88_a.SolveWithCramer(ex88_b, "x", "y", "z"));
+
 			Console.WriteLine("Travail 2 #7 :");
 			var t2_7a_c = new Matrix<short>(3, 3, 3, -1, -2, 2, 6, -9, 1, -7, 7);
 			var t2_7a_r = new Matrix<short>(3, 1, 19, 68, -49);
@@ -221,6 +226,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 Matrix<short>.Signature(coords[0], coords[1]));
 				Console.WriteLine(matrix.Minor(coords[0], coords[1]));
 			}
+		}
+
+		private static void OutputSolution<T>(string prefix, IReadOnlyDictionary<string, T> solution)
+		{
+			Console.Write(prefix);
+			if ((solution == null) || (solution.Count<1)) {
+				Console.Write("Aucune solution");
+			} else {
+				foreach (var kvp in solution) {
+					Console.Write("{0}={1}; ", kvp.Key, kvp.Value);
+				}
+			}
+			Console.Write(Environment.NewLine);
 		}
 	}
 }
