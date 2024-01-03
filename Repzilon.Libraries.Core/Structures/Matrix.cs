@@ -26,7 +26,7 @@ namespace Repzilon.Libraries.Core
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable
+	where T : struct, IFormattable, IComparable<T>
 	{
 		#region Static members
 		internal static readonly Func<T, T, T> add = BuildAdder();
@@ -170,8 +170,8 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public static Matrix<TOut> Cast<TIn, TOut>(Matrix<TIn> source)
-		where TIn : struct, IFormattable
-		where TOut : struct, IFormattable
+		where TIn : struct, IFormattable, IComparable<TIn>
+		where TOut : struct, IFormattable, IComparable<TOut>
 		{
 			var sc = source.Columns;
 			var other = new Matrix<TOut>(source.Lines, sc, source.m_bytAugmentedColumn);
@@ -183,7 +183,7 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
-		public Matrix<TOut> Cast<TOut>() where TOut : struct, IFormattable
+		public Matrix<TOut> Cast<TOut>() where TOut : struct, IFormattable, IComparable<TOut>
 		{
 			return Cast<T, TOut>(this);
 		}
@@ -387,7 +387,72 @@ namespace Repzilon.Libraries.Core
 			return MatrixExtensionMethods.Augment(coefficients, values);
 		}
 
-		// TODO : operator ~ to invert a matrix
+		/// <summary>
+		/// Inverts the matrix using the Gauss-Jordan technique.
+		/// </summary>
+		/// <param name="self">Input matrix</param>
+		/// <returns>The multiplicative inverse of the input matrix</returns>
+		public static Nullable<Matrix<T>> operator ~(Matrix<T> self)
+		{
+			var augmented = self.AugmentWithIdentity();
+			T minusOne = (-1).ConvertTo<T>();
+			var mul = BuildMultiplier<T>();
+			// Put zeroes in the lower left corner
+			for (int cg = 0; cg < self.Columns - 1; cg++) {
+				for (int lg = cg + 1; lg < self.Lines; lg++) {
+					if (!augmented[(byte)lg, (byte)cg].Equals(default(T))) {
+						T?[] coeffs = new T?[self.Lines];
+						coeffs[cg] = mul(augmented[(byte)lg, (byte)cg], minusOne);
+						coeffs[lg] = augmented[(byte)cg, (byte)cg];
+						augmented.RunCommand((byte)lg, coeffs);
+
+#if (DEBUG)
+						// Reduce the number of negative signs by multiplying by -1
+						int np = 0, nn = 0;
+						for (var k = 0; k < augmented.Columns; k++) {
+							var v = augmented[(byte)lg, (byte)k];
+							if (v.CompareTo(default(T)) > 0) {
+								np++;
+							} else if (v.CompareTo(default(T)) < 0) {
+								nn++;
+							}
+						}
+						if (nn > np) {
+							coeffs = new T?[self.Lines];
+							coeffs[lg] = minusOne;
+							augmented.RunCommand((byte)lg, coeffs);
+						}
+#endif
+					}
+				}
+			}
+			// Check if we can continue. If not return null
+			if (augmented[(byte)(self.Lines - 1), (byte)(self.Lines - 1)].Equals(default(T))) {
+				return null;
+			}
+
+			// Put zeros in the upper right corner of the left side
+			for (int cd = self.Columns - 1; cd >= 1; cd--) {
+				for (int ld = 0; ld <= cd - 1; ld++) {
+					if (!augmented[(byte)ld, (byte)cd].Equals(default(T))) {
+						T?[] coeffs = new T?[self.Lines];
+						coeffs[cd] = mul(augmented[(byte)ld, (byte)cd], minusOne);
+						coeffs[ld] = augmented[(byte)cd, (byte)cd];
+						augmented.RunCommand((byte)ld, coeffs);
+					}
+				}
+			}
+
+			// Cast to double as we do not divide directly, but multiply with the inverse
+			var augmentedInDouble = augmented.Cast<double>();
+			for (int l = 0; l < augmentedInDouble.Lines; l++) {
+				double?[] coeffs = new double?[augmentedInDouble.Lines];
+				coeffs[l] = 1.0 / Convert.ToDouble(augmentedInDouble[(byte)l, (byte)l]);
+				augmentedInDouble.RunCommand((byte)l, coeffs);
+			}
+
+			return augmentedInDouble.Right().Cast<T>();
+		}
 		#endregion
 
 		/// <summary>
@@ -577,6 +642,18 @@ namespace Repzilon.Libraries.Core
 			return null;
 		}
 
+		/// <summary>
+		/// Tries to solve an equation system using the Cramer technique, using this matrix containing the
+		/// coefficients of the variable part of the equation system.
+		/// </summary>
+		/// <param name="solutions">A Nx1 matrix having the scalar part of the equation system</param>
+		/// <param name="variables">Variables names, in order</param>
+		/// <returns>
+		/// When a solution exists, a set of key-value pairs with the variable name and the solved value for each.
+		/// When the Cramer technique cannot find a solution, returns null. It does not necessarily means the
+		/// equation system is unsolvable, however.
+		/// </returns>
+		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 		public IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> solutions, params string[] variables)
 		{
 			var det = this.Determinant();
@@ -603,7 +680,7 @@ namespace Repzilon.Libraries.Core
 	public static class MatrixExtensionMethods
 	{
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
-		where T : struct, IFormattable
+		where T : struct, IFormattable, IComparable<T>
 		where TScalar : struct
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
@@ -617,7 +694,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
-		where T : struct, IFormattable
+		where T : struct, IFormattable, IComparable<T>
 		{
 			if (values.Lines == coefficients.Lines) {
 				var cc = coefficients.Columns;
@@ -641,7 +718,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> AugmentWithIdentity<T>(this Matrix<T> coefficients)
-		where T : struct, IFormattable
+		where T : struct, IFormattable, IComparable<T>
 		{
 			return coefficients.Augment(Matrix<T>.Identity(coefficients.Lines));
 		}

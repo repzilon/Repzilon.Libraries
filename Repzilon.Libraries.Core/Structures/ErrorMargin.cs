@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable
+	where T : struct, IFormattable, IComparable<T>
 	{
 		public T Middle { get; private set; }
 		public T Margin { get; private set; }
@@ -50,7 +50,7 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public ErrorMargin<TOut> Cast<TOut>()
-		where TOut : struct, IFormattable
+		where TOut : struct, IFormattable, IComparable<TOut>
 		{
 			return new ErrorMargin<TOut>(this.Middle.ConvertTo<TOut>(), this.Margin.ConvertTo<TOut>());
 		}

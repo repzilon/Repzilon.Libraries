@@ -121,7 +121,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex87_ai.RunCommand(1, -3, 2, null);
 			ex87_ai.RunCommand(2, -1, null, 2);
 			ex87_ai.RunCommand(2, null, -5, 9);
-			ex87_ai.RunCommand(0, 2, null, 3);
+			ex87_ai.RunCommand(0, 2, null, 1);
 			ex87_ai.RunCommand(1, null, 2, -5);
 			ex87_ai.RunCommand(0, 9, 1, null);
 			var ex87_aif = ex87_ai.Cast<float>();
@@ -129,11 +129,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex87_aif.RunCommand(1, null, -1.0f / 18, null);
 			ex87_aif.RunCommand(2, null, null, 0.5f);
 			Console.WriteLine(ex87_aif);
+			Console.WriteLine(~ex87_a);
 			var ex87_b = new Matrix<short>(3, 3, 2, 1, -1, 0, -2, 1, 6, 1, -2);
 			var ex87_bi = ex87_b.AugmentWithIdentity();
 			ex87_bi.RunCommand(2, -3, null, 1);
 			ex87_bi.RunCommand(2, null, 1, -1);
 			Console.WriteLine(ex87_bi);
+			Console.WriteLine(~ex87_b);
 
 			Console.WriteLine("Exemple 88 :");
 			var ex88_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
@@ -218,7 +220,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
-		where T : struct, IFormattable
+		where T : struct, IFormattable, IComparable<T>
 		{
 			var coords = matrix.Find(valueToFind);
 			if (coords != null) {

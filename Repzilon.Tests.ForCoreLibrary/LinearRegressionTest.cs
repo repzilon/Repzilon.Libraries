@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -69,7 +69,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
 		string numberFormat, bool checkBiaises, T? xForYExtrapolation, T? yForXExtrapolation)
-		where T : struct, IConvertible, IFormattable
+		where T : struct, IConvertible, IFormattable, IComparable<T>
 		{
 			var ciCu = CultureInfo.CurrentCulture;
 			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
@@ -106,7 +106,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputYExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
 		string numberFormat, IFormatProvider culture, T x, T sr, bool repeated)
-		where T : struct, IConvertible, IFormattable
+		where T : struct, IConvertible, IFormattable, IComparable<T>
 		{
 			Console.WriteLine("x = {0} k = {1}\ty^ = {2}",
 			 x.ToString(numberFormat, culture),
@@ -117,7 +117,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
 		string numberFormat, IFormatProvider culture, T yc, int k, T b)
-		where T : struct, IConvertible, IFormattable
+		where T : struct, IConvertible, IFormattable, IComparable<T>
 		{
 			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
 			 yc.ToString(numberFormat, culture),
