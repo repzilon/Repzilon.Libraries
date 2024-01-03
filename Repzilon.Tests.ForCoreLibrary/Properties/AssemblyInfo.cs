@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -27,7 +27,7 @@ using System.Runtime.InteropServices;
 #endif
 [assembly: AssemblyCompany("(none)")]
 [assembly: AssemblyProduct("")]
-[assembly: AssemblyCopyright("(C) 2022-2023 René Rhéaume <repzilon@users.noreply.github.com>. Released under the MPL2.")]
+[assembly: AssemblyCopyright("(C) 2022-2024 René Rhéaume <repzilon@users.noreply.github.com>. Released under the MPL2.")]
 [assembly: AssemblyTrademark("")]
 [assembly: AssemblyCulture("")]
 
