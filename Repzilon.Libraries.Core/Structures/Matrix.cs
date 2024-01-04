@@ -260,13 +260,14 @@ namespace Repzilon.Libraries.Core
 			var tl = this.Lines;
 
 			var nalarCols = new NumberAlignment[this.Columns];
-			for (byte j = 0; j < this.Columns; j++) {
-				for (byte i = 0; i < tl; i++) {
+			byte i, j;
+			for (j = 0; j < this.Columns; j++) {
+				for (i = 0; i < tl; i++) {
 					nalarCols[j].FromNumeric(this[i, j].ToString(format, formatProvider), formatProvider);
 				}
 			}
 
-			for (byte i = 0; i < tl; i++) {
+			for (i = 0; i < tl; i++) {
 				if (tl == 1) {
 					stbDesc.Append('[');
 				} else if (i == 0) {
@@ -277,7 +278,7 @@ namespace Repzilon.Libraries.Core
 					stbDesc.Append('|');
 				}
 
-				for (byte j = 0; j < this.Columns; j++) {
+				for (j = 0; j < this.Columns; j++) {
 					if (m_bytAugmentedColumn.HasValue && (j == m_bytAugmentedColumn.Value)) {
 						stbDesc.Append('|');
 					}

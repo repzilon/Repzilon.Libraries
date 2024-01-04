@@ -47,120 +47,102 @@ namespace Repzilon.Libraries.Core
 
 		private static NumberFormatInfo FindNumberFormat(IFormatProvider formatProvider)
 		{
-			if (formatProvider == null) {
-				return CultureInfo.CurrentCulture.NumberFormat;
+			var ci = formatProvider as CultureInfo;
+			if (ci != null) {
+				return ci.NumberFormat;
 			} else {
 				var nfi = formatProvider as NumberFormatInfo;
-				if (nfi == null) {
-					var ci = formatProvider as CultureInfo;
-					if (ci != null) {
-						nfi = ci.NumberFormat;
-					}
-				}
-				return (nfi == null) ? CultureInfo.CurrentCulture.NumberFormat : nfi;
+				return (nfi == null) ? NumberFormatInfo.CurrentInfo : nfi;
 			}
 		}
 
-		public void FromNumeric(string numberAsString, IFormatProvider formatProvider)
+		public void FromNumeric(string numberText, IFormatProvider formatProvider)
 		{
-			FromNumeric(numberAsString, FindNumberFormat(formatProvider));
+			FromNumeric(numberText, FindNumberFormat(formatProvider));
 		}
 
-		public void FromNumeric(string numberAsString, NumberFormatInfo numberFormat)
+		public void FromNumeric(string numberText, NumberFormatInfo numberFormat)
 		{
 			if (numberFormat == null) {
-				numberFormat = CultureInfo.CurrentCulture.NumberFormat;
+				numberFormat = NumberFormatInfo.CurrentInfo;
 			}
-			if (!String.IsNullOrEmpty(numberAsString)) {
-				numberAsString = numberAsString.Trim();
+			if (!String.IsNullOrEmpty(numberText)) {
+				numberText = numberText.Trim();
 				bool blnNegative = false;
-				if (numberAsString.StartsWith(numberFormat.NegativeSign)) {
+				if (numberText.StartsWith(numberFormat.NegativeSign)) {
 					this[NumberAlignmentFlags.NegativeMantissa] = true;
 					blnNegative = true;
 				}
-				var posOfE = numberAsString.IndexOf("e", StringComparison.CurrentCultureIgnoreCase);
+				var posOfE = numberText.IndexOf("e", StringComparison.CurrentCultureIgnoreCase);
 				if (posOfE > -1) {
 					this[NumberAlignmentFlags.Exponent] = true;
-					if (numberAsString[posOfE + 1].ToString() == numberFormat.NegativeSign) {
+					var negativeExponent = 0;
+					if (numberText[posOfE + 1].ToString() == numberFormat.NegativeSign) {
 						this[NumberAlignmentFlags.NegativeExponent] = true;
-						this.ExponentDigits = Math.Max(this.ExponentDigits,
-						 (byte)(numberAsString.Length - posOfE - 1));
-					} else {
-						this.ExponentDigits = Math.Max(this.ExponentDigits,
-						 (byte)(numberAsString.Length - posOfE));
+						negativeExponent = 1;
 					}
+					this.ExponentDigits = Math.Max(this.ExponentDigits,
+					 (byte)(numberText.Length - posOfE - negativeExponent));
 				}
-				var posOfSep = numberAsString.IndexOf(numberFormat.NumberDecimalSeparator);
+				var nds = numberFormat.NumberDecimalSeparator;
+				var posOfSep = numberText.IndexOf(nds);
+				posOfE = (posOfE > -1) ? posOfE : numberText.Length;
 				if (posOfSep > -1) {
 					this[NumberAlignmentFlags.DecimalSeparator] = true;
 					this.DecimalDigits = Math.Max(this.DecimalDigits,
-					 posOfE > -1 ? (byte)(posOfE - posOfSep - numberFormat.NumberDecimalSeparator.Length) :
-					 (byte)(numberAsString.Length - posOfSep - numberFormat.NumberDecimalSeparator.Length));
-					this.IntegerDigits = Math.Max(this.IntegerDigits,
-					 blnNegative ? (byte)(posOfSep - 1) : (byte)posOfSep);
-				} else {
-					if (posOfE > -1) {
-						this.IntegerDigits = Math.Max(this.IntegerDigits,
-						 blnNegative ? (byte)(posOfE - 1) : (byte)posOfE);
-					} else {
-						this.IntegerDigits = Math.Max(this.IntegerDigits,
-						 blnNegative ? (byte)(numberAsString.Length - 1) : (byte)numberAsString.Length);
-					}
+					 (byte)(posOfE - posOfSep - nds.Length));
+					posOfE = posOfSep;
 				}
+				this.IntegerDigits = Math.Max(this.IntegerDigits,
+				 blnNegative ? (byte)(posOfE - 1) : (byte)posOfE);
 			}
 		}
 
 		public string Format(IFormattable number, string format, IFormatProvider formatProvider)
 		{
-			var numberAsString = number.ToString(format, formatProvider);
+			var numberText = number.ToString(format, formatProvider);
 			var nfi = FindNumberFormat(formatProvider);
-			var numberIsNegative = numberAsString.StartsWith(nfi.NegativeSign);
+			var numberIsNegative = numberText.StartsWith(nfi.NegativeSign);
 			if (this[NumberAlignmentFlags.NegativeMantissa] && !numberIsNegative) {
-				numberAsString = " " + numberAsString;
+				numberText = " " + numberText;
 			}
-			var posOfSep = numberAsString.IndexOf(nfi.NumberDecimalSeparator);
+			var nds = nfi.NumberDecimalSeparator;
+			var posOfSep = numberText.IndexOf(nds);
+			var allDecimals = this.DecimalDigits;
 			if (posOfSep > -1) {
-				int integerDigits;
-				if (numberIsNegative) {
-					integerDigits = numberAsString.Substring(nfi.NumberDecimalSeparator.Length, posOfSep).Trim().Length;
-				} else {
-					integerDigits = numberAsString.Substring(0, posOfSep).Trim().Length;
-				}
-				numberAsString = InsertSpaces(numberAsString, integerDigits, numberIsNegative, nfi);
+				numberText = InsertIntegerSpaces(numberText, numberIsNegative, nds.Length, posOfSep, nfi);
 
-				posOfSep = numberAsString.IndexOf(nfi.NumberDecimalSeparator);
-				int decimalDigits = numberAsString.Substring(posOfSep + 1).Length;
-				if (decimalDigits < this.DecimalDigits) {
-					numberAsString += new String(' ', this.DecimalDigits - decimalDigits);
+				int decimalDigits = numberText.Substring(numberText.IndexOf(nds) + 1).Length;
+				if (decimalDigits < allDecimals) {
+					numberText += new String(' ', allDecimals - decimalDigits);
 				}
 			} else {
-				int numberDigits;
-				if (numberIsNegative) {
-					numberDigits = numberAsString.Substring(nfi.NegativeSign.Length).Trim().Length;
-				} else {
-					numberDigits = numberAsString.Trim().Length;
-				}
-				numberAsString = InsertSpaces(numberAsString, numberDigits, numberIsNegative, nfi);
-				if (this.DecimalDigits > 0) {
-					numberAsString += new String(' ', this.DecimalDigits + nfi.NumberDecimalSeparator.Length);
+				numberText = InsertIntegerSpaces(numberText, numberIsNegative, nfi.NegativeSign.Length, numberText.Length, nfi);
+				if (allDecimals > 0) {
+					numberText += new String(' ', allDecimals + nds.Length);
 				}
 			}
 			// TODO : Format exponents
 
-			return numberAsString;
+			return numberText;
 		}
 
-		private string InsertSpaces(string numberAsString, int numberDigits, bool numberIsNegative, NumberFormatInfo nfi)
+		private string InsertIntegerSpaces(string numberText, bool numberIsNegative, int startWhenNegative, int endBound, NumberFormatInfo nfi)
 		{
-			if (numberDigits < this.IntegerDigits) {
-				var spaces = new String(' ', this.IntegerDigits - numberDigits);
+			var numberDigits = numberIsNegative ? startWhenNegative : 0;
+			numberDigits = numberText.Substring(numberDigits, endBound - numberDigits).Trim().Length;
+
+			var allDigits = this.IntegerDigits;
+			if (numberDigits < allDigits) {
+				var spaces = new String(' ', allDigits - numberDigits);
 				if (numberIsNegative) {
-					return nfi.NegativeSign + spaces + numberAsString.Substring(nfi.NegativeSign.Length);
+					var minus = nfi.NegativeSign;
+					return minus + spaces + numberText.Substring(minus.Length);
 				} else {
-					return spaces + numberAsString;
+					return spaces + numberText;
 				}
 			} else {
-				return numberAsString;
+				return numberText;
 			}
 		}
 	}
