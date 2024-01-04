@@ -283,5 +283,10 @@ namespace Repzilon.Libraries.Core
 			return !(left == right);
 		}
 		#endregion
+
+		public RegressionModel<double> ChangeModel(MathematicalModel newModel)
+		{
+			return LinearRegressionResult.ChangeModel((double)this.Intercept, (double)this.Slope, (double)this.Correlation, newModel);
+		}
 	}
 }

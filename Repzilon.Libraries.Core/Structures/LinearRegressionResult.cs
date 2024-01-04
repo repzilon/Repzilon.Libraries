@@ -18,7 +18,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Have something to convert the formula when the regression was used with a non-linear model
 	[StructLayout(LayoutKind.Auto)]
 	public struct LinearRegressionResult : ILinearRegressionResult<double>,
 	IEquatable<LinearRegressionResult>, IEquatable<DecimalLinearRegressionResult>
@@ -158,7 +157,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var r = this.Correlation;
 			return RoundOff.Error((1 - (r * r)) * this.TotalVariation());
-		}	
+		}
 
 		public double ResidualStdDev()
 		{
@@ -284,5 +283,26 @@ namespace Repzilon.Libraries.Core
 			return !(left == right);
 		}
 		#endregion
+
+		public RegressionModel<double> ChangeModel(MathematicalModel newModel)
+		{
+			return ChangeModel(this.Intercept, this.Slope, this.Correlation, newModel);
+		}
+
+		internal static RegressionModel<double> ChangeModel(double a, double b, double r, MathematicalModel newModel)
+		{
+			if (newModel == MathematicalModel.Affine) {
+				return new RegressionModel<double>(a, b, r, newModel);
+			} else if (newModel == MathematicalModel.Power) {
+				return new RegressionModel<double>(Math.Pow(10, a), b, r, newModel);
+			} else if (newModel == MathematicalModel.Exponential) {
+				return new RegressionModel<double>(Math.Pow(10, a), Math.Pow(10, b), r, newModel);
+			} else if (newModel == MathematicalModel.Logarithmic) {
+				// FIXME : Changing to a logarithmic model is not supported yet
+				throw new NotSupportedException("Changing to a logarithmic model is not supported yet.");
+			} else {
+				throw new ArgumentOutOfRangeException("newModel");
+			}
+		}
 	}
 }
