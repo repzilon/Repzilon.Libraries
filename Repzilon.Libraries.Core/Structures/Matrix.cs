@@ -404,21 +404,20 @@ namespace Repzilon.Libraries.Core
 		{
 			var augmented = self.AugmentWithIdentity();
 			T minusOne = (-1).ConvertTo<T>();
-			var mul = BuildMultiplier<T>();
+			var mult = BuildMultiplier<T>();
+			byte c, l;
+			var m = self.Lines;
 			// Put zeroes in the lower left corner
-			for (int cg = 0; cg < self.Columns - 1; cg++) {
-				for (int lg = cg + 1; lg < self.Lines; lg++) {
-					if (!augmented[(byte)lg, (byte)cg].Equals(default(T))) {
-						T?[] coeffs = new T?[self.Lines];
-						coeffs[cg] = mul(augmented[(byte)lg, (byte)cg], minusOne);
-						coeffs[lg] = augmented[(byte)cg, (byte)cg];
-						augmented.RunCommand((byte)lg, coeffs);
+			for (c = 0; c < self.Columns - 1; c++) {
+				for (l = (byte)(c + 1); l < m; l++) {
+					if (!augmented[l, c].Equals(default(T))) {
+						AutoRun(augmented, l, c, minusOne, mult);
 
 #if (DEBUG)
 						// Reduce the number of negative signs by multiplying by -1
 						int np = 0, nn = 0;
-						for (var k = 0; k < augmented.Columns; k++) {
-							var v = augmented[(byte)lg, (byte)k];
+						for (byte k = 0; k < augmented.Columns; k++) {
+							var v = augmented[l, k];
 							if (v.CompareTo(default(T)) > 0) {
 								np++;
 							} else if (v.CompareTo(default(T)) < 0) {
@@ -426,40 +425,47 @@ namespace Repzilon.Libraries.Core
 							}
 						}
 						if (nn > np) {
-							coeffs = new T?[self.Lines];
-							coeffs[lg] = minusOne;
-							augmented.RunCommand((byte)lg, coeffs);
+							var coeffs = new T?[m];
+							coeffs[l] = minusOne;
+							augmented.RunCommand(l, coeffs);
 						}
 #endif
 					}
 				}
 			}
 			// Check if we can continue. If not return null
-			if (augmented[(byte)(self.Lines - 1), (byte)(self.Lines - 1)].Equals(default(T))) {
+			if (augmented[(byte)(m - 1), (byte)(m - 1)].Equals(default(T))) {
 				return null;
 			}
 
 			// Put zeros in the upper right corner of the left side
-			for (int cd = self.Columns - 1; cd >= 1; cd--) {
-				for (int ld = 0; ld <= cd - 1; ld++) {
-					if (!augmented[(byte)ld, (byte)cd].Equals(default(T))) {
-						T?[] coeffs = new T?[self.Lines];
-						coeffs[cd] = mul(augmented[(byte)ld, (byte)cd], minusOne);
-						coeffs[ld] = augmented[(byte)cd, (byte)cd];
-						augmented.RunCommand((byte)ld, coeffs);
+			for (c = (byte)(self.Columns - 1); c >= 1; c--) {
+				for (l = 0; l <= c - 1; l++) {
+					if (!augmented[l, c].Equals(default(T))) {
+						AutoRun(augmented, l, c, minusOne, mult);
 					}
 				}
 			}
 
 			// Cast to double as we do not divide directly, but multiply with the inverse
-			var augmentedInDouble = augmented.Cast<double>();
-			for (int l = 0; l < augmentedInDouble.Lines; l++) {
-				double?[] coeffs = new double?[augmentedInDouble.Lines];
-				coeffs[l] = 1.0 / Convert.ToDouble(augmentedInDouble[(byte)l, (byte)l]);
-				augmentedInDouble.RunCommand((byte)l, coeffs);
+			var matrixInDouble = augmented.Cast<double>();
+			for (l = 0; l < m; l++) {
+				double?[] coeffs = new double?[m];
+				coeffs[l] = 1.0 / Convert.ToDouble(matrixInDouble[l, l]);
+				matrixInDouble.RunCommand(l, coeffs);
 			}
 
-			return augmentedInDouble.Right().Cast<T>();
+			//return matrixInDouble.Right().Cast<T>();
+			matrixInDouble = matrixInDouble.Right();
+			return matrixInDouble.Cast<T>();
+		}
+
+		private static void AutoRun(Matrix<T> augmented, byte l, byte c, T minusOne, Func<T, T, T> mult)
+		{
+			T?[] coeffs = new T?[augmented.Lines];
+			coeffs[c] = mult(augmented[l, c], minusOne);
+			coeffs[l] = augmented[c, c];
+			augmented.RunCommand(l, coeffs);
 		}
 		#endregion
 
@@ -704,11 +710,12 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
 		where T : struct, IFormattable, IComparable<T>
 		{
-			if (values.Lines == coefficients.Lines) {
+			var cl = coefficients.Lines;
+			if (values.Lines == cl) {
 				var cc = coefficients.Columns;
-				var augmented = new Matrix<T>(coefficients.Lines,
+				var augmented = new Matrix<T>(cl,
 				 checked((byte)(cc + values.Columns)), cc);
-				for (byte i = 0; i < coefficients.Lines; i++) {
+				for (byte i = 0; i < cl; i++) {
 					byte j;
 					for (j = 0; j < cc; j++) {
 						augmented[i, j] = coefficients[i, j];
@@ -721,7 +728,7 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
 				 "Cannot augment a {0}-line matrix with a {1}-line matrix.",
-				 coefficients.Lines, values.Lines));
+				 cl, values.Lines));
 			}
 		}
 
