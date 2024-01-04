@@ -21,11 +21,12 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable
+	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable,
+	IComparableMatrix, IEquatable<IComparableMatrix>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+	where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 	{
 		#region Static members
 		internal static readonly Func<T, T, T> adder = BuildAdder();
@@ -143,8 +144,25 @@ namespace Repzilon.Libraries.Core
 			set { m_values[l, c] = value; }
 		}
 
+		IComparable IComparableMatrix.ValueAt(byte l, byte c)
+		{
+			return m_values[l, c];
+		}
+
 		public bool IsSquare {
 			get { return Columns == Lines; }
+		}
+
+		byte IComparableMatrix.Lines {
+			get { return this.Lines; }
+		}
+
+		byte IComparableMatrix.Columns {
+			get { return this.Columns; }
+		}
+
+		byte? IComparableMatrix.AugmentedColumn {
+			get { return m_bytAugmentedColumn; }
 		}
 
 		#region ICloneable members
@@ -169,8 +187,8 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public static Matrix<TOut> Cast<TIn, TOut>(Matrix<TIn> source)
-		where TIn : struct, IFormattable, IComparable<TIn>, IEquatable<TIn>
-		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
+		where TIn : struct, IFormattable, IComparable<TIn>, IEquatable<TIn>, IComparable
+		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>, IComparable
 		{
 			var sc = source.Columns;
 			var other = new Matrix<TOut>(source.Lines, sc, source.m_bytAugmentedColumn);
@@ -182,7 +200,7 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
-		public Matrix<TOut> Cast<TOut>() where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
+		public Matrix<TOut> Cast<TOut>() where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>, IComparable
 		{
 			return Cast<T, TOut>(this);
 		}
@@ -207,10 +225,33 @@ namespace Repzilon.Libraries.Core
 			return false;
 		}
 
+		public bool Equals(IComparableMatrix other)
+		{
+			if (other.SameSize(this)) {
+				var tac = this.m_bytAugmentedColumn;
+				var oac = other.AugmentedColumn;
+				if ((tac.HasValue == oac.HasValue) && (!tac.HasValue || (tac.Value == oac.Value))) {
+					for (byte i = 0; i < this.Lines; i++) {
+						for (byte j = 0; j < this.Columns; j++) {
+							if (!other.ValueAt(i,j).Equals(this[i, j])) { 
+								return false;
+							}
+						}
+					}
+					return true;
+				}
+			}
+			return false;
+		}
+
 		public override bool Equals(object obj)
 		{
-			// TODO : Support comparing with Matrix using other type of storage
-			return (obj is Matrix<T>) && this.Equals((Matrix<T>)obj);
+			if (obj is Matrix<T>) {
+				return this.Equals((Matrix<T>)obj);
+			} else {
+				var matrix = obj as IComparableMatrix;
+				return (matrix != null) && this.Equals(matrix);
+			}
 		}
 
 		public override int GetHashCode()
@@ -222,6 +263,11 @@ namespace Repzilon.Libraries.Core
 				hashCode = hashCode * magic + m_bytAugmentedColumn.GetValueOrDefault();
 				return hashCode * magic + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
 			}
+		}
+
+		bool IComparableMatrix.SameSize(IComparableMatrix other)
+		{
+			return (other.Lines == this.Lines) && (other.Columns == this.Columns);
 		}
 
 		public bool SameSize(Matrix<T> other)
@@ -343,17 +389,9 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct
+		private static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct
 		{
-			// Declare the parameters
-			var paramA = Expression.Parameter(typeof(TScalar), "a");
-			var paramB = Expression.Parameter(typeof(T), "b");
-
-			// Add the parameters together
-			BinaryExpression body = Expression.Multiply(paramA, paramB);
-
-			// Compile it
-			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
+			return MatrixExtensionMethods.BuildMultiplier<T, TScalar>();
 		}
 
 		public static Matrix<T> operator *(T k, Matrix<T> m)
@@ -753,10 +791,10 @@ namespace Repzilon.Libraries.Core
 	public static class MatrixExtensionMethods
 	{
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
-		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		where TScalar : struct
 		{
-			var mult = Matrix<T>.BuildMultiplier<TScalar>();
+			var mult = BuildMultiplier<T, TScalar>();
 			var mm = new Matrix<T>(m.Lines, m.Columns);
 			for (byte i = 0; i < m.Lines; i++) {
 				for (byte j = 0; j < m.Columns; j++) {
@@ -767,7 +805,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
-		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			var cl = coefficients.Lines;
 			if (values.Lines == cl) {
@@ -792,7 +830,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> AugmentWithIdentity<T>(this Matrix<T> coefficients)
-		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			return coefficients.Augment(Matrix<T>.Identity(coefficients.Lines));
 		}
@@ -827,6 +865,21 @@ namespace Repzilon.Libraries.Core
 		where TOut : struct
 		{
 			return (TOut)Convert.ChangeType(value, typeof(TOut));
+		}
+
+		internal static Func<TScalar, T, T> BuildMultiplier<T, TScalar>()
+		where T : struct
+		where TScalar : struct
+		{
+			// Declare the parameters
+			var paramA = Expression.Parameter(typeof(TScalar), "a");
+			var paramB = Expression.Parameter(typeof(T), "b");
+
+			// Add the parameters together
+			BinaryExpression body = Expression.Multiply(paramA, paramB);
+
+			// Compile it
+			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
 		}
 	}
 }

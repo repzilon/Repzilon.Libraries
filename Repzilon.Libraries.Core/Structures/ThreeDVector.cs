@@ -198,14 +198,14 @@ namespace Repzilon.Libraries.Core
 
 		public static T Dot(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var mult = Matrix<T>.BuildMultiplier<T>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
 			var addi = Matrix<T>.adder;
 			return addi(addi(mult(u.X, v.X), mult(u.Y, v.Y)), mult(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> Cross(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var mult = Matrix<T>.BuildMultiplier<T>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
 			var sub = Matrix<T>.sub;
 			return new ThreeDVector<T>(
 			 sub(mult(u.Y, v.Z), mult(u.Z, v.Y)),
@@ -231,7 +231,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
 		{
-			var mult = Matrix<T>.BuildMultiplier<TScalar>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, TScalar>();
 			return new ThreeDVector<T>(mult(k, v.X), mult(k, v.Y), mult(k, v.Z));
 		}
 

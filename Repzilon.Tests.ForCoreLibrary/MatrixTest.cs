@@ -227,7 +227,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void TrySolve<T>(string prefix, Matrix<T> coefficients, Matrix<T> constants,
 		params string[] variables)
-		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			try {
 				OutputSolution(prefix, coefficients.Solve(constants, variables));
@@ -250,7 +250,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
-		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			var coords = matrix.Find(valueToFind);
 			if (coords != null) {

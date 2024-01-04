@@ -290,7 +290,7 @@ namespace Repzilon.Libraries.Core
 
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{
-			var mult = Matrix<T>.BuildMultiplier<T>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
 			var addi = Matrix<T>.adder;
 			var squaredResult = addi(addi(mult(norm1, norm1), mult(norm2, norm2)),
 			 mult(mult(mult(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
@@ -312,13 +312,13 @@ namespace Repzilon.Libraries.Core
 
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var mult = Matrix<T>.BuildMultiplier<T>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
 			return Matrix<T>.adder(mult(u.X, v.X), mult(u.Y, v.Y));
 		}
 
 		public static T Dot(T norm1, T norm2, Angle<T> between)
 		{
-			var mult = Matrix<T>.BuildMultiplier<T>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
 			return mult(mult(norm1, norm2), between.Cos().ConvertTo<T>());
 		}
 
@@ -334,7 +334,7 @@ namespace Repzilon.Libraries.Core
 
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var mult = Matrix<T>.BuildMultiplier<T>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
 			return new ThreeDVector<T>(default(T), default(T),
 			 Matrix<T>.sub(mult(u.X, v.Y), mult(u.Y, v.X)));
 		}
@@ -351,7 +351,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
 		{
-			var mult = Matrix<T>.BuildMultiplier<TScalar>();
+			var mult = MatrixExtensionMethods.BuildMultiplier<T, TScalar>();
 			return new TwoDVector<T>(mult(k, v.X), mult(k, v.Y));
 		}
 

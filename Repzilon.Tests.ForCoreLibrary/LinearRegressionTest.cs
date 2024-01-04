@@ -69,7 +69,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
 		string numberFormat, bool checkBiaises, T? xForYExtrapolation, T? yForXExtrapolation)
-		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			var ciCu = CultureInfo.CurrentCulture;
 			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
@@ -106,7 +106,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputYExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
 		string numberFormat, IFormatProvider culture, T x, T sr, bool repeated)
-		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			Console.WriteLine("x = {0} k = {1}\ty^ = {2}",
 			 x.ToString(numberFormat, culture),
@@ -117,7 +117,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
 		string numberFormat, IFormatProvider culture, T yc, int k, T b)
-		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>
+		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
 			 yc.ToString(numberFormat, culture),

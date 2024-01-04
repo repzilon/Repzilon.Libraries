@@ -34,7 +34,7 @@ namespace Repzilon.Libraries.Core
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+	where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 	{
 		/// <summary>In an affine model, value of the intercept.</summary>
 		T A;
@@ -73,7 +73,7 @@ namespace Repzilon.Libraries.Core
 
 		public T Determination()
 		{
-			return Matrix<T>.BuildMultiplier<T>()(R, R);
+			return MatrixExtensionMethods.BuildMultiplier<T,T>()(R, R);
 		}
 
 		#region Equals
