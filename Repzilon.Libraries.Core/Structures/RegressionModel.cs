@@ -34,7 +34,7 @@ namespace Repzilon.Libraries.Core
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+	where T : struct, IFormattable, IEquatable<T>
 	{
 		/// <summary>In an affine model, value of the intercept.</summary>
 		T A;

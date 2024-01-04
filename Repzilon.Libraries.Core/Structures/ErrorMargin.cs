@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+	where T : struct, IFormattable, IEquatable<T>
 	{
 		public T Middle { get; private set; }
 		public T Margin { get; private set; }
@@ -50,7 +50,7 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public ErrorMargin<TOut> Cast<TOut>()
-		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>, IComparable
+		where TOut : struct, IFormattable, IEquatable<TOut>
 		{
 			return new ErrorMargin<TOut>(this.Middle.ConvertTo<TOut>(), this.Margin.ConvertTo<TOut>());
 		}
