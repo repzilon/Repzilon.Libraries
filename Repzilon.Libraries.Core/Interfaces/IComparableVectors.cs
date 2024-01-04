@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 	}
 
 	// Note : Do not make IComparableThreeDVector "inherit" from IComparableTwoDVector.
-	// A 3D vector is not considered as an extended 2D vector, but as a different cotion.
+	// A 3D vector is not considered as an extended 2D vector, but as a different notion.
 	public interface IComparableThreeDVector
 	{
 		IComparable X { get; }
