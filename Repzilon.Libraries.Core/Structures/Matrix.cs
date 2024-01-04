@@ -182,9 +182,10 @@ namespace Repzilon.Libraries.Core
 				var tac = this.m_bytAugmentedColumn;
 				var oac = other.AugmentedColumn;
 				if ((tac.HasValue == oac.HasValue) && (!tac.HasValue || (tac.Value == oac.Value))) {
+					var typT = typeof(T);
 					for (byte i = 0; i < this.Lines; i++) {
 						for (byte j = 0; j < this.Columns; j++) {
-							if (!other.ValueAt(i, j).Equals(this[i, j])) {
+							if (this[i, j].CompareTo(Convert.ChangeType(other.ValueAt(i, j), typT)) != 0) {
 								return false;
 							}
 						}
