@@ -42,13 +42,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Console.WriteLine("Exemple 82 :");
-			var ex82_m = new Matrix<float>(3, 3, 1.4f, 1.2f, 4.1f, 1.4f, 2.2f, 3.7f, 1.8f, 3.2f, 3.9f);
-			var ex82_a = new Matrix<float>(3, 3, 0.3f, 0.3f, 0.3f, 0.7f, 0.7f, 0.7f, -0.2f, -0.2f, -0.2f);
+			var ex82_m = new Matrix<double>(3, 3, 1.4, 1.2, 4.1, 1.4, 2.2, 3.7, 1.8, 3.2, 3.9);
+			var ex82_a = new Matrix<double>(3, 3, 0.3, 0.3, 0.3, 0.7, 0.7, 0.7, -0.2, -0.2, -0.2);
 			var ex82_ma = ex82_m + ex82_a;
 			var ex82_3m = 3 * ex82_m;
 			ex82_ma.RoundErrors();
 			ex82_3m.RoundErrors();
-			var ex82_l = new Matrix<short>(3, 1, 5, 15, 20).Cast<float>();
+			var ex82_l = new Matrix<short>(3, 1, 5, 15, 20).Cast<double>();
 			var ex82_mxl = ex82_m * ex82_l;
 			Console.WriteLine(ex82_ma);
 			Console.WriteLine(ex82_3m);
@@ -95,6 +95,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex84_ca.RunCommand(2, 1, null, -2);
 			ex84_ca.RunCommand(2, null, 1, 1);
 			Console.WriteLine(ex84_ca);
+			TrySolve("a) ", ex84_ac, ex84_as, "x", "y", "z");
+			TrySolve("b) ", ex84_bc, ex84_bs, "x", "y", "z");
+			TrySolve("c) ", ex84_cc, ex84_cs, "x", "y", "z");
 
 			Console.WriteLine("Exemple 85 :");
 			var ex85_c = new Matrix<short>(3, 4, 4, 0, -1, 0, 10, 0, 0, -2, 0, 2, -2, -1);
@@ -103,9 +106,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex85_a.SwapLines(1, 2);
 			ex85_a.RunCommand(2, -10, null, 4);
 			Console.WriteLine(ex85_a);
+			TrySolve("", ex85_c, ex85_s, "x", "y", "z", "w");
 
 			Console.WriteLine("Exemple 86 :");
-			var ex86_s = new Matrix<float>(3, 1, 61.6f, 68.4f, 84.8f);
+			var ex86_s = new Matrix<double>(3, 1, 61.6, 68.4, 84.8);
 			var ex86_a = ex82_m | ex86_s;
 			ex86_a.RunCommand(1, -1, 1, null);
 			ex86_a.RunCommand(2, 9, null, -7);
@@ -114,6 +118,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex86_a.RunCommand(2, null, 29, 5);
 			ex86_a.RoundErrors();
 			Console.WriteLine(ex86_a);
+			TrySolve("", ex82_m.Cast<decimal>(), ex86_s.Cast<decimal>(), "x", "y", "z");
 
 			Console.WriteLine("Exemple 87 :");
 			var ex87_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
@@ -141,11 +146,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex88_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
 			var ex88_b = new Matrix<short>(3, 1, 1, 16, 9);
 			var ex88_plus = ex88_a | ex88_b;
-			Console.WriteLine(ex88_a);
-			Console.WriteLine(ex88_b);
 			Console.WriteLine(ex88_plus);
-			var ex88_forinvert = ex88_a.AugmentWithIdentity();
-			Console.WriteLine(ex88_forinvert);
+			Console.WriteLine(ex88_a.AugmentWithIdentity());
+			var ex88_m1 = ~ex88_a;
+			Console.WriteLine(ex88_m1);
+			Console.WriteLine(ex88_m1 * ex88_b);
+			TrySolve("", ex88_a, ex88_b, "x", "y", "z");
 
 			Console.WriteLine("Exemple 89 :");
 			var ex89_a = new Matrix<short>(3, 3, 2, 1, -4, 3, 1, 5, -2, 8, 7);
@@ -161,8 +167,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(Matrix<short>.Signature(3));
 
 			Console.WriteLine("Exemple 92 :");
-			OutputSolution("a) ", ex83_c.SolveWithCramer(ex83_s, "x", "y"));
-			OutputSolution("b) ", ex88_a.SolveWithCramer(ex88_b, "x", "y", "z"));
+			OutputSolution("a) ", ex83_c.Solve(ex83_s, "x", "y"));
+			OutputSolution("b) ", ex88_a.Solve(ex88_b, "x", "y", "z"));
 
 			Console.WriteLine("Travail 2 #7 :");
 			var t2_7a_c = new Matrix<short>(3, 3, 3, -1, -2, 2, 6, -9, 1, -7, 7);
@@ -219,6 +225,30 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(t2_8rf);
 		}
 
+		private static void TrySolve<T>(string prefix, Matrix<T> coefficients, Matrix<T> constants,
+		params string[] variables)
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
+		{
+			try {
+				OutputSolution(prefix, coefficients.Solve(constants, variables));
+			} catch (Exception ex) {
+				Console.Error.WriteLine(ex.Message);
+			}
+		}
+
+		private static void OutputSolution<T>(string prefix, IReadOnlyDictionary<string, T> solution)
+		{
+			Console.Write(prefix);
+			if ((solution == null) || (solution.Count < 1)) {
+				Console.Write("Aucune solution");
+			} else {
+				foreach (var kvp in solution) {
+					Console.Write("{0}={1}; ", kvp.Key, kvp.Value);
+				}
+			}
+			Console.Write(Environment.NewLine);
+		}
+
 		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 		{
@@ -228,19 +258,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 Matrix<short>.Signature(coords[0], coords[1]));
 				Console.WriteLine(matrix.Minor(coords[0], coords[1]));
 			}
-		}
-
-		private static void OutputSolution<T>(string prefix, IReadOnlyDictionary<string, T> solution)
-		{
-			Console.Write(prefix);
-			if ((solution == null) || (solution.Count<1)) {
-				Console.Write("Aucune solution");
-			} else {
-				foreach (var kvp in solution) {
-					Console.Write("{0}={1}; ", kvp.Key, kvp.Value);
-				}
-			}
-			Console.Write(Environment.NewLine);
 		}
 	}
 }

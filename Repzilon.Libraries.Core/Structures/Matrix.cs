@@ -194,7 +194,7 @@ namespace Repzilon.Libraries.Core
 			if (this.SameSize(other)) {
 				var tac = this.m_bytAugmentedColumn;
 				var oac = other.m_bytAugmentedColumn;
-				if ((tac.HasValue == oac.HasValue) && (tac.Value == oac.Value)) {
+				if ((tac.HasValue == oac.HasValue) && (!tac.HasValue || (tac.Value == oac.Value))) {
 					for (byte i = 0; i < this.Lines; i++) {
 						for (byte j = 0; j < this.Columns; j++) {
 							if (!other[i, j].Equals(this[i, j])) {
@@ -260,7 +260,7 @@ namespace Repzilon.Libraries.Core
 			var tl = this.Lines;
 
 			bool blnCI = (formatProvider == CultureInfo.InvariantCulture);
-			var nalarCols = new NumberAlignment[this.Columns];		
+			var nalarCols = new NumberAlignment[this.Columns];
 			for (j = 0; j < this.Columns; j++) {
 				for (i = 0; i < tl; i++) {
 					nalarCols[j].FromNumeric(this[i, j].ToString(format, formatProvider), formatProvider);
@@ -400,9 +400,15 @@ namespace Repzilon.Libraries.Core
 		/// Inverts the matrix using the Gauss-Jordan technique.
 		/// </summary>
 		/// <param name="self">Input matrix</param>
-		/// <returns>The multiplicative inverse of the input matrix</returns>
+		/// <returns>
+		/// The multiplicative inverse of the input matrix, or an equivalent to null
+		/// when the matrix cannot be inverted.
+		/// </returns>
 		public static Nullable<Matrix<T>> operator ~(Matrix<T> self)
 		{
+			if (!self.IsSquare) {
+				throw new ArrayTypeMismatchException("Only square matrices can be inverted.");
+			}
 			byte l, c;
 			var m = self.Lines;
 			var augmented = self.AugmentWithIdentity();
@@ -457,9 +463,12 @@ namespace Repzilon.Libraries.Core
 				matrixInDouble.RunCommand(l, coeffs);
 			}
 
-			//return matrixInDouble.Right().Cast<T>();
-			matrixInDouble = matrixInDouble.Right();
-			return matrixInDouble.Cast<T>();
+			if (matrixInDouble.Left().Equals(Matrix<double>.Identity(matrixInDouble.Lines))) {
+				matrixInDouble = matrixInDouble.Right();
+				return matrixInDouble.Cast<T>();
+			} else {
+				return null;
+			}
 		}
 
 		private static void AutoRun(Matrix<T> augmented, byte l, byte c, T minusOne, Func<T, T, T> mult)
@@ -662,7 +671,7 @@ namespace Repzilon.Libraries.Core
 		/// Tries to solve an equation system using the Cramer technique, using this matrix containing the
 		/// coefficients of the variable part of the equation system.
 		/// </summary>
-		/// <param name="solutions">A Nx1 matrix having the scalar part of the equation system</param>
+		/// <param name="constants">A Nx1 matrix having the constant part of the equation system</param>
 		/// <param name="variables">Variables names, in order</param>
 		/// <returns>
 		/// When a solution exists, a set of key-value pairs with the variable name and the solved value for each.
@@ -670,7 +679,7 @@ namespace Repzilon.Libraries.Core
 		/// equation system is unsolvable, however.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
-		public IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> solutions, params string[] variables)
+		private IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> constants, params string[] variables)
 		{
 			byte a, b;
 			Dictionary<string, T> dicSolved;
@@ -687,11 +696,55 @@ namespace Repzilon.Libraries.Core
 				for (a = 0; a < variables.Length; a++) {
 					ma = this.Clone();
 					for (b = 0; b < ma.Lines; b++) {
-						ma[b, a] = solutions[b, 0];
+						ma[b, a] = constants[b, 0];
 					}
 					dicSolved.Add(variables[a], (Convert.ToDouble(ma.Determinant()) * idd).ConvertTo<T>());
 				}
 				return dicSolved;
+			}
+		}
+
+		/// <summary>
+		/// Tries to solves a linear equation system, using this matrix containing the coefficients of the variable
+		/// part of the equation system. For now, only square matrices are supported and may only find a solution for
+		/// single unique solution equation systems.
+		/// </summary>
+		/// <param name="constants">A Nx1 matrix having the constant part of the equation system</param>
+		/// <param name="variables">Variables names, in order</param>
+		/// <returns>
+		/// When a unique solution exists, a set of key-value pairs with the variable name and the solved value for each.
+		/// Otherwise, throws an NotSupportedException.
+		/// </returns>
+		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
+		/// <exception cref="NotSupportedException">
+		/// When this matrix is not square or for square matrices, when neither Cramer nor matrix inversion techniques
+		/// yields a single solution. Support will improve in the future.
+		/// </exception>
+		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
+		{
+			if (this.IsSquare) {
+				var dicSolved = SolveWithCramer(constants, variables);
+				if (dicSolved == null) {
+					// Try to solve by matrix inversion
+					var inverse = ~this;
+					if (inverse.HasValue) {
+						if ((variables == null) || (variables.Length < 1)) {
+							throw new ArgumentNullException("variables");
+						}
+						var nowKnowns = inverse.Value * constants;
+						var dicHere = new Dictionary<string, T>();
+						for (byte a = 0; a < variables.Length; a++) {
+							dicHere.Add(variables[a], nowKnowns[a, 0]);
+						}
+						return dicHere;
+					} else {
+						throw new NotSupportedException("Gauss matrix solving technique is not yet supported.");
+					}
+				} else {
+					return dicSolved;
+				}
+			} else {
+				throw new NotSupportedException("Solving non square matrices is not yet supported.");
 			}
 		}
 	}
