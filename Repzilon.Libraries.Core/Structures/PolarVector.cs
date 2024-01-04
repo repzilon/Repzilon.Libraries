@@ -92,8 +92,7 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is TwoDVector<T>) {
 				return Equals((TwoDVector<T>)obj);
 			} else {
-				var polar = obj as IComparablePolarVector;
-				return (polar != null) && Equals(polar);
+				return Equals(obj as IComparablePolarVector);
 			}
 		}
 
@@ -109,7 +108,7 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(IComparablePolarVector other)
 		{
-			return (this.Norm.CompareTo(Convert.ChangeType(other.Norm, typeof(T))) == 0) &&
+			return (other != null) && (this.Norm.CompareTo(Convert.ChangeType(other.Norm, typeof(T))) == 0) &&
 			 this.Angle.Equals(other.Angle);
 		}
 

@@ -107,8 +107,7 @@ namespace Repzilon.Libraries.Core
 			if (obj is ThreeDVector<T>) {
 				return Equals((ThreeDVector<T>)obj);
 			} else {
-				var vector = obj as IComparableThreeDVector;
-				return (vector != null) && Equals(vector);
+				return Equals(obj as IComparableThreeDVector);
 			}
 		}
 
@@ -120,7 +119,7 @@ namespace Repzilon.Libraries.Core
 		public bool Equals(IComparableThreeDVector other)
 		{
 			var typT = typeof(T);
-			return (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
+			return (other != null) && (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
 			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0) &&
 			 (this.Z.CompareTo(Convert.ChangeType(other.Z, typT)) == 0);
 		}

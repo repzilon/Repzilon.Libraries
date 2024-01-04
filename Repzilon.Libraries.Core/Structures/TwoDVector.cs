@@ -171,8 +171,7 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is PolarVector<T>) {
 				return Equals((PolarVector<T>)obj);
 			} else {
-				var vector = obj as IComparableTwoDVector;
-				return (vector != null) && Equals(vector);
+				return Equals(obj as IComparableTwoDVector);
 			}
 		}
 
@@ -189,7 +188,7 @@ namespace Repzilon.Libraries.Core
 		public bool Equals(IComparableTwoDVector other)
 		{
 			var typT = typeof(T);
-			return (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
+			return (other != null) && (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
 			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0);
 		}
 

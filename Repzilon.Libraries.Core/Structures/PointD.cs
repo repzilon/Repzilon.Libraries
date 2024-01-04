@@ -71,22 +71,22 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(PointD other)
 		{
-			return X == other.X && Y == other.Y;
+			return (X == other.X) && (Y == other.Y);
 		}
 
 		public bool Equals(IPoint<double> other)
 		{
-			return X == other.X && Y == other.Y;
+			return (other != null) && (X == other.X) && (Y == other.Y);
 		}
 
 		public bool Equals(PointM other)
 		{
-			return (decimal)X == other.X && (decimal)Y == other.Y;
+			return ((decimal)X == other.X) && ((decimal)Y == other.Y);
 		}
 
 		public bool Equals(IPoint<decimal> other)
 		{
-			return (decimal)X == other.X && (decimal)Y == other.Y;
+			return (other != null) && ((decimal)X == other.X) && ((decimal)Y == other.Y);
 		}
 
 		public override int GetHashCode()

@@ -174,7 +174,7 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(IComparableMatrix other)
 		{
-			if (other.SameSize(this) && MatrixExtensionMethods.Equals(this.m_bytAugmentedColumn, other.AugmentedColumn)) {
+			if ((other != null) && other.SameSize(this) && MatrixExtensionMethods.Equals(this.m_bytAugmentedColumn, other.AugmentedColumn)) {
 				var typT = typeof(T);
 				for (byte i = 0; i < this.Lines; i++) {
 					for (byte j = 0; j < this.Columns; j++) {
@@ -193,8 +193,7 @@ namespace Repzilon.Libraries.Core
 			if (obj is Matrix<T>) {
 				return this.Equals((Matrix<T>)obj);
 			} else {
-				var matrix = obj as IComparableMatrix;
-				return (matrix != null) && this.Equals(matrix);
+				return this.Equals(obj as IComparableMatrix);
 			}
 		}
 
