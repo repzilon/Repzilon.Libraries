@@ -26,7 +26,7 @@ namespace Repzilon.Libraries.Core
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IComparable<T>
+	where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 	{
 		#region Static members
 		internal static readonly Func<T, T, T> add = BuildAdder();
@@ -170,8 +170,8 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public static Matrix<TOut> Cast<TIn, TOut>(Matrix<TIn> source)
-		where TIn : struct, IFormattable, IComparable<TIn>
-		where TOut : struct, IFormattable, IComparable<TOut>
+		where TIn : struct, IFormattable, IComparable<TIn>, IEquatable<TIn>
+		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
 		{
 			var sc = source.Columns;
 			var other = new Matrix<TOut>(source.Lines, sc, source.m_bytAugmentedColumn);
@@ -183,7 +183,7 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
-		public Matrix<TOut> Cast<TOut>() where TOut : struct, IFormattable, IComparable<TOut>
+		public Matrix<TOut> Cast<TOut>() where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
 		{
 			return Cast<T, TOut>(this);
 		}
@@ -671,6 +671,9 @@ namespace Repzilon.Libraries.Core
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 		public IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> solutions, params string[] variables)
 		{
+			byte a, b;
+			Dictionary<string, T> dicSolved;
+			Matrix<T> ma;
 			var det = this.Determinant();
 			if (det.Equals(default(T))) {
 				return null;
@@ -678,11 +681,11 @@ namespace Repzilon.Libraries.Core
 				if ((variables == null) || (variables.Length < 1)) {
 					throw new ArgumentNullException("variables");
 				}
-				var dicSolved = new Dictionary<string, T>();
+				dicSolved = new Dictionary<string, T>();
 				var idd = 1.0 / Convert.ToDouble(det);
-				for (byte a = 0; a < variables.Length; a++) {
-					var ma = this.Clone();
-					for (byte b = 0; b < ma.Lines; b++) {
+				for (a = 0; a < variables.Length; a++) {
+					ma = this.Clone();
+					for (b = 0; b < ma.Lines; b++) {
 						ma[b, a] = solutions[b, 0];
 					}
 					dicSolved.Add(variables[a], (Convert.ToDouble(ma.Determinant()) * idd).ConvertTo<T>());
@@ -695,7 +698,7 @@ namespace Repzilon.Libraries.Core
 	public static class MatrixExtensionMethods
 	{
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
-		where T : struct, IFormattable, IComparable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 		where TScalar : struct
 		{
 			var mul = Matrix<T>.BuildMultiplier<TScalar>();
@@ -709,7 +712,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
-		where T : struct, IFormattable, IComparable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 		{
 			var cl = coefficients.Lines;
 			if (values.Lines == cl) {
@@ -734,7 +737,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public static Matrix<T> AugmentWithIdentity<T>(this Matrix<T> coefficients)
-		where T : struct, IFormattable, IComparable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 		{
 			return coefficients.Augment(Matrix<T>.Identity(coefficients.Lines));
 		}

@@ -220,7 +220,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
-		where T : struct, IFormattable, IComparable<T>
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 		{
 			var coords = matrix.Find(valueToFind);
 			if (coords != null) {
