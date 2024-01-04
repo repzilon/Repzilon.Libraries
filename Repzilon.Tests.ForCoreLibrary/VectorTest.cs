@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -63,8 +63,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa66_ob = Vector.New(2, -3, 2);
 			var exa66_ab = exa66_ob - exa66_oa;
 			Console.WriteLine("Exemple 66b : AB=OB-OA={0}", exa66_ab);
-			var exa66_v = exa66_ab.Cast<float>().ToUnitary();
-			Console.WriteLine("Exemple 66c : v={0}", exa66_v);
+			var ex66_abf = exa66_ab.Cast<float>();
+			var exa66_v = ex66_abf.ToUnitary();
+			Console.WriteLine("Exemple 66c : v={0}, (float)AB==AB is {1}", exa66_v, ex66_abf.Equals(exa66_ab));
 
 			var exa67_theta = new Angle<float>(40.0f, AngleUnit.Degree);
 			var exa67_A = 700 * exa67_theta.Cos() / exa67_theta.Sin();
@@ -237,7 +238,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void Example69Console<TC, TV>(bool consoleOutput, TC exa69_f13, TC exa69_f23,
 		TwoDVector<TV> exa69_v13, TwoDVector<TV> exa69_v23, TC exa69_r)
-		where TV : struct, IConvertible, IFormattable, IEquatable<TV>, IComparable<TV>
+		where TV : struct, IConvertible, IFormattable, IEquatable<TV>, IComparable<TV>, IComparable
 		{
 			if (consoleOutput) {
 				Console.WriteLine("Exemple 69a : ||F13||={0}", exa69_f13);

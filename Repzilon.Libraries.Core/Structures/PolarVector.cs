@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -19,17 +19,25 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	// TODO : Implement IEquatable<TwoDVector<TOther>>
-	// TODO : Implement IEquatable<PolarVector<TOther>>
 	[StructLayout(LayoutKind.Auto)]
 	public struct PolarVector<T> : IFormattable,
-	IEquatable<PolarVector<T>>, IEquatable<TwoDVector<T>>
+	IEquatable<PolarVector<T>>, IEquatable<TwoDVector<T>>,
+	IComparablePolarVector, IEquatable<IComparablePolarVector>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 	{
 		public readonly T Norm;
 		public readonly Angle<T> Angle;
+
+		IComparable IComparablePolarVector.Norm {
+			get { return this.Norm; }
+		}
+
+		IAngle IComparablePolarVector.Angle {
+			get { return this.Angle; }
+		}
 
 		public PolarVector(T norm, Angle<T> angle)
 		{
@@ -60,7 +68,7 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public PolarVector<TOut> Cast<TOut>()
-		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			var a = this.Angle;
 			return new PolarVector<TOut>(this.Norm.ConvertTo<TOut>(), a.Value.ConvertTo<TOut>(), a.Unit);
@@ -84,8 +92,9 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is TwoDVector<T>) {
 				return Equals((TwoDVector<T>)obj);
 			} else {
-				return false;
-			} 
+				var polar = obj as IComparablePolarVector;
+				return (polar != null) && Equals(polar);
+			}
 		}
 
 		public bool Equals(PolarVector<T> other)
@@ -96,6 +105,12 @@ namespace Repzilon.Libraries.Core
 		public bool Equals(TwoDVector<T> other)
 		{
 			return this.Cast<double>().Equals(other.ToPolar());
+		}
+
+		public bool Equals(IComparablePolarVector other)
+		{
+			return (this.Norm.CompareTo(Convert.ChangeType(other.Norm, typeof(T))) == 0) &&
+			 this.Angle.Equals(other.Angle);
 		}
 
 		public override int GetHashCode()
@@ -145,7 +160,7 @@ namespace Repzilon.Libraries.Core
 			stbVector.Append(this.Norm.ToString(format, formatProvider));
 			stbVector.Append('∠').Append(this.Angle.ToString(format, formatProvider));
 			return stbVector.ToString();
-		}		
+		}
 		#endregion
 
 		#region Operators

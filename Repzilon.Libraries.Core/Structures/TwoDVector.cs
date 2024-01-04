@@ -19,13 +19,22 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<TwoDVector<TOther>>, IEquatable<PolarVector<TOther>>
+	// TODO : Implement IEquatable<PolarVector<TOther>>
 	[StructLayout(LayoutKind.Auto)]
-	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>
-	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>,
+	IComparableTwoDVector, IEquatable<IComparableTwoDVector>
+	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 	{
 		public T X { get; private set; }
 		public T Y { get; private set; }
+
+		IComparable IComparableTwoDVector.X {
+			get { return this.X; }
+		}
+
+		IComparable IComparableTwoDVector.Y {
+			get { return this.Y; }
+		}
 
 		public TwoDVector(T x, T y)
 		{
@@ -105,7 +114,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public TwoDVector<TOut> Cast<TOut>()
-		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			return new TwoDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>());
 		}
@@ -139,7 +148,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public PolarVector<TOut> ToPolar<TOut>()
-		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 #if (NETSTANDARD1_1)
 			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
@@ -162,7 +171,8 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is PolarVector<T>) {
 				return Equals((PolarVector<T>)obj);
 			} else {
-				return false;
+				var vector = obj as IComparableTwoDVector;
+				return (vector != null) && Equals(vector);
 			}
 		}
 
@@ -174,6 +184,13 @@ namespace Repzilon.Libraries.Core
 		public bool Equals(PolarVector<T> other)
 		{
 			return Equals(new TwoDVector<T>(other));
+		}
+
+		public bool Equals(IComparableTwoDVector other)
+		{
+			var typT = typeof(T);
+			return (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
+			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0);
 		}
 
 		public override int GetHashCode()
@@ -331,7 +348,7 @@ namespace Repzilon.Libraries.Core
 	public static class TwoDVectorExtensions
 	{
 		public static TwoDVector<T> Multiply<T, TScalar>(this TwoDVector<T> v, TScalar k)
-		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
 		{
 			var mult = Matrix<T>.BuildMultiplier<TScalar>();

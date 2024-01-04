@@ -19,12 +19,25 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct ThreeDVector<T> : ICartesianVector<T>, IEquatable<ThreeDVector<T>>
-	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+	public struct ThreeDVector<T> : ICartesianVector<T>, IEquatable<ThreeDVector<T>>,
+	IComparableThreeDVector, IEquatable<IComparableThreeDVector>
+	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 	{
 		public T X { get; private set; }
 		public T Y { get; private set; }
 		public T Z { get; private set; }
+
+		IComparable IComparableThreeDVector.X {
+			get { return this.X; }
+		}
+
+		IComparable IComparableThreeDVector.Y {
+			get { return this.Y; }
+		}
+
+		IComparable IComparableThreeDVector.Z {
+			get { return this.Z; }
+		}
 
 		public ThreeDVector(T x, T y, T z)
 		{
@@ -63,7 +76,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public ThreeDVector<TOut> Cast<TOut>()
-		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			return new ThreeDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>(), Z.ConvertTo<TOut>());
 		}
@@ -91,12 +104,25 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is ThreeDVector<T> && Equals((ThreeDVector<T>)obj);
+			if (obj is ThreeDVector<T>) {
+				return Equals((ThreeDVector<T>)obj);
+			} else {
+				var vector = obj as IComparableThreeDVector;
+				return (vector != null) && Equals(vector);
+			}
 		}
 
 		public bool Equals(ThreeDVector<T> other)
 		{
 			return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
+		}
+
+		public bool Equals(IComparableThreeDVector other)
+		{
+			var typT = typeof(T);
+			return (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
+			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0) &&
+			 (this.Z.CompareTo(Convert.ChangeType(other.Z, typT)) == 0);
 		}
 
 		public override int GetHashCode()
@@ -202,7 +228,7 @@ namespace Repzilon.Libraries.Core
 	public static class ThreeDVectorExtensions
 	{
 		public static ThreeDVector<T> Multiply<T, TScalar>(this ThreeDVector<T> v, TScalar k)
-		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
+		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
 		{
 			var mult = Matrix<T>.BuildMultiplier<TScalar>();
