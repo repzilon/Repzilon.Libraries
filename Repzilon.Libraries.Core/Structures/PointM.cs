@@ -19,7 +19,9 @@ using System.Text;
 namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
-	public struct PointM : IEquatable<PointM>, IFormattable, IPoint<decimal>
+	public struct PointM : IPoint<decimal>,
+	IEquatable<PointD>, IEquatable<IPoint<double>>, IEquatable<PointM>, IEquatable<IPoint<decimal>>,
+	IFormattable
 	{
 		public decimal X { get; private set; }
 		public decimal Y { get; private set; }
