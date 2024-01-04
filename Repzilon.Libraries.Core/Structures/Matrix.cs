@@ -407,11 +407,12 @@ namespace Repzilon.Libraries.Core
 			var m = self.Lines;
 			var augmented = self.AugmentWithIdentity();
 			T minusOne = (-1).ConvertTo<T>();
+			T zero = default(T);
 			var mult = BuildMultiplier<T>();
 			// Put zeroes in the lower left corner
 			for (c = 0; c < self.Columns - 1; c++) {
 				for (l = (byte)(c + 1); l < m; l++) {
-					if (!augmented[l, c].Equals(default(T))) {
+					if (!augmented[l, c].Equals(zero)) {
 						AutoRun(augmented, l, c, minusOne, mult);
 
 #if (DEBUG)
@@ -419,9 +420,9 @@ namespace Repzilon.Libraries.Core
 						int np = 0, nn = 0;
 						for (byte k = 0; k < augmented.Columns; k++) {
 							var v = augmented[l, k];
-							if (v.CompareTo(default(T)) > 0) {
+							if (v.CompareTo(zero) > 0) {
 								np++;
-							} else if (v.CompareTo(default(T)) < 0) {
+							} else if (v.CompareTo(zero) < 0) {
 								nn++;
 							}
 						}
@@ -435,14 +436,14 @@ namespace Repzilon.Libraries.Core
 				}
 			}
 			// Check if we can continue. If not return null
-			if (augmented[(byte)(m - 1), (byte)(m - 1)].Equals(default(T))) {
+			if (augmented[(byte)(m - 1), (byte)(m - 1)].Equals(zero)) {
 				return null;
 			}
 
 			// Put zeros in the upper right corner of the left side
 			for (c = (byte)(self.Columns - 1); c >= 1; c--) {
 				for (l = 0; l <= c - 1; l++) {
-					if (!augmented[l, c].Equals(default(T))) {
+					if (!augmented[l, c].Equals(zero)) {
 						AutoRun(augmented, l, c, minusOne, mult);
 					}
 				}
