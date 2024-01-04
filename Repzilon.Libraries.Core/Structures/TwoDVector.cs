@@ -19,10 +19,9 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<PolarVector<TOther>>
 	[StructLayout(LayoutKind.Auto)]
 	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>,
-	IComparableTwoDVector, IEquatable<IComparableTwoDVector>
+	IComparableTwoDVector, IEquatable<IComparableTwoDVector>, IEquatable<IComparablePolarVector>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 	{
 		public T X { get; private set; }
@@ -171,7 +170,8 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is PolarVector<T>) {
 				return Equals((PolarVector<T>)obj);
 			} else {
-				return Equals(obj as IComparableTwoDVector);
+				var twoD = obj as IComparableTwoDVector;
+				return twoD != null ? Equals(twoD) : Equals(obj as IComparablePolarVector);
 			}
 		}
 
@@ -193,6 +193,24 @@ namespace Repzilon.Libraries.Core
 		}
 
 		bool IEquatable<IComparableTwoDVector>.Equals(IComparableTwoDVector other)
+		{
+			return this.Equals(other);
+		}
+
+		private bool Equals(IComparablePolarVector other)
+		{
+			if (other != null) {
+				var n = this.Norm();
+				if (n == Convert.ToDouble(other.Norm)) {
+					var oa = other.Angle;
+					return Equals(new TwoDVector<T>((n * oa.Cos()).ConvertTo<T>(),
+					 (n * oa.Sin()).ConvertTo<T>()));
+				}
+			}
+			return false;
+		}
+
+		bool IEquatable<IComparablePolarVector>.Equals(IComparablePolarVector other)
 		{
 			return this.Equals(other);
 		}

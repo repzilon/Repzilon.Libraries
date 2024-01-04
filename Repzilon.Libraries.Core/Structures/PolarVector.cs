@@ -18,11 +18,10 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<TwoDVector<TOther>>
 	[StructLayout(LayoutKind.Auto)]
 	public struct PolarVector<T> : IFormattable,
 	IEquatable<PolarVector<T>>, IEquatable<TwoDVector<T>>,
-	IComparablePolarVector, IEquatable<IComparablePolarVector>
+	IComparablePolarVector, IEquatable<IComparablePolarVector>, IEquatable<IComparableTwoDVector>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
@@ -92,7 +91,8 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is TwoDVector<T>) {
 				return Equals((TwoDVector<T>)obj);
 			} else {
-				return Equals(obj as IComparablePolarVector);
+				var polar = obj as IComparablePolarVector;
+				return (polar != null) ? Equals(polar) : Equals(obj as IComparableTwoDVector);
 			}
 		}
 
@@ -113,6 +113,16 @@ namespace Repzilon.Libraries.Core
 		}
 
 		bool IEquatable<IComparablePolarVector>.Equals(IComparablePolarVector other)
+		{
+			return this.Equals(other);
+		}
+
+		private bool Equals(IComparableTwoDVector other)
+		{
+			return (other != null) && this.Equals(this.ToCartesian());
+		}
+
+		bool IEquatable<IComparableTwoDVector>.Equals(IComparableTwoDVector other)
 		{
 			return this.Equals(other);
 		}
