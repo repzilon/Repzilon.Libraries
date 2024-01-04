@@ -159,39 +159,31 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public bool Equals(Matrix<T> other)
 		{
-			if (this.SameSize(other)) {
-				var tac = this.m_bytAugmentedColumn;
-				var oac = other.m_bytAugmentedColumn;
-				if ((tac.HasValue == oac.HasValue) && (!tac.HasValue || (tac.Value == oac.Value))) {
-					for (byte i = 0; i < this.Lines; i++) {
-						for (byte j = 0; j < this.Columns; j++) {
-							if (!other[i, j].Equals(this[i, j])) {
-								return false;
-							}
+			if (this.SameSize(other) && MatrixExtensionMethods.Equals(this.m_bytAugmentedColumn, other.m_bytAugmentedColumn)) {
+				for (byte i = 0; i < this.Lines; i++) {
+					for (byte j = 0; j < this.Columns; j++) {
+						if (!other[i, j].Equals(this[i, j])) {
+							return false;
 						}
 					}
-					return true;
 				}
+				return true;
 			}
 			return false;
 		}
 
 		public bool Equals(IComparableMatrix other)
 		{
-			if (other.SameSize(this)) {
-				var tac = this.m_bytAugmentedColumn;
-				var oac = other.AugmentedColumn;
-				if ((tac.HasValue == oac.HasValue) && (!tac.HasValue || (tac.Value == oac.Value))) {
-					var typT = typeof(T);
-					for (byte i = 0; i < this.Lines; i++) {
-						for (byte j = 0; j < this.Columns; j++) {
-							if (this[i, j].CompareTo(Convert.ChangeType(other.ValueAt(i, j), typT)) != 0) {
-								return false;
-							}
+			if (other.SameSize(this) && MatrixExtensionMethods.Equals(this.m_bytAugmentedColumn, other.AugmentedColumn)) {
+				var typT = typeof(T);
+				for (byte i = 0; i < this.Lines; i++) {
+					for (byte j = 0; j < this.Columns; j++) {
+						if (this[i, j].CompareTo(Convert.ChangeType(other.ValueAt(i, j), typT)) != 0) {
+							return false;
 						}
 					}
-					return true;
 				}
+				return true;
 			}
 			return false;
 		}
@@ -817,6 +809,11 @@ namespace Repzilon.Libraries.Core
 		where TOut : struct
 		{
 			return (TOut)Convert.ChangeType(value, typeof(TOut));
+		}
+
+		internal static bool Equals<T>(Nullable<T> a, Nullable<T> b) where T : struct
+		{
+			return (a.HasValue == b.HasValue) && (!a.HasValue || a.Value.Equals(b.Value));
 		}
 	}
 }

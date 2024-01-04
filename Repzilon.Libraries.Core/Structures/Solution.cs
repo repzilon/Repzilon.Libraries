@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -36,14 +36,10 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(Solution other)
 		{
-			var vent = SolventVolume;
-			var ute = SoluteVolume;
-			var ovent = other.SolventVolume;
-			var oute = other.SoluteVolume;
 			return EqualityComparer<Measure>.Default.Equals(Concentration, other.Concentration) &&
 				   EqualityComparer<Measure?>.Default.Equals(SolutionVolume, other.SolutionVolume) &&
-				   (vent.HasValue == ovent.HasValue) && (vent.Value == ovent.Value) &&
-				   (ute.HasValue == oute.HasValue) && (ute.Value == oute.Value);
+				   MatrixExtensionMethods.Equals(SolventVolume, other.SolventVolume) &&
+				   MatrixExtensionMethods.Equals(SoluteVolume, other.SoluteVolume);
 		}
 
 		public override int GetHashCode()
