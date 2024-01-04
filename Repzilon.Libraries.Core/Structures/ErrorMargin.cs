@@ -57,12 +57,12 @@ namespace Repzilon.Libraries.Core
 
 		public T Min()
 		{
-			return Matrix<T>.sub(Middle, Margin);
+			return GenericArithmetic<T>.sub(Middle, Margin);
 		}
 
 		public T Max()
 		{
-			return Matrix<T>.adder(Middle, Margin);
+			return GenericArithmetic<T>.adder(Middle, Margin);
 		}
 
 		#region ToString

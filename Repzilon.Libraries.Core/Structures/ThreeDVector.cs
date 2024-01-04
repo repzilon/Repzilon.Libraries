@@ -171,13 +171,13 @@ namespace Repzilon.Libraries.Core
 		#region Operators
 		public static ThreeDVector<T> operator +(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var addi = Matrix<T>.adder;
+			var addi = GenericArithmetic<T>.adder;
 			return new ThreeDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y), addi(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> operator -(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var sub = Matrix<T>.sub;
+			var sub = GenericArithmetic<T>.sub;
 			return new ThreeDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y), sub(u.Z, v.Z));
 		}
 
@@ -198,15 +198,15 @@ namespace Repzilon.Libraries.Core
 
 		public static T Dot(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
-			var addi = Matrix<T>.adder;
+			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var addi = GenericArithmetic<T>.adder;
 			return addi(addi(mult(u.X, v.X), mult(u.Y, v.Y)), mult(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> Cross(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var mult = MatrixExtensionMethods.BuildMultiplier<T, T>();
-			var sub = Matrix<T>.sub;
+			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var sub = GenericArithmetic<T>.sub;
 			return new ThreeDVector<T>(
 			 sub(mult(u.Y, v.Z), mult(u.Z, v.Y)),
 			 sub(mult(u.Z, v.X), mult(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
@@ -231,7 +231,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
 		{
-			var mult = MatrixExtensionMethods.BuildMultiplier<T, TScalar>();
+			var mult = GenericArithmetic<T>.BuildMultiplier<TScalar>();
 			return new ThreeDVector<T>(mult(k, v.X), mult(k, v.Y), mult(k, v.Z));
 		}
 

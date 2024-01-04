@@ -177,10 +177,10 @@ namespace Repzilon.Libraries.Core
 			}
 
 			while (angle.CompareTo(zero) < 0) {
-				angle = Matrix<T>.adder(angle, turn);
+				angle = GenericArithmetic<T>.adder(angle, turn);
 			}
 			while (angle.CompareTo(turn) > 0) {
-				angle = Matrix<T>.sub(angle, turn);
+				angle = GenericArithmetic<T>.sub(angle, turn);
 			}
 
 			return new Angle<T>(angle, this.Unit);
@@ -377,7 +377,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var u = x.Unit;
 			if (u == y.Unit) {
-				return new Angle<T>(Matrix<T>.adder(x.Value, y.Value), u);
+				return new Angle<T>(GenericArithmetic<T>.adder(x.Value, y.Value), u);
 			} else {
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
 				var dy = y.ConvertTo<decimal>(AngleUnit.Radian, false);
@@ -403,7 +403,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var u = x.Unit;
 			if (u == y.Unit) {
-				return new Angle<T>(Matrix<T>.sub(x.Value, y.Value), u);
+				return new Angle<T>(GenericArithmetic<T>.sub(x.Value, y.Value), u);
 			} else {
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
 				var dy = y.ConvertTo<decimal>(AngleUnit.Radian, false);
@@ -437,7 +437,7 @@ namespace Repzilon.Libraries.Core
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>, IComparable
 		where TInteger : struct, IEquatable<TInteger>
 		{
-			var mult = MatrixExtensionMethods.BuildMultiplier<TAngle, TInteger>();
+			var mult = GenericArithmetic<TAngle>.BuildMultiplier<TInteger>();
 			return new Angle<TAngle>(mult(multiplier, angle.Value), angle.Unit);
 		}
 

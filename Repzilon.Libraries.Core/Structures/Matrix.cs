@@ -14,7 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-using System.Linq.Expressions;
 using System.Runtime.InteropServices;
 using System.Text;
 
@@ -28,54 +27,6 @@ namespace Repzilon.Libraries.Core
 #endif
 	where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 	{
-		#region Static members
-		internal static readonly Func<T, T, T> adder = BuildAdder();
-		internal static readonly Func<T, T, T> sub = BuildSubtractor();
-
-		private static Func<T, T, T> BuildAdder()
-		{
-			var type = typeof(T);
-			// Declare the parameters
-			var paramA = Expression.Parameter(type, "a");
-			var paramB = Expression.Parameter(type, "b");
-
-			// Add the parameters together and compile it
-			return Expression.Lambda<Func<T, T, T>>(Expression.Add(paramA, paramB), paramA, paramB).Compile();
-		}
-
-		private static Func<T, T, T> BuildSubtractor()
-		{
-			var type = typeof(T);
-			// Declare the parameters
-			var paramA = Expression.Parameter(type, "a");
-			var paramB = Expression.Parameter(type, "b");
-
-			// Add the parameters together and compile it
-			return Expression.Lambda<Func<T, T, T>>(Expression.Subtract(paramA, paramB), paramA, paramB).Compile();
-		}
-
-		public static T AddScalars(T a, T b)
-		{
-			return adder(a, b);
-		}
-
-		public static T SubtractScalars(T a, T b)
-		{
-			return sub(a, b);
-		}
-
-		public static T MultiplyScalars(T a, T b)
-		{
-			return BuildMultiplier<T>()(a, b);
-		}
-
-		public static T MultiplyScalars(T a, T b, T c)
-		{
-			var mult = BuildMultiplier<T>();
-			return mult(mult(a, b), c);
-		}
-		#endregion
-
 		public readonly byte Lines;
 		public readonly byte Columns;
 		private readonly byte? m_bytAugmentedColumn;
@@ -233,7 +184,7 @@ namespace Repzilon.Libraries.Core
 				if ((tac.HasValue == oac.HasValue) && (!tac.HasValue || (tac.Value == oac.Value))) {
 					for (byte i = 0; i < this.Lines; i++) {
 						for (byte j = 0; j < this.Columns; j++) {
-							if (!other.ValueAt(i,j).Equals(this[i, j])) { 
+							if (!other.ValueAt(i, j).Equals(this[i, j])) {
 								return false;
 							}
 						}
@@ -360,7 +311,7 @@ namespace Repzilon.Libraries.Core
 				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
-						m[i, j] = adder(a[i, j], b[i, j]);
+						m[i, j] = GenericArithmetic<T>.adder(a[i, j], b[i, j]);
 					}
 				}
 				return m;
@@ -378,7 +329,7 @@ namespace Repzilon.Libraries.Core
 				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
-						m[i, j] = sub(a[i, j], b[i, j]);
+						m[i, j] = GenericArithmetic<T>.sub(a[i, j], b[i, j]);
 					}
 				}
 				return m;
@@ -391,7 +342,7 @@ namespace Repzilon.Libraries.Core
 
 		private static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct
 		{
-			return MatrixExtensionMethods.BuildMultiplier<T, TScalar>();
+			return GenericArithmetic<T>.BuildMultiplier<TScalar>();
 		}
 
 		public static Matrix<T> operator *(T k, Matrix<T> m)
@@ -415,7 +366,7 @@ namespace Repzilon.Libraries.Core
 					for (byte j = 0; j < c.Columns; j++) {
 						T sumOfCell = default(T);
 						for (byte x = 0; x < b.Lines; x++) {
-							sumOfCell = adder(sumOfCell, mult(a[i, x], b[x, j]));
+							sumOfCell = GenericArithmetic<T>.adder(sumOfCell, mult(a[i, x], b[x, j]));
 						}
 						c[i, j] = sumOfCell;
 					}
@@ -546,7 +497,7 @@ namespace Repzilon.Libraries.Core
 				for (byte i = 0; i < coefficients.Length; i++) {
 					if (coefficients[i].HasValue) {
 						for (j = 0; j < this.Columns; j++) {
-							accumulator[j] = adder(accumulator[j], mult(coefficients[i].Value, this[i, j]));
+							accumulator[j] = GenericArithmetic<T>.adder(accumulator[j], mult(coefficients[i].Value, this[i, j]));
 						}
 					}
 				}
@@ -594,7 +545,7 @@ namespace Repzilon.Libraries.Core
 					return m_values[0, 0];
 				} else if (l == 2) { // we already know it is a square matrix
 					mult = BuildMultiplier<T>();
-					return sub(mult(m_values[0, 0], m_values[1, 1]), mult(m_values[0, 1], m_values[1, 0]));
+					return GenericArithmetic<T>.sub(mult(m_values[0, 0], m_values[1, 1]), mult(m_values[0, 1], m_values[1, 0]));
 				} else {
 					var c = this.Columns;
 					T plusOne = 1.ConvertTo<T>();
@@ -618,7 +569,7 @@ namespace Repzilon.Libraries.Core
 
 						// Accumulate determinant value at column
 						// det += m_values[0, j] * (-1)^(i+j) * det(subMatrix)
-						det = adder(det, mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
+						det = GenericArithmetic<T>.adder(det, mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
 					}
 					return det;
 				}
@@ -794,7 +745,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		where TScalar : struct
 		{
-			var mult = BuildMultiplier<T, TScalar>();
+			var mult = GenericArithmetic<T>.BuildMultiplier<TScalar>();
 			var mm = new Matrix<T>(m.Lines, m.Columns);
 			for (byte i = 0; i < m.Lines; i++) {
 				for (byte j = 0; j < m.Columns; j++) {
@@ -865,21 +816,6 @@ namespace Repzilon.Libraries.Core
 		where TOut : struct
 		{
 			return (TOut)Convert.ChangeType(value, typeof(TOut));
-		}
-
-		internal static Func<TScalar, T, T> BuildMultiplier<T, TScalar>()
-		where T : struct
-		where TScalar : struct
-		{
-			// Declare the parameters
-			var paramA = Expression.Parameter(typeof(TScalar), "a");
-			var paramB = Expression.Parameter(typeof(T), "b");
-
-			// Add the parameters together
-			BinaryExpression body = Expression.Multiply(paramA, paramB);
-
-			// Compile it
-			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
 		}
 	}
 }

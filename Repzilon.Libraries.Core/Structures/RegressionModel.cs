@@ -73,7 +73,7 @@ namespace Repzilon.Libraries.Core
 
 		public T Determination()
 		{
-			return MatrixExtensionMethods.BuildMultiplier<T,T>()(R, R);
+			return GenericArithmetic<T>.BuildMultiplier<T>()(R, R);
 		}
 
 		#region Equals

@@ -1,5 +1,5 @@
 ﻿//
-//  LinerarRegressionTest.cs
+//  LinearRegressionTest.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -79,14 +79,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Console.Write("r = {0}\tr^2 = {1}", lrp.Correlation.ToString(numberFormat, ciCu), lrp.Determination().ToString(numberFormat, ciCu));
 			if (checkBiaises) {
-				Console.WriteLine("\trelative bias: {0:p}", Matrix<T>.SubtractScalars(b, 1.ConvertTo<T>()));
+				Console.WriteLine("\trelative bias: {0:p}", GenericArithmetic<T>.SubtractScalars(b, 1.ConvertTo<T>()));
 			} else {
 				Console.Write(Environment.NewLine);
 			}
 			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, ciCu), lrp.ExplainedVariation().ToString(numberFormat, ciCu), lrp.UnexplainedVariation().ToString(numberFormat, ciCu));
 			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu), lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
-			Console.WriteLine("b = {0}", new ErrorMargin<T>(b, Matrix<T>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
-			Console.WriteLine("a = {0}", new ErrorMargin<T>(lrp.Intercept, Matrix<T>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
+			Console.WriteLine("b = {0}", new ErrorMargin<T>(b, GenericArithmetic<T>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
+			Console.WriteLine("a = {0}", new ErrorMargin<T>(lrp.Intercept, GenericArithmetic<T>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
 			if (xForYExtrapolation.HasValue) {
 				var x = xForYExtrapolation.Value;
 				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, true);
@@ -112,7 +112,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 x.ToString(numberFormat, culture),
 			 repeated ? "Infinity" : "1\t",
 			 new ErrorMargin<T>(lrp.InterpolateY(x),
-			 Matrix<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
+			 GenericArithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
 		}
 
 		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
@@ -122,7 +122,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
 			 yc.ToString(numberFormat, culture),
 			 k.ToString(numberFormat, culture),
-			 new ErrorMargin<T>(Divide(Matrix<T>.SubtractScalars(yc, lrp.Intercept), b), Matrix<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
+			 new ErrorMargin<T>(Divide(GenericArithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), GenericArithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
 		}
 
 		private static T Divide<T>(T dividend, T divisor) where T : struct, IConvertible
