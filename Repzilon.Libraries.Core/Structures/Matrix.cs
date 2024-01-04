@@ -20,7 +20,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Matrix resolution with Cramer method, then fallback to inversion
 	[StructLayout(LayoutKind.Auto)]
 	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
@@ -738,12 +737,14 @@ namespace Repzilon.Libraries.Core
 						}
 						return dicHere;
 					} else {
+						// FIXME : Gauss matrix solving technique is not yet implemented
 						throw new NotSupportedException("Gauss matrix solving technique is not yet supported.");
 					}
 				} else {
 					return dicSolved;
 				}
 			} else {
+				// FIXME : Solving non square matrices is not yet supported
 				throw new NotSupportedException("Solving non square matrices is not yet supported.");
 			}
 		}

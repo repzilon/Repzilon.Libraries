@@ -124,7 +124,7 @@ namespace Repzilon.Libraries.Core
 					numberText += new String(' ', allDecimals + nds.Length);
 				}
 			}
-			// TODO : Format exponents
+			// FIXME : Format exponents
 
 			return numberText;
 		}
