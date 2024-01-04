@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -145,12 +145,14 @@ namespace Repzilon.Libraries.Core
 		#region Operators
 		public static ThreeDVector<T> operator +(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return new ThreeDVector<T>(Matrix<T>.adder(u.X, v.X), Matrix<T>.adder(u.Y, v.Y), Matrix<T>.adder(u.Z, v.Z));
+			var addi = Matrix<T>.adder;
+			return new ThreeDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y), addi(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> operator -(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return new ThreeDVector<T>(Matrix<T>.sub(u.X, v.X), Matrix<T>.sub(u.Y, v.Y), Matrix<T>.sub(u.Z, v.Z));
+			var sub = Matrix<T>.sub;
+			return new ThreeDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y), sub(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> operator *(T k, ThreeDVector<T> v)

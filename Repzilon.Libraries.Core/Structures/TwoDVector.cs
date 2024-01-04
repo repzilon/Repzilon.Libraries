@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2023 René Rhéaume
+// Copyright (C) 2022-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -229,12 +229,14 @@ namespace Repzilon.Libraries.Core
 		#region Operators
 		public static TwoDVector<T> operator +(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return new TwoDVector<T>(Matrix<T>.adder(u.X, v.X), Matrix<T>.adder(u.Y, v.Y));
+			var addi = Matrix<T>.adder;
+			return new TwoDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y));
 		}
 
 		public static TwoDVector<T> operator -(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return new TwoDVector<T>(Matrix<T>.sub(u.X, v.X), Matrix<T>.sub(u.Y, v.Y));
+			var sub = Matrix<T>.sub;
+			return new TwoDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y));
 		}
 
 		public static TwoDVector<T> operator +(TwoDVector<T> u, PolarVector<T> v)
@@ -294,8 +296,7 @@ namespace Repzilon.Libraries.Core
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var mult = Matrix<T>.BuildMultiplier<T>();
-			var addi = Matrix<T>.adder;
-			return addi(mult(u.X, v.X), mult(u.Y, v.Y));
+			return Matrix<T>.adder(mult(u.X, v.X), mult(u.Y, v.Y));
 		}
 
 		public static T Dot(T norm1, T norm2, Angle<T> between)
@@ -317,9 +318,8 @@ namespace Repzilon.Libraries.Core
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var mult = Matrix<T>.BuildMultiplier<T>();
-			var sub = Matrix<T>.sub;
 			return new ThreeDVector<T>(default(T), default(T),
-			 sub(mult(u.X, v.Y), mult(u.Y, v.X)));
+			 Matrix<T>.sub(mult(u.X, v.Y), mult(u.Y, v.X)));
 		}
 
 		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)
