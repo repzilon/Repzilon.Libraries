@@ -62,7 +62,7 @@ namespace Repzilon.Libraries.Core
 
 		public T Max()
 		{
-			return Matrix<T>.add(Middle, Margin);
+			return Matrix<T>.adder(Middle, Margin);
 		}
 
 		#region ToString

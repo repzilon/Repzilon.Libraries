@@ -229,7 +229,7 @@ namespace Repzilon.Libraries.Core
 		#region Operators
 		public static TwoDVector<T> operator +(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return new TwoDVector<T>(Matrix<T>.add(u.X, v.X), Matrix<T>.add(u.Y, v.Y));
+			return new TwoDVector<T>(Matrix<T>.adder(u.X, v.X), Matrix<T>.adder(u.Y, v.Y));
 		}
 
 		public static TwoDVector<T> operator -(TwoDVector<T> u, TwoDVector<T> v)
@@ -271,10 +271,10 @@ namespace Repzilon.Libraries.Core
 
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{
-			var mul = Matrix<T>.BuildMultiplier<T>();
-			var add = Matrix<T>.add;
-			var squaredResult = add(add(mul(norm1, norm1), mul(norm2, norm2)),
-			 mul(mul(mul(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
+			var mult = Matrix<T>.BuildMultiplier<T>();
+			var addi = Matrix<T>.adder;
+			var squaredResult = addi(addi(mult(norm1, norm1), mult(norm2, norm2)),
+			 mult(mult(mult(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
 #if (NETSTANDARD1_1)
 			if (squaredResult is decimal) {
 #else
@@ -293,15 +293,15 @@ namespace Repzilon.Libraries.Core
 
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var mul = Matrix<T>.BuildMultiplier<T>();
-			var add = Matrix<T>.add;
-			return add(mul(u.X, v.X), mul(u.Y, v.Y));
+			var mult = Matrix<T>.BuildMultiplier<T>();
+			var addi = Matrix<T>.adder;
+			return addi(mult(u.X, v.X), mult(u.Y, v.Y));
 		}
 
 		public static T Dot(T norm1, T norm2, Angle<T> between)
 		{
-			var mul = Matrix<T>.BuildMultiplier<T>();
-			return mul(mul(norm1, norm2), between.Cos().ConvertTo<T>());
+			var mult = Matrix<T>.BuildMultiplier<T>();
+			return mult(mult(norm1, norm2), between.Cos().ConvertTo<T>());
 		}
 
 		public static T Dot(T norm1, T norm2, T angleBetween, AngleUnit unit)
@@ -316,10 +316,10 @@ namespace Repzilon.Libraries.Core
 
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var mul = Matrix<T>.BuildMultiplier<T>();
+			var mult = Matrix<T>.BuildMultiplier<T>();
 			var sub = Matrix<T>.sub;
 			return new ThreeDVector<T>(default(T), default(T),
-			 sub(mul(u.X, v.Y), mul(u.Y, v.X)));
+			 sub(mult(u.X, v.Y), mult(u.Y, v.X)));
 		}
 
 		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)
@@ -334,8 +334,8 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
 		where TScalar : struct, IEquatable<TScalar>
 		{
-			var mul = Matrix<T>.BuildMultiplier<TScalar>();
-			return new TwoDVector<T>(mul(k, v.X), mul(k, v.Y));
+			var mult = Matrix<T>.BuildMultiplier<TScalar>();
+			return new TwoDVector<T>(mult(k, v.X), mult(k, v.Y));
 		}
 
 		public static TwoDVector<float> RoundError(this TwoDVector<float> v)

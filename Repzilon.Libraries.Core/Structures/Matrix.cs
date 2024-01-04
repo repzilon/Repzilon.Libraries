@@ -29,7 +29,7 @@ namespace Repzilon.Libraries.Core
 	where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 	{
 		#region Static members
-		internal static readonly Func<T, T, T> add = BuildAdder();
+		internal static readonly Func<T, T, T> adder = BuildAdder();
 		internal static readonly Func<T, T, T> sub = BuildSubtractor();
 
 		private static Func<T, T, T> BuildAdder()
@@ -56,7 +56,7 @@ namespace Repzilon.Libraries.Core
 
 		public static T AddScalars(T a, T b)
 		{
-			return add(a, b);
+			return adder(a, b);
 		}
 
 		public static T SubtractScalars(T a, T b)
@@ -71,8 +71,8 @@ namespace Repzilon.Libraries.Core
 
 		public static T MultiplyScalars(T a, T b, T c)
 		{
-			var mul = BuildMultiplier<T>();
-			return mul(mul(a, b), c);
+			var mult = BuildMultiplier<T>();
+			return mult(mult(a, b), c);
 		}
 		#endregion
 
@@ -315,7 +315,7 @@ namespace Repzilon.Libraries.Core
 				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
-						m[i, j] = add(a[i, j], b[i, j]);
+						m[i, j] = adder(a[i, j], b[i, j]);
 					}
 				}
 				return m;
@@ -372,13 +372,13 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> operator *(Matrix<T> a, Matrix<T> b)
 		{
 			if (a.Columns == b.Lines) {
-				var mul = BuildMultiplier<T>();
+				var mult = BuildMultiplier<T>();
 				var c = new Matrix<T>(a.Lines, b.Columns);
 				for (byte i = 0; i < c.Lines; i++) {
 					for (byte j = 0; j < c.Columns; j++) {
 						T sumOfCell = default(T);
 						for (byte x = 0; x < b.Lines; x++) {
-							sumOfCell = add(sumOfCell, mul(a[i, x], b[x, j]));
+							sumOfCell = adder(sumOfCell, mult(a[i, x], b[x, j]));
 						}
 						c[i, j] = sumOfCell;
 					}
@@ -494,12 +494,12 @@ namespace Repzilon.Libraries.Core
 				 "command, pass null as its value.", this.Lines));
 			} else {
 				var accumulator = new T[this.Columns];
-				var mul = BuildMultiplier<T>();
+				var mult = BuildMultiplier<T>();
 				byte j;
 				for (byte i = 0; i < coefficients.Length; i++) {
 					if (coefficients[i].HasValue) {
 						for (j = 0; j < this.Columns; j++) {
-							accumulator[j] = add(accumulator[j], mul(coefficients[i].Value, this[i, j]));
+							accumulator[j] = adder(accumulator[j], mult(coefficients[i].Value, this[i, j]));
 						}
 					}
 				}
@@ -540,20 +540,20 @@ namespace Repzilon.Libraries.Core
 				throw new ArrayTypeMismatchException("A determinant is possible for square matrices only.");
 			} else {
 				var l = this.Lines;
-				Func<T, T, T> mul = null;
+				Func<T, T, T> mult = null;
 				if (l == 0) {
 					throw new InvalidOperationException("This zero-sized matrix should not exist.");
 				} else if (l == 1) {
 					return m_values[0, 0];
 				} else if (l == 2) { // we already know it is a square matrix
-					mul = BuildMultiplier<T>();
-					return sub(mul(m_values[0, 0], m_values[1, 1]), mul(m_values[0, 1], m_values[1, 0]));
+					mult = BuildMultiplier<T>();
+					return sub(mult(m_values[0, 0], m_values[1, 1]), mult(m_values[0, 1], m_values[1, 0]));
 				} else {
 					var c = this.Columns;
 					T plusOne = 1.ConvertTo<T>();
 					T minusOne = (-1).ConvertTo<T>();
 					T det = default(T);
-					mul = BuildMultiplier<T>();
+					mult = BuildMultiplier<T>();
 					for (byte j = 0; j < c; j++) {
 						// Build sub-matrix
 						byte subSize = checked((byte)(l - 1));
@@ -571,7 +571,7 @@ namespace Repzilon.Libraries.Core
 
 						// Accumulate determinant value at column
 						// det += m_values[0, j] * (-1)^(i+j) * det(subMatrix)
-						det = add(det, mul(mul(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
+						det = adder(det, mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
 					}
 					return det;
 				}
@@ -701,11 +701,11 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 		where TScalar : struct
 		{
-			var mul = Matrix<T>.BuildMultiplier<TScalar>();
+			var mult = Matrix<T>.BuildMultiplier<TScalar>();
 			var mm = new Matrix<T>(m.Lines, m.Columns);
 			for (byte i = 0; i < m.Lines; i++) {
 				for (byte j = 0; j < m.Columns; j++) {
-					mm[i, j] = mul(k, m[i, j]);
+					mm[i, j] = mult(k, m[i, j]);
 				}
 			}
 			return mm;
