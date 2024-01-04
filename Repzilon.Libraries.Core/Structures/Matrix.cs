@@ -255,12 +255,12 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
-			bool blnCI = (formatProvider == CultureInfo.InvariantCulture);
 			StringBuilder stbDesc = new StringBuilder();
+			byte i, j;
 			var tl = this.Lines;
 
-			var nalarCols = new NumberAlignment[this.Columns];
-			byte i, j;
+			bool blnCI = (formatProvider == CultureInfo.InvariantCulture);
+			var nalarCols = new NumberAlignment[this.Columns];		
 			for (j = 0; j < this.Columns; j++) {
 				for (i = 0; i < tl; i++) {
 					nalarCols[j].FromNumeric(this[i, j].ToString(format, formatProvider), formatProvider);
