@@ -15,7 +15,7 @@ using System;
 
 namespace Repzilon.Libraries.Core
 {
-	public interface IComparableErrorMargin
+	internal interface IComparableErrorMargin
 	{
 		IComparable Middle { get; }
 		IComparable Margin { get; }

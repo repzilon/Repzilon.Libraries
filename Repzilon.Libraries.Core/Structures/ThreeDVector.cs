@@ -104,11 +104,7 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			if (obj is ThreeDVector<T>) {
-				return Equals((ThreeDVector<T>)obj);
-			} else {
-				return Equals(obj as IComparableThreeDVector);
-			}
+			return obj is ThreeDVector<T> ? Equals((ThreeDVector<T>)obj) : Equals(obj as IComparableThreeDVector);
 		}
 
 		public bool Equals(ThreeDVector<T> other)
@@ -116,12 +112,17 @@ namespace Repzilon.Libraries.Core
 			return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 		}
 
-		public bool Equals(IComparableThreeDVector other)
+		private bool Equals(IComparableThreeDVector other)
 		{
 			var typT = typeof(T);
 			return (other != null) && (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
 			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0) &&
 			 (this.Z.CompareTo(Convert.ChangeType(other.Z, typT)) == 0);
+		}
+
+		bool IEquatable<IComparableThreeDVector>.Equals(IComparableThreeDVector other)
+		{
+			return this.Equals(other);
 		}
 
 		public override int GetHashCode()
@@ -221,7 +222,7 @@ namespace Repzilon.Libraries.Core
 		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);
-		}
+		}		
 	}
 
 	public static class ThreeDVectorExtensions

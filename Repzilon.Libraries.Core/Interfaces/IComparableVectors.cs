@@ -15,7 +15,7 @@ using System;
 
 namespace Repzilon.Libraries.Core
 {
-	public interface IComparableTwoDVector
+	internal interface IComparableTwoDVector
 	{
 		IComparable X { get; }
 		IComparable Y { get; }
@@ -23,14 +23,14 @@ namespace Repzilon.Libraries.Core
 
 	// Note : Do not make IComparableThreeDVector "inherit" from IComparableTwoDVector.
 	// A 3D vector is not considered as an extended 2D vector, but as a different notion.
-	public interface IComparableThreeDVector
+	internal interface IComparableThreeDVector
 	{
 		IComparable X { get; }
 		IComparable Y { get; }
 		IComparable Z { get; }
 	}
 
-	public interface IComparablePolarVector
+	internal interface IComparablePolarVector
 	{
 		IComparable Norm { get; }
 		IAngle Angle { get; }

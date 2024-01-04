@@ -104,11 +104,7 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			if (obj is ErrorMargin<T>) {
-				return Equals((ErrorMargin<T>)obj);
-			} else {
-				return Equals(obj as IComparableErrorMargin);
-			}		
+			return obj is ErrorMargin<T> ? Equals((ErrorMargin<T>)obj) : Equals(obj as IComparableErrorMargin);
 		}
 
 		public bool Equals(ErrorMargin<T> other)
@@ -116,11 +112,16 @@ namespace Repzilon.Libraries.Core
 			return this.Middle.Equals(other.Middle) && this.Margin.Equals(other.Margin);
 		}
 
-		public bool Equals(IComparableErrorMargin other)
+		private bool Equals(IComparableErrorMargin other)
 		{
 			var typT = typeof(T);
 			return (other != null) && (this.Middle.CompareTo(Convert.ChangeType(other.Middle, typT)) == 0) &&
 			 (this.Margin.CompareTo(Convert.ChangeType(other.Margin, typT)) == 0);
+		}
+
+		bool IEquatable<IComparableErrorMargin>.Equals(IComparableErrorMargin other)
+		{
+			return this.Equals(other);
 		}
 
 		public override int GetHashCode()
@@ -129,7 +130,7 @@ namespace Repzilon.Libraries.Core
 				int hashCode = 1348611219 * -1521134295 + Middle.GetHashCode();
 				return hashCode * -1521134295 + Margin.GetHashCode();
 			}
-		}
+		}	
 
 		public static bool operator ==(ErrorMargin<T> left, ErrorMargin<T> right)
 		{

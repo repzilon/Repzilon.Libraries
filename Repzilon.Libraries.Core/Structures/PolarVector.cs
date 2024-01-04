@@ -106,10 +106,15 @@ namespace Repzilon.Libraries.Core
 			return this.Cast<double>().Equals(other.ToPolar());
 		}
 
-		public bool Equals(IComparablePolarVector other)
+		private bool Equals(IComparablePolarVector other)
 		{
 			return (other != null) && (this.Norm.CompareTo(Convert.ChangeType(other.Norm, typeof(T))) == 0) &&
 			 this.Angle.Equals(other.Angle);
+		}
+
+		bool IEquatable<IComparablePolarVector>.Equals(IComparablePolarVector other)
+		{
+			return this.Equals(other);
 		}
 
 		public override int GetHashCode()

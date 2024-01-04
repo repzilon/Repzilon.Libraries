@@ -185,11 +185,16 @@ namespace Repzilon.Libraries.Core
 			return Equals(new TwoDVector<T>(other));
 		}
 
-		public bool Equals(IComparableTwoDVector other)
+		private bool Equals(IComparableTwoDVector other)
 		{
 			var typT = typeof(T);
 			return (other != null) && (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
 			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0);
+		}
+
+		bool IEquatable<IComparableTwoDVector>.Equals(IComparableTwoDVector other)
+		{
+			return this.Equals(other);
 		}
 
 		public override int GetHashCode()

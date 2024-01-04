@@ -172,7 +172,7 @@ namespace Repzilon.Libraries.Core
 			return false;
 		}
 
-		public bool Equals(IComparableMatrix other)
+		private bool Equals(IComparableMatrix other)
 		{
 			if ((other != null) && other.SameSize(this) && MatrixExtensionMethods.Equals(this.m_bytAugmentedColumn, other.AugmentedColumn)) {
 				var typT = typeof(T);
@@ -188,13 +188,14 @@ namespace Repzilon.Libraries.Core
 			return false;
 		}
 
+		bool IEquatable<IComparableMatrix>.Equals(IComparableMatrix other)
+		{
+			return this.Equals(other);
+		}
+
 		public override bool Equals(object obj)
 		{
-			if (obj is Matrix<T>) {
-				return this.Equals((Matrix<T>)obj);
-			} else {
-				return this.Equals(obj as IComparableMatrix);
-			}
+			return obj is Matrix<T> ? this.Equals((Matrix<T>)obj) : this.Equals(obj as IComparableMatrix);
 		}
 
 		public override int GetHashCode()

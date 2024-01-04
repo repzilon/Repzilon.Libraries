@@ -15,7 +15,7 @@ using System;
 
 namespace Repzilon.Libraries.Core
 {
-	public interface IComparableMatrix
+	internal interface IComparableMatrix
 	{
 		byte Lines { get; }
 		byte Columns { get; }
