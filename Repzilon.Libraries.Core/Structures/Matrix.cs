@@ -403,11 +403,11 @@ namespace Repzilon.Libraries.Core
 		/// <returns>The multiplicative inverse of the input matrix</returns>
 		public static Nullable<Matrix<T>> operator ~(Matrix<T> self)
 		{
+			byte l, c;
+			var m = self.Lines;
 			var augmented = self.AugmentWithIdentity();
 			T minusOne = (-1).ConvertTo<T>();
 			var mult = BuildMultiplier<T>();
-			byte c, l;
-			var m = self.Lines;
 			// Put zeroes in the lower left corner
 			for (c = 0; c < self.Columns - 1; c++) {
 				for (l = (byte)(c + 1); l < m; l++) {
