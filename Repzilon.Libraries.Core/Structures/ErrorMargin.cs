@@ -17,15 +17,23 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement IEquatable<ErrorMargin<TOther>>
-	public struct ErrorMargin<T> : IEquatable<ErrorMargin<T>>, IFormattable
+	public struct ErrorMargin<T> : IEquatable<ErrorMargin<T>>, IFormattable,
+	IComparableErrorMargin, IEquatable<IComparableErrorMargin>
 #if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IEquatable<T>
+	where T : struct, IFormattable, IEquatable<T>, IComparable
 	{
 		public T Middle { get; private set; }
 		public T Margin { get; private set; }
+
+		IComparable IComparableErrorMargin.Middle {
+			get { return this.Middle; }
+		}
+
+		IComparable IComparableErrorMargin.Margin {
+			get { return this.Margin; }
+		}
 
 		public ErrorMargin(T middle, T margin)
 		{
@@ -50,7 +58,7 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		public ErrorMargin<TOut> Cast<TOut>()
-		where TOut : struct, IFormattable, IEquatable<TOut>
+		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable
 		{
 			return new ErrorMargin<TOut>(this.Middle.ConvertTo<TOut>(), this.Margin.ConvertTo<TOut>());
 		}
@@ -96,12 +104,23 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			return obj is ErrorMargin<T> && Equals((ErrorMargin<T>)obj);
+			if (obj is ErrorMargin<T>) {
+				return Equals((ErrorMargin<T>)obj);
+			} else {
+				return Equals(obj as IComparableErrorMargin);
+			}		
 		}
 
 		public bool Equals(ErrorMargin<T> other)
 		{
 			return this.Middle.Equals(other.Middle) && this.Margin.Equals(other.Margin);
+		}
+
+		public bool Equals(IComparableErrorMargin other)
+		{
+			var typT = typeof(T);
+			return (other != null) && (this.Middle.CompareTo(Convert.ChangeType(other.Middle, typT)) == 0) &&
+			 (this.Margin.CompareTo(Convert.ChangeType(other.Margin, typT)) == 0);
 		}
 
 		public override int GetHashCode()
@@ -121,6 +140,6 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
-		#endregion	
+		#endregion
 	}
 }
