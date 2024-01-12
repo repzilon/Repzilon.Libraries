@@ -155,5 +155,17 @@ namespace Repzilon.Libraries.Core
 				return 1;
 			}
 		}
+
+		public static bool IsEssentialForAdults(this AlphaAminoAcid y)
+		{
+			return (y == AlphaAminoAcid.Leu) || (y == AlphaAminoAcid.Ile) || (y == AlphaAminoAcid.Phe) ||
+			 (y == AlphaAminoAcid.Trp) || (y == AlphaAminoAcid.Thr) || (y == AlphaAminoAcid.Lys) ||
+			 (y == AlphaAminoAcid.Val) || (y == AlphaAminoAcid.Met);
+		}
+
+		public static bool IsEssentialForKids(this AlphaAminoAcid y)
+		{
+			return IsEssentialForAdults(y) || (y == AlphaAminoAcid.His) || (y == AlphaAminoAcid.Arg);
+		}
 	}
 }
