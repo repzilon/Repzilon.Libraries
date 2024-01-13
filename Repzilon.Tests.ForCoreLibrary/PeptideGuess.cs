@@ -108,6 +108,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Fill(rev10_hexa_c4, lstAllowed);
 			//RestrictToAvailable(rev10_hexa_c4, rev10_allowed);
 
+			// Using LINQ is faster than the FindAll method
 			var lstRev10_tetra = PermutationsForQuadSlots(rev10_tetra, AlphaAminoAcid.Gly).Where(x => {
 				return x.Exists(AlphaAminoAcidExtension.IsAlkali);
 			}).Where(HasPartRev10Sequence).ToList();
@@ -352,7 +353,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			for (var i = 0; i < destination.Length; i++) {
 				if (destination[i] == null) {
-					destination[i] = source.ToList();
+					destination[i] = new List<AlphaAminoAcid>(source);
 				}
 			}
 		}
@@ -361,7 +362,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			for (var i = 0; i < destination.Length; i++) {
 				if (destination[i] == null) {
-					destination[i] = source.ToList();
+					destination[i] = new List<AlphaAminoAcid>(source);
 				}
 			}
 		}
