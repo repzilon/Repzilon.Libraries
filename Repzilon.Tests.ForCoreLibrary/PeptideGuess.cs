@@ -113,28 +113,38 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}).Where(HasPartRev10Sequence).ToList();
 			var lstRev10_hexa_c4 = PermutationsForQuadSlots(rev10_hexa_c4, AlphaAminoAcid.Gly);
 			var lstRev10_hexa_c2 = PermutationsForTwoSlots(rev10_hexa_c2, AlphaAminoAcid.Gly);
-			var lstRev10_hexa = ConcatenatePermutations(4 + 2, lstRev10_hexa_c4, lstRev10_hexa_c2).Where(HasPartRev10Sequence).ToList();
-			return ConcatenatePermutations(4 + 6, lstRev10_tetra, lstRev10_hexa).Where(HasKeyRev10Sequence).ToList();
+			var lstRev10_hexa = ConcatenatePermutations(4 + 2, AlphaAminoAcid.Gly, lstRev10_hexa_c4, lstRev10_hexa_c2, HasPartRev10Sequence);
+			return ConcatenatePermutations(4 + 6, AlphaAminoAcid.Gly, lstRev10_tetra, lstRev10_hexa, HasKeyRev10Sequence);
 		}
 
 		private static List<List<AlphaAminoAcid>> ConcatenatePermutations(int peptideLength,
-		List<List<AlphaAminoAcid>> firstPermutations, List<List<AlphaAminoAcid>> secondPermutations)
+		AlphaAminoAcid dualAminoAcid,
+		List<List<AlphaAminoAcid>> firstPermutations, List<List<AlphaAminoAcid>> secondPermutations,
+		Predicate<List<AlphaAminoAcid>> conditions)
 		{
+			if ((conditions == null) && (checked(firstPermutations.Count * secondPermutations.Count * 2) > 1000000)) {
+				throw new InsufficientMemoryException();
+			}
+
 			var lstOutput = new List<List<AlphaAminoAcid>>();
 			for (int i = 0; i < firstPermutations.Count; i++) {
 				for (int j = 0; j < secondPermutations.Count; j++) {
 					var candidate = new List<AlphaAminoAcid>(peptideLength);
 					candidate.AddRange(firstPermutations[i]);
 					candidate.AddRange(secondPermutations[j]);
-					if (UniqueExcept(candidate, AlphaAminoAcid.Gly)) {
-						lstOutput.Add(candidate);
+					if ((conditions == null) || conditions(candidate)) {
+						if (UniqueExcept(candidate, dualAminoAcid)) {
+							lstOutput.Add(candidate);
+						}
 					}
 
 					candidate = new List<AlphaAminoAcid>(peptideLength);
 					candidate.AddRange(secondPermutations[j]);
 					candidate.AddRange(firstPermutations[i]);
-					if (UniqueExcept(candidate, AlphaAminoAcid.Gly)) {
-						lstOutput.Add(candidate);
+					if ((conditions == null) || conditions(candidate)) {
+						if (UniqueExcept(candidate, dualAminoAcid)) {
+							lstOutput.Add(candidate);
+						}
 					}
 				}
 			}
@@ -185,7 +195,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var lstChymoDualPermutations = PermutationsForTwoSlots(rev11_chymo_dual, AlphaAminoAcid.Met);
 			var lstChymoQuadPermutations = PermutationsForQuadSlots(rev11_chymo_quad, AlphaAminoAcid.Met);
 			var lstChymoAllPermutations = ConcatenatePermutations(1 + 2 + 4, AlphaAminoAcid.Met,
-			 Transpose(rev11_chymo_free), lstChymoDualPermutations, lstChymoQuadPermutations).Where(HasKeyRev11Sequence).ToList();
+			 Transpose(rev11_chymo_free), lstChymoDualPermutations, lstChymoQuadPermutations, HasKeyRev11Sequence);
 
 			var rev11_exceptMet = new AlphaAminoAcid[] {
 				AlphaAminoAcid.Asp, AlphaAminoAcid.Lys, AlphaAminoAcid.Tyr, AlphaAminoAcid.Phe, AlphaAminoAcid.Leu
@@ -201,7 +211,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var lstBrCNDualPermutations = PermutationsForTwoSlots(rev11_brcn_dual, AlphaAminoAcid.Met);
 			var lstBrCNQuadPermutations = PermutationsForQuadSlots(rev11_brcn_quad, AlphaAminoAcid.Met);
 			var lstBrCNAllPermutations = ConcatenatePermutations(1 + 2 + 4, AlphaAminoAcid.Met,
-			 Transpose(rev11_brcn_free), lstBrCNDualPermutations, lstBrCNQuadPermutations).Where(HasKeyRev11Sequence).ToList();
+			 Transpose(rev11_brcn_free), lstBrCNDualPermutations, lstBrCNQuadPermutations, HasKeyRev11Sequence);
 
 			return lstChymoAllPermutations.Intersect(lstBrCNAllPermutations, PolypeptideComparer.Singleton).ToList();
 		}
@@ -219,8 +229,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static List<List<AlphaAminoAcid>> ConcatenatePermutations(
 		int peptideLength, AlphaAminoAcid dualAminoAcid,
 		List<List<AlphaAminoAcid>> firstPermutations, List<List<AlphaAminoAcid>> secondPermutations,
-		List<List<AlphaAminoAcid>> thirdPermutations)
+		List<List<AlphaAminoAcid>> thirdPermutations,
+		Predicate<List<AlphaAminoAcid>> conditions)
 		{
+			if ((conditions == null) && (checked(firstPermutations.Count * secondPermutations.Count * 2) > 1000000)) {
+				throw new InsufficientMemoryException();
+			}
+
 			var lstOutput = new List<List<AlphaAminoAcid>>();
 			for (int i = 0; i < firstPermutations.Count; i++) {
 				for (int j = 0; j < secondPermutations.Count; j++) {
@@ -229,48 +244,60 @@ namespace Repzilon.Tests.ForCoreLibrary
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(thirdPermutations[k]);
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
+						if ((conditions == null) || conditions(candidate)) {
+							if (UniqueExcept(candidate, dualAminoAcid)) {
+								lstOutput.Add(candidate);
+							}
 						}
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(secondPermutations[j]);
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
+						if ((conditions == null) || conditions(candidate)) {
+							if (UniqueExcept(candidate, dualAminoAcid)) {
+								lstOutput.Add(candidate);
+							}
 						}
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(thirdPermutations[k]);
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
+						if ((conditions == null) || conditions(candidate)) {
+							if (UniqueExcept(candidate, dualAminoAcid)) {
+								lstOutput.Add(candidate);
+							}
 						}
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(firstPermutations[i]);
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
+						if ((conditions == null) || conditions(candidate)) {
+							if (UniqueExcept(candidate, dualAminoAcid)) {
+								lstOutput.Add(candidate);
+							}
 						}
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(secondPermutations[j]);
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
+						if ((conditions == null) || conditions(candidate)) {
+							if (UniqueExcept(candidate, dualAminoAcid)) {
+								lstOutput.Add(candidate);
+							}
 						}
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(firstPermutations[i]);
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
+						if ((conditions == null) || conditions(candidate)) {
+							if (UniqueExcept(candidate, dualAminoAcid)) {
+								lstOutput.Add(candidate);
+							}
 						}
 					}
 				}
