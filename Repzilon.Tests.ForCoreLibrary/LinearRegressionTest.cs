@@ -65,6 +65,35 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointM(20, 4.61m)
 			);
 			OutputLinearRegression2(lrrRev5, 3.1824m, "G7", false, 12, 4.154m);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Math I Example 38");
+			Console.WriteLine("-----------------");
+			var lrrM1Ex38 = LinearRegression.Compute(
+				new PointD(Math.Log10(100.0), Math.Log10(0.240)),
+				new PointD(Math.Log10(150.0), Math.Log10(0.295)),
+				new PointD(Math.Log10(250.0), Math.Log10(0.380)),
+				new PointD(Math.Log10(300.0), Math.Log10(0.415)),
+				new PointD(Math.Log10(400.0), Math.Log10(0.480)),
+				new PointD(Math.Log10(550.0), Math.Log10(0.560))
+			);
+			var rmdMEx38 = lrrM1Ex38.ChangeModel(MathematicalModel.LogLog);
+			OutputRegressionModel(rmdMEx38);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Math I Exercice");
+			Console.WriteLine("---------------");
+			var lrrM1Exer = LinearRegression.Compute(
+				new PointD(8.0, Math.Log10(9858)),
+				new PointD(14.0, Math.Log10(9416)),
+				new PointD(18.0, Math.Log10(7234)),
+				new PointD(24.0, Math.Log10(5426)),
+				new PointD(37.5, Math.Log10(2789)),
+				new PointD(41.0, Math.Log10(2251)),
+				new PointD(71.0, Math.Log10(564))
+			);
+			var rmdM1Exer = lrrM1Exer.ChangeModel(MathematicalModel.Exponential);
+			OutputRegressionModel(rmdM1Exer);
 		}
 
 		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
@@ -134,6 +163,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 				return Decimal.Divide(dividend.ConvertTo<decimal>(), divisor.ConvertTo<decimal>()).ConvertTo<T>();
 			} else {
 				throw new NotSupportedException();
+			}
+		}
+
+		private static void OutputRegressionModel(RegressionModel<double> mathModel)
+		{
+			Console.WriteLine("{0:g6}\tr={1:g6}", mathModel, mathModel.R);
+			var kind = mathModel.Model;
+			if (kind == MathematicalModel.Exponential) {
+				Console.WriteLine("{0:eg6}\tGrowth rate: {1:p2}", mathModel, mathModel.GrowthRate());
+			} else if (kind == MathematicalModel.Logarithmic) {
+				Console.WriteLine("{0:eg6}", mathModel);
 			}
 		}
 	}

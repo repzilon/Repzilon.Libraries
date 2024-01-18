@@ -36,16 +36,18 @@ namespace Repzilon.Libraries.Core
 #endif
 	where T : struct, IFormattable, IEquatable<T>
 	{
+		private static readonly double k1ofLn10 = 1.0 / Math.Log(10);
+
 		/// <summary>In an affine model, value of the intercept.</summary>
-		T A;
+		public T A;
 
 		/// <summary>In an affine model, value of the slope.</summary>
-		T B;
+		public T B;
 
 		/// <summary>Coefficient of correlation</summary>
-		T R;
+		public T R;
 
-		MathematicalModel Model;
+		public MathematicalModel Model;
 
 		public RegressionModel(T a, T b, T r, MathematicalModel model)
 		{
@@ -114,6 +116,22 @@ namespace Repzilon.Libraries.Core
 			return this.ToString(null, null);
 		}
 
+		/// <summary>
+		/// Gives the formula according to the model and values of a and b.
+		/// </summary>
+		/// <param name="format">
+		/// A .NET format specification to format numbers, with the follwing extra:
+		/// If there are two letters, the first one being 'e' or 'E', the formula will be expressed so that you
+		/// can derivate it (with calculus) later on. Watch out, a single 'e' will keep the nornal behavior,
+		/// which is to express numbers with the "scientific" notation.
+		/// </param>
+		/// <param name="formatProvider">
+		/// NumberFormatInfo or CultureInfo object giving parameters such as decimal separator or digit groupings.
+		/// </param>
+		/// <returns>
+		/// The formula as a plain text string using the ASCII character set for the operators.
+		/// * will be used for multiplication, ^ for exponentiation.
+		/// </returns>
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -124,19 +142,36 @@ namespace Repzilon.Libraries.Core
 			}
 			var stbFormula = new StringBuilder();
 			stbFormula.Append("y = ");
-			var enuModel = this.Model;
 			var strA = this.A.ToString(format, formatProvider);
 			var strB = this.B.ToString(format, formatProvider);
+			bool blnDerivable = false;
+			if ((format.Length >= 2) && ((format[0] == 'e') || (format[0] == 'E')) &&
+			Char.IsLetter(format[1])) {
+				blnDerivable = true;
+				format = format.Substring(1);
+			}
+
+			var enuModel = this.Model;
+
 			if (enuModel == MathematicalModel.Affine) {
 				stbFormula.Append(strA).Append(" + ").Append(strB).Append("x");
 			} else if (enuModel == MathematicalModel.Power) {
 				stbFormula.Append(strA).Append(" * x^").Append(strB);
 			} else if (enuModel == MathematicalModel.Exponential) {
-				// To derivate, b must be converted to a multiple of constant e
-				stbFormula.Append(strA).Append(" * ").Append(strB).Append("^x");
+				// To derivate, b^x must be converted to base e
+				stbFormula.Append(strA);
+				if (blnDerivable) {
+					stbFormula.Append(" * e^(ln(").Append(strB).Append("^x))");
+				} else {
+					stbFormula.Append(" * ").Append(strB).Append("^x");
+				}
 			} else if (enuModel == MathematicalModel.Logarithmic) {
 				// To derivate, the base 10 log must be converted to natural log
-				stbFormula.Append(strA).Append(" * log10(x) + ").Append(strB);
+				if (blnDerivable) {
+					var newA = Convert.ToDouble(A) * k1ofLn10;
+					strA = newA.ToString(format, formatProvider);
+				}
+				stbFormula.Append(strA).Append(blnDerivable ? " * ln(x) + " : " * log10(x) + ").Append(strB);
 			} else {
 				stbFormula.Append('?');
 			}
@@ -151,7 +186,5 @@ namespace Repzilon.Libraries.Core
 			}
 			return Convert.ToDouble(B) - 1;
 		}
-
-		// TODO : Have something to make all formulas derivable
 	}
 }
