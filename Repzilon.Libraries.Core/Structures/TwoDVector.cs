@@ -292,7 +292,7 @@ namespace Repzilon.Libraries.Core
 
 		public static TwoDVector<T> operator *(T k, TwoDVector<T> v)
 		{
-			return TwoDVectorExtensions.Multiply(v, k);
+			return v.Multiply(k);
 		}
 
 		public static T operator *(TwoDVector<T> u, TwoDVector<T> v)

@@ -183,7 +183,7 @@ namespace Repzilon.Libraries.Core
 
 		public static ThreeDVector<T> operator *(T k, ThreeDVector<T> v)
 		{
-			return ThreeDVectorExtensions.Multiply(v, k);
+			return v.Multiply(k);
 		}
 
 		public static T operator *(ThreeDVector<T> u, ThreeDVector<T> v)

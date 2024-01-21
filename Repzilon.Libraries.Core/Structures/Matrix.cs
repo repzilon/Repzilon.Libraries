@@ -374,7 +374,7 @@ namespace Repzilon.Libraries.Core
 
 		public static Matrix<T> operator |(Matrix<T> coefficients, Matrix<T> values)
 		{
-			return MatrixExtensionMethods.Augment(coefficients, values);
+			return coefficients.Augment(values);
 		}
 
 		/// <summary>
