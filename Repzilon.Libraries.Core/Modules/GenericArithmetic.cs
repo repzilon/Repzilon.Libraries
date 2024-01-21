@@ -32,7 +32,6 @@ namespace Repzilon.Libraries.Core
 			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
 		}
 
-		#region Static members
 		internal static readonly Func<T, T, T> adder = BuildAdder();
 		internal static readonly Func<T, T, T> sub = BuildSubtractor();
 
@@ -78,7 +77,6 @@ namespace Repzilon.Libraries.Core
 			var mult = BuildMultiplier<T>();
 			return mult(mult(a, b), c);
 		}
-		#endregion
 	}
 }
 
