@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2023 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -95,7 +95,7 @@ namespace Repzilon.Libraries.Core
 				int hashCode = 1861411795 * -1521134295 + X.GetHashCode();
 				return hashCode * -1521134295 + Y.GetHashCode();
 			}
-		}	
+		}
 
 		public static bool operator ==(PointM left, PointM right)
 		{
