@@ -109,9 +109,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			//RestrictToAvailable(rev10_hexa_c4, rev10_allowed);
 
 			// Using LINQ is faster than the FindAll method
-			var lstRev10_tetra = PermutationsForQuadSlots(rev10_tetra, AlphaAminoAcid.Gly).Where(x => {
-				return x.Exists(AlphaAminoAcidExtension.IsAlkali);
-			}).Where(HasPartRev10Sequence).ToList();
+			var lstRev10_tetra = PermutationsForQuadSlots(rev10_tetra, AlphaAminoAcid.Gly).Where(x => x.Exists(AlphaAminoAcidExtension.IsAlkali)).Where(HasPartRev10Sequence).ToList();
 			var lstRev10_hexa_c4 = PermutationsForQuadSlots(rev10_hexa_c4, AlphaAminoAcid.Gly);
 			var lstRev10_hexa_c2 = PermutationsForTwoSlots(rev10_hexa_c2, AlphaAminoAcid.Gly);
 			var lstRev10_hexa = ConcatenatePermutations(4 + 2, AlphaAminoAcid.Gly, lstRev10_hexa_c4, lstRev10_hexa_c2, HasPartRev10Sequence);
