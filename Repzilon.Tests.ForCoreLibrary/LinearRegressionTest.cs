@@ -81,7 +81,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(rmdMEx38);
 
 			Console.Write(Environment.NewLine);
-			Console.WriteLine("Math I Exercice");
+			Console.WriteLine("Math I Exercise");
 			Console.WriteLine("---------------");
 			var lrrM1Exer = LinearRegression.Compute(
 				new PointD(8.0, Math.Log10(9858)),

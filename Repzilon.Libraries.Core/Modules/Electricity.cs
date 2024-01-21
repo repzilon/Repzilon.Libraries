@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		/// <param name="qi">first electric charge (in coulombs)</param>
 		/// <param name="qj">second electric charge (in coulombs)</param>
-		/// <param name="rij">distance between 2 charges (in metres)</param>
+		/// <param name="rij">distance between 2 charges (in meters)</param>
 		/// <returns>The force between the two charges in newtons.</returns>
 		public static double CoulombLab(double qi, double qj, double rij)
 		{

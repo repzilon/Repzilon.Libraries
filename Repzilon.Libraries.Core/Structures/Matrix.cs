@@ -396,7 +396,7 @@ namespace Repzilon.Libraries.Core
 			T minusOne = (-1).ConvertTo<T>();
 			T zero = default(T);
 			var mult = BuildMultiplier<T>();
-			// Put zeroes in the lower left corner
+			// Put zeros in the lower left corner
 			for (c = 0; c < self.Columns - 1; c++) {
 				for (l = (byte)(c + 1); l < m; l++) {
 					if (!augmented[l, c].Equals(zero)) {

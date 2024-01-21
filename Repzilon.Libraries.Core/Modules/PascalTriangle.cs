@@ -21,7 +21,7 @@ namespace Repzilon.Libraries.Core
 		public static int[][] Make(byte n)
 		{
 			if (n > 33) {
-				throw new ArgumentOutOfRangeException("n", n, "A number of rows over 33 causes an aritmetic overflow in individual value calculation.");
+				throw new ArgumentOutOfRangeException("n", n, "A number of rows over 33 causes an arithmetic overflow in individual value calculation.");
 			}
 
 			var intjarPascal = new int[n + 1][];
@@ -44,7 +44,7 @@ namespace Repzilon.Libraries.Core
 		public static long[][] MakeBig(byte n)
 		{
 			if (n > 66) {
-				throw new ArgumentOutOfRangeException("n", n, "A number of rows over 66 causes an aritmetic overflow in individual value calculation.");
+				throw new ArgumentOutOfRangeException("n", n, "A number of rows over 66 causes an arithmetic overflow in individual value calculation.");
 			}
 
 			var lngjarPascal = new long[n + 1][];
@@ -67,7 +67,7 @@ namespace Repzilon.Libraries.Core
 		public static decimal[][] MakeHuge(byte n)
 		{
 			if (n > 99) {
-				throw new ArgumentOutOfRangeException("n", n, "A number of rows over 99 causes an aritmetic overflow in individual value calculation.");
+				throw new ArgumentOutOfRangeException("n", n, "A number of rows over 99 causes an arithmetic overflow in individual value calculation.");
 			}
 
 			var dcmjarPascal = new decimal[n + 1][];

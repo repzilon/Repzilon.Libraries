@@ -82,7 +82,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			BenchmarkResolution(kIterations, "Révision #11", SolveRevision11);
 		}
 
-		#region Revision exercice number 10
+		#region Revision exercise number 10
 		private static List<List<AlphaAminoAcid>> SolveRevision10WithEnum()
 		{
 			var lstAllowed = new List<AlphaAminoAcid>(9) {
@@ -175,7 +175,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 		#endregion
 
-		#region Revision exercice number 11
+		#region Revision exercise number 11
 		private static List<List<AlphaAminoAcid>> SolveRevision11()
 		{
 			var rev11_allowed = new List<AlphaAminoAcid>() {
