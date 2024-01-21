@@ -23,10 +23,18 @@ namespace Repzilon.Libraries.Core
 	[StructLayout(LayoutKind.Auto)]
 	public struct Solution : IEquatable<Solution>
 	{
-		public Measure Concentration;
-		public Measure? SolutionVolume;
-		public Coefficient? SolventVolume;
-		public Coefficient? SoluteVolume;
+		public readonly Measure Concentration;
+		public readonly Measure? SolutionVolume;
+		public readonly Coefficient? SolventVolume;
+		public readonly Coefficient? SoluteVolume;
+
+		private Solution(Measure concentration, Measure? solutionVolume, Coefficient? solventVolume, Coefficient? soluteVolume)
+		{
+			Concentration = concentration;
+			SolutionVolume = solutionVolume;
+			SolventVolume = solventVolume;
+			SoluteVolume = soluteVolume;
+		}
 
 		#region Equals
 		public override bool Equals(object obj)
@@ -107,17 +115,14 @@ namespace Repzilon.Libraries.Core
 		#region Factory methods
 		public static Solution Init(Coefficient concentration, string unit)
 		{
-			var sol = new Solution();
-			sol.Concentration = InitMeasure(concentration, unit);
-			return sol;
+			return new Solution(InitMeasure(concentration, unit), null, null, null);
 		}
 
 		public static Solution Init(Coefficient concentration, string concentrationUnit,
 		Coefficient solutionVolume, string solutionUnit)
 		{
-			var sol = Init(concentration, concentrationUnit);
-			sol.SolutionVolume = InitMeasure(solutionVolume, solutionUnit);
-			return sol;
+			return new Solution(InitMeasure(concentration, concentrationUnit),
+			 InitMeasure(solutionVolume, solutionUnit), null, null);
 		}
 
 		private static Measure InitMeasure(Coefficient value, string unit)
@@ -142,6 +147,17 @@ namespace Repzilon.Libraries.Core
 				allSolutions[i] = Init(concentrations[i], concentrationUnit, solutionVolume, solutionUnit);
 			}
 			return allSolutions;
+		}
+
+		public static Solution Init(Solution original, Coefficient solventVolume, Coefficient soluteVolume)
+		{
+			return new Solution(original.Concentration, original.SolutionVolume, solventVolume, soluteVolume);
+		}
+
+		public static Solution Init(Solution original, Coefficient solutionVolume, string solutionUnit)
+		{
+			return new Solution(original.Concentration, InitMeasure(solutionVolume, solutionUnit),
+			 original.SolventVolume, original.SoluteVolume);
 		}
 		#endregion
 	}

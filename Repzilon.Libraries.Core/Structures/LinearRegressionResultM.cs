@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -22,18 +22,35 @@ namespace Repzilon.Libraries.Core
 	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
 	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
 	{
-		public int Count;
+		public readonly int Count;
 		public decimal Slope { get; set; }
 		public decimal Intercept { get; set; }
 		public decimal Correlation { get; set; }
-		public decimal StdDevOfY;
-		public decimal StdDevOfX;
-		public decimal AverageX;
-		public decimal AverageY;
-		public decimal MinX;
-		public decimal MaxX;
-		public decimal MinY;
-		public decimal MaxY;
+		public readonly decimal StdDevOfY;
+		public readonly decimal StdDevOfX;
+		public readonly decimal AverageX;
+		public readonly decimal AverageY;
+		public readonly decimal MinX;
+		public readonly decimal MaxX;
+		public readonly decimal MinY;
+		public readonly decimal MaxY;
+
+		internal DecimalLinearRegressionResult(int n, decimal intercept, decimal slope, decimal correlation,
+		decimal minX, decimal minY, decimal maxX, decimal maxY, decimal averageX, decimal averageY, decimal stdDevX, decimal stdDevY)
+		{
+			this.Count = n;
+			this.Slope = slope;
+			this.Intercept = intercept;
+			this.Correlation = correlation;
+			this.StdDevOfY = stdDevY;
+			this.StdDevOfX = stdDevX;
+			this.AverageX = averageX;
+			this.AverageY = averageY;
+			this.MinX = minX;
+			this.MaxX = maxX;
+			this.MinY = minY;
+			this.MaxY = maxY;
+		}
 
 		#region ICloneable members
 		public DecimalLinearRegressionResult(DecimalLinearRegressionResult other)
@@ -67,20 +84,9 @@ namespace Repzilon.Libraries.Core
 
 		public LinearRegressionResult ToDouble()
 		{
-			var lrr = new LinearRegressionResult();
-			lrr.Count = this.Count;
-			lrr.Slope = (double)this.Slope;
-			lrr.Intercept = (double)this.Intercept;
-			lrr.Correlation = (double)this.Correlation;
-			lrr.StdDevOfX = (double)this.StdDevOfX;
-			lrr.StdDevOfY = (double)this.StdDevOfY;
-			lrr.AverageX = (double)this.AverageX;
-			lrr.AverageY = (double)this.AverageY;
-			lrr.MinX = (double)this.MinX;
-			lrr.MaxX = (double)this.MaxX;
-			lrr.MinY = (double)this.MinY;
-			lrr.MaxY = (double)this.MaxX;
-			return lrr;
+			return new LinearRegressionResult(this.Count, (double)this.Intercept, (double)this.Slope,
+			 (double)this.Correlation, (double)this.MinX, (double)this.MinY, (double)this.MaxX, (double)this.MaxY,
+			 (double)this.AverageX, (double)this.AverageY, (double)this.StdDevOfX, (double)this.StdDevOfY);
 		}
 
 		#region ToString

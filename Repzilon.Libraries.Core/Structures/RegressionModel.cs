@@ -37,15 +37,15 @@ namespace Repzilon.Libraries.Core
 	where T : struct, IFormattable, IEquatable<T>
 	{
 		/// <summary>In an affine model, value of the intercept.</summary>
-		public T A;
+		public readonly T A;
 
 		/// <summary>In an affine model, value of the slope.</summary>
-		public T B;
+		public readonly T B;
 
 		/// <summary>Coefficient of correlation</summary>
-		public T R;
+		public readonly T R;
 
-		public MathematicalModel Model;
+		public readonly MathematicalModel Model;
 
 		public RegressionModel(T a, T b, T r, MathematicalModel model)
 		{

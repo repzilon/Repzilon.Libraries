@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -31,8 +31,7 @@ namespace Repzilon.Libraries.Core
 
 				var childSolutionVolume = (Coefficient)child.SolutionVolume.Value.Value;
 				var solute = (Coefficient)(childSolutionVolume * child.Concentration.Value / mother.Concentration.Value);
-				child.SoluteVolume = solute;
-				child.SolventVolume = childSolutionVolume - solute;
+				child = Solution.Init(child, childSolutionVolume - solute, solute);
 
 				Coefficient motherVolume;
 				if (blnInitialMotherVolume || mother.SolutionVolume.HasValue) {
@@ -41,7 +40,7 @@ namespace Repzilon.Libraries.Core
 				} else {
 					motherVolume = solute;
 				}
-				mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, (Coefficient)motherVolume);
+				mother = Solution.Init(mother, motherVolume, child.SolutionVolume.Value.Key);
 
 				children[i] = child;
 			}
@@ -62,13 +61,10 @@ namespace Repzilon.Libraries.Core
 
 				var tempVolume = (Coefficient)(child.SolutionVolume.Value.Value + volumeFromPrevious);
 				volumeFromPrevious = (Coefficient)(child.Concentration.Value * tempVolume / adjacent.Concentration.Value);
-				child.SolventVolume = RoundOff.Error(tempVolume - volumeFromPrevious);
-				child.SoluteVolume = RoundOff.Error(volumeFromPrevious);
-
-				children[i] = child;
+				children[i] = Solution.Init(child, RoundOff.Error(tempVolume - volumeFromPrevious), RoundOff.Error(volumeFromPrevious));
 			}
 			child = children[0];
-			mother.SolutionVolume = new Measure(child.SolutionVolume.Value.Key, (Coefficient)child.SoluteVolume.Value);
+			mother = Solution.Init(mother, child.SoluteVolume.Value, child.SolutionVolume.Value.Key);
 			return children;
 		}
 

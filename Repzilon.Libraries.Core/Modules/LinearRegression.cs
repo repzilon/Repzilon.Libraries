@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -65,20 +65,8 @@ namespace Repzilon.Libraries.Core
 			var a = dblAverageY - (b * dblAverageX);
 			var r = b * dblStdDevX / dblStdDevY;
 
-			var lrp = new LinearRegressionResult();
-			lrp.Count = n;
-			lrp.Slope = RoundOff.Error(b);
-			lrp.Intercept = RoundOff.Error(a);
-			lrp.Correlation = RoundOff.Error(r);
-			lrp.StdDevOfY = dblStdDevY;
-			lrp.StdDevOfX = dblStdDevX;
-			lrp.AverageX = dblAverageX;
-			lrp.AverageY = RoundOff.Error(dblAverageY);
-			lrp.MinX = dblMinX;
-			lrp.MaxX = dblMaxX;
-			lrp.MinY = dblMinY;
-			lrp.MaxY = dblMaxY;
-			return lrp;
+			return new LinearRegressionResult(n, RoundOff.Error(a), RoundOff.Error(b), RoundOff.Error(r),
+			 dblMinX, dblMinY, dblMaxX, dblMaxY, dblAverageX, RoundOff.Error(dblAverageY), dblStdDevX, dblStdDevY);
 		}
 
 		public static DecimalLinearRegressionResult Compute(params PointM[] points)
@@ -125,21 +113,8 @@ namespace Repzilon.Libraries.Core
 			var b = (dcmSumXY - (n * dcmAverageX * dcmAverageY)) / ((n - 1) * dcmStdDevX * dcmStdDevX);
 			var a = dcmAverageY - (b * dcmAverageX);
 			var r = b * dcmStdDevX / dblStdDevY;
-
-			var lrp = new DecimalLinearRegressionResult();
-			lrp.Count = n;
-			lrp.Slope = b;
-			lrp.Intercept = RoundOff.Error(a); // Eat dirt
-			lrp.Correlation = r;
-			lrp.StdDevOfY = dblStdDevY;
-			lrp.StdDevOfX = dcmStdDevX;
-			lrp.AverageX = dcmAverageX;
-			lrp.AverageY = dcmAverageY;
-			lrp.MinX = dcmMinX;
-			lrp.MaxX = dcmMaxX;
-			lrp.MinY = dcmMinY;
-			lrp.MaxY = dcmMaxY;
-			return lrp;
+			return new DecimalLinearRegressionResult(n, RoundOff.Error(a), b, r,
+			 dcmMinX, dcmMinY, dcmMaxX, dcmMaxY, dcmAverageX, dcmAverageY, dcmStdDevX, dblStdDevY);
 		}
 	}
 }
