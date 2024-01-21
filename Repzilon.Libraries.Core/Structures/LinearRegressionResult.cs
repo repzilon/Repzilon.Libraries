@@ -36,6 +36,22 @@ namespace Repzilon.Libraries.Core
 		public double MaxY;
 
 		#region ICloneable members
+		public LinearRegressionResult(LinearRegressionResult other)
+		{
+			this.Count = other.Count;
+			this.Slope = other.Slope;
+			this.Intercept = other.Intercept;
+			this.Correlation = other.Correlation;
+			this.StdDevOfX = other.StdDevOfX;
+			this.StdDevOfY = other.StdDevOfY;
+			this.AverageX = other.AverageX;
+			this.AverageY = other.AverageY;
+			this.MinX = other.MinX;
+			this.MaxX = other.MaxX;
+			this.MinY = other.MinY;
+			this.MaxY = other.MaxX;
+		}
+
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
@@ -45,20 +61,7 @@ namespace Repzilon.Libraries.Core
 
 		public LinearRegressionResult Clone()
 		{
-			var lrr = new LinearRegressionResult();
-			lrr.Count = this.Count;
-			lrr.Slope = this.Slope;
-			lrr.Intercept = this.Intercept;
-			lrr.Correlation = this.Correlation;
-			lrr.StdDevOfX = this.StdDevOfX;
-			lrr.StdDevOfY = this.StdDevOfY;
-			lrr.AverageX = this.AverageX;
-			lrr.AverageY = this.AverageY;
-			lrr.MinX = this.MinX;
-			lrr.MaxX = this.MaxX;
-			lrr.MinY = this.MinY;
-			lrr.MaxY = this.MaxX;
-			return lrr;
+			return new LinearRegressionResult(this);
 		}
 		#endregion
 

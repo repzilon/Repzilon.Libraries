@@ -36,6 +36,22 @@ namespace Repzilon.Libraries.Core
 		public decimal MaxY;
 
 		#region ICloneable members
+		public DecimalLinearRegressionResult(DecimalLinearRegressionResult other)
+		{
+			this.Count = other.Count;
+			this.Slope = other.Slope;
+			this.Intercept = other.Intercept;
+			this.Correlation = other.Correlation;
+			this.StdDevOfX = other.StdDevOfX;
+			this.StdDevOfY = other.StdDevOfY;
+			this.AverageX = other.AverageX;
+			this.AverageY = other.AverageY;
+			this.MinX = other.MinX;
+			this.MaxX = other.MaxX;
+			this.MinY = other.MinY;
+			this.MaxY = other.MaxX;
+		}
+
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
@@ -45,20 +61,7 @@ namespace Repzilon.Libraries.Core
 
 		public DecimalLinearRegressionResult Clone()
 		{
-			var dlrr = new DecimalLinearRegressionResult();
-			dlrr.Count = this.Count;
-			dlrr.Slope = this.Slope;
-			dlrr.Intercept = this.Intercept;
-			dlrr.Correlation = this.Correlation;
-			dlrr.StdDevOfX = this.StdDevOfX;
-			dlrr.StdDevOfY = this.StdDevOfY;
-			dlrr.AverageX = this.AverageX;
-			dlrr.AverageY = this.AverageY;
-			dlrr.MinX = this.MinX;
-			dlrr.MaxX = this.MaxX;
-			dlrr.MinY = this.MinY;
-			dlrr.MaxY = this.MaxX;
-			return dlrr;
+			return new DecimalLinearRegressionResult(this);
 		}
 		#endregion
 
