@@ -36,8 +36,6 @@ namespace Repzilon.Libraries.Core
 #endif
 	where T : struct, IFormattable, IEquatable<T>
 	{
-		private static readonly double k1ofLn10 = 1.0 / Math.Log(10);
-
 		/// <summary>In an affine model, value of the intercept.</summary>
 		public T A;
 
@@ -120,9 +118,9 @@ namespace Repzilon.Libraries.Core
 		/// Gives the formula according to the model and values of a and b.
 		/// </summary>
 		/// <param name="format">
-		/// A .NET format specification to format numbers, with the follwing extra:
+		/// A .NET format specification to format numbers, with the following extra:
 		/// If there are two letters, the first one being 'e' or 'E', the formula will be expressed so that you
-		/// can derivate it (with calculus) later on. Watch out, a single 'e' will keep the nornal behavior,
+		/// can derivate it (with calculus) later on. Watch out, a single 'e' will keep the normal behavior,
 		/// which is to express numbers with the "scientific" notation.
 		/// </param>
 		/// <param name="formatProvider">
@@ -168,7 +166,7 @@ namespace Repzilon.Libraries.Core
 			} else if (enuModel == MathematicalModel.Logarithmic) {
 				// To derivate, the base 10 log must be converted to natural log
 				if (blnDerivable) {
-					var newA = Convert.ToDouble(A) * k1ofLn10;
+					var newA = Convert.ToDouble(A) * LinearRegression.OneOfLn10;
 					strA = newA.ToString(format, formatProvider);
 				}
 				stbFormula.Append(strA).Append(blnDerivable ? " * ln(x) + " : " * log10(x) + ").Append(strB);

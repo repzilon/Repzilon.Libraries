@@ -18,6 +18,8 @@ namespace Repzilon.Libraries.Core
 {
 	public static class LinearRegression
 	{
+		internal static readonly double OneOfLn10 = 1.0 / Math.Log(10);
+
 		public static LinearRegressionResult Compute(params PointD[] points)
 		{
 			return Compute((IEnumerable<PointD>)points);
