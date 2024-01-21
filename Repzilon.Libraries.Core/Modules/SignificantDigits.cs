@@ -63,7 +63,7 @@ namespace Repzilon.Libraries.Core
 			while ((value % 10) == 0) {
 				value *= 0.1f;
 			}
-			byte bytDigits = IntegerPartDigits(value, blnLessThanOne, sngAbsolute == 1, sngDigitalPart);
+			var bytDigits = IntegerPartDigits(value, blnLessThanOne, sngAbsolute == 1, sngDigitalPart);
 			bytDigits += DecimalDigits(blnLessThanOne, sngDigitalPart, "R", false);
 			return bytDigits;
 		}
@@ -76,7 +76,7 @@ namespace Repzilon.Libraries.Core
 			var dblAbsolute = Math.Abs(value);
 			var blnLessThanOne = dblAbsolute < 1;
 			var dblDigitalPart = blnLessThanOne ? dblAbsolute : RoundOff.Error(dblAbsolute - Math.Floor(dblAbsolute));
-			byte bytDigits = IntegerPartDigits(value, dblAbsolute, dblDigitalPart);
+			var bytDigits = IntegerPartDigits(value, dblAbsolute, dblDigitalPart);
 			bytDigits += DecimalDigits(blnLessThanOne, dblDigitalPart, "R", false);
 			return bytDigits;
 		}
@@ -89,11 +89,11 @@ namespace Repzilon.Libraries.Core
 			var dcmAbsolute = Math.Abs(value);
 			var blnLessThanOne = dcmAbsolute < 1;
 			var dcmDigitalPart = dcmAbsolute - Math.Floor(dcmAbsolute);
-			decimal kTen = 10m;
+			var kTen = 10m;
 			while ((value % kTen) == 0) {
 				value /= kTen;
 			}
-			byte bytDigits = IntegerPartDigits(value, blnLessThanOne, dcmAbsolute == 1, dcmDigitalPart);
+			var bytDigits = IntegerPartDigits(value, blnLessThanOne, dcmAbsolute == 1, dcmDigitalPart);
 			bytDigits += DecimalDigits(blnLessThanOne, dcmDigitalPart, "f17", true);
 			return bytDigits;
 		}
@@ -174,7 +174,7 @@ namespace Repzilon.Libraries.Core
 				return 0;
 			} else {
 				CultureInfo ci;
-				double dblValue = ParseQty(value, out ci);
+				var dblValue = ParseQty(value, out ci);
 				return (dblValue == 0) ? (byte)1 : Count(value, dblValue, ci.NumberFormat);
 			}
 		}
@@ -228,7 +228,7 @@ namespace Repzilon.Libraries.Core
 #else
 			var karCultures = new CultureInfo[] { CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture, CultureInfo.InvariantCulture };
 #endif
-			int i = 0;
+			var i = 0;
 			while (i < karCultures.Length) {
 				var ci = karCultures[i];
 				double dblValue;
@@ -279,7 +279,7 @@ namespace Repzilon.Libraries.Core
 			if (figures == 0) {
 				figures = 1;
 			}
-			double power = PowerOf(value);
+			var power = PowerOf(value);
 			var mantissa = RoundWithMode(value / power, figures - 1, rounding);
 			var rounded = mantissa * power;
 			if (Math.Abs(rounded) > 1e-13) {

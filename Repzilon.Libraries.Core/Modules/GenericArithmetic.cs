@@ -26,7 +26,7 @@ namespace Repzilon.Libraries.Core
 			var paramB = Expression.Parameter(typeof(T), "b");
 
 			// Add the parameters together
-			BinaryExpression body = Expression.Multiply(paramA, paramB);
+			var body = Expression.Multiply(paramA, paramB);
 
 			// Compile it
 			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();

@@ -92,7 +92,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = (-1053832008 * -1521134295) + A.GetHashCode();
+				var hashCode = (-1053832008 * -1521134295) + A.GetHashCode();
 				hashCode = (hashCode * -1521134295) + B.GetHashCode();
 				hashCode = (hashCode * -1521134295) + R.GetHashCode();
 				return (hashCode * -1521134295) + (int)Model;
@@ -144,7 +144,7 @@ namespace Repzilon.Libraries.Core
 			stbFormula.Append("y = ");
 			var strA = this.A.ToString(format, formatProvider);
 			var strB = this.B.ToString(format, formatProvider);
-			bool blnDerivable = false;
+			var blnDerivable = false;
 			if ((format.Length >= 2) && ((format[0] == 'e') || (format[0] == 'E')) &&
 			Char.IsLetter(format[1])) {
 				blnDerivable = true;

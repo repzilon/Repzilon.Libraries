@@ -231,8 +231,8 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int magic = -1521134295;
-				int hashCode = (338248910 * -1521134295) + Count;
+				var magic = -1521134295;
+				var hashCode = (338248910 * -1521134295) + Count;
 				hashCode = (hashCode * magic) + Slope.GetHashCode();
 				hashCode = (hashCode * magic) + Intercept.GetHashCode();
 				hashCode = (hashCode * magic) + Correlation.GetHashCode();

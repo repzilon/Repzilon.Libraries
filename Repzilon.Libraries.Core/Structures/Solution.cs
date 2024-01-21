@@ -45,8 +45,8 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int magic = -1521134295;
-				int hashCode = (-1047427533 * -1521134295) + Concentration.GetHashCode();
+				var magic = -1521134295;
+				var hashCode = (-1047427533 * -1521134295) + Concentration.GetHashCode();
 				hashCode = (hashCode * magic) + SolutionVolume.GetHashCode();
 				hashCode = (hashCode * magic) + SolventVolume.GetHashCode();
 				return (hashCode * magic) + SoluteVolume.GetHashCode();
@@ -68,7 +68,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var stbText = new StringBuilder();
 			var utionVhv = this.SolutionVolume.HasValue;
-			Measure utionVv = default(Measure);
+			var utionVv = default(Measure);
 			if (utionVhv) {
 				utionVv = this.SolutionVolume.Value;
 				AppendMeasure(stbText, utionVv).Append(' ');

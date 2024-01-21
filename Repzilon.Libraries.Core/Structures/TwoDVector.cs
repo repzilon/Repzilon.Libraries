@@ -79,7 +79,7 @@ namespace Repzilon.Libraries.Core
 
 		private static KeyValuePair<T, T> ToCartesian(double n, Angle<T> va)
 		{
-			double theta = va.ConvertTo<double>(AngleUnit.Radian, true).Value;
+			var theta = va.ConvertTo<double>(AngleUnit.Radian, true).Value;
 			return new KeyValuePair<T, T>((n * Math.Cos(theta)).ConvertTo<T>(),
 			 (n * Math.Sin(theta)).ConvertTo<T>());
 		}
@@ -218,7 +218,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = (1861411795 * -1521134295) + X.GetHashCode();
+				var hashCode = (1861411795 * -1521134295) + X.GetHashCode();
 				return (hashCode * -1521134295) + Y.GetHashCode();
 			}
 		}

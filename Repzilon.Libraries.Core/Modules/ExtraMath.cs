@@ -38,7 +38,7 @@ namespace Repzilon.Libraries.Core
 
 			var determinant = (b * b) - (4 * a * c);
 			if (determinant >= 0) {
-				decimal sqrt = Sqrt(determinant);
+				var sqrt = Sqrt(determinant);
 				var halfA = 0.5m * a; // Avoid the SLOW division instruction on every CPU and FPU
 				return new KeyValuePair<decimal, decimal>(
 				 (sqrt - b) * halfA, // That's (-b + sqrt(d)) / 2a in fewer operations,
@@ -55,7 +55,7 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentOutOfRangeException("square", square, "Cannot extract the square root of a negative number.");
 			}
 
-			decimal root = square / 3;
+			var root = square / 3;
 			for (int i = 0; i < 32; i++) {
 				root = (root + (square / root)) * 0.5m;
 			}

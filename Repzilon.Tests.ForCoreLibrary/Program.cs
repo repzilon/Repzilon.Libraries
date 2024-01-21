@@ -36,8 +36,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			while (Char.ToUpperInvariant(cki.KeyChar) != 'Q') {
 				if (Char.IsDigit(cki.KeyChar)) {
 					int intPressed = Convert.ToInt32(cki.KeyChar.ToString());
-					int i = 1;
-					bool blnRan = false;
+					var i = 1;
+					var blnRan = false;
 					DateTime dtmStart;
 					foreach (var kvp in dicTests) {
 						if (i == intPressed) {
@@ -64,7 +64,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Repzilon Libraries Interactive Tests");
 			Console.WriteLine("====================================");
 			Console.Write(Environment.NewLine);
-			int i = 1;
+			var i = 1;
 			foreach (var kvp in allTests) {
 				Console.WriteLine(@"    ({0}) {1}", i, kvp.Key);
 				i++;

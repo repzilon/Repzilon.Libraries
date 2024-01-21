@@ -29,8 +29,8 @@ namespace Repzilon.Libraries.Core
 				ValidateUnits(mother, child, blnInitialMotherVolume, mother,
 				 "Child solution volume unit is different from the mother solution.");
 
-				Coefficient childSolutionVolume = (Coefficient)child.SolutionVolume.Value.Value;
-				Coefficient solute = (Coefficient)(childSolutionVolume * child.Concentration.Value / mother.Concentration.Value);
+				var childSolutionVolume = (Coefficient)child.SolutionVolume.Value.Value;
+				var solute = (Coefficient)(childSolutionVolume * child.Concentration.Value / mother.Concentration.Value);
 				child.SoluteVolume = solute;
 				child.SolventVolume = childSolutionVolume - solute;
 
@@ -60,7 +60,7 @@ namespace Repzilon.Libraries.Core
 				ValidateUnits(mother, child, i > 0, adjacent,
 				 "Adjacent child solution volume units are different.");
 
-				Coefficient tempVolume = (Coefficient)(child.SolutionVolume.Value.Value + volumeFromPrevious);
+				var tempVolume = (Coefficient)(child.SolutionVolume.Value.Value + volumeFromPrevious);
 				volumeFromPrevious = (Coefficient)(child.Concentration.Value * tempVolume / adjacent.Concentration.Value);
 				child.SolventVolume = RoundOff.Error(tempVolume - volumeFromPrevious);
 				child.SoluteVolume = RoundOff.Error(volumeFromPrevious);

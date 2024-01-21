@@ -69,7 +69,7 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Identity(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			T one = 1.ConvertTo<T>();
+			var one = 1.ConvertTo<T>();
 			for (byte i = 0; i < size; i++) {
 				m[i, i] = one;
 			}
@@ -79,8 +79,8 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Signature(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			T plusOne = 1.ConvertTo<T>();
-			T minusOne = (-1).ConvertTo<T>();
+			var plusOne = 1.ConvertTo<T>();
+			var minusOne = (-1).ConvertTo<T>();
 			for (byte i = 0; i < size; i++) {
 				for (byte j = 0; j < size; j++) {
 					m[i, j] = (i + j) % 2 == 0 ? plusOne : minusOne;
@@ -201,8 +201,8 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int magic = -1521134295;
-				int hashCode = (1832363379 * -1521134295) + Lines;
+				var magic = -1521134295;
+				var hashCode = (1832363379 * -1521134295) + Lines;
 				hashCode = (hashCode * magic) + Columns;
 				hashCode = (hashCode * magic) + m_bytAugmentedColumn.GetValueOrDefault();
 				return (hashCode * magic) + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
@@ -244,11 +244,11 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
-			StringBuilder stbDesc = new StringBuilder();
+			var stbDesc = new StringBuilder();
 			byte i, j;
 			var tl = this.Lines;
 
-			bool blnCI = formatProvider == CultureInfo.InvariantCulture;
+			var blnCI = formatProvider == CultureInfo.InvariantCulture;
 			var nalarCols = new NumberAlignment[this.Columns];
 			for (j = 0; j < this.Columns; j++) {
 				for (i = 0; i < tl; i++) {
@@ -357,7 +357,7 @@ namespace Repzilon.Libraries.Core
 				var c = new Matrix<T>(a.Lines, b.Columns);
 				for (byte i = 0; i < c.Lines; i++) {
 					for (byte j = 0; j < c.Columns; j++) {
-						T sumOfCell = default(T);
+						var sumOfCell = default(T);
 						for (byte x = 0; x < b.Lines; x++) {
 							sumOfCell = GenericArithmetic<T>.adder(sumOfCell, mult(a[i, x], b[x, j]));
 						}
@@ -393,8 +393,8 @@ namespace Repzilon.Libraries.Core
 			byte l, c;
 			var m = self.Lines;
 			var augmented = self.AugmentWithIdentity();
-			T minusOne = (-1).ConvertTo<T>();
-			T zero = default(T);
+			var minusOne = (-1).ConvertTo<T>();
+			var zero = default(T);
 			var mult = BuildMultiplier<T>();
 			// Put zeros in the lower left corner
 			for (c = 0; c < self.Columns - 1; c++) {
@@ -404,7 +404,8 @@ namespace Repzilon.Libraries.Core
 
 #if DEBUG
 						// Reduce the number of negative signs by multiplying by -1
-						int np = 0, nn = 0;
+						var np = 0;
+						var nn = 0;
 						for (byte k = 0; k < augmented.Columns; k++) {
 							var v = augmented[l, k];
 							if (v.CompareTo(zero) > 0) {
@@ -439,7 +440,7 @@ namespace Repzilon.Libraries.Core
 			// Cast to double as we do not divide directly, but multiply with the inverse
 			var matrixInDouble = augmented.Cast<double>();
 			for (l = 0; l < m; l++) {
-				double?[] coeffs = new double?[m];
+				var coeffs = new double?[m];
 				coeffs[l] = 1.0 / Convert.ToDouble(matrixInDouble[l, l]);
 				matrixInDouble.RunCommand(l, coeffs);
 			}
@@ -454,7 +455,7 @@ namespace Repzilon.Libraries.Core
 
 		private static void AutoRun(Matrix<T> augmented, byte l, byte c, T minusOne, Func<T, T, T> mult)
 		{
-			T?[] coeffs = new T?[augmented.Lines];
+			var coeffs = new T?[augmented.Lines];
 			coeffs[c] = mult(augmented[l, c], minusOne);
 			coeffs[l] = augmented[c, c];
 			augmented.RunCommand(l, coeffs);
@@ -518,7 +519,7 @@ namespace Repzilon.Libraries.Core
 			}
 			if (second != first) {
 				for (byte j = 0; j < this.Columns; j++) {
-					T temp = this[first, j];
+					var temp = this[first, j];
 					this[first, j] = this[second, j];
 					this[second, j] = temp;
 				}
@@ -541,13 +542,13 @@ namespace Repzilon.Libraries.Core
 					return GenericArithmetic<T>.sub(mult(m_values[0, 0], m_values[1, 1]), mult(m_values[0, 1], m_values[1, 0]));
 				} else {
 					var c = this.Columns;
-					T plusOne = 1.ConvertTo<T>();
-					T minusOne = (-1).ConvertTo<T>();
-					T det = default(T);
+					var plusOne = 1.ConvertTo<T>();
+					var minusOne = (-1).ConvertTo<T>();
+					var det = default(T);
 					mult = BuildMultiplier<T>();
 					for (byte j = 0; j < c; j++) {
 						// Build sub-matrix
-						byte subSize = checked((byte)(l - 1));
+						var subSize = checked((byte)(l - 1));
 						var numarSubValues = new T[checked(subSize * subSize)];
 						var k = 0;
 						for (byte ia = 1; ia < l; ia++) {

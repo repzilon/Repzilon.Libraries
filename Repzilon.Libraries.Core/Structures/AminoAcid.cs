@@ -98,8 +98,8 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int magic = -1521134295;
-				int hashCode = (-919792662 * magic) + MolarMass.GetHashCode();
+				var magic = -1521134295;
+				var hashCode = (-919792662 * magic) + MolarMass.GetHashCode();
 				hashCode = (hashCode * magic) + pKa1.GetHashCode();
 				hashCode = (hashCode * magic) + pKa2.GetHashCode();
 				hashCode = (hashCode * magic) + pKaR.GetHashCode();

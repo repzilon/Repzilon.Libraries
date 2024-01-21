@@ -328,7 +328,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void OutputArrangements(string title, List<List<AlphaAminoAcid>> allArrangements)
 		{
 			Console.WriteLine(title);
-			int n = 1;
+			var n = 1;
 			foreach (var candidate in allArrangements) {
 				Console.Write("#{0} : ", n);
 				for (var i = 0; i < candidate.Count; i++) {

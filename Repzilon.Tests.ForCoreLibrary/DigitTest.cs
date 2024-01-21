@@ -66,8 +66,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var xr = SignificantDigits.Round(x, 1, RoundingMode.ToEven);
 				Console.WriteLine("{0} -> {1}", x, xr);
 
-				double[] karFiveFiguresInput = new double[] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
-				double[] karFiveFiguresExpected = new double[] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
+				var karFiveFiguresInput = new double[] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
+				var karFiveFiguresExpected = new double[] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
 				for (int i = 0; i < karFiveFiguresInput.Length; i++) {
 					var dblComputed = SignificantDigits.Round(karFiveFiguresInput[i], 5, RoundingMode.AwayFromZero);
 					Console.WriteLine((dblComputed == karFiveFiguresExpected[i]) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
@@ -92,7 +92,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					messageWriter(String.Format("Data type: {0}", typeof(T).Name));
 				}
 
-				bool[] blnarOK = new bool[c];
+				var blnarOK = new bool[c];
 				for (int i = 0; i < c; i++) {
 					var d = SignificantDigits.Count(values[i]);
 					blnarOK[i] = d == expectedCounts[i];

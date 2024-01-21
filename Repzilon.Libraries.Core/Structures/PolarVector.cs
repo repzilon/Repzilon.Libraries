@@ -130,7 +130,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = (1227039071 * -1521134295) + Norm.GetHashCode();
+				var hashCode = (1227039071 * -1521134295) + Norm.GetHashCode();
 				return (hashCode * -1521134295) + Angle.GetHashCode();
 			}
 		}

@@ -209,7 +209,7 @@ namespace Repzilon.Libraries.Core
 		public bool Equals(IAngle other)
 		{
 			var u = this.Unit;
-			decimal v = this.DecimalValue;
+			var v = this.DecimalValue;
 			return (u == other.Unit) ? v.Equals(other.DecimalValue) :
 			 v.Equals(other.ConvertTo(u).DecimalValue);
 		}
@@ -217,7 +217,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = (-177567199 * -1521134295) + Value.GetHashCode();
+				var hashCode = (-177567199 * -1521134295) + Value.GetHashCode();
 				return (hashCode * -1521134295) + (int)Unit;
 			}
 		}
@@ -270,7 +270,7 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
-			StringBuilder stbAngle = new StringBuilder();
+			var stbAngle = new StringBuilder();
 			var tu = this.Unit;
 			IFormattable tv = this.Value;
 			stbAngle.Append(tv.ToString(format, formatProvider)).Append('\xA0');
@@ -304,7 +304,7 @@ namespace Repzilon.Libraries.Core
 		public int CompareTo(IAngle other)
 		{
 			var u = this.Unit;
-			decimal v = this.DecimalValue;
+			var v = this.DecimalValue;
 			return (u == other.Unit) ? v.CompareTo(other.DecimalValue) :
 			 Math.Sign(v - other.ConvertTo(u).DecimalValue);
 		}

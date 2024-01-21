@@ -127,7 +127,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = (1348611219 * -1521134295) + Middle.GetHashCode();
+				var hashCode = (1348611219 * -1521134295) + Middle.GetHashCode();
 				return (hashCode * -1521134295) + Margin.GetHashCode();
 			}
 		}

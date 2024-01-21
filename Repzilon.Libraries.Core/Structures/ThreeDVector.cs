@@ -128,8 +128,8 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int magic = -1521134295;
-				int hashCode = (-307843816 * -1521134295) + X.GetHashCode();
+				var magic = -1521134295;
+				var hashCode = (-307843816 * -1521134295) + X.GetHashCode();
 				hashCode = (hashCode * magic) + Y.GetHashCode();
 				return (hashCode * magic) + Z.GetHashCode();
 			}

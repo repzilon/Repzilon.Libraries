@@ -28,10 +28,12 @@ namespace Repzilon.Libraries.Core
 			if (points == null) {
 				throw new ArgumentNullException("points");
 			}
-			int n = 0;
+			var n = 0;
 			double dblSumX = 0, dblSumY = 0, dblSumXY = 0;
-			double dblMinX = Double.MaxValue, dblMinY = Double.MaxValue;
-			double dblMaxX = Double.MinValue, dblMaxY = Double.MinValue;
+			var dblMinX = Double.MaxValue;
+			var dblMinY = Double.MaxValue;
+			var dblMaxX = Double.MinValue;
+			var dblMaxY = Double.MinValue;
 			foreach (var pt in points) {
 				n++;
 				dblSumX += pt.X;
@@ -45,8 +47,8 @@ namespace Repzilon.Libraries.Core
 			if (n < 1) {
 				throw new ArgumentNullException("points");
 			}
-			double dblAverageX = dblSumX / n;
-			double dblAverageY = dblSumY / n;
+			var dblAverageX = dblSumX / n;
+			var dblAverageY = dblSumY / n;
 			double dblStdDevX = 0;
 			double dblStdDevY = 0;
 			foreach (var pt in points) {
@@ -87,10 +89,12 @@ namespace Repzilon.Libraries.Core
 			if (points == null) {
 				throw new ArgumentNullException("points");
 			}
-			int n = 0;
+			var n = 0;
 			decimal dcmSumX = 0, dcmSumY = 0, dcmSumXY = 0;
-			decimal dcmMinX = Decimal.MaxValue, dcmMinY = Decimal.MaxValue;
-			decimal dcmMaxX = Decimal.MinValue, dcmMaxY = Decimal.MinValue;
+			var dcmMinX = Decimal.MaxValue;
+			var dcmMinY = Decimal.MaxValue;
+			var dcmMaxX = Decimal.MinValue;
+			var dcmMaxY = Decimal.MinValue;
 			foreach (var pt in points) {
 				n++;
 				dcmSumX += pt.X;
@@ -104,8 +108,8 @@ namespace Repzilon.Libraries.Core
 			if (n < 1) {
 				throw new ArgumentNullException("points");
 			}
-			decimal dcmAverageX = dcmSumX / n;
-			decimal dcmAverageY = dcmSumY / n;
+			var dcmAverageX = dcmSumX / n;
+			var dcmAverageY = dcmSumY / n;
 			decimal dcmStdDevX = 0;
 			decimal dblStdDevY = 0;
 			foreach (var pt in points) {

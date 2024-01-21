@@ -69,7 +69,7 @@ namespace Repzilon.Libraries.Core
 			if (!String.IsNullOrEmpty(numberText)) {
 				numberText = numberText.Trim();
 				int posOfE, posOfSep;
-				bool blnNegative = false;
+				var blnNegative = false;
 				if (numberText.StartsWith(numberFormat.NegativeSign)) {
 					this[NumberAlignmentFlags.NegativeMantissa] = true;
 					blnNegative = true;
@@ -114,7 +114,7 @@ namespace Repzilon.Libraries.Core
 			if (posOfSep > -1) {
 				numberText = InsertIntegerSpaces(numberText, numberIsNegative, nds.Length, posOfSep, nfi);
 
-				int decimalDigits = numberText.Substring(numberText.IndexOf(nds) + 1).Length;
+				var decimalDigits = numberText.Substring(numberText.IndexOf(nds) + 1).Length;
 				if (decimalDigits < allDecimals) {
 					numberText += new String(' ', allDecimals - decimalDigits);
 				}
