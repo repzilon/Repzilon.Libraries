@@ -35,7 +35,7 @@ namespace Repzilon.Libraries.Core
 		public byte ExponentDigits;
 
 		public bool this[NumberAlignmentFlags flag] {
-			get { return this.Flags.HasFlag(flag); }
+			get { return (this.Flags & flag) != 0; }
 			set {
 				if (value) {
 					this.Flags |= flag;
