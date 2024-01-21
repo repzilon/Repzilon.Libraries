@@ -23,7 +23,7 @@ namespace Repzilon.Libraries.Core
 	}
 
 	public interface IAngle : IComparable, IFormattable, IEquatable<IAngle>, IComparable<IAngle>
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
 #endif
 	{

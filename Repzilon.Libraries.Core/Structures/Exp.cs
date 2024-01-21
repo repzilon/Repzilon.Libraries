@@ -28,10 +28,10 @@ namespace Repzilon.Libraries.Core
 	public struct Exp : IComparable, IFormattable, IEquatable<Exp>, IComparable<Exp>,
 	IEquatable<double>, IEquatable<decimal>,
 	IComparable<double>, IComparable<decimal>
-#if (!NETSTANDARD1_1)
+#if !NETSTANDARD1_1
 	, IEquatable<IConvertible>, IComparable<IConvertible>
 #endif
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
 #endif
 	{
@@ -71,7 +71,7 @@ namespace Repzilon.Libraries.Core
 			return new Exp(this);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -115,7 +115,7 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is decimal) {
 				return Equals((decimal)obj);
 			} else {
-#if (NETSTANDARD1_1)
+#if NETSTANDARD1_1
 				return false;
 #else
 				return Equals(obj as IConvertible);
@@ -139,7 +139,7 @@ namespace Repzilon.Libraries.Core
 			return this.ToDecimal() == other;
 		}
 
-#if (!NETSTANDARD1_1)
+#if !NETSTANDARD1_1
 		public bool Equals(IConvertible other)
 		{
 			return (other != null) && (this.ToDouble() == Convert.ToDouble(other));
@@ -216,7 +216,7 @@ namespace Repzilon.Libraries.Core
 			} else if (obj is decimal) {
 				return CompareTo((decimal)obj);
 			} else {
-#if (NETSTANDARD1_1)
+#if NETSTANDARD1_1
 				return 1;
 #else
 				return CompareTo(obj as IConvertible);
@@ -239,7 +239,7 @@ namespace Repzilon.Libraries.Core
 			return this.ToDecimal().CompareTo(other);
 		}
 
-#if (!NETSTANDARD1_1)
+#if !NETSTANDARD1_1
 		public int CompareTo(IConvertible other)
 		{
 			return this.ToDouble().CompareTo(Convert.ToDouble(other));
@@ -306,7 +306,7 @@ namespace Repzilon.Libraries.Core
 			return left.CompareTo(right) >= 0;
 		}
 
-#if (!NETSTANDARD1_1)
+#if !NETSTANDARD1_1
 		public static bool operator <(Exp left, IConvertible right)
 		{
 			return left.CompareTo(right) < 0;

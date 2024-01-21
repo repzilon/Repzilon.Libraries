@@ -36,7 +36,7 @@ namespace Repzilon.Libraries.Core
 		public double MaxY;
 
 		#region ICloneable members
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -164,7 +164,7 @@ namespace Repzilon.Libraries.Core
 			var n = this.Count;
 			var r = this.Correlation;
 			var sy = this.StdDevOfY;
-			return Math.Sqrt((1.0 / (n - 2)) * (1 - (r * r)) * (n - 1) * sy * sy);
+			return Math.Sqrt(1.0 / (n - 2) * (1 - (r * r)) * (n - 1) * sy * sy);
 		}
 
 		public double SlopeStdDev()

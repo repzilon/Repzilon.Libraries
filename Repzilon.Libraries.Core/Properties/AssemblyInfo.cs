@@ -21,7 +21,7 @@ using System.Runtime.InteropServices;
 #endregion
 [assembly: AssemblyTitle("Repzilon.Libraries.Core")]
 [assembly: AssemblyDescription("")]
-#if (DEBUG)
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]

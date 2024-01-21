@@ -20,7 +20,7 @@ using System.Runtime.InteropServices;
 #endregion
 [assembly: AssemblyTitle("Repzilon.Tests.ForCoreLibrary")]
 [assembly: AssemblyDescription("")]
-#if (DEBUG)
+#if DEBUG
 [assembly: AssemblyConfiguration("Debug")]
 #else
 [assembly: AssemblyConfiguration("Release")]

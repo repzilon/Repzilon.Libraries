@@ -40,7 +40,7 @@ namespace Repzilon.Libraries.Core
 			return new PointD(X, Y);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();

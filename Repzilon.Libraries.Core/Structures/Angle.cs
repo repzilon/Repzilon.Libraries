@@ -68,7 +68,7 @@ namespace Repzilon.Libraries.Core
 			return new Angle<T>(Value, Unit);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -135,7 +135,7 @@ namespace Repzilon.Libraries.Core
 			 "Cannot convert angle from {0} to {1}.", this.Unit, destinationUnit));
 		}
 
-#if (NETCOREAPP1_0 || NETSTANDARD1_1 || NETSTANDARD1_3 || NETSTANDARD1_6)
+#if NETCOREAPP1_0 || NETSTANDARD1_1 || NETSTANDARD1_3 || NETSTANDARD1_6
 		private static ArgumentOutOfRangeException NewUnknownUnitException(AngleUnit unit)
 		{
 			return new ArgumentOutOfRangeException("unit", (int)unit, "Unknown angle unit.");

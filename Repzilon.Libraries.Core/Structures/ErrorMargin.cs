@@ -19,7 +19,7 @@ namespace Repzilon.Libraries.Core
 {
 	public struct ErrorMargin<T> : IEquatable<ErrorMargin<T>>, IFormattable,
 	IComparableErrorMargin, IEquatable<IComparableErrorMargin>
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
 #endif
 	where T : struct, IFormattable, IEquatable<T>, IComparable
@@ -49,7 +49,7 @@ namespace Repzilon.Libraries.Core
 			return new ErrorMargin<T>(Middle, Margin);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();

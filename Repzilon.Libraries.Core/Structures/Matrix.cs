@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 	[StructLayout(LayoutKind.Auto)]
 	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable,
 	IComparableMatrix, IEquatable<IComparableMatrix>
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
 #endif
 	where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
@@ -129,7 +129,7 @@ namespace Repzilon.Libraries.Core
 			return other;
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -248,7 +248,7 @@ namespace Repzilon.Libraries.Core
 			byte i, j;
 			var tl = this.Lines;
 
-			bool blnCI = (formatProvider == CultureInfo.InvariantCulture);
+			bool blnCI = formatProvider == CultureInfo.InvariantCulture;
 			var nalarCols = new NumberAlignment[this.Columns];
 			for (j = 0; j < this.Columns; j++) {
 				for (i = 0; i < tl; i++) {
@@ -402,7 +402,7 @@ namespace Repzilon.Libraries.Core
 					if (!augmented[l, c].Equals(zero)) {
 						AutoRun(augmented, l, c, minusOne, mult);
 
-#if (DEBUG)
+#if DEBUG
 						// Reduce the number of negative signs by multiplying by -1
 						int np = 0, nn = 0;
 						for (byte k = 0; k < augmented.Columns; k++) {

@@ -178,7 +178,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		#region Revision exercise number 11
 		private static List<List<AlphaAminoAcid>> SolveRevision11()
 		{
-			var rev11_allowed = new List<AlphaAminoAcid>() {
+			var rev11_allowed = new List<AlphaAminoAcid> {
 				AlphaAminoAcid.Asp, AlphaAminoAcid.Lys, AlphaAminoAcid.Tyr,
 				AlphaAminoAcid.Met, AlphaAminoAcid.Phe, AlphaAminoAcid.Leu
 			};

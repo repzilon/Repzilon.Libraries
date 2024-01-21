@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 	public struct PolarVector<T> : IFormattable,
 	IEquatable<PolarVector<T>>, IEquatable<TwoDVector<T>>,
 	IComparablePolarVector, IEquatable<IComparablePolarVector>, IEquatable<IComparableTwoDVector>
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
 #endif
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
@@ -58,7 +58,7 @@ namespace Repzilon.Libraries.Core
 			return new PolarVector<T>(Norm, Angle);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();

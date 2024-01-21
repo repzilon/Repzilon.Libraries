@@ -92,7 +92,7 @@ namespace Repzilon.Libraries.Core
 			return new TwoDVector<T>(X, Y);
 		}
 
-#if (!NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6)
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
 			return this.Clone();
@@ -149,7 +149,7 @@ namespace Repzilon.Libraries.Core
 		public PolarVector<TOut> ToPolar<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
-#if (NETSTANDARD1_1)
+#if NETSTANDARD1_1
 			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
 			 (X is decimal) || (X is double) || (X is float) ? AngleUnit.Radian : AngleUnit.Degree, false));
 #else
@@ -316,7 +316,7 @@ namespace Repzilon.Libraries.Core
 			var addi = GenericArithmetic<T>.adder;
 			var squaredResult = addi(addi(mult(norm1, norm1), mult(norm2, norm2)),
 			 mult(mult(mult(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
-#if (NETSTANDARD1_1)
+#if NETSTANDARD1_1
 			if (squaredResult is decimal) {
 #else
 			if (((IConvertible)squaredResult).GetTypeCode() == TypeCode.Decimal) {

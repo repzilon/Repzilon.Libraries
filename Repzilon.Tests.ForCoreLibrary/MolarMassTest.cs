@@ -73,7 +73,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Program.OutputSizeOf<FattyAcid>();
-			var lstFats = new List<FattyAcid>() {
+			var lstFats = new List<FattyAcid> {
 				FattyAcid.Create("Acide butyrique", -7.9f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>2</sub>COOH"),
 				FattyAcid.Create("Acide caproïque", -3.5f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>4</sub>COOH"),
 				FattyAcid.Create("Acide caprique", 31.6f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>8</sub>COOH"),
@@ -100,10 +100,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var nO = dicElems["O"];
 				Console.WriteLine("{0,-25} {1,5:f1}°C {2,5:f1}g/mol C{3,-2}H{4,-2}O{5} {6,4:f1}%H/mol {7,4:f1}%H/g {8:f4}%H/mol/K {9:f4}%C/mol/K {10:f4}%H-C/mol/K",
 				 fat.Name, fat.MeltingPoint, fat.MolarMass, nC, nH, nO,
-				 (100.0 * nH) / (1.0 * (nC + nH + nO)), MH * nH * 100 / fat.MolarMass,
-				 (100.0 * nH) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
-				 (100.0 * nC) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
-				 (100.0 * (nH - nC)) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)));
+				 100.0 * nH / (1.0 * (nC + nH + nO)), MH * nH * 100 / fat.MolarMass,
+				 100.0 * nH / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
+				 100.0 * nC / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
+				 100.0 * (nH - nC) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)));
 			}
 		}
 	}
