@@ -140,14 +140,14 @@ namespace Repzilon.Libraries.Core
 			}
 			var stbFormula = new StringBuilder();
 			stbFormula.Append("y = ");
-			var strA = this.A.ToString(format, formatProvider);
-			var strB = this.B.ToString(format, formatProvider);
 			var blnDerivable = false;
 			if ((format.Length >= 2) && ((format[0] == 'e') || (format[0] == 'E')) &&
 			Char.IsLetter(format[1])) {
 				blnDerivable = true;
 				format = format.Substring(1);
 			}
+			var strA = this.A.ToString(format, formatProvider);
+			var strB = this.B.ToString(format, formatProvider);
 
 			var enuModel = this.Model;
 
