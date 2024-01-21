@@ -218,7 +218,7 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				int hashCode = (-177567199 * -1521134295) + Value.GetHashCode();
-				return hashCode * -1521134295 + (int)Unit;
+				return (hashCode * -1521134295) + (int)Unit;
 			}
 		}
 

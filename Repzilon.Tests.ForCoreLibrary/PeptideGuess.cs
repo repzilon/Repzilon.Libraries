@@ -58,7 +58,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			int hashCode = -918342670;
 			unchecked {
 				for (int i = 0; i < obj.Count; i++) {
-					hashCode = hashCode * magic + (int)obj[i];
+					hashCode = (hashCode * magic) + (int)obj[i];
 				}
 			}
 			return hashCode;

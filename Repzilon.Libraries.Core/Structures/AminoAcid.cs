@@ -99,15 +99,15 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				int magic = -1521134295;
-				int hashCode = -919792662 * magic + MolarMass.GetHashCode();
-				hashCode = hashCode * magic + pKa1.GetHashCode();
-				hashCode = hashCode * magic + pKa2.GetHashCode();
-				hashCode = hashCode * magic + pKaR.GetHashCode();
-				hashCode = hashCode * magic + Letter.GetHashCode();
-				hashCode = hashCode * magic + DicationWhenVeryAcid.GetHashCode();
-				hashCode = hashCode * magic + Symbol.GetHashCode();
-				hashCode = hashCode * magic + Name.GetHashCode();
-				return hashCode * magic + Formula.GetHashCode();
+				int hashCode = (-919792662 * magic) + MolarMass.GetHashCode();
+				hashCode = (hashCode * magic) + pKa1.GetHashCode();
+				hashCode = (hashCode * magic) + pKa2.GetHashCode();
+				hashCode = (hashCode * magic) + pKaR.GetHashCode();
+				hashCode = (hashCode * magic) + Letter.GetHashCode();
+				hashCode = (hashCode * magic) + DicationWhenVeryAcid.GetHashCode();
+				hashCode = (hashCode * magic) + Symbol.GetHashCode();
+				hashCode = (hashCode * magic) + Name.GetHashCode();
+				return (hashCode * magic) + Formula.GetHashCode();
 			}
 		}
 

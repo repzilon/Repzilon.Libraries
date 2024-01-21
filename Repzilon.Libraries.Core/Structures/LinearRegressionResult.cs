@@ -232,18 +232,18 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				int magic = -1521134295;
-				int hashCode = 338248910 * -1521134295 + Count;
-				hashCode = hashCode * magic + Slope.GetHashCode();
-				hashCode = hashCode * magic + Intercept.GetHashCode();
-				hashCode = hashCode * magic + Correlation.GetHashCode();
-				hashCode = hashCode * magic + StdDevOfY.GetHashCode();
-				hashCode = hashCode * magic + StdDevOfX.GetHashCode();
-				hashCode = hashCode * magic + AverageX.GetHashCode();
-				hashCode = hashCode * magic + AverageY.GetHashCode();
-				hashCode = hashCode * magic + MinX.GetHashCode();
-				hashCode = hashCode * magic + MaxX.GetHashCode();
-				hashCode = hashCode * magic + MinY.GetHashCode();
-				return hashCode * magic + MaxY.GetHashCode();
+				int hashCode = (338248910 * -1521134295) + Count;
+				hashCode = (hashCode * magic) + Slope.GetHashCode();
+				hashCode = (hashCode * magic) + Intercept.GetHashCode();
+				hashCode = (hashCode * magic) + Correlation.GetHashCode();
+				hashCode = (hashCode * magic) + StdDevOfY.GetHashCode();
+				hashCode = (hashCode * magic) + StdDevOfX.GetHashCode();
+				hashCode = (hashCode * magic) + AverageX.GetHashCode();
+				hashCode = (hashCode * magic) + AverageY.GetHashCode();
+				hashCode = (hashCode * magic) + MinX.GetHashCode();
+				hashCode = (hashCode * magic) + MaxX.GetHashCode();
+				hashCode = (hashCode * magic) + MinY.GetHashCode();
+				return (hashCode * magic) + MaxY.GetHashCode();
 			}
 		}
 

@@ -62,7 +62,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					var dcmRounded = SignificantDigits.Round(43.50872m, f, RoundingMode.ToEven);
 					Console.WriteLine("{0}\t{1}\t{2}\t{3}", 43.50872m, sngRounded, dblRounded, dcmRounded);
 				}
-				var x = 0.02015 * 0.25 - 0.001;
+				var x = (0.02015 * 0.25) - 0.001;
 				var xr = SignificantDigits.Round(x, 1, RoundingMode.ToEven);
 				Console.WriteLine("{0} -> {1}", x, xr);
 

@@ -92,10 +92,10 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = -1053832008 * -1521134295 + A.GetHashCode();
-				hashCode = hashCode * -1521134295 + B.GetHashCode();
-				hashCode = hashCode * -1521134295 + R.GetHashCode();
-				return hashCode * -1521134295 + (int)Model;
+				int hashCode = (-1053832008 * -1521134295) + A.GetHashCode();
+				hashCode = (hashCode * -1521134295) + B.GetHashCode();
+				hashCode = (hashCode * -1521134295) + R.GetHashCode();
+				return (hashCode * -1521134295) + (int)Model;
 			}
 		}
 

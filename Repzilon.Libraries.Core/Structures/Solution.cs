@@ -46,10 +46,10 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				int magic = -1521134295;
-				int hashCode = -1047427533 * -1521134295 + Concentration.GetHashCode();
-				hashCode = hashCode * magic + SolutionVolume.GetHashCode();
-				hashCode = hashCode * magic + SolventVolume.GetHashCode();
-				return hashCode * magic + SoluteVolume.GetHashCode();
+				int hashCode = (-1047427533 * -1521134295) + Concentration.GetHashCode();
+				hashCode = (hashCode * magic) + SolutionVolume.GetHashCode();
+				hashCode = (hashCode * magic) + SolventVolume.GetHashCode();
+				return (hashCode * magic) + SoluteVolume.GetHashCode();
 			}
 		}
 

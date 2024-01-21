@@ -150,8 +150,8 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				int hashCode = (1362180524 * -1521134295) + mantissaThousandths;
-				hashCode = hashCode * -1521134295 + Base;
-				return hashCode * -1521134295 + Exponent;
+				hashCode = (hashCode * -1521134295) + Base;
+				return (hashCode * -1521134295) + Exponent;
 			}
 		}
 

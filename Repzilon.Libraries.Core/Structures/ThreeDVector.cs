@@ -129,9 +129,9 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				int magic = -1521134295;
-				int hashCode = -307843816 * -1521134295 + X.GetHashCode();
-				hashCode = hashCode * magic + Y.GetHashCode();
-				return hashCode * magic + Z.GetHashCode();
+				int hashCode = (-307843816 * -1521134295) + X.GetHashCode();
+				hashCode = (hashCode * magic) + Y.GetHashCode();
+				return (hashCode * magic) + Z.GetHashCode();
 			}
 		}
 

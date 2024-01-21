@@ -203,9 +203,9 @@ namespace Repzilon.Libraries.Core
 			unchecked {
 				int magic = -1521134295;
 				int hashCode = (1832363379 * -1521134295) + Lines;
-				hashCode = hashCode * magic + Columns;
-				hashCode = hashCode * magic + m_bytAugmentedColumn.GetValueOrDefault();
-				return hashCode * magic + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
+				hashCode = (hashCode * magic) + Columns;
+				hashCode = (hashCode * magic) + m_bytAugmentedColumn.GetValueOrDefault();
+				return (hashCode * magic) + EqualityComparer<T[,]>.Default.GetHashCode(m_values);
 			}
 		}
 

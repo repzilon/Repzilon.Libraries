@@ -57,7 +57,7 @@ namespace Repzilon.Libraries.Core
 
 			decimal root = square / 3;
 			for (int i = 0; i < 32; i++) {
-				root = (root + square / root) * 0.5m;
+				root = (root + (square / root)) * 0.5m;
 			}
 			return root;
 		}
