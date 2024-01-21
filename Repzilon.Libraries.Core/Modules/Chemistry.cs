@@ -75,7 +75,7 @@ namespace Repzilon.Libraries.Core
 
 		private static MatchCollection MatchChemicalGroups(string formula, out int c)
 		{
-			if ((formula == null) || (formula.Length < 0)) {
+			if (String.IsNullOrEmpty(formula)) {
 				throw new ArgumentNullException("formula");
 			}
 
