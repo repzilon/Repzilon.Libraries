@@ -307,6 +307,8 @@ namespace Repzilon.Libraries.Core
 		{
 			var kTen = 10.0;
 			double bubble;
+#pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
+#pragma warning disable CC0019 // Use 'switch'
 			if (rounding == RoundingMode.AwayFromZero) {
 				return Math.Round(value, digits, MidpointRounding.AwayFromZero);
 			} else if (rounding == RoundingMode.ToEven) {
@@ -328,6 +330,8 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw new ArgumentOutOfRangeException("rounding");
 			}
+#pragma warning restore CC0019 // Use 'switch'
+#pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}
 		#endregion
 	}

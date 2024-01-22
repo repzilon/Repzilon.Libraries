@@ -300,6 +300,8 @@ namespace Repzilon.Libraries.Core
 
 		internal static RegressionModel<double> ChangeModel(double a, double b, double r, MathematicalModel newModel)
 		{
+#pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
+#pragma warning disable CC0019 // Use 'switch'
 			if (newModel == MathematicalModel.Affine) {
 				return new RegressionModel<double>(a, b, r, newModel);
 			} else if (newModel == MathematicalModel.Power) {
@@ -312,6 +314,9 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw new ArgumentOutOfRangeException("newModel");
 			}
+#pragma warning restore CC0019 // Use 'switch'
+#pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
+
 		}
 	}
 }
