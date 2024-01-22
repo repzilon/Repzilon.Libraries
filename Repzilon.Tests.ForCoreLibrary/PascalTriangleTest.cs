@@ -16,7 +16,7 @@ using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class PascalTriangleTest
+	internal static class PascalTriangleTest
 	{
 		internal static void Run(string[] args)
 		{

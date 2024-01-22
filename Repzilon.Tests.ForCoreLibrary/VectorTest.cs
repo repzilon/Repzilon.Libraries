@@ -16,7 +16,7 @@ using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class VectorTest
+	internal static class VectorTest
 	{
 		internal static void Run(string[] args)
 		{

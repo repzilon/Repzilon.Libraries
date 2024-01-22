@@ -17,9 +17,9 @@ using System.Runtime.InteropServices;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class Program
+	internal static class Program
 	{
-		static void Main(string[] args)
+		private static void Main(string[] args)
 		{
 			var dicTests = new SortedList<string, Action<string[]>>();
 			dicTests.Add("Significant Digits", DigitTest.Run);

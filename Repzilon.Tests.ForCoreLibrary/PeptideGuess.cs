@@ -65,7 +65,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 	}
 
-	static class PeptideGuess
+	internal static class PeptideGuess
 	{
 		internal static void Run(string[] args)
 		{

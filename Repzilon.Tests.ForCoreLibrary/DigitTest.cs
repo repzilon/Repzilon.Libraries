@@ -17,7 +17,7 @@ using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class DigitTest
+	internal static class DigitTest
 	{
 		internal static void Run(string[] args)
 		{

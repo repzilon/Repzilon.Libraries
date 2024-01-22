@@ -18,10 +18,10 @@ using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class MolarMassTest
+	internal static class MolarMassTest
 	{
 		[StructLayout(LayoutKind.Auto)]
-		struct FattyAcid
+		private struct FattyAcid
 		{
 			public string Name;
 			public string Formula;

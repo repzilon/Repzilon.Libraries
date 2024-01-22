@@ -17,7 +17,7 @@ using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class LinearRegressionTest
+	internal static class LinearRegressionTest
 	{
 		internal static void Run(string[] args)
 		{

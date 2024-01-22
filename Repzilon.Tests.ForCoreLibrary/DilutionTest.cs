@@ -16,7 +16,7 @@ using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	static class DilutionTest
+	internal static class DilutionTest
 	{
 		internal static void Run(string[] args)
 		{
