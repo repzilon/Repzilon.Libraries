@@ -44,9 +44,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 					throw new ArgumentOutOfRangeException("meltingPointInCelsius");
 				}
 
-				var fat = new FattyAcid();
-				fat.Name = name.Trim();
-				fat.MeltingPoint = meltingPointInCelsius;
+				var fat = new FattyAcid
+				{
+					Name = name.Trim(),
+					MeltingPoint = meltingPointInCelsius
+				};
 				fat.SetFormula(formula);
 				return fat;
 			}

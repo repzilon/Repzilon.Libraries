@@ -137,11 +137,12 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentException("An amino acid symbol is made of three letters.", "code");
 			}
 
-			var aa = new AminoAcid();
-			aa.Letter = letter;
-			aa.Symbol = code;
-			aa.Name = name.Trim();
-			return aa;
+			return new AminoAcid
+			{
+				Letter = letter,
+				Symbol = code,
+				Name = name.Trim()
+			};
 		}
 
 		public static readonly IReadOnlyList<AminoAcid> AlphaList = MakeAlphaList();
