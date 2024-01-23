@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -172,6 +172,75 @@ namespace Repzilon.Libraries.Core
 				AminoAcid.Create('V', "Val", "Valine").SetPkas(2.3f, 9.7f)
 			};
 			return new ReadOnlyCollection<AminoAcid>(lstAminoAcids);
+		}
+
+		public float WeightedCharge(float pH)
+		{
+			if ((pH < 1) || (pH > 14)) {
+				throw new ArgumentOutOfRangeException("pH");
+			}
+			bool dicat;
+			var ar = this.pKaR;
+			var pkI = this.Isoelectric();
+			float am;
+			if (Single.IsNaN(ar)) { // without lateral chain
+				if (pH == pkI) {
+					return 0;
+				} else if (pH == this.pKa1) {
+					return 0.5f;
+				} else if (pH == this.pKa2) {
+					return -0.5f;
+				} else if (pH < pkI) {					
+					return (float)(1.0 / (1 + Math.Pow(10, pH - this.pKa1)));
+				} else {
+					var dblAlkaliRatio = Math.Pow(10, pH - this.pKa2);
+					return (float)((-1 * dblAlkaliRatio) / (1 + dblAlkaliRatio));
+				}
+			} else { // with lateral chain
+				dicat = this.DicationWhenVeryAcid;
+				var a2ltar = (this.pKa2 < ar);
+				if (pH == pkI) {
+					return 0;
+				} else if (pH == this.pKa1) {
+					return dicat ? 1.5f : 0.5f;
+				} else if (pH == this.pKa2) {
+					return ChargeOfLateral(false, a2ltar, dicat);
+				} else if (pH == ar) {
+					return ChargeOfLateral(true, a2ltar, dicat);
+				} else {
+					am = Math.Min(this.pKa2, ar);
+					var ah = Math.Max(this.pKa2, ar);
+					if (2 * pH < this.pKa1 + am) { // pH < 0.5f * (this.pKa1 + am)
+						return ChargeOfLateral(pH, this.pKa1, dicat, 2);
+					} else if (2 * pH < am + ah) {
+						return ChargeOfLateral(pH, am, dicat, 1);
+					} else {
+						return ChargeOfLateral(pH, ah, dicat, 0);
+					}
+				}
+			}
+		}
+
+		private static float ChargeOfLateral(float pH, float pKa, bool dicat, short mostAcidicCharge)
+		{
+			var dblAlkaliRatio = Math.Pow(10, pH - pKa);
+			/*
+			short shrMid = (short)(mostAcidicCharge - 1);
+			short shrBase = (short)(mostAcidicCharge - 2);
+			return (float)((((dicat ? mostAcidicCharge : shrMid) * 1.0) + ((dicat ? shrMid : shrBase) * dblAlkaliRatio)) / (1 + dblAlkaliRatio));
+			// */
+			var c = dicat ? mostAcidicCharge : mostAcidicCharge - 1;
+			return (float)(c - (dblAlkaliRatio / (dblAlkaliRatio + 1)));
+		}
+
+		private static float ChargeOfLateral(bool pHEqualsPkar, bool pKa2LessThanPkar, bool dicat)
+		{
+			bool blnEquals = (pHEqualsPkar == pKa2LessThanPkar);
+			if (dicat) {
+				return blnEquals ? -0.5f : 0.5f;
+			} else {
+				return blnEquals ? -1.5f : -0.5f;
+			}
 		}
 	}
 }
