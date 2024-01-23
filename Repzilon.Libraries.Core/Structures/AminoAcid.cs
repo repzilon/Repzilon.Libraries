@@ -25,11 +25,38 @@ namespace Repzilon.Libraries.Core
 		public float pKa1;
 		public float pKa2;
 		public float pKaR;
-		public char Letter;
+		public readonly char Letter;
 		public bool DicationWhenVeryAcid;
-		public string Symbol;
-		public string Name;
+		public readonly string Symbol;
+		public readonly string Name;
 		public string Formula;
+
+		public AminoAcid(char letter, string code, string name)
+		{
+			if (!Char.IsLetter(letter)) {
+				throw new ArgumentOutOfRangeException("letter");
+			}
+			if (String.IsNullOrWhiteSpace(code)) {
+				throw new ArgumentNullException("code");
+			}
+			if (String.IsNullOrWhiteSpace(name)) {
+				throw new ArgumentNullException("name");
+			}
+			if (code.Trim().Length != 3) {
+				throw new ArgumentException("An amino acid symbol is made of three letters.", "code");
+			}
+
+			this.Letter = letter;
+			this.Symbol = code;
+			this.Name = name.Trim();
+
+			this.MolarMass = Single.NaN;
+			this.pKa1 = Single.NaN;
+			this.pKa2 = Single.NaN;
+			this.pKaR = Single.NaN;
+			this.DicationWhenVeryAcid = false;
+			this.Formula = null;
+		}
 
 		public AminoAcid SetPkas(float pKa1, float pKa2)
 		{
@@ -122,54 +149,32 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-		public static AminoAcid Create(char letter, string code, string name)
-		{
-			if (!Char.IsLetter(letter)) {
-				throw new ArgumentOutOfRangeException("letter");
-			}
-			if (String.IsNullOrWhiteSpace(code)) {
-				throw new ArgumentNullException("code");
-			}
-			if (String.IsNullOrWhiteSpace(name)) {
-				throw new ArgumentNullException("name");
-			}
-			if (code.Trim().Length != 3) {
-				throw new ArgumentException("An amino acid symbol is made of three letters.", "code");
-			}
-
-			var aa = new AminoAcid();
-			aa.Letter = letter;
-			aa.Symbol = code;
-			aa.Name = name.Trim();
-			return aa;
-		}
-
 		public static readonly IReadOnlyList<AminoAcid> AlphaList = MakeAlphaList();
 
 		private static IReadOnlyList<AminoAcid> MakeAlphaList()
 		{
 			var lstAminoAcids = new List<AminoAcid>(20)
 			{
-				AminoAcid.Create('D', "Asp", "Acide aspartique").SetPkas(2.1f, 9.8f, 3.9f, false),
-				AminoAcid.Create('E', "Glu", "Acide glutamique").SetPkas(2.2f, 9.7f, 4.2f, false),
-				AminoAcid.Create('A', "Ala", "Alanine").SetPkas(2.3f, 9.9f),
-				AminoAcid.Create('R', "Arg", "Arginine").SetPkas(2.2f, 9.0f, 12.5f, true),
-				AminoAcid.Create('N', "Asn", "Asparagine").SetPkas(2.0f, 8.8f),
-				AminoAcid.Create('C', "Cys", "Cystéine").SetPkas(1.7f, 10.8f, 8.3f, false),
-				AminoAcid.Create('Q', "Gln", "Glutamine").SetPkas(2.1f, 9.1f),
-				AminoAcid.Create('G', "Gly", "Glycine").SetPkas(2.4f, 9.7f),
-				AminoAcid.Create('H', "His", "Histidine").SetPkas(1.8f, 9.2f, 6.0f, true),
-				AminoAcid.Create('I', "Ile", "Isoleucine").SetPkas(2.4f, 9.7f),
-				AminoAcid.Create('L', "Leu", "Leucine").SetPkas(2.4f, 9.6f),
-				AminoAcid.Create('K', "Lys", "Lysine").SetPkas(2.2f, 8.9f, 10.5f, true),
-				AminoAcid.Create('M', "Mét", "Méthionine").SetPkas(2.3f, 9.2f),
-				AminoAcid.Create('F', "Phé", "Phénylalanine").SetPkas(2.6f, 9.2f),
-				AminoAcid.Create('P', "Pro", "Proline").SetPkas(2.0f, 10.6f),
-				AminoAcid.Create('S', "Sér", "Sérine").SetPkas(2.2f, 9.2f),
-				AminoAcid.Create('T', "Thr", "Thréonine").SetPkas(2.6f, 10.4f),
-				AminoAcid.Create('W', "Trp", "Tryptophane").SetPkas(2.4f, 9.4f),
-				AminoAcid.Create('Y', "Tyr", "Tyrosine").SetPkas(2.2f, 9.1f, 10.0f, false),
-				AminoAcid.Create('V', "Val", "Valine").SetPkas(2.3f, 9.7f)
+				new AminoAcid('D', "Asp", "Acide aspartique").SetPkas(2.1f, 9.8f, 3.9f, false),
+				new AminoAcid('E', "Glu", "Acide glutamique").SetPkas(2.2f, 9.7f, 4.2f, false),
+				new AminoAcid('A', "Ala", "Alanine").SetPkas(2.3f, 9.9f),
+				new AminoAcid('R', "Arg", "Arginine").SetPkas(2.2f, 9.0f, 12.5f, true),
+				new AminoAcid('N', "Asn", "Asparagine").SetPkas(2.0f, 8.8f),
+				new AminoAcid('C', "Cys", "Cystéine").SetPkas(1.7f, 10.8f, 8.3f, false),
+				new AminoAcid('Q', "Gln", "Glutamine").SetPkas(2.1f, 9.1f),
+				new AminoAcid('G', "Gly", "Glycine").SetPkas(2.4f, 9.7f),
+				new AminoAcid('H', "His", "Histidine").SetPkas(1.8f, 9.2f, 6.0f, true),
+				new AminoAcid('I', "Ile", "Isoleucine").SetPkas(2.4f, 9.7f),
+				new AminoAcid('L', "Leu", "Leucine").SetPkas(2.4f, 9.6f),
+				new AminoAcid('K', "Lys", "Lysine").SetPkas(2.2f, 8.9f, 10.5f, true),
+				new AminoAcid('M', "Mét", "Méthionine").SetPkas(2.3f, 9.2f),
+				new AminoAcid('F', "Phé", "Phénylalanine").SetPkas(2.6f, 9.2f),
+				new AminoAcid('P', "Pro", "Proline").SetPkas(2.0f, 10.6f),
+				new AminoAcid('S', "Sér", "Sérine").SetPkas(2.2f, 9.2f),
+				new AminoAcid('T', "Thr", "Thréonine").SetPkas(2.6f, 10.4f),
+				new AminoAcid('W', "Trp", "Tryptophane").SetPkas(2.4f, 9.4f),
+				new AminoAcid('Y', "Tyr", "Tyrosine").SetPkas(2.2f, 9.1f, 10.0f, false),
+				new AminoAcid('V', "Val", "Valine").SetPkas(2.3f, 9.7f)
 			};
 			return new ReadOnlyCollection<AminoAcid>(lstAminoAcids);
 		}
