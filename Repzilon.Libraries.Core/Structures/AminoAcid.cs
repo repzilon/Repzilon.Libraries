@@ -20,6 +20,9 @@ namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct AminoAcid : IEquatable<AminoAcid>
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
+	, ICloneable
+#endif
 	{
 		public float MolarMass;
 		public float pKa1;
@@ -57,6 +60,34 @@ namespace Repzilon.Libraries.Core
 			this.DicationWhenVeryAcid = false;
 			this.Formula = null;
 		}
+
+		#region ICloneable members
+		public AminoAcid(AminoAcid other)
+		{
+			this.Letter = other.Letter;
+			this.Symbol = other.Symbol;
+			this.Name = other.Name;
+
+			this.MolarMass = other.MolarMass;
+			this.pKa1 = other.pKa1;
+			this.pKa2 = other.pKa2;
+			this.pKaR = other.pKaR;
+			this.DicationWhenVeryAcid = other.DicationWhenVeryAcid;
+			this.Formula = other.Formula;
+		}
+
+		public AminoAcid Clone()
+		{
+			return new AminoAcid(this);
+		}
+
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
+		object ICloneable.Clone()
+		{
+			return this.Clone();
+		}
+#endif
+		#endregion
 
 		public AminoAcid SetPkas(float pKa1, float pKa2)
 		{
@@ -195,7 +226,7 @@ namespace Repzilon.Libraries.Core
 					return 0.5f;
 				} else if (pH == this.pKa2) {
 					return -0.5f;
-				} else if (pH < pkI) {					
+				} else if (pH < pkI) {
 					return (float)(1.0 / (1 + Math.Pow(10, pH - this.pKa1)));
 				} else {
 					var dblAlkaliRatio = Math.Pow(10, pH - this.pKa2);
