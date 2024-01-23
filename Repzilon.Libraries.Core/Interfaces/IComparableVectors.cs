@@ -36,4 +36,3 @@ namespace Repzilon.Libraries.Core
 		IAngle Angle { get; }
 	}
 }
-
