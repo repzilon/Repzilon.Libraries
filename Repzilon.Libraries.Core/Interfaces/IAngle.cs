@@ -33,5 +33,7 @@ namespace Repzilon.Libraries.Core
 		IAngle Normalize();
 		double Sin();
 		double Cos();
+
+		Angle<TOut> Cast<TOut>() where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>;
 	}
 }

@@ -59,6 +59,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa64_u = Vector.New(1.0f, 3.0f, 4.0f);
 			Console.WriteLine("Exemple 64  : ||u||={0:f3}", exa64_u.Norm());
 
+			var exa65_u = Vector.New(2, 4, 1);
+			var exa65_v = Vector.New(-1, -2, 5);
+			Console.WriteLine("Exemple 65a : u//v is {0}", ThreeDVector<int>.AreParallel(exa65_u, exa65_v));
+			Console.WriteLine("Exemple 65b : 3u-v={0}", (3 * exa65_u) - exa65_v);
+
 			var exa66_oa = Vector.New(1, 2, 3);
 			var exa66_ob = Vector.New(2, -3, 2);
 			var exa66_ab = exa66_ob - exa66_oa;
@@ -83,8 +88,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
 			ShowcaseExample69(exa69_ref, Example69WithExp);
-
 			Console.Write(Environment.NewLine);
+
+			var exa70_u = Vector.New(2, 30, AngleUnit.Degree);
+			var exa70_v = Vector.New(4, 0, AngleUnit.Degree);
+			Console.WriteLine("Exemple 70  : u.v={0}", exa70_u * exa70_v);
+
 			var exa71_u = Vector.New(4, -2, 2);
 			var exa71_v = Vector.New(1, 3, 1);
 			Console.WriteLine("Exemple 71  : u={0} et v={1} perpendiculaires : {2}", exa71_u, exa71_v,
@@ -95,7 +104,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 72a : u={0} et v={1} perpendiculaires : {2}", exa72_u, exa72_v,
 			 ThreeDVector<int>.ArePerpendicular(exa72_u, exa72_v));
 			var exa72_theta = ThreeDVector<int>.AngleBetween(exa72_u, exa72_v).ConvertTo(AngleUnit.Degree);
-			Console.WriteLine("Exemple 72b : theta={0:g3}", exa72_theta);
+			Console.WriteLine("Exemple 72b : θ={0:g3}", exa72_theta);
 
 			var exa74_w = TwoDVector<float>.Dot(5, 12, 20, AngleUnit.Degree);
 			Console.WriteLine("Exemple 74  : W={0:f2}", exa74_w);
@@ -103,6 +112,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_u = Vector.New(-2, 3, 1);
 			var exa78_v = Vector.New(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
+			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());
 
 			Program.OutputSizeOf<Exp>();
 		}

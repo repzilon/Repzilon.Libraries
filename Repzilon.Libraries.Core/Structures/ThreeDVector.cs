@@ -219,6 +219,20 @@ namespace Repzilon.Libraries.Core
 			return Dot(u, v).Equals(default(T));
 		}
 
+		public static bool AreParallel(ThreeDVector<T> u, ThreeDVector<T> v)
+		{
+			var ux = u.X.ConvertTo<decimal>();
+			var vx = v.X.ConvertTo<decimal>();
+			decimal k;
+			if (Math.Abs(vx) < Math.Abs(ux)) {
+				k = ux / vx;
+				return k.ConvertTo<T>() * v == u;
+			} else {
+				k = vx / ux;
+				return k.ConvertTo<T>() * u == v;
+			}
+		}
+
 		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);

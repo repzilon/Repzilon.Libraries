@@ -308,8 +308,7 @@ namespace Repzilon.Libraries.Core
 		// TODO : implement operators between TwoDVector and PolarVector
 		#endregion
 
-		// TODO : implement AreParallel static method
-
+		// TODO : move Sum and Dot overloads having norms as arguments to Vector static class
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
@@ -352,6 +351,13 @@ namespace Repzilon.Libraries.Core
 		public static bool ArePerpendicular(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			return Dot(u, v).Equals(default(T));
+		}
+
+		public static bool AreParallel(TwoDVector<T> u, TwoDVector<T> v)
+		{
+			var bu = u.Y.ConvertTo<double>() / u.X.ConvertTo<double>();
+			var bv = v.Y.ConvertTo<double>() / v.X.ConvertTo<double>();
+			return (bu == bv); // identical slope
 		}
 
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)
