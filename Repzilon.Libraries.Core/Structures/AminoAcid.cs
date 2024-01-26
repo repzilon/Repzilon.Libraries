@@ -226,11 +226,15 @@ namespace Repzilon.Libraries.Core
 					return 0.5f;
 				} else if (pH == this.pKa2) {
 					return -0.5f;
-				} else if (pH < pkI) {
-					return (float)(1.0 / (1 + Math.Pow(10, pH - this.pKa1)));
+				} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f)) {
+					if (pH < pkI) {
+						return (float)(1.0 / (1 + Math.Pow(10, pH - this.pKa1)));
+					} else {
+						var dblAlkaliRatio = Math.Pow(10, pH - this.pKa2);
+						return (float)((-1 * dblAlkaliRatio) / (1 + dblAlkaliRatio));
+					}
 				} else {
-					var dblAlkaliRatio = Math.Pow(10, pH - this.pKa2);
-					return (float)((-1 * dblAlkaliRatio) / (1 + dblAlkaliRatio));
+					return Single.NaN;
 				}
 			} else { // with lateral chain
 				dicat = this.DicationWhenVeryAcid;
@@ -244,14 +248,28 @@ namespace Repzilon.Libraries.Core
 				} else if (pH == ar) {
 					return ChargeOfLateral(true, a2ltar, dicat);
 				} else {
-					am = Math.Min(this.pKa2, ar);
-					var ah = Math.Max(this.pKa2, ar);
-					if (2 * pH < this.pKa1 + am) { // pH < 0.5f * (this.pKa1 + am)
-						return ChargeOfLateral(pH, this.pKa1, dicat, 2);
-					} else if (2 * pH < am + ah) {
-						return ChargeOfLateral(pH, am, dicat, 1);
+					float pJ;
+					if (dicat) {
+						pJ = a2ltar ? this.pKa1 + this.pKa2 : this.pKa1 + ar;
 					} else {
-						return ChargeOfLateral(pH, ah, dicat, 0);
+						pJ = this.pKa2 + ar;
+					}
+					pJ = RoundOff.Error(0.5f * pJ);
+					if (pH == pJ) {
+						return dicat ? 1 : -1;
+					} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f) ||
+					(Math.Abs(pH - this.pKaR) <= 1.0f)) {
+						am = Math.Min(this.pKa2, ar);
+						var ah = Math.Max(this.pKa2, ar);
+						if (2 * pH < this.pKa1 + am) { // pH < 0.5f * (this.pKa1 + am)
+							return ChargeOfLateral(pH, this.pKa1, dicat, 2);
+						} else if (2 * pH < am + ah) {
+							return ChargeOfLateral(pH, am, dicat, 1);
+						} else {
+							return ChargeOfLateral(pH, ah, dicat, 0);
+						}
+					} else {
+						return Single.NaN;
 					}
 				}
 			}
