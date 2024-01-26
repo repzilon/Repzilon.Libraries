@@ -86,6 +86,32 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(Environment.NewLine);
 			}
 
+			Console.Write("datasets: [");
+			for (a = 0; a < saaarLateral.Length; a++) {
+				if (a > 0) {
+					Console.Write(',');
+				}
+				Console.WriteLine('{');
+				Console.Write("\tlabel: '");
+				Console.Write(saaarLateral[a].Symbol);
+				Console.WriteLine("',");
+				Console.Write("\tdata: [");
+				var n = 0;
+				for (var f = 100; f <= 1400; f += 5) {
+					var pH = RoundOff.Error(f * 0.01f);
+					var q = saaarLateral[a].WeightedCharge(pH);
+					if (!Single.IsNaN(q)) {
+						if (n > 0) {
+							Console.Write(',');
+						}
+						Console.Write("{{x: {0:f2}, y: {1:f3}}}", pH, q);
+						n++;
+					}
+				}
+				Console.Write("]}");
+			}
+			Console.WriteLine(']');
+
 			const int kIterations = 440;
 			BenchmarkResolution(kIterations, "Révision #10 (avec enums) :", SolveRevision10WithEnum);
 			BenchmarkResolution(kIterations, "Révision #11", SolveRevision11);
