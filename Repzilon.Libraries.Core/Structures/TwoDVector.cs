@@ -355,8 +355,8 @@ namespace Repzilon.Libraries.Core
 
 		public static bool AreParallel(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var bu = u.Y.ConvertTo<double>() / u.X.ConvertTo<double>();
-			var bv = v.Y.ConvertTo<double>() / v.X.ConvertTo<double>();
+			var bu = u.Y.ConvertTo<decimal>() / u.X.ConvertTo<decimal>();
+			var bv = v.Y.ConvertTo<decimal>() / v.X.ConvertTo<decimal>();
 			return (bu == bv); // identical slope
 		}
 

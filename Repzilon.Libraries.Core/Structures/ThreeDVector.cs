@@ -226,10 +226,10 @@ namespace Repzilon.Libraries.Core
 			decimal k;
 			if (Math.Abs(vx) < Math.Abs(ux)) {
 				k = ux / vx;
-				return k.ConvertTo<T>() * v == u;
+				return k * v.Cast<decimal>() == u.Cast<decimal>();
 			} else {
 				k = vx / ux;
-				return k.ConvertTo<T>() * u == v;
+				return k * u.Cast<decimal>() == v.Cast<decimal>();
 			}
 		}
 
