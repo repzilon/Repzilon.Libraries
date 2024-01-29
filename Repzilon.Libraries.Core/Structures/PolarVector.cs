@@ -201,7 +201,7 @@ namespace Repzilon.Libraries.Core
 
 		public static T operator *(PolarVector<T> u, PolarVector<T> v)
 		{
-			return TwoDVector<T>.Dot(u.Norm, v.Norm, AngleBetween(u, v));
+			return Vector<T>.Dot(u.Norm, v.Norm, AngleBetween(u, v));
 		}
 		#endregion
 
