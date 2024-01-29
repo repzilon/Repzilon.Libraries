@@ -686,6 +686,24 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		private IReadOnlyDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
+		{
+			var inverse = ~this;
+			if (inverse.HasValue) {
+				if ((variables == null) || (variables.Length < 1)) {
+					throw new ArgumentNullException("variables");
+				}
+				var nowKnowns = inverse.Value * constants;
+				var dicHere = new Dictionary<string, T>();
+				for (byte a = 0; a < variables.Length; a++) {
+					dicHere.Add(variables[a], nowKnowns[a, 0]);
+				}
+				return dicHere;
+			} else {
+				return null;
+			}
+		}
+
 		/// <summary>
 		/// Tries to solves a linear equation system, using this matrix containing the coefficients of the variable
 		/// part of the equation system. For now, only square matrices are supported and may only find a solution for
@@ -699,30 +717,16 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 		/// <exception cref="NotSupportedException">
-		/// When this matrix is not square or for square matrices, when neither Cramer nor matrix inversion techniques
-		/// yields a single solution. Support will improve in the future.
+		/// When this matrix is not square or for square matrices, when Cramer does not yield a single solution.
+		/// Support will improve in the future.
 		/// </exception>
 		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
 		{
 			if (this.IsSquare) {
 				var dicSolved = SolveWithCramer(constants, variables);
 				if (dicSolved == null) {
-					// Try to solve by matrix inversion
-					var inverse = ~this;
-					if (inverse.HasValue) {
-						if ((variables == null) || (variables.Length < 1)) {
-							throw new ArgumentNullException("variables");
-						}
-						var nowKnowns = inverse.Value * constants;
-						var dicHere = new Dictionary<string, T>();
-						for (byte a = 0; a < variables.Length; a++) {
-							dicHere.Add(variables[a], nowKnowns[a, 0]);
-						}
-						return dicHere;
-					} else {
-						// FIXME : Gauss matrix solving technique is not yet implemented
-						throw new NotSupportedException("Gauss matrix solving technique is not yet supported.");
-					}
+					// FIXME : Gauss matrix solving technique is not yet implemented
+					throw new NotSupportedException("Gauss matrix solving technique is not yet supported.");
 				} else {
 					return dicSolved;
 				}
