@@ -13,6 +13,7 @@
 //
 using System;
 using Repzilon.Libraries.Core;
+using Repzilon.Libraries.Core.Vectors;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {

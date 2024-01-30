@@ -13,7 +13,7 @@
 //
 using System;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	public static class Vector
 	{

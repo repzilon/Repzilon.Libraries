@@ -17,7 +17,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>,
