@@ -13,6 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -704,35 +705,76 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		private IReadOnlyDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
+		{
+			byte c;
+			var m = this.Lines;
+			var augmented = this.Augment(constants);
+			var minusOne = (-1).ConvertTo<T>();
+			var zero = default(T);
+			var mult = BuildMultiplier<T>();
+			// Put zeros in the lower left corner
+			for (c = 0; c < this.Columns - 1; c++) {
+				for (var l = (byte)(c + 1); l < m; l++) {
+					if (!augmented[l, c].Equals(zero)) {
+						AutoRun(augmented, l, c, minusOne, mult);
+					}
+				}
+			}
+
+			// Check if we can continue.
+			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
+				// TODO : Implement linked solutioons
+				throw new NotSupportedException("An infinity of linked solutions exists.");
+			} else {
+				byte zc = 0;
+				for (c = 0; c < this.Columns; c++) {
+					if (augmented[(byte)(m - 1), c].Equals(zero)) {
+						zc++;
+					}
+				}
+				if (zc == this.Columns) {
+					return null; // No solution exists
+				} else { // Single solution
+					// FIXME : Hardcoding solution computation is ugly. This should be put in a loop.
+					var dicSolved = new SortedDictionary<string, T>();
+					var z = Convert.ToDouble(augmented[(byte)(m - 1), this.Columns]) / Convert.ToDouble(augmented[(byte)(m - 1), (byte)(variables.Length - 1)]);
+					dicSolved.Add(variables[variables.Length - 1], z.ConvertTo<T>());
+					var ve = Convert.ToDouble(augmented[(byte)(m - 2), (byte)(this.Columns - 1)]);
+					var be = Convert.ToDouble(augmented[(byte)(m - 2), (byte)(this.Columns - 2)]);
+					var y = (Convert.ToDouble(augmented[(byte)(m - 2), this.Columns]) - (ve * z)) / be;
+					dicSolved.Add(variables[variables.Length - 2], y.ConvertTo<T>());
+					if (variables.Length >= 3) {
+						ve = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 1)]);
+						be = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 2)]);
+						var a = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 3)]);
+						var x = (Convert.ToDouble(augmented[(byte)(m - 3), this.Columns]) - (be * y) - (ve * z)) / a;
+						dicSolved.Add(variables[variables.Length - 3], x.ConvertTo<T>());
+					}
+					return new ReadOnlyDictionary<string, T>(dicSolved);
+				}
+			}
+		}
+
 		/// <summary>
 		/// Tries to solves a linear equation system, using this matrix containing the coefficients of the variable
-		/// part of the equation system. For now, only square matrices are supported and may only find a solution for
-		/// single unique solution equation systems.
+		/// part of the equation system. For now, it can only find a solution for single unique solution equation systems.
 		/// </summary>
 		/// <param name="constants">A Nx1 matrix having the constant part of the equation system</param>
 		/// <param name="variables">Variables names, in order</param>
 		/// <returns>
 		/// When a unique solution exists, a set of key-value pairs with the variable name and the solved value for each.
-		/// Otherwise, throws an NotSupportedException.
+		/// When there is no possible solution, returns null. Otherwise, throws an NotSupportedException.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
-		/// <exception cref="NotSupportedException">
-		/// When this matrix is not square or for square matrices, when Cramer does not yield a single solution.
-		/// Support will improve in the future.
-		/// </exception>
+		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
 		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
 		{
 			if (this.IsSquare) {
 				var dicSolved = SolveWithCramer(constants, variables);
-				if (dicSolved == null) {
-					// FIXME : Gauss matrix solving technique is not yet implemented
-					throw new NotSupportedException("Gauss matrix solving technique is not yet supported.");
-				} else {
-					return dicSolved;
-				}
+				return dicSolved != null ? dicSolved : SolveDiagonally(constants, variables);
 			} else {
-				// FIXME : Solving non square matrices is not yet supported
-				throw new NotSupportedException("Solving non square matrices is not yet supported.");
+				return SolveDiagonally(constants, variables);
 			}
 		}
 	}

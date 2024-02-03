@@ -72,6 +72,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex83_plus = ex83_c | ex83_s;
 			ex83_plus.RunCommand(1, 1, -2);
 			Console.WriteLine(ex83_plus);
+			TrySolve("", ex83_c, ex83_s, "x", "y");
 
 			Console.WriteLine("Exemple 84 :");
 			var ex84_ac = new Matrix<short>(3, 3, 1, -1, 1, -1, 2, 2, 2, 1, 3);
@@ -232,6 +233,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			try {
 				OutputSolution(prefix, coefficients.Solve(constants, variables));
 			} catch (Exception ex) {
+				Console.Error.Write(prefix);
 				Console.Error.WriteLine(ex.Message);
 			}
 		}
