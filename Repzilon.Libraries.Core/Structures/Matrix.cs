@@ -604,11 +604,6 @@ namespace Repzilon.Libraries.Core
 			return mr;
 		}
 
-		public static short Signature(byte i, byte j)
-		{
-			return (i + j) % 2 == 0 ? (short)1 : (short)-1;
-		}
-
 		public Matrix<T> Minor(byte i, byte j)
 		{
 			if (m_bytAugmentedColumn.HasValue) {
@@ -861,6 +856,11 @@ namespace Repzilon.Libraries.Core
 		internal static bool Equals<T>(Nullable<T> a, Nullable<T> b) where T : struct
 		{
 			return (a.HasValue == b.HasValue) && (!a.HasValue || a.Value.Equals(b.Value));
+		}
+
+		public static short Signature(byte i, byte j)
+		{
+			return (i + j) % 2 == 0 ? (short)1 : (short)-1;
 		}
 	}
 }
