@@ -234,7 +234,11 @@ namespace Repzilon.Libraries.Core
 						return (float)((-1 * dblAlkaliRatio) / (1 + dblAlkaliRatio));
 					}
 				} else {
-					return Single.NaN;
+					var tenPowPka1 = Math.Pow(10, this.pKa1 - pH);
+					var q1 = (tenPowPka1 / (tenPowPka1 + 1)) - 1;
+					var tenPowPka2 = Math.Pow(10, this.pKa2 - pH);
+					var q2 = tenPowPka2 / (tenPowPka2 + 1);
+					return (float)(q1 + q2);
 				}
 			} else { // with lateral chain
 				dicat = this.DicationWhenVeryAcid;
