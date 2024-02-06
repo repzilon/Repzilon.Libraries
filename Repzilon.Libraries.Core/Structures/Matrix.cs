@@ -398,32 +398,7 @@ namespace Repzilon.Libraries.Core
 			var zero = default(T);
 			var mult = BuildMultiplier<T>();
 			// Put zeros in the lower left corner
-			for (c = 0; c < self.Columns - 1; c++) {
-				for (l = (byte)(c + 1); l < m; l++) {
-					if (!augmented[l, c].Equals(zero)) {
-						AutoRun(augmented, l, c, minusOne, mult);
-
-#if DEBUG
-						// Reduce the number of negative signs by multiplying by -1
-						var np = 0;
-						var nn = 0;
-						for (byte k = 0; k < augmented.Columns; k++) {
-							var v = augmented[l, k];
-							if (v.CompareTo(zero) > 0) {
-								np++;
-							} else if (v.CompareTo(zero) < 0) {
-								nn++;
-							}
-						}
-						if (nn > np) {
-							var coeffs = new T?[m];
-							coeffs[l] = minusOne;
-							augmented.RunCommand(l, coeffs);
-						}
-#endif
-					}
-				}
-			}
+			PutZeroesInLowerLeft(self, m, ref augmented, minusOne, zero, mult);
 			// Check if we can continue. If not return null
 			if (augmented[(byte)(m - 1), (byte)(m - 1)].Equals(zero)) {
 				return null;
@@ -451,6 +426,36 @@ namespace Repzilon.Libraries.Core
 				return matrixInDouble.Cast<T>();
 			} else {
 				return null;
+			}
+		}
+
+		private static void PutZeroesInLowerLeft(Matrix<T> self, byte m, ref Matrix<T> augmented, T minusOne, T zero, Func<T, T, T> mult)
+		{
+			for (byte c = 0; c < self.Columns - 1; c++) {
+				for (byte l = (byte)(c + 1); l < m; l++) {
+					if (!augmented[l, c].Equals(zero)) {
+						AutoRun(augmented, l, c, minusOne, mult);
+
+#if DEBUG
+						// Reduce the number of negative signs by multiplying by -1
+						var np = 0;
+						var nn = 0;
+						for (byte k = 0; k < augmented.Columns; k++) {
+							var v = augmented[l, k];
+							if (v.CompareTo(zero) > 0) {
+								np++;
+							} else if (v.CompareTo(zero) < 0) {
+								nn++;
+							}
+						}
+						if (nn > np) {
+							var coeffs = new T?[m];
+							coeffs[l] = minusOne;
+							augmented.RunCommand(l, coeffs);
+						}
+#endif
+					}
+				}
 			}
 		}
 
@@ -705,17 +710,9 @@ namespace Repzilon.Libraries.Core
 			byte c;
 			var m = this.Lines;
 			var augmented = this.Augment(constants);
-			var minusOne = (-1).ConvertTo<T>();
 			var zero = default(T);
-			var mult = BuildMultiplier<T>();
 			// Put zeros in the lower left corner
-			for (c = 0; c < this.Columns - 1; c++) {
-				for (var l = (byte)(c + 1); l < m; l++) {
-					if (!augmented[l, c].Equals(zero)) {
-						AutoRun(augmented, l, c, minusOne, mult);
-					}
-				}
-			}
+			PutZeroesInLowerLeft(this, m, ref augmented, (-1).ConvertTo<T>(), zero, BuildMultiplier<T>());
 
 			// Check if we can continue.
 			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
@@ -731,6 +728,9 @@ namespace Repzilon.Libraries.Core
 				if (zc == this.Columns) {
 					return null; // No solution exists
 				} else { // Single solution
+					if ((variables == null) || (variables.Length < 1)) {
+						throw new ArgumentNullException("variables");
+					}
 					// FIXME : Hardcoding solution computation is ugly. This should be put in a loop.
 					var dicSolved = new SortedDictionary<string, T>();
 					var z = Convert.ToDouble(augmented[(byte)(m - 1), this.Columns]) / Convert.ToDouble(augmented[(byte)(m - 1), (byte)(variables.Length - 1)]);
@@ -765,12 +765,14 @@ namespace Repzilon.Libraries.Core
 		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
 		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
 		{
+			IReadOnlyDictionary<string, T> dicSolved = null;
 			if (this.IsSquare) {
-				var dicSolved = SolveWithCramer(constants, variables);
-				return dicSolved != null ? dicSolved : SolveDiagonally(constants, variables);
-			} else {
-				return SolveDiagonally(constants, variables);
+				dicSolved = SolveWithCramer(constants, variables);
 			}
+			if (dicSolved == null) {
+				dicSolved = SolveDiagonally(constants, variables);
+			}
+			return dicSolved;
 		}
 	}
 
