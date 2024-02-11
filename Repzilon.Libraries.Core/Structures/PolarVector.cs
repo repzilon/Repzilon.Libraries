@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct PolarVector<T> : IFormattable,
@@ -178,6 +178,7 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Operators
+		// TODO : make addition and subtraction of polar vector return a polar vector
 		public static TwoDVector<T> operator +(PolarVector<T> u, PolarVector<T> v)
 		{
 			return new TwoDVector<T>(u) + new TwoDVector<T>(v);
@@ -197,10 +198,26 @@ namespace Repzilon.Libraries.Core
 		{
 			return new TwoDVector<T>(u) - v;
 		}
+
+		public static T operator *(PolarVector<T> u, PolarVector<T> v)
+		{
+			return Vector<T>.Dot(u.Norm, v.Norm, AngleBetween(u, v));
+		}
 		#endregion
 
-		// TODO : implement AreParallel static method
-		// TODO : implement ArePerpendicular static method
-		// TODO : implement AngleBetween static method
+		public static Angle<T> AngleBetween(PolarVector<T> u, PolarVector<T> v)
+		{
+			return (v.Angle.Normalize() - u.Angle.Normalize()).Normalize().Cast<T>();
+		}
+
+		public static bool AreParallel(PolarVector<T> u, PolarVector<T> v)
+		{
+			return AngleBetween(u, v).Value.Equals(default(T));
+		}
+
+		public static bool ArePerpendicular(PolarVector<T> u, PolarVector<T> v)
+		{
+			return AngleBetween(u, v) == new Angle<T>(90.ConvertTo<T>(), AngleUnit.Degree);
+		}
 	}
 }

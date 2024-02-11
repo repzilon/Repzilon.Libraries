@@ -17,7 +17,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>,
@@ -308,50 +308,22 @@ namespace Repzilon.Libraries.Core
 		// TODO : implement operators between TwoDVector and PolarVector
 		#endregion
 
-		// TODO : implement AreParallel static method
-
-		public static T Sum(T norm1, T norm2, Angle<T> between)
-		{
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
-			var addi = GenericArithmetic<T>.adder;
-			var squaredResult = addi(addi(mult(norm1, norm1), mult(norm2, norm2)),
-			 mult(mult(mult(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
-#if NETSTANDARD1_1
-			if (squaredResult is decimal) {
-#else
-			if (((IConvertible)squaredResult).GetTypeCode() == TypeCode.Decimal) {
-#endif
-				return ExtraMath.Sqrt(Convert.ToDecimal(squaredResult)).ConvertTo<T>();
-			} else {
-				return Math.Sqrt(Convert.ToDouble(squaredResult)).ConvertTo<T>();
-			}
-		}
-
-		public static T Sum(T norm1, T norm2, T angleBetween, AngleUnit unit)
-		{
-			return Sum(norm1, norm2, new Angle<T>(angleBetween, unit));
-		}
-
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			return GenericArithmetic<T>.adder(mult(u.X, v.X), mult(u.Y, v.Y));
 		}
 
-		public static T Dot(T norm1, T norm2, Angle<T> between)
-		{
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
-			return mult(mult(norm1, norm2), between.Cos().ConvertTo<T>());
-		}
-
-		public static T Dot(T norm1, T norm2, T angleBetween, AngleUnit unit)
-		{
-			return Dot(norm1, norm2, new Angle<T>(angleBetween, unit));
-		}
-
 		public static bool ArePerpendicular(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			return Dot(u, v).Equals(default(T));
+		}
+
+		public static bool AreParallel(TwoDVector<T> u, TwoDVector<T> v)
+		{
+			var bu = u.Y.ConvertTo<decimal>() / u.X.ConvertTo<decimal>();
+			var bv = v.Y.ConvertTo<decimal>() / v.X.ConvertTo<decimal>();
+			return (bu == bv); // identical slope
 		}
 
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)

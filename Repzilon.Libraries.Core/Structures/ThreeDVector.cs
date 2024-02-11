@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct ThreeDVector<T> : ICartesianVector<T>, IEquatable<ThreeDVector<T>>,
@@ -217,6 +217,20 @@ namespace Repzilon.Libraries.Core
 		public static bool ArePerpendicular(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			return Dot(u, v).Equals(default(T));
+		}
+
+		public static bool AreParallel(ThreeDVector<T> u, ThreeDVector<T> v)
+		{
+			var ux = u.X.ConvertTo<decimal>();
+			var vx = v.X.ConvertTo<decimal>();
+			decimal k;
+			if (Math.Abs(vx) < Math.Abs(ux)) {
+				k = ux / vx;
+				return k * v.Cast<decimal>() == u.Cast<decimal>();
+			} else {
+				k = vx / ux;
+				return k * u.Cast<decimal>() == v.Cast<decimal>();
+			}
 		}
 
 		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)

@@ -13,6 +13,7 @@
 //
 using System;
 using Repzilon.Libraries.Core;
+using Repzilon.Libraries.Core.Vectors;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -20,10 +21,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
-			var exa55b_i2 = TwoDVector<short>.Sum(3, 4, 45, AngleUnit.Degree);
-			var exa55b_f4 = TwoDVector<float>.Sum(3, 4, 45, AngleUnit.Degree);
-			var exa55b_f8 = TwoDVector<double>.Sum(3, 4, 45, AngleUnit.Degree);
-			var exa55b_de = TwoDVector<decimal>.Sum(3, 4, 45, AngleUnit.Degree);
+			var exa55b_i2 = Vector<short>.Sum(3, 4, 45, AngleUnit.Degree);
+			var exa55b_f4 = Vector<float>.Sum(3, 4, 45, AngleUnit.Degree);
+			var exa55b_f8 = Vector<double>.Sum(3, 4, 45, AngleUnit.Degree);
+			var exa55b_de = Vector<decimal>.Sum(3, 4, 45, AngleUnit.Degree);
 			Console.WriteLine("Exemple 55b : Int16={0} Single={1} Double={2} Decimal={3}", exa55b_i2, exa55b_f4, exa55b_f8, exa55b_de);
 			var exa55c_f4 = new Angle<float>((float)Math.Asin(4 * new Angle<float>(135, AngleUnit.Degree).Sin() / exa55b_f4), AngleUnit.Radian);
 			Console.WriteLine("Exemple 55c : {0:g} or {1:g}", exa55c_f4, exa55c_f4.ConvertTo(AngleUnit.Degree));
@@ -52,12 +53,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa63_u = new PolarVector<float>(2, 45, AngleUnit.Degree);
 			var exa63_v = new PolarVector<float>(4, -30, AngleUnit.Degree);
 			var exa63_a = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
-			var exa63_ng = TwoDVector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
+			var exa63_ng = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
 			var exa63_s = exa63_u + exa63_v;
 			Console.WriteLine("Exemple 63  : ||R||={0} u+v={1} ||u+v||={2}", exa63_ng, exa63_s, exa63_s.Norm());
 
 			var exa64_u = Vector.New(1.0f, 3.0f, 4.0f);
 			Console.WriteLine("Exemple 64  : ||u||={0:f3}", exa64_u.Norm());
+
+			var exa65_u = Vector.New(2, 4, 1);
+			var exa65_v = Vector.New(-1, -2, 5);
+			Console.WriteLine("Exemple 65a : u//v is {0}", ThreeDVector<int>.AreParallel(exa65_u, exa65_v));
+			Console.WriteLine("Exemple 65b : 3u-v={0}", (3 * exa65_u) - exa65_v);
 
 			var exa66_oa = Vector.New(1, 2, 3);
 			var exa66_ob = Vector.New(2, -3, 2);
@@ -83,8 +89,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
 			ShowcaseExample69(exa69_ref, Example69WithExp);
-
 			Console.Write(Environment.NewLine);
+
+			var exa70_u = Vector.New(2, 30, AngleUnit.Degree);
+			var exa70_v = Vector.New(4, 0, AngleUnit.Degree);
+			Console.WriteLine("Exemple 70  : u.v={0}", exa70_u * exa70_v);
+
 			var exa71_u = Vector.New(4, -2, 2);
 			var exa71_v = Vector.New(1, 3, 1);
 			Console.WriteLine("Exemple 71  : u={0} et v={1} perpendiculaires : {2}", exa71_u, exa71_v,
@@ -95,14 +105,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 72a : u={0} et v={1} perpendiculaires : {2}", exa72_u, exa72_v,
 			 ThreeDVector<int>.ArePerpendicular(exa72_u, exa72_v));
 			var exa72_theta = ThreeDVector<int>.AngleBetween(exa72_u, exa72_v).ConvertTo(AngleUnit.Degree);
-			Console.WriteLine("Exemple 72b : theta={0:g3}", exa72_theta);
+			Console.WriteLine("Exemple 72b : θ={0:g3}", exa72_theta);
 
-			var exa74_w = TwoDVector<float>.Dot(5, 12, 20, AngleUnit.Degree);
+			var exa74_w = Vector<float>.Dot(5, 12, 20, AngleUnit.Degree);
 			Console.WriteLine("Exemple 74  : W={0:f2}", exa74_w);
 
 			var exa78_u = Vector.New(-2, 3, 1);
 			var exa78_v = Vector.New(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
+			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());
 
 			Program.OutputSizeOf<Exp>();
 		}

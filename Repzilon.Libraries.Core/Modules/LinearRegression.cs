@@ -13,6 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Linq;
 
 namespace Repzilon.Libraries.Core
 {
@@ -115,6 +116,40 @@ namespace Repzilon.Libraries.Core
 			var r = b * dcmStdDevX / dblStdDevY;
 			return new DecimalLinearRegressionResult(n, RoundOff.Error(a), b, r,
 			 dcmMinX, dcmMinY, dcmMaxX, dcmMaxY, dcmAverageX, dcmAverageY, dcmStdDevX, dblStdDevY);
+		}
+	}
+
+	public static class RegressionModel
+	{
+		public static RegressionModel<double> Compute(params PointD[] points)
+		{
+			return Compute((IEnumerable<PointD>)points);
+		}
+
+		public static RegressionModel<double> Compute(IEnumerable<PointD> points)
+		{
+			if (points == null) {
+				throw new ArgumentNullException("points");
+			}
+			var lstSemiLogX = new List<PointD>();
+			var lstSemiLogY = new List<PointD>();
+			var lstLogLog = new List<PointD>();
+			var i = 0;
+			foreach (var pt in points) {
+				var log10x = Math.Log10(pt.X);
+				var log10y = Math.Log10(pt.Y);
+				lstSemiLogX.Add(new PointD(log10x, pt.Y));
+				lstSemiLogY.Add(new PointD(pt.X, log10y));
+				lstLogLog.Add(new PointD(log10x, log10y));
+				i++;
+			}
+			var rmarAll = new RegressionModel<double>[] {
+				LinearRegression.Compute(points).ChangeModel(MathematicalModel.Affine),
+				LinearRegression.Compute(lstSemiLogX).ChangeModel(MathematicalModel.SemiLogX),
+				LinearRegression.Compute(lstSemiLogY).ChangeModel(MathematicalModel.SemiLogY),
+				LinearRegression.Compute(lstLogLog).ChangeModel(MathematicalModel.LogLog)
+			};
+			return rmarAll.OrderBy(x => x.R).Last();
 		}
 	}
 }

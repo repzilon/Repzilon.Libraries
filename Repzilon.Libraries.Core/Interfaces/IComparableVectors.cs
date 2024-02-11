@@ -13,7 +13,7 @@
 //
 using System;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	internal interface IComparableTwoDVector
 	{
@@ -36,4 +36,3 @@ namespace Repzilon.Libraries.Core
 		IAngle Angle { get; }
 	}
 }
-

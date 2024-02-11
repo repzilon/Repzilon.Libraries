@@ -13,7 +13,7 @@
 //
 using System;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	public enum AngleUnit : byte
 	{
@@ -33,5 +33,7 @@ namespace Repzilon.Libraries.Core
 		IAngle Normalize();
 		double Sin();
 		double Cos();
+
+		Angle<TOut> Cast<TOut>() where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>;
 	}
 }

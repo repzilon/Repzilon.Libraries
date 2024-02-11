@@ -308,9 +308,8 @@ namespace Repzilon.Libraries.Core
 				return new RegressionModel<double>(Math.Pow(10, a), b, r, newModel);
 			} else if (newModel == MathematicalModel.Exponential) {
 				return new RegressionModel<double>(Math.Pow(10, a), Math.Pow(10, b), r, newModel);
-			} else if (newModel == MathematicalModel.Logarithmic) {
-				// FIXME : Changing to a logarithmic model is not supported yet
-				throw new NotSupportedException("Changing to a logarithmic model is not supported yet.");
+			} else if (newModel == MathematicalModel.Logarithmic) { // this is wierd
+				return new RegressionModel<double>(b, a, r, newModel);
 			} else {
 				throw new ArgumentOutOfRangeException("newModel");
 			}

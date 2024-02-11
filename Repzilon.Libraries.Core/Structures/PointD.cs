@@ -138,5 +138,20 @@ namespace Repzilon.Libraries.Core
 			return stbCoord.ToString();
 		}
 		#endregion
+
+		public static PointD SemiLogX(double x, double y)
+		{
+			return new PointD(Math.Log10(x), y);
+		}
+
+		public static PointD SemiLogY(double x, double y)
+		{
+			return new PointD(x, Math.Log10(y));
+		}
+
+		public static PointD LogLog(double x, double y)
+		{
+			return new PointD(Math.Log10(x), Math.Log10(y));
+		}
 	}
 }

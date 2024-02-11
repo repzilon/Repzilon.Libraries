@@ -17,7 +17,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct Angle<T> : IAngle, IEquatable<Angle<T>>, IComparable<Angle<T>>

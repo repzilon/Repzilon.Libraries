@@ -72,6 +72,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex83_plus = ex83_c | ex83_s;
 			ex83_plus.RunCommand(1, 1, -2);
 			Console.WriteLine(ex83_plus);
+			TrySolve("", ex83_c, ex83_s, "x", "y");
 
 			Console.WriteLine("Exemple 84 :");
 			var ex84_ac = new Matrix<short>(3, 3, 1, -1, 1, -1, 2, 2, 2, 1, 3);
@@ -232,6 +233,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			try {
 				OutputSolution(prefix, coefficients.Solve(constants, variables));
 			} catch (Exception ex) {
+				Console.Error.Write(prefix);
 				Console.Error.WriteLine(ex.Message);
 			}
 		}
@@ -255,7 +257,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var coords = matrix.Find(valueToFind);
 			if (coords != null) {
 				Console.WriteLine("a({1};{2})={0} sig={3} M({1};{2})=", valueToFind, coords[0] + 1, coords[1] + 1,
-				 Matrix<short>.Signature(coords[0], coords[1]));
+				 MatrixExtensionMethods.Signature(coords[0], coords[1]));
 				Console.WriteLine(matrix.Minor(coords[0], coords[1]));
 			}
 		}

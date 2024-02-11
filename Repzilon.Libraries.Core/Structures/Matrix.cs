@@ -13,6 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Collections.ObjectModel;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -397,32 +398,7 @@ namespace Repzilon.Libraries.Core
 			var zero = default(T);
 			var mult = BuildMultiplier<T>();
 			// Put zeros in the lower left corner
-			for (c = 0; c < self.Columns - 1; c++) {
-				for (l = (byte)(c + 1); l < m; l++) {
-					if (!augmented[l, c].Equals(zero)) {
-						AutoRun(augmented, l, c, minusOne, mult);
-
-#if DEBUG
-						// Reduce the number of negative signs by multiplying by -1
-						var np = 0;
-						var nn = 0;
-						for (byte k = 0; k < augmented.Columns; k++) {
-							var v = augmented[l, k];
-							if (v.CompareTo(zero) > 0) {
-								np++;
-							} else if (v.CompareTo(zero) < 0) {
-								nn++;
-							}
-						}
-						if (nn > np) {
-							var coeffs = new T?[m];
-							coeffs[l] = minusOne;
-							augmented.RunCommand(l, coeffs);
-						}
-#endif
-					}
-				}
-			}
+			PutZeroesInLowerLeft(self, m, ref augmented, minusOne, zero, mult);
 			// Check if we can continue. If not return null
 			if (augmented[(byte)(m - 1), (byte)(m - 1)].Equals(zero)) {
 				return null;
@@ -450,6 +426,36 @@ namespace Repzilon.Libraries.Core
 				return matrixInDouble.Cast<T>();
 			} else {
 				return null;
+			}
+		}
+
+		private static void PutZeroesInLowerLeft(Matrix<T> self, byte m, ref Matrix<T> augmented, T minusOne, T zero, Func<T, T, T> mult)
+		{
+			for (byte c = 0; c < self.Columns - 1; c++) {
+				for (byte l = (byte)(c + 1); l < m; l++) {
+					if (!augmented[l, c].Equals(zero)) {
+						AutoRun(augmented, l, c, minusOne, mult);
+
+#if DEBUG
+						// Reduce the number of negative signs by multiplying by -1
+						var np = 0;
+						var nn = 0;
+						for (byte k = 0; k < augmented.Columns; k++) {
+							var v = augmented[l, k];
+							if (v.CompareTo(zero) > 0) {
+								np++;
+							} else if (v.CompareTo(zero) < 0) {
+								nn++;
+							}
+						}
+						if (nn > np) {
+							var coeffs = new T?[m];
+							coeffs[l] = minusOne;
+							augmented.RunCommand(l, coeffs);
+						}
+#endif
+					}
+				}
 			}
 		}
 
@@ -603,11 +609,6 @@ namespace Repzilon.Libraries.Core
 			return mr;
 		}
 
-		public static short Signature(byte i, byte j)
-		{
-			return (i + j) % 2 == 0 ? (short)1 : (short)-1;
-		}
-
 		public Matrix<T> Minor(byte i, byte j)
 		{
 			if (m_bytAugmentedColumn.HasValue) {
@@ -686,50 +687,92 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		private IReadOnlyDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
+		{
+			var inverse = ~this;
+			if (inverse.HasValue) {
+				if ((variables == null) || (variables.Length < 1)) {
+					throw new ArgumentNullException("variables");
+				}
+				var nowKnowns = inverse.Value * constants;
+				var dicHere = new Dictionary<string, T>();
+				for (byte a = 0; a < variables.Length; a++) {
+					dicHere.Add(variables[a], nowKnowns[a, 0]);
+				}
+				return dicHere;
+			} else {
+				return null;
+			}
+		}
+
+		private IReadOnlyDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
+		{
+			byte c;
+			var m = this.Lines;
+			var augmented = this.Augment(constants);
+			var zero = default(T);
+			// Put zeros in the lower left corner
+			PutZeroesInLowerLeft(this, m, ref augmented, (-1).ConvertTo<T>(), zero, BuildMultiplier<T>());
+
+			// Check if we can continue.
+			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
+				// TODO : Implement linked solutioons
+				throw new NotSupportedException("An infinity of linked solutions exists.");
+			} else {
+				byte zc = 0;
+				for (c = 0; c < this.Columns; c++) {
+					if (augmented[(byte)(m - 1), c].Equals(zero)) {
+						zc++;
+					}
+				}
+				if (zc == this.Columns) {
+					return null; // No solution exists
+				} else { // Single solution
+					if ((variables == null) || (variables.Length < 1)) {
+						throw new ArgumentNullException("variables");
+					}
+					// FIXME : Hardcoding solution computation is ugly. This should be put in a loop.
+					var dicSolved = new SortedDictionary<string, T>();
+					var z = Convert.ToDouble(augmented[(byte)(m - 1), this.Columns]) / Convert.ToDouble(augmented[(byte)(m - 1), (byte)(variables.Length - 1)]);
+					dicSolved.Add(variables[variables.Length - 1], z.ConvertTo<T>());
+					var ve = Convert.ToDouble(augmented[(byte)(m - 2), (byte)(this.Columns - 1)]);
+					var be = Convert.ToDouble(augmented[(byte)(m - 2), (byte)(this.Columns - 2)]);
+					var y = (Convert.ToDouble(augmented[(byte)(m - 2), this.Columns]) - (ve * z)) / be;
+					dicSolved.Add(variables[variables.Length - 2], y.ConvertTo<T>());
+					if (variables.Length >= 3) {
+						ve = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 1)]);
+						be = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 2)]);
+						var a = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 3)]);
+						var x = (Convert.ToDouble(augmented[(byte)(m - 3), this.Columns]) - (be * y) - (ve * z)) / a;
+						dicSolved.Add(variables[variables.Length - 3], x.ConvertTo<T>());
+					}
+					return new ReadOnlyDictionary<string, T>(dicSolved);
+				}
+			}
+		}
+
 		/// <summary>
 		/// Tries to solves a linear equation system, using this matrix containing the coefficients of the variable
-		/// part of the equation system. For now, only square matrices are supported and may only find a solution for
-		/// single unique solution equation systems.
+		/// part of the equation system. For now, it can only find a solution for single unique solution equation systems.
 		/// </summary>
 		/// <param name="constants">A Nx1 matrix having the constant part of the equation system</param>
 		/// <param name="variables">Variables names, in order</param>
 		/// <returns>
 		/// When a unique solution exists, a set of key-value pairs with the variable name and the solved value for each.
-		/// Otherwise, throws an NotSupportedException.
+		/// When there is no possible solution, returns null. Otherwise, throws an NotSupportedException.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
-		/// <exception cref="NotSupportedException">
-		/// When this matrix is not square or for square matrices, when neither Cramer nor matrix inversion techniques
-		/// yields a single solution. Support will improve in the future.
-		/// </exception>
+		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
 		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
 		{
+			IReadOnlyDictionary<string, T> dicSolved = null;
 			if (this.IsSquare) {
-				var dicSolved = SolveWithCramer(constants, variables);
-				if (dicSolved == null) {
-					// Try to solve by matrix inversion
-					var inverse = ~this;
-					if (inverse.HasValue) {
-						if ((variables == null) || (variables.Length < 1)) {
-							throw new ArgumentNullException("variables");
-						}
-						var nowKnowns = inverse.Value * constants;
-						var dicHere = new Dictionary<string, T>();
-						for (byte a = 0; a < variables.Length; a++) {
-							dicHere.Add(variables[a], nowKnowns[a, 0]);
-						}
-						return dicHere;
-					} else {
-						// FIXME : Gauss matrix solving technique is not yet implemented
-						throw new NotSupportedException("Gauss matrix solving technique is not yet supported.");
-					}
-				} else {
-					return dicSolved;
-				}
-			} else {
-				// FIXME : Solving non square matrices is not yet supported
-				throw new NotSupportedException("Solving non square matrices is not yet supported.");
+				dicSolved = SolveWithCramer(constants, variables);
 			}
+			if (dicSolved == null) {
+				dicSolved = SolveDiagonally(constants, variables);
+			}
+			return dicSolved;
 		}
 	}
 
@@ -815,6 +858,11 @@ namespace Repzilon.Libraries.Core
 		internal static bool Equals<T>(Nullable<T> a, Nullable<T> b) where T : struct
 		{
 			return (a.HasValue == b.HasValue) && (!a.HasValue || a.Value.Equals(b.Value));
+		}
+
+		public static short Signature(byte i, byte j)
+		{
+			return (i + j) % 2 == 0 ? (short)1 : (short)-1;
 		}
 	}
 }

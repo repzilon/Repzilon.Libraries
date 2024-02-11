@@ -13,7 +13,7 @@
 //
 using System;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Vectors
 {
 	public interface ICartesianVector<T> : IPoint<T>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
