@@ -300,12 +300,14 @@ namespace Repzilon.Libraries.Core
 
 		internal static RegressionModel<double> ChangeModel(double a, double b, double r, MathematicalModel newModel)
 		{
-			if ((newModel == MathematicalModel.Affine) || (newModel == MathematicalModel.Logarithmic)) {
+			if (newModel == MathematicalModel.Affine) {
 				return new RegressionModel<double>(a, b, r, newModel);
 			} else if (newModel == MathematicalModel.Power) {
 				return new RegressionModel<double>(Math.Pow(10, a), b, r, newModel);
 			} else if (newModel == MathematicalModel.Exponential) {
 				return new RegressionModel<double>(Math.Pow(10, a), Math.Pow(10, b), r, newModel);
+			} else if (newModel == MathematicalModel.Logarithmic) { // this is wierd
+				return new RegressionModel<double>(b, a, r, newModel);
 			} else {
 				throw new ArgumentOutOfRangeException("newModel");
 			}
