@@ -70,12 +70,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Math I Example 38");
 			Console.WriteLine("-----------------");
 			var lrrM1Ex38 = LinearRegression.Compute(
-				new PointD(Math.Log10(100.0), Math.Log10(0.240)),
-				new PointD(Math.Log10(150.0), Math.Log10(0.295)),
-				new PointD(Math.Log10(250.0), Math.Log10(0.380)),
-				new PointD(Math.Log10(300.0), Math.Log10(0.415)),
-				new PointD(Math.Log10(400.0), Math.Log10(0.480)),
-				new PointD(Math.Log10(550.0), Math.Log10(0.560))
+				PointD.LogLog(100.0, 0.240),
+				PointD.LogLog(150.0, 0.295),
+				PointD.LogLog(250.0, 0.380),
+				PointD.LogLog(300.0, 0.415),
+				PointD.LogLog(400.0, 0.480),
+				PointD.LogLog(550.0, 0.560)
 			);
 			var rmdMEx38 = lrrM1Ex38.ChangeModel(MathematicalModel.LogLog);
 			OutputRegressionModel(rmdMEx38);
@@ -84,16 +84,38 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Math I Exercise");
 			Console.WriteLine("---------------");
 			var lrrM1Exer = LinearRegression.Compute(
-				new PointD(8.0, Math.Log10(9858)),
-				new PointD(14.0, Math.Log10(9416)),
-				new PointD(18.0, Math.Log10(7234)),
-				new PointD(24.0, Math.Log10(5426)),
-				new PointD(37.5, Math.Log10(2789)),
-				new PointD(41.0, Math.Log10(2251)),
-				new PointD(71.0, Math.Log10(564))
+				PointD.SemiLogY(8.0, 9858),
+				PointD.SemiLogY(14.0, 9416),
+				PointD.SemiLogY(18.0, 7234),
+				PointD.SemiLogY(24.0, 5426),
+				PointD.SemiLogY(37.5, 2789),
+				PointD.SemiLogY(41.0, 2251),
+				PointD.SemiLogY(71.0, 564)
 			);
 			var rmdM1Exer = lrrM1Exer.ChangeModel(MathematicalModel.Exponential);
 			OutputRegressionModel(rmdM1Exer);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Biochemistry II ch. 1 pp. 15-16");
+			Console.WriteLine("-------------------------------");
+			var lrrBC2Ch1p15 = LinearRegression.Compute(
+				PointD.LogLog(12.5, 0.037),
+				PointD.LogLog(20, 0.050),
+				PointD.LogLog(25, 0.055),
+				PointD.LogLog(50, 0.073),
+				PointD.LogLog(100, 0.091)
+			);
+			var rmdBC2Ch1p15 = lrrBC2Ch1p15.ChangeModel(MathematicalModel.Power);
+			OutputRegressionModel(rmdBC2Ch1p15);
+
+			var rmdBC2Ch1p16 = RegressionModel.Compute(
+				new PointD(12.5, 0.037),
+				new PointD(20, 0.050),
+				new PointD(25, 0.055),
+				new PointD(50, 0.073),
+				new PointD(100, 0.091)
+			);
+			OutputRegressionModel(rmdBC2Ch1p16);
 		}
 
 		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
