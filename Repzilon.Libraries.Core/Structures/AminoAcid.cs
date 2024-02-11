@@ -180,29 +180,6 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-		public static AminoAcid Create(char letter, string code, string name)
-		{
-			if (!Char.IsLetter(letter)) {
-				throw new ArgumentOutOfRangeException("letter");
-			}
-			if (String.IsNullOrWhiteSpace(code)) {
-				throw new ArgumentNullException("code");
-			}
-			if (String.IsNullOrWhiteSpace(name)) {
-				throw new ArgumentNullException("name");
-			}
-			if (code.Trim().Length != 3) {
-				throw new ArgumentException("An amino acid symbol is made of three letters.", "code");
-			}
-
-			return new AminoAcid
-			{
-				Letter = letter,
-				Symbol = code,
-				Name = name.Trim()
-			};
-		}
-
 		public static readonly IReadOnlyList<AminoAcid> AlphaList = MakeAlphaList();
 
 		private static IReadOnlyList<AminoAcid> MakeAlphaList()
