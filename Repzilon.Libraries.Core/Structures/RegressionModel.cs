@@ -130,6 +130,9 @@ namespace Repzilon.Libraries.Core
 		/// The formula as a plain text string using the ASCII character set for the operators.
 		/// * will be used for multiplication, ^ for exponentiation.
 		/// </returns>
+		/// <remarks>
+		/// To imitate what Microsoft Excel outputs for the equation of a trend line on a graph, use "eg4" for format.
+		/// </remarks>
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -161,7 +164,8 @@ namespace Repzilon.Libraries.Core
 				// To derivate, b^x must be converted to base e
 				stbFormula.Append(strA);
 				if (blnDerivable) {
-					stbFormula.Append(" * e^(ln(").Append(strB).Append("^x))");
+					strB = Math.Log(Convert.ToDouble(B)).ToString(format, formatProvider);
+					stbFormula.Append(" * e^").Append(strB).Append("x");
 				} else {
 					stbFormula.Append(" * ").Append(strB).Append("^x");
 				}
