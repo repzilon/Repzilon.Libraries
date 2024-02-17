@@ -719,13 +719,13 @@ namespace Repzilon.Libraries.Core
 				// TODO : Implement linked solutions
 				throw new NotSupportedException("An infinity of linked solutions exists.");
 			} else {
-				byte zc = 0;
+				int l = 0;
 				for (c = 0; c < this.Columns; c++) {
-					if (augmented[(byte)(m - 1), c].Equals(zero)) {
-						zc++;
+					if (augmented[(byte)(m - 1), (byte)c].Equals(zero)) {
+						l++;
 					}
 				}
-				if (zc == this.Columns) {
+				if (l == this.Columns) {
 					return null; // No solution exists
 				} else { // Single solution
 					if ((variables == null) || (variables.Length < 1)) {
@@ -733,7 +733,7 @@ namespace Repzilon.Libraries.Core
 					}
 					var dicSolved = new SortedDictionary<string, T>();
 					// Compute solution in a loop, starting with the last algebraic variable.
-					for (var l = 1; l <= m; l++) {
+					for (l = 1; l <= m; l++) {
 						double newvar = Convert.ToDouble(augmented[(byte)(m - l), this.Columns]);
 						for (c = 1; c < l; c++) {
 							/* Before code variable inlining
