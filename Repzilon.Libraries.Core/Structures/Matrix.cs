@@ -732,16 +732,24 @@ namespace Repzilon.Libraries.Core
 						throw new ArgumentNullException("variables");
 					}
 					var dicSolved = new SortedDictionary<string, T>();
-					// Compute solution in a loop, starting with the last algebric variable.
+					// Compute solution in a loop, starting with the last algebraic variable.
 					for (var l = 1; l <= m; l++) {
 						double newvar = Convert.ToDouble(augmented[(byte)(m - l), this.Columns]);
 						for (c = 1; c < l; c++) {
+							/* Before code variable inlining
 							var coeff = augmented[(byte)(m - l), (byte)(this.Columns - c)];
 							var valueOfPreviousVar = dicSolved[variables[variables.Length - c]];
 							newvar -= Convert.ToDouble(coeff) * Convert.ToDouble(valueOfPreviousVar);
+							// */
+							newvar -= Convert.ToDouble(augmented[(byte)(m - l), (byte)(this.Columns - c)]) *
+							 Convert.ToDouble(dicSolved[variables[variables.Length - c]]);
 						}
+						/* Before code variable inlining
 						double isolated = newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]);
 						dicSolved.Add(variables[variables.Length - l], isolated.ConvertTo<T>());
+						// */
+						dicSolved.Add(variables[variables.Length - l],
+						 (newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)])).ConvertTo<T>());
 					}
 					return new ReadOnlyDictionary<string, T>(dicSolved);
 				}
