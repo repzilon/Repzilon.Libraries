@@ -716,7 +716,7 @@ namespace Repzilon.Libraries.Core
 
 			// Check if we can continue.
 			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
-				// TODO : Implement linked solutioons
+				// TODO : Implement linked solutions
 				throw new NotSupportedException("An infinity of linked solutions exists.");
 			} else {
 				byte zc = 0;
@@ -731,20 +731,17 @@ namespace Repzilon.Libraries.Core
 					if ((variables == null) || (variables.Length < 1)) {
 						throw new ArgumentNullException("variables");
 					}
-					// FIXME : Hardcoding solution computation is ugly. This should be put in a loop.
 					var dicSolved = new SortedDictionary<string, T>();
-					var z = Convert.ToDouble(augmented[(byte)(m - 1), this.Columns]) / Convert.ToDouble(augmented[(byte)(m - 1), (byte)(variables.Length - 1)]);
-					dicSolved.Add(variables[variables.Length - 1], z.ConvertTo<T>());
-					var ve = Convert.ToDouble(augmented[(byte)(m - 2), (byte)(this.Columns - 1)]);
-					var be = Convert.ToDouble(augmented[(byte)(m - 2), (byte)(this.Columns - 2)]);
-					var y = (Convert.ToDouble(augmented[(byte)(m - 2), this.Columns]) - (ve * z)) / be;
-					dicSolved.Add(variables[variables.Length - 2], y.ConvertTo<T>());
-					if (variables.Length >= 3) {
-						ve = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 1)]);
-						be = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 2)]);
-						var a = Convert.ToDouble(augmented[(byte)(m - 3), (byte)(this.Columns - 3)]);
-						var x = (Convert.ToDouble(augmented[(byte)(m - 3), this.Columns]) - (be * y) - (ve * z)) / a;
-						dicSolved.Add(variables[variables.Length - 3], x.ConvertTo<T>());
+					// Compute solution in a loop, starting with the last algebric variable.
+					for (var l = 1; l <= m; l++) {
+						double newvar = Convert.ToDouble(augmented[(byte)(m - l), this.Columns]);
+						for (c = 1; c < l; c++) {
+							var coeff = augmented[(byte)(m - l), (byte)(this.Columns - c)];
+							var valueOfPreviousVar = dicSolved[variables[variables.Length - c]];
+							newvar -= Convert.ToDouble(coeff) * Convert.ToDouble(valueOfPreviousVar);
+						}
+						double isolated = newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]);
+						dicSolved.Add(variables[variables.Length - l], isolated.ConvertTo<T>());
 					}
 					return new ReadOnlyDictionary<string, T>(dicSolved);
 				}
