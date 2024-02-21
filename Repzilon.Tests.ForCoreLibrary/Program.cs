@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -30,6 +30,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Chemistry", MolarMassTest.Run);
 			dicTests.Add("Dilution", DilutionTest.Run);
 			dicTests.Add("Peptides", PeptideGuess.Run);
+			dicTests.Add("Calculus", CalculusTest.Run);
 
 			DisplayMenu(dicTests);
 			var cki = Console.ReadKey();

@@ -111,5 +111,20 @@ namespace Repzilon.Libraries.Core
 			}
 			return (e > 0) ? (double)r : 1.0 / r;
 		}
+
+		public static T Summation<T>(int m, int n, Func<int, T> forEach)
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+		{
+			if (forEach == null) {
+				throw new ArgumentNullException("forEach");
+			}
+
+			T sum = default(T);
+			for (var k = m; k <= n; k++) {
+				T value = forEach(k);
+				sum = GenericArithmetic<T>.adder(sum, value);
+			}
+			return sum;
+		}
 	}
 }
