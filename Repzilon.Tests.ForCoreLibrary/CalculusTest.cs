@@ -21,24 +21,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 			Console.WriteLine("Calcul intégral travail 1 #2");
-			DateTime dtmStart;
-			TimeSpan tsDuration;
-			IConvertible result;
+			SummationTest(10000, 729, "Math.Pow", CalculusWork1No2FP);
+			SummationTest(10000, 729, "Pow(i32, u16)", CalculusWork1No2Int64);
+			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
+		}
 
-			dtmStart = DateTime.UtcNow;
-			for (int i = 0; i < 10000; i++) {
-				result = ExtraMath.Summation(1, 729, CalculusWork1No2FP);
+		private static void SummationTest<T>(int benchLoops, int summationUpper, string legend, Func<int,T> forEach)
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+		{
+			var dtmStart = DateTime.UtcNow;
+			T result;
+			for (int i = 0; i < benchLoops; i++) {
+				result = ExtraMath.Summation(1, summationUpper, forEach);
 			}
-			tsDuration = DateTime.UtcNow - dtmStart;
-			result = ExtraMath.Summation(1, 729, CalculusWork1No2FP);
-			Console.WriteLine("={0}\tMath.Pow\t{1,6:n0} Hz", result, 10000 / tsDuration.TotalSeconds);
-
-			dtmStart = DateTime.UtcNow;
-			for (int i = 0; i < 10000; i++) {
-				result = ExtraMath.Summation(1, 729, CalculusWork1No2Int64);
-			}
-			tsDuration = DateTime.UtcNow - dtmStart;
-			Console.WriteLine("={0}\tExtraMath.Pow\t{1,6:n0} Hz", result, 10000 / tsDuration.TotalSeconds);
+			var tsDuration = DateTime.UtcNow - dtmStart;
+			result = ExtraMath.Summation(1, summationUpper, forEach);
+			Console.WriteLine("={0}\t{2,-16} {1,7:n0} Hz", result, benchLoops / tsDuration.TotalSeconds, legend);
 		}
 
 		private static double CalculusWork1No2FP(int k)
@@ -49,6 +47,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static long CalculusWork1No2Int64(int k)
 		{
 			return 3 * k * Pow(-1, checked((ushort)(k - 1)));
+		}
+
+		private static long CalculusWork1No2IIf(int k)
+		{
+			return 3 * k * (((k - 1) % 2 == 0) ? 1 : -1);
 		}
 
 		[Obsolete("15 times slower than Math.Pow.")]
