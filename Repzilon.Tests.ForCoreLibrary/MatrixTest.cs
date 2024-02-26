@@ -224,6 +224,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var t2_8rf = t2_8ref.Right() * t2_8D.Cast<float>();
 			t2_8rf.RoundErrors();
 			Console.WriteLine(t2_8rf);
+
+			Console.WriteLine("Physicochimie labo 10 :");
+			var fql10_coef = new Matrix<short>(3, 4, 7, 0, -1, 0, 6, 0, 0, -2, 2, 2, -2, -1);
+			var fql10_k = new Matrix<short>(3, 1, 0, 0, 0);
+			var fql10_a = fql10_coef | fql10_k;
+			fql10_a.RunCommand(1, null, 1, -3);
+			fql10_a.RunCommand(2, 2, null, -7);
+			fql10_a.RunCommand(2, null, -7, 3);
+			Console.WriteLine(fql10_coef);
+			Console.WriteLine(fql10_a);
 		}
 
 		private static void TrySolve<T>(string prefix, Matrix<T> coefficients, Matrix<T> constants,

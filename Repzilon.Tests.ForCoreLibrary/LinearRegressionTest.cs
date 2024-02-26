@@ -116,6 +116,69 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(100, 0.091)
 			);
 			OutputRegressionModel(rmdBC2Ch1p16);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Biochemistry II ch. 1 exercise 3");
+			Console.WriteLine("--------------------------------");
+			var lrrBC2Ch1Ex3 = LinearRegression.Compute(
+				new PointD(1e6, SignificantDigits.Round(1.0 / 1.16, 3, RoundingMode.ToEven)),
+				new PointD(1e5, SignificantDigits.Round(1.0 / 8.46, 3, RoundingMode.ToEven)),
+				new PointD(1e4, SignificantDigits.Round(1.0 / 24.94, 4, RoundingMode.ToEven)),
+				new PointD(1e3, SignificantDigits.Round(1.0 / 27.94, 4, RoundingMode.ToEven)),
+				new PointD(1e2, SignificantDigits.Round(1.0 / 29.95, 4, RoundingMode.ToEven))
+			);
+			OutputRegressionModel(lrrBC2Ch1Ex3.ChangeModel(MathematicalModel.Affine));
+			var vmax0 = 1.0 / lrrBC2Ch1Ex3.Intercept;
+			var Km0 = lrrBC2Ch1Ex3.Slope * vmax0;
+			Console.WriteLine("Vmax = {0:g4} nmol/min\tKm = {1:g4} mol/L", vmax0 / 60, Km0);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Biochemistry II ch. 1 exercise 4");
+			Console.WriteLine("--------------------------------");
+			var lrrBC2Ch1Ex4_0 = LinearRegression.Compute(
+				new PointD(100, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
+				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 20, 3, RoundingMode.ToEven)),
+				new PointD(50, SignificantDigits.Round(1.0 / 25, 3, RoundingMode.ToEven)),
+				new PointD(40, SignificantDigits.Round(1.0 / 27, 3, RoundingMode.ToEven)),
+				new PointD(20, SignificantDigits.Round(1.0 / 35.7, 3, RoundingMode.ToEven)),
+				new PointD(10, SignificantDigits.Round(1.0 / 41.7, 3, RoundingMode.ToEven))
+			);
+			var lrrBC2Ch1Ex4_1 = LinearRegression.Compute(
+				new PointD(100, SignificantDigits.Round(1.0 / 10, 3, RoundingMode.ToEven)),
+				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 12.5, 3, RoundingMode.ToEven)),
+				new PointD(50, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
+				new PointD(40, SignificantDigits.Round(1.0 / 19.2, 3, RoundingMode.ToEven)),
+				new PointD(20, SignificantDigits.Round(1.0 / 27.8, 3, RoundingMode.ToEven)),
+				new PointD(10, SignificantDigits.Round(1.0 / 35.7, 3, RoundingMode.ToEven))
+			);
+			OutputRegressionModel(lrrBC2Ch1Ex4_0.ChangeModel(MathematicalModel.Affine));
+			OutputRegressionModel(lrrBC2Ch1Ex4_1.ChangeModel(MathematicalModel.Affine));
+			vmax0 = 1.0 / lrrBC2Ch1Ex4_0.Intercept;
+			Km0 = lrrBC2Ch1Ex4_0.Slope * vmax0;
+			Console.WriteLine("Vmax  = {0,-4:g3} µmol/min*L  Km  = {1:g3} mol/L", vmax0, Km0);
+			var vmax1 = 1.0 / lrrBC2Ch1Ex4_1.Intercept;
+			var Km1 = lrrBC2Ch1Ex4_1.Slope * vmax1;
+			Console.WriteLine("Vmax' = {0,-4:g3} µmol/min*L  Km' = {1:g3} mol/L", vmax1, Km1);
+			var ki = 0.02 / ((Km1 / Km0) - 1);
+			Console.WriteLine("Ki = {0:g3} mol/L", ki);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Biochemistry II ch. 1 exercise 5");
+			Console.WriteLine("--------------------------------");
+			var lrrBC2Ch1Ex5_0 = LinearRegression.Compute(
+				new PointD(RoundedInverse("0,010"), RoundedInverse("0,27")),
+				new PointD(RoundedInverse("0,022"), RoundedInverse("0,50")),
+				new PointD(RoundedInverse("0,046"), RoundedInverse("0,80")),
+				new PointD(RoundedInverse("0,200"), RoundedInverse("1,50"))
+			);
+			var lrrBC2Ch1Ex5_1 = LinearRegression.Compute(
+				new PointD(RoundedInverse("0,010"), RoundedInverse("0,21")),
+				new PointD(RoundedInverse("0,022"), RoundedInverse("0,40")),
+				new PointD(RoundedInverse("0,046"), RoundedInverse("0,65")),
+				new PointD(RoundedInverse("0,200"), RoundedInverse("1,18"))
+			);
+			OutputRegressionModel(lrrBC2Ch1Ex5_0.ChangeModel(MathematicalModel.Affine));
+			OutputRegressionModel(lrrBC2Ch1Ex5_1.ChangeModel(MathematicalModel.Affine));
 		}
 
 		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
@@ -197,6 +260,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			} else if (kind == MathematicalModel.Logarithmic) {
 				Console.WriteLine("{0:eg6}", mathModel);
 			}
+		}
+
+		private static double RoundedInverse(string valueAsText)
+		{
+			var ciFrCa = new CultureInfo("fr-CA");
+			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
+			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
 		}
 	}
 }

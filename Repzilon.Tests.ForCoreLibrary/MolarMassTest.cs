@@ -56,7 +56,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
-			var karFormulas = new string[] { "Ca(OH)<sub>2</sub>" };
+			var karFormulas = new string[] { "Ca(OH)<sub>2</sub>",
+			 "KH<sub>2</sub>PO<sub>4</sub>", "K<sub>2</sub>HPO<sub>4</sub>",
+			 "C<sub>6</sub>H<sub>5</sub>COOH", "HOC<sub>6</sub>H<sub>4</sub>NO<sub>2</sub>",
+			 "CH<sub>3</sub>COOH" };
 			for (var i = 0; i < karFormulas.Length; i++) {
 				Console.WriteLine("{0,9:n3} {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
 			}
