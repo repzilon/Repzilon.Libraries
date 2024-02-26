@@ -121,8 +121,12 @@ namespace Repzilon.Libraries.Core
 
 			T sum = default(T);
 			for (var k = m; k <= n; k++) {
+#if DEBUG
 				T value = forEach(k);
 				sum = GenericArithmetic<T>.adder(sum, value);
+#else
+				sum = GenericArithmetic<T>.adder(sum, forEach(k));
+#endif
 			}
 			return sum;
 		}
