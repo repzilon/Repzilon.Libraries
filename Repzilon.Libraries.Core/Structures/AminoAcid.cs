@@ -293,12 +293,8 @@ namespace Repzilon.Libraries.Core
 
 		private static float ChargeOfLateral(bool pHEqualsPkar, bool pKa2LessThanPkar, bool dicat)
 		{
-			bool blnEquals = (pHEqualsPkar == pKa2LessThanPkar);
-			if (dicat) {
-				return blnEquals ? -0.5f : 0.5f;
-			} else {
-				return blnEquals ? -1.5f : -0.5f;
-			}
-		}
+			var blnEquals = (pHEqualsPkar == pKa2LessThanPkar);
+            return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
+        }
 	}
 }
