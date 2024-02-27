@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -39,7 +39,8 @@ namespace Repzilon.Libraries.Core
 		public readonly byte Base;
 		public readonly SByte Exponent;
 
-		public float Mantissa {
+		public float Mantissa
+		{
 			get { return (float)(mantissaThousandths * 0.001); }
 		}
 
@@ -74,7 +75,7 @@ namespace Repzilon.Libraries.Core
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 		object ICloneable.Clone()
 		{
-			return this.Clone();
+			return Clone();
 		}
 #endif
 		#endregion
@@ -87,7 +88,11 @@ namespace Repzilon.Libraries.Core
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(format)) {
+#else
 			if (String.IsNullOrWhiteSpace(format)) {
+#endif
 				format = "G";
 			}
 			if (formatProvider == null) {

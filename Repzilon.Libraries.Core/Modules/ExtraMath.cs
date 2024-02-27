@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -71,7 +71,13 @@ namespace Repzilon.Libraries.Core
 		/// with each word being 6.61 characters (space included) long on average.</remarks>
 		public static TimeSpan SpeechDuration(string text)
 		{
-			return String.IsNullOrWhiteSpace(text) ? TimeSpan.Zero :
+#if NET35
+			return RetroCompat.IsNullOrWhiteSpace(text) ?
+#else
+			return String.IsNullOrWhiteSpace(text) ?
+#endif
+
+			 TimeSpan.Zero :
 			 TimeSpan.FromMilliseconds(Math.Max(700, 400 + (text.Trim().Length * 70)));
 		}
 

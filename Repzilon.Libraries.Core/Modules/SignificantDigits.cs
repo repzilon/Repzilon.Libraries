@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2023 René Rhéaume
+// Copyright (C) 2022-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -170,7 +170,11 @@ namespace Repzilon.Libraries.Core
 		#region Count String overloads
 		public static byte Count(string value)
 		{
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(value)) {
+#else
 			if (String.IsNullOrWhiteSpace(value)) {
+#endif
 				return 0;
 			} else {
 				CultureInfo ci;
@@ -183,7 +187,11 @@ namespace Repzilon.Libraries.Core
 		{
 			const NumberStyles kNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowThousands;
 			double dblValue;
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(value)) {
+#else
 			if (String.IsNullOrWhiteSpace(value)) {
+#endif
 				return 0;
 			} else if (Double.TryParse(value, kNumberStyles, culture, out dblValue)) {
 				if (dblValue == 0) {
@@ -241,7 +249,7 @@ namespace Repzilon.Libraries.Core
 			}
 			throw new FormatException("Unable to parse text as a number.");
 		}
-		#endregion
+#endregion
 
 		private static byte IntegerPartDigits(double value, double absolute, double digitalPart)
 		{
@@ -261,9 +269,9 @@ namespace Repzilon.Libraries.Core
 		{
 			return (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
 		}
-		#endregion
+#endregion
 
-		#region Method Round
+#region Method Round
 		public static decimal Round(decimal value, byte figures, RoundingMode rounding)
 		{
 			if (figures == 0) {
@@ -333,6 +341,6 @@ namespace Repzilon.Libraries.Core
 #pragma warning restore CC0019 // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}
-		#endregion
+#endregion
 	}
 }

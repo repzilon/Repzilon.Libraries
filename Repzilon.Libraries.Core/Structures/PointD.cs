@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -121,12 +121,16 @@ namespace Repzilon.Libraries.Core
 		#region ToString
 		public override string ToString()
 		{
-			return this.ToString(null, null);
+			return ToString(null, null);
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(format)) {
+#else
 			if (String.IsNullOrWhiteSpace(format)) {
+#endif
 				format = "G";
 			}
 			if (formatProvider == null) {

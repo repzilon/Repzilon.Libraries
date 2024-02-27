@@ -264,7 +264,11 @@ namespace Repzilon.Libraries.Core.Vectors
 		/// </remarks>
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(format)) {
+#else
 			if (String.IsNullOrWhiteSpace(format)) {
+#endif
 				format = "G";
 			}
 			if (formatProvider == null) {
@@ -290,9 +294,9 @@ namespace Repzilon.Libraries.Core.Vectors
 			}
 			return stbAngle.ToString();
 		}
-		#endregion
+#endregion
 
-		#region CompareTo
+#region CompareTo
 		public int CompareTo(Angle<T> other)
 		{
 			var u = this.Unit;
@@ -358,9 +362,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return operand1.CompareTo(operand2) <= 0;
 		}
-		#endregion
+#endregion
 
-		#region Trigonometric functions
+#region Trigonometric functions
 		public double Sin()
 		{
 			return Math.Sin(this.ConvertTo<double>(AngleUnit.Radian, true).Value);
@@ -370,9 +374,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return Math.Cos(this.ConvertTo<double>(AngleUnit.Radian, true).Value);
 		}
-		#endregion
+#endregion
 
-		#region Addition operator
+#region Addition operator
 		public static IAngle operator +(Angle<T> x, Angle<T> y)
 		{
 			var u = x.Unit;
@@ -396,9 +400,9 @@ namespace Repzilon.Libraries.Core.Vectors
 				return new Angle<decimal>(dx.DecimalValue + dy.DecimalValue, AngleUnit.Radian);
 			}
 		}
-		#endregion
+#endregion
 
-		#region Subtraction operator
+#region Subtraction operator
 		public static IAngle operator -(Angle<T> x, Angle<T> y)
 		{
 			var u = x.Unit;
@@ -422,7 +426,7 @@ namespace Repzilon.Libraries.Core.Vectors
 				return new Angle<decimal>(dx.DecimalValue - dy.DecimalValue, AngleUnit.Radian);
 			}
 		}
-		#endregion
+#endregion
 	}
 
 	public static class AngleExtensions
@@ -432,7 +436,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			return (unit == AngleUnit.Gradian) || (unit == AngleUnit.Degree) || (unit == AngleUnit.Radian);
 		}
 
-		#region Multiplications with possible enlargements
+#region Multiplications with possible enlargements
 		private static Angle<TAngle> MultiplyInteger<TAngle, TInteger>(Angle<TAngle> angle, TInteger multiplier)
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
 		where TInteger : struct, IEquatable<TInteger>
@@ -519,6 +523,6 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return new Angle<decimal>(Convert.ToDecimal(angle.Value) * multiplier, angle.Unit);
 		}
-		#endregion
+#endregion
 	}
 }

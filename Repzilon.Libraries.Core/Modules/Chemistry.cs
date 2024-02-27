@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023 René Rhéaume
+// Copyright (C) 2023-2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -20,7 +20,7 @@ namespace Repzilon.Libraries.Core
 {
 	public static class Chemistry
 	{
-#if NET40
+#if NET40 || NET35
 		public static readonly IDictionary<string, float> ElementMasses = InitElementMasses();
 #else
 		public static readonly IReadOnlyDictionary<string, float> ElementMasses = InitElementMasses();
@@ -50,7 +50,7 @@ namespace Repzilon.Libraries.Core
 			return RoundOff.Error(0.5f * (pKa1 + pKa2));
 		}
 
-#if NET40
+#if NET40 || NET35
 		private static IDictionary<string, float> InitElementMasses()
 #else
 		private static IReadOnlyDictionary<string, float> InitElementMasses()
@@ -78,7 +78,7 @@ namespace Repzilon.Libraries.Core
 				{ "Cu", 63.546f },
 				{ "Zn", 65.38f }
 			};
-#if NET40
+#if NET40 || NET35
 			return new Dictionary<string, float>(dicMasses);
 #else
 			return new ReadOnlyDictionary<string, float>(dicMasses);

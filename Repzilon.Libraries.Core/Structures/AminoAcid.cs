@@ -39,12 +39,21 @@ namespace Repzilon.Libraries.Core
 			if (!Char.IsLetter(letter)) {
 				throw new ArgumentOutOfRangeException("letter");
 			}
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(code)) {
+				throw new ArgumentNullException("code");
+			}
+			if (RetroCompat.IsNullOrWhiteSpace(name)) {
+				throw new ArgumentNullException("name");
+			}
+#else
 			if (String.IsNullOrWhiteSpace(code)) {
 				throw new ArgumentNullException("code");
 			}
 			if (String.IsNullOrWhiteSpace(name)) {
 				throw new ArgumentNullException("name");
 			}
+#endif
 			if (code.Trim().Length != 3) {
 				throw new ArgumentException("An amino acid symbol is made of three letters.", "code");
 			}
@@ -61,7 +70,7 @@ namespace Repzilon.Libraries.Core
 			this.Formula = null;
 		}
 
-		#region ICloneable members
+#region ICloneable members
 		public AminoAcid(AminoAcid other)
 		{
 			this.Letter = other.Letter;
@@ -87,7 +96,7 @@ namespace Repzilon.Libraries.Core
 			return this.Clone();
 		}
 #endif
-		#endregion
+#endregion
 
 		public AminoAcid SetPkas(float pKa1, float pKa2)
 		{
@@ -134,7 +143,7 @@ namespace Repzilon.Libraries.Core
 			 Chemistry.AminoAcidIsoelectric(a1, a2, this.DicationWhenVeryAcid ? (byte)2 : (byte)1, ar);
 		}
 
-		#region Equals
+#region Equals
 		public override bool Equals(object obj)
 		{
 			return (obj is AminoAcid) && Equals((AminoAcid)obj);
@@ -178,15 +187,15 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
-		#endregion
+#endregion
 
-#if NET40
+#if NET40 || NET35
 		public static readonly ReadOnlyCollection<AminoAcid> AlphaList = MakeAlphaList();
 #else
 		public static readonly IReadOnlyList<AminoAcid> AlphaList = MakeAlphaList();
 #endif
 
-#if NET40
+#if NET40 || NET35
 		private static ReadOnlyCollection<AminoAcid> MakeAlphaList()
 #else
 		private static IReadOnlyList<AminoAcid> MakeAlphaList()

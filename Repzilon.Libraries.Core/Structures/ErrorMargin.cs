@@ -81,7 +81,11 @@ namespace Repzilon.Libraries.Core
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(format)) {
+#else
 			if (String.IsNullOrWhiteSpace(format)) {
+#endif
 				format = "G";
 			}
 			if (formatProvider == null) {
@@ -99,9 +103,9 @@ namespace Repzilon.Libraries.Core
 			}
 			return stbInterval.ToString();
 		}
-		#endregion
+#endregion
 
-		#region Equals
+#region Equals
 		public override bool Equals(object obj)
 		{
 			return obj is ErrorMargin<T> ? Equals((ErrorMargin<T>)obj) : Equals(obj as IComparableErrorMargin);
@@ -141,6 +145,6 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
-		#endregion
+#endregion
 	}
 }

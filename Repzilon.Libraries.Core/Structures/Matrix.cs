@@ -91,7 +91,8 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-		public T this[byte l, byte c] {
+		public T this[byte l, byte c]
+		{
 			get { return m_values[l, c]; }
 			set { m_values[l, c] = value; }
 		}
@@ -101,19 +102,23 @@ namespace Repzilon.Libraries.Core
 			return m_values[l, c];
 		}
 
-		public bool IsSquare {
+		public bool IsSquare
+		{
 			get { return Columns == Lines; }
 		}
 
-		byte IComparableMatrix.Lines {
+		byte IComparableMatrix.Lines
+		{
 			get { return this.Lines; }
 		}
 
-		byte IComparableMatrix.Columns {
+		byte IComparableMatrix.Columns
+		{
 			get { return this.Columns; }
 		}
 
-		byte? IComparableMatrix.AugmentedColumn {
+		byte? IComparableMatrix.AugmentedColumn
+		{
 			get { return m_bytAugmentedColumn; }
 		}
 
@@ -239,7 +244,11 @@ namespace Repzilon.Libraries.Core
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
+#if NET35
+			if (RetroCompat.IsNullOrWhiteSpace(format)) {
+#else
 			if (String.IsNullOrWhiteSpace(format)) {
+#endif
 				format = "G";
 			}
 			if (formatProvider == null) {
@@ -662,7 +671,7 @@ namespace Repzilon.Libraries.Core
 		/// equation system is unsolvable, however.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
-#if NET40
+#if NET40 || NET35
 		private IDictionary<string, T> SolveWithCramer(Matrix<T> constants, params string[] variables)
 #else
 		private IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> constants, params string[] variables)
@@ -691,7 +700,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-#if NET40
+#if NET40 || NET35
 		private IDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
 #else
 		private IReadOnlyDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
@@ -713,7 +722,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-#if NET40
+#if NET40 || NET35
 		private IDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
 #else
 		private IReadOnlyDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
@@ -733,7 +742,7 @@ namespace Repzilon.Libraries.Core
 			} else {
 				int l = 0;
 				for (c = 0; c < this.Columns; c++) {
-					if (augmented[(byte)(m - 1), (byte)c].Equals(zero)) {
+					if (augmented[(byte)(m - 1), c].Equals(zero)) {
 						l++;
 					}
 				}
@@ -753,7 +762,7 @@ namespace Repzilon.Libraries.Core
 							var valueOfPreviousVar = dicSolved[variables[variables.Length - c]];
 							newvar -= Convert.ToDouble(coeff) * Convert.ToDouble(valueOfPreviousVar);
 							// */
-							newvar -= Convert.ToDouble(augmented[(byte)(m - l), (byte)(this.Columns - c)]) *
+							newvar -= Convert.ToDouble(augmented[(byte)(m - l), (byte)(Columns - c)]) *
 							 Convert.ToDouble(dicSolved[variables[variables.Length - c]]);
 						}
 						/* Before code variable inlining
@@ -763,7 +772,7 @@ namespace Repzilon.Libraries.Core
 						dicSolved.Add(variables[variables.Length - l],
 						 (newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)])).ConvertTo<T>());
 					}
-#if NET40
+#if NET40 || NET35
 					return dicSolved;
 #else
 					return new ReadOnlyDictionary<string, T>(dicSolved);
@@ -784,13 +793,13 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
-#if NET40
+#if NET40 || NET35
 		public IDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
 #else
 		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
 #endif
 		{
-#if NET40
+#if NET40 || NET35
 			IDictionary<string, T> dicSolved = null;
 #else
 			IReadOnlyDictionary<string, T> dicSolved = null;
