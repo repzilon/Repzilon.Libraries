@@ -20,7 +20,11 @@ namespace Repzilon.Libraries.Core
 {
 	public static class Chemistry
 	{
+#if NET40
+		public static readonly IDictionary<string, float> ElementMasses = InitElementMasses();
+#else
 		public static readonly IReadOnlyDictionary<string, float> ElementMasses = InitElementMasses();
+#endif
 
 		public static float AminoAcidIsoelectric(float pKa1, float pKa2,
 		byte cationCount_ph1andhalf, float pKaR)
@@ -46,7 +50,11 @@ namespace Repzilon.Libraries.Core
 			return RoundOff.Error(0.5f * (pKa1 + pKa2));
 		}
 
+#if NET40
+		private static IDictionary<string, float> InitElementMasses()
+#else
 		private static IReadOnlyDictionary<string, float> InitElementMasses()
+#endif
 		{
 			var dicMasses = new Dictionary<string, float>
 			{
@@ -70,7 +78,11 @@ namespace Repzilon.Libraries.Core
 				{ "Cu", 63.546f },
 				{ "Zn", 65.38f }
 			};
+#if NET40
+			return new Dictionary<string, float>(dicMasses);
+#else
 			return new ReadOnlyDictionary<string, float>(dicMasses);
+#endif
 		}
 
 		private static MatchCollection MatchChemicalGroups(string formula, out int c)

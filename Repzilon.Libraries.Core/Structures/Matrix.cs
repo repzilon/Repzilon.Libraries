@@ -662,7 +662,11 @@ namespace Repzilon.Libraries.Core
 		/// equation system is unsolvable, however.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
+#if NET40
+		private IDictionary<string, T> SolveWithCramer(Matrix<T> constants, params string[] variables)
+#else
 		private IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> constants, params string[] variables)
+#endif
 		{
 			byte a, b;
 			Dictionary<string, T> dicSolved;
@@ -687,7 +691,11 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if NET40
+		private IDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
+#else
 		private IReadOnlyDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
+#endif
 		{
 			var inverse = ~this;
 			if (inverse.HasValue) {
@@ -705,7 +713,11 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if NET40
+		private IDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
+#else
 		private IReadOnlyDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
+#endif
 		{
 			byte c;
 			var m = this.Lines;
@@ -751,7 +763,11 @@ namespace Repzilon.Libraries.Core
 						dicSolved.Add(variables[variables.Length - l],
 						 (newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)])).ConvertTo<T>());
 					}
+#if NET40
+					return dicSolved;
+#else
 					return new ReadOnlyDictionary<string, T>(dicSolved);
+#endif
 				}
 			}
 		}
@@ -768,9 +784,17 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
+#if NET40
+		public IDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
+#else
 		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
+#endif
 		{
+#if NET40
+			IDictionary<string, T> dicSolved = null;
+#else
 			IReadOnlyDictionary<string, T> dicSolved = null;
+#endif
 			if (this.IsSquare) {
 				dicSolved = SolveWithCramer(constants, variables);
 			}

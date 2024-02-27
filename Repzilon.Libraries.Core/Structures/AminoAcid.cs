@@ -180,9 +180,17 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
+#if NET40
+		public static readonly ReadOnlyCollection<AminoAcid> AlphaList = MakeAlphaList();
+#else
 		public static readonly IReadOnlyList<AminoAcid> AlphaList = MakeAlphaList();
+#endif
 
+#if NET40
+		private static ReadOnlyCollection<AminoAcid> MakeAlphaList()
+#else
 		private static IReadOnlyList<AminoAcid> MakeAlphaList()
+#endif
 		{
 			var lstAminoAcids = new List<AminoAcid>(20)
 			{
