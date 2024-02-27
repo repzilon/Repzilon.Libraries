@@ -13,19 +13,23 @@
 //
 using System;
 using System.Collections.Generic;
+#if NET6_0 || NETCOREAPP3_1
 using System.Diagnostics.CodeAnalysis;
+#endif
 using System.Linq;
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	sealed class PolypeptideComparer : IEqualityComparer<List<AlphaAminoAcid>>
+	internal sealed class PolypeptideComparer : IEqualityComparer<List<AlphaAminoAcid>>
 	{
 		public static readonly PolypeptideComparer Singleton = new PolypeptideComparer();
 
 		private PolypeptideComparer() { }
 
+#pragma warning disable CC0091 // Use static method
 		public bool Equals(List<AlphaAminoAcid> x, List<AlphaAminoAcid> y)
+#pragma warning restore CC0091 // Use static method
 		{
 			// Check whether the compared objects reference the same data.
 			if (Object.ReferenceEquals(x, y)) {
@@ -49,7 +53,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
-		public int GetHashCode([DisallowNull] List<AlphaAminoAcid> obj)
+#pragma warning disable CC0091 // Use static method
+#if NET6_0 || NETCOREAPP3_1
+        public int GetHashCode([DisallowNull] List<AlphaAminoAcid> obj)
+#else
+		public int GetHashCode(List<AlphaAminoAcid> obj)
+#endif
+#pragma warning restore CC0091 // Use static method
 		{
 			if (obj == null) {
 				return 0;
@@ -91,7 +101,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				if (a > 0) {
 					Console.Write(',');
 				}
+#pragma warning disable UD0011 // The composite format string is not valid
 				Console.WriteLine('{');
+#pragma warning restore UD0011 // The composite format string is not valid
 				Console.Write("\tlabel: '");
 				Console.Write(saaarLateral[a].Symbol);
 				Console.WriteLine("',");
@@ -117,7 +129,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			BenchmarkResolution(kIterations, "Révision #11", SolveRevision11);
 		}
 
-		#region Revision exercise number 10
+#region Revision exercise number 10
 		private static List<List<AlphaAminoAcid>> SolveRevision10WithEnum()
 		{
 			var lstAllowed = new List<AlphaAminoAcid>(9) {
@@ -157,7 +169,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		Predicate<List<AlphaAminoAcid>> conditions)
 		{
 			if ((conditions == null) && (checked(firstPermutations.Count * secondPermutations.Count * 2) > 1000000)) {
-				throw new InsufficientMemoryException();
+#if NETCOREAPP1_0
+				throw new OutOfMemoryException();
+#else
+                throw new InsufficientMemoryException();
+#endif
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
@@ -166,6 +182,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					var candidate = new List<AlphaAminoAcid>(peptideLength);
 					candidate.AddRange(firstPermutations[i]);
 					candidate.AddRange(secondPermutations[j]);
+#pragma warning disable CC0031 // Check for null before calling a delegate
 					if ((conditions == null) || conditions(candidate)) {
 						if (UniqueExcept(candidate, dualAminoAcid)) {
 							lstOutput.Add(candidate);
@@ -176,6 +193,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					candidate.AddRange(secondPermutations[j]);
 					candidate.AddRange(firstPermutations[i]);
 					if ((conditions == null) || conditions(candidate)) {
+#pragma warning restore CC0031 // Check for null before calling a delegate
 						if (UniqueExcept(candidate, dualAminoAcid)) {
 							lstOutput.Add(candidate);
 						}
@@ -206,9 +224,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 ((x2 == AlphaAminoAcid.Cys) || (x2 == AlphaAminoAcid.Met));
 			}
 		}
-		#endregion
+#endregion
 
-		#region Revision exercise number 11
+#region Revision exercise number 11
 		private static List<List<AlphaAminoAcid>> SolveRevision11()
 		{
 			var rev11_allowed = new List<AlphaAminoAcid> {
@@ -267,7 +285,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		Predicate<List<AlphaAminoAcid>> conditions)
 		{
 			if ((conditions == null) && (checked(firstPermutations.Count * secondPermutations.Count * 2) > 1000000)) {
-				throw new InsufficientMemoryException();
+#if NETCOREAPP1_0
+				throw new OutOfMemoryException();
+#else
+                throw new InsufficientMemoryException();
+#endif
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
@@ -278,6 +300,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(thirdPermutations[k]);
+#pragma warning disable CC0031 // Check for null before calling a delegate
 						if ((conditions == null) || conditions(candidate)) {
 							if (UniqueExcept(candidate, dualAminoAcid)) {
 								lstOutput.Add(candidate);
@@ -329,6 +352,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(firstPermutations[i]);
 						if ((conditions == null) || conditions(candidate)) {
+#pragma warning restore CC0031 // Check for null before calling a delegate
 							if (UniqueExcept(candidate, dualAminoAcid)) {
 								lstOutput.Add(candidate);
 							}
@@ -343,9 +367,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			return (x[0] == AlphaAminoAcid.Phe) && (x[6] == AlphaAminoAcid.Lys);
 		}
-		#endregion
+#endregion
 
-		#region Common code
+#region Common code
 		private static void BenchmarkResolution(int iterations, string title, Func<List<List<AlphaAminoAcid>>> solver)
 		{
 			List<List<AlphaAminoAcid>> lstResults = null;
@@ -487,6 +511,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			return true;
 		}
-		#endregion
+#endregion
 	}
 }
