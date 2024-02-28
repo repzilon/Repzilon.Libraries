@@ -26,7 +26,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
 		}
 
-		private static void SummationTest<T>(int benchLoops, int summationUpper, string legend, Func<int,T> forEach)
+		private static void SummationTest<T>(int benchLoops, int summationUpper, string legend, Func<int, T> forEach)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			var dtmStart = DateTime.UtcNow;

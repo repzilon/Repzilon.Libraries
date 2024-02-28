@@ -16,7 +16,7 @@ using System.Linq.Expressions;
 
 namespace Repzilon.Libraries.Core
 {
-	public static class GenericArithmetic<T> where T: struct
+	public static class GenericArithmetic<T> where T : struct
 	{
 		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>()
 		where TScalar : struct

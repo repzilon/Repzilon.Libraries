@@ -249,7 +249,7 @@ namespace Repzilon.Libraries.Core
 			}
 			throw new FormatException("Unable to parse text as a number.");
 		}
-#endregion
+		#endregion
 
 		private static byte IntegerPartDigits(double value, double absolute, double digitalPart)
 		{
@@ -269,9 +269,9 @@ namespace Repzilon.Libraries.Core
 		{
 			return (byte)Math.Ceiling(Math.Log10(Math.Abs(value)));
 		}
-#endregion
+		#endregion
 
-#region Method Round
+		#region Method Round
 		public static decimal Round(decimal value, byte figures, RoundingMode rounding)
 		{
 			if (figures == 0) {
@@ -341,6 +341,6 @@ namespace Repzilon.Libraries.Core
 #pragma warning restore CC0019 // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}
-#endregion
+		#endregion
 	}
 }

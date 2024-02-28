@@ -70,7 +70,7 @@ namespace Repzilon.Libraries.Core
 			this.Formula = null;
 		}
 
-#region ICloneable members
+		#region ICloneable members
 		public AminoAcid(AminoAcid other)
 		{
 			this.Letter = other.Letter;
@@ -96,7 +96,7 @@ namespace Repzilon.Libraries.Core
 			return this.Clone();
 		}
 #endif
-#endregion
+		#endregion
 
 		public AminoAcid SetPkas(float pKa1, float pKa2)
 		{
@@ -143,7 +143,7 @@ namespace Repzilon.Libraries.Core
 			 Chemistry.AminoAcidIsoelectric(a1, a2, this.DicationWhenVeryAcid ? (byte)2 : (byte)1, ar);
 		}
 
-#region Equals
+		#region Equals
 		public override bool Equals(object obj)
 		{
 			return (obj is AminoAcid) && Equals((AminoAcid)obj);
@@ -187,7 +187,7 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
-#endregion
+		#endregion
 
 #if NET40 || NET35
 		public static readonly ReadOnlyCollection<AminoAcid> AlphaList = MakeAlphaList();
@@ -311,7 +311,7 @@ namespace Repzilon.Libraries.Core
 		private static float ChargeOfLateral(bool pHEqualsPkar, bool pKa2LessThanPkar, bool dicat)
 		{
 			var blnEquals = (pHEqualsPkar == pKa2LessThanPkar);
-            return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
-        }
+			return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
+		}
 	}
 }

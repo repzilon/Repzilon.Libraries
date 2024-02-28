@@ -103,9 +103,9 @@ namespace Repzilon.Libraries.Core
 			}
 			return stbInterval.ToString();
 		}
-#endregion
+		#endregion
 
-#region Equals
+		#region Equals
 		public override bool Equals(object obj)
 		{
 			return obj is ErrorMargin<T> ? Equals((ErrorMargin<T>)obj) : Equals(obj as IComparableErrorMargin);
@@ -145,6 +145,6 @@ namespace Repzilon.Libraries.Core
 		{
 			return !(left == right);
 		}
-#endregion
+		#endregion
 	}
 }
