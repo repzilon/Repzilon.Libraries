@@ -211,7 +211,7 @@ namespace Repzilon.Libraries.Core
 				new AminoAcid('C', "Cys", "Cystéine").SetPkas(1.7f, 10.8f, 8.3f, false),
 				new AminoAcid('Q', "Gln", "Glutamine").SetPkas(2.1f, 9.1f),
 				new AminoAcid('G', "Gly", "Glycine").SetPkas(2.4f, 9.7f),
-				new AminoAcid('H', "His", "Histidine").SetPkas(1.8f, 9.2f, 6.0f, true),
+				new AminoAcid('H', "His", "Histidine").SetPkas(1.8f, 9.2f, 6.0f, true).SetFormula("C<sub>6</sub>H<sub>9</sub>N<sub>3</sub>O<sub>2</sub>"),
 				new AminoAcid('I', "Ile", "Isoleucine").SetPkas(2.4f, 9.7f),
 				new AminoAcid('L', "Leu", "Leucine").SetPkas(2.4f, 9.6f),
 				new AminoAcid('K', "Lys", "Lysine").SetPkas(2.2f, 8.9f, 10.5f, true),

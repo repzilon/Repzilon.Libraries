@@ -179,6 +179,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(lrrBC2Ch1Ex5_0.ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(lrrBC2Ch1Ex5_1.ChangeModel(MathematicalModel.Affine));
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Cellular culture II Wound healing");
+			Console.WriteLine("---------------------------------");
+			var rmdCC2Healing = RegressionModel.Compute(
+				new PointD(0, -0.2779),
+				new PointD(1, 0.2434),
+				new PointD(10, 1.1257)
+			);
+			OutputRegressionModel(rmdCC2Healing);
 		}
 
 		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,

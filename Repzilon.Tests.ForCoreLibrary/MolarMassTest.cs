@@ -59,7 +59,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var karFormulas = new string[] { "Ca(OH)<sub>2</sub>",
 			 "KH<sub>2</sub>PO<sub>4</sub>", "K<sub>2</sub>HPO<sub>4</sub>",
 			 "C<sub>6</sub>H<sub>5</sub>COOH", "HOC<sub>6</sub>H<sub>4</sub>NO<sub>2</sub>",
-			 "CH<sub>3</sub>COOH" };
+			 "CH<sub>3</sub>COOH", "(CH<sub>2</sub>COOH)<sub>2</sub>",
+			 "(CH<sub>3</sub>)<sub>2</sub>CO", "CHCl<sub>3</sub>"};
 			for (var i = 0; i < karFormulas.Length; i++) {
 				Console.WriteLine("{0,9:n3} {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
 			}
@@ -73,8 +74,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			foreach (var aa in dicAminoAcids.Values) {
-				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4:f1} {5,4:f1} {6,5:f2}",
-				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, aa.pKa2, aa.pKaR, aa.Isoelectric());
+				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4:f1} {5,4:f1} {6,5:f2} {7,7:f3}g/mol {8}",
+				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, aa.pKa2, aa.pKaR, aa.Isoelectric(), aa.MolarMass, aa.Formula);
 			}
 
 			Program.OutputSizeOf<FattyAcid>();
