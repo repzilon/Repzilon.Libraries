@@ -136,5 +136,11 @@ namespace Repzilon.Libraries.Core
 			}
 			return sum;
 		}
+
+		public static T DifferenceOfPrimitives<T>(T a, T b, Func<T, T> expression)
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+		{
+			return GenericArithmetic<T>.sub(expression(b), expression(a));
+		}
 	}
 }
