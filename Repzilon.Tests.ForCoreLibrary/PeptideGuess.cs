@@ -55,7 +55,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 #pragma warning disable CC0091 // Use static method
 #if NET6_0 || NETCOREAPP3_1
-        public int GetHashCode([DisallowNull] List<AlphaAminoAcid> obj)
+		public int GetHashCode([DisallowNull] List<AlphaAminoAcid> obj)
 #else
 		public int GetHashCode(List<AlphaAminoAcid> obj)
 #endif
@@ -129,7 +129,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			BenchmarkResolution(kIterations, "Révision #11", SolveRevision11);
 		}
 
-#region Revision exercise number 10
+		#region Revision exercise number 10
 		private static List<List<AlphaAminoAcid>> SolveRevision10WithEnum()
 		{
 			var lstAllowed = new List<AlphaAminoAcid>(9) {
@@ -172,7 +172,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #if NETCOREAPP1_0
 				throw new OutOfMemoryException();
 #else
-                throw new InsufficientMemoryException();
+				throw new InsufficientMemoryException();
 #endif
 			}
 
@@ -224,9 +224,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 ((x2 == AlphaAminoAcid.Cys) || (x2 == AlphaAminoAcid.Met));
 			}
 		}
-#endregion
+		#endregion
 
-#region Revision exercise number 11
+		#region Revision exercise number 11
 		private static List<List<AlphaAminoAcid>> SolveRevision11()
 		{
 			var rev11_allowed = new List<AlphaAminoAcid> {
@@ -288,7 +288,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #if NETCOREAPP1_0
 				throw new OutOfMemoryException();
 #else
-                throw new InsufficientMemoryException();
+				throw new InsufficientMemoryException();
 #endif
 			}
 
@@ -367,9 +367,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			return (x[0] == AlphaAminoAcid.Phe) && (x[6] == AlphaAminoAcid.Lys);
 		}
-#endregion
+		#endregion
 
-#region Common code
+		#region Common code
 		private static void BenchmarkResolution(int iterations, string title, Func<List<List<AlphaAminoAcid>>> solver)
 		{
 			List<List<AlphaAminoAcid>> lstResults = null;
@@ -511,6 +511,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			return true;
 		}
-#endregion
+		#endregion
 	}
 }
