@@ -290,10 +290,26 @@ namespace Repzilon.Libraries.Core
 							return ChargeOfLateral(pH, ah, dicat, 0);
 						}
 					} else {
-						return Single.NaN;
+						if (dicat) {
+							return -1 + ProtonationRatio(pH, this.pKa1) +
+							 ProtonationRatio(pH, this.pKa2) +
+							 ProtonationRatio(pH, ar);
+						} else if (ar < 7) {
+							return -2 + ProtonationRatio(pH, this.pKa1) +
+							 ProtonationRatio(pH, this.pKa2) +
+							 ProtonationRatio(pH, ar);
+						} else {
+							return Single.NaN;
+						}
 					}
 				}
 			}
+		}
+
+		private static float ProtonationRatio(float pH, float pKa)
+		{
+			var dblPower = Math.Pow(10, pKa - pH);
+			return (float)(dblPower / (dblPower + 1));
 		}
 
 		private static float ChargeOfLateral(float pH, float pKa, bool dicat, short mostAcidicCharge)
