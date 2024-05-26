@@ -112,6 +112,8 @@ namespace Repzilon.Libraries.Core
 		{
 			float M = 0;
 			int c;
+			// The following line transforms hydratation to sub-group
+			formula = Regex.Replace(formula, "[.•]([0-9]+)\\s*([A-Za-z0-9<>/=-]+)$", "-($2)<sub>$1</sub>");
 			var mccChemicalGroups = MatchChemicalGroups(formula, out c);
 			for (int i = 0; i < c; i++) {
 				var grcIter = mccChemicalGroups[i].Groups;

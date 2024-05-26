@@ -60,7 +60,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 "KH<sub>2</sub>PO<sub>4</sub>", "K<sub>2</sub>HPO<sub>4</sub>",
 			 "C<sub>6</sub>H<sub>5</sub>COOH", "HOC<sub>6</sub>H<sub>4</sub>NO<sub>2</sub>",
 			 "CH<sub>3</sub>COOH", "(CH<sub>2</sub>COOH)<sub>2</sub>",
-			 "(CH<sub>3</sub>)<sub>2</sub>CO", "CHCl<sub>3</sub>"};
+			 "(CH<sub>3</sub>)<sub>2</sub>CO", "CHCl<sub>3</sub>",
+			 "HOOC-COOH•2 H<sub>2</sub>O",
+			 "C<sub>10</sub>H<sub>14</sub>N<sub>2</sub>Na<sub>2</sub>O<sub>8</sub>.2 H<sub>2</sub>O"};
 			for (var i = 0; i < karFormulas.Length; i++) {
 				Console.WriteLine("{0,9:n3} {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
 			}
