@@ -31,8 +31,9 @@ namespace Repzilon.Libraries.Core
 		public static decimal Error(decimal value)
 		{
 			var x = Math.Round(value, 25, MidpointRounding.ToEven);
-			var s = x.ToString(CultureInfo.InvariantCulture);
-			return s.Contains(".") ? Decimal.Parse(s.TrimEnd('0')) : x;
+			var ciC = CultureInfo.InvariantCulture;
+			var s = x.ToString(ciC);
+			return s.Contains(".") ? Decimal.Parse(s.TrimEnd('0'), ciC) : x;
 		}
 	}
 }
