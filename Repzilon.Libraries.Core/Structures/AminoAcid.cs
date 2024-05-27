@@ -291,12 +291,10 @@ namespace Repzilon.Libraries.Core
 							return -1 + ProtonationRatio(pH, this.pKa1) +
 							 ProtonationRatio(pH, this.pKa2) +
 							 ProtonationRatio(pH, ar);
-						} else if (ar < 7) {
+						} else {
 							return -2 + ProtonationRatio(pH, this.pKa1) +
 							 ProtonationRatio(pH, this.pKa2) +
 							 ProtonationRatio(pH, ar);
-						} else {
-							return Single.NaN;
 						}
 					}
 				}
