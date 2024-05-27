@@ -13,6 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 using Repzilon.Libraries.Core;
 
@@ -76,8 +77,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			foreach (var aa in dicAminoAcids.Values) {
-				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4:f1} {5,4:f1} {6,5:f2} {7,7:f3}g/mol {8}",
-				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, aa.pKa2, aa.pKaR, aa.Isoelectric(), aa.MolarMass, aa.Formula);
+				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
+				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR, aa.Isoelectric(), Nanable(aa.MolarMass, "f3"), aa.Formula);
 			}
 
 			Program.OutputSizeOf<FattyAcid>();
@@ -112,6 +113,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 100.0 * nH / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
 				 100.0 * nC / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
 				 100.0 * (nH - nC) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)));
+			}
+		}
+
+		private static string Nanable(float value, string format)
+		{
+			if (Single.IsNaN(value) && (CultureInfo.CurrentCulture.Name.StartsWith("fr"))) {
+				return "!Num"; // «Non numérique» is too long
+			} else {
+				return value.ToString(format);
 			}
 		}
 	}
