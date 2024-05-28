@@ -203,26 +203,26 @@ namespace Repzilon.Libraries.Core
 		{
 			var lstAminoAcids = new List<AminoAcid>(20)
 			{
-				new AminoAcid('D', "Asp", "Acide aspartique").SetPkas(2.1f, 9.8f, 3.9f, false),
-				new AminoAcid('E', "Glu", "Acide glutamique").SetPkas(2.2f, 9.7f, 4.2f, false),
-				new AminoAcid('A', "Ala", "Alanine").SetPkas(2.3f, 9.9f),
-				new AminoAcid('R', "Arg", "Arginine").SetPkas(2.2f, 9.0f, 12.5f, true),
-				new AminoAcid('N', "Asn", "Asparagine").SetPkas(2.0f, 8.8f),
-				new AminoAcid('C', "Cys", "Cystéine").SetPkas(1.7f, 10.8f, 8.3f, false),
-				new AminoAcid('Q', "Gln", "Glutamine").SetPkas(2.1f, 9.1f),
-				new AminoAcid('G', "Gly", "Glycine").SetPkas(2.4f, 9.7f),
+				new AminoAcid('D', "Asp", "Acide aspartique").SetPkas(2.1f, 9.8f, 3.9f, false).SetFormula("HOOC-CH<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('E', "Glu", "Acide glutamique").SetPkas(2.2f, 9.7f, 4.2f, false).SetFormula("HOOC-(CH<sub>2</sub>)<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('A', "Ala", "Alanine").SetPkas(2.3f, 9.9f).SetFormula("CH<sub>3</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('R', "Arg", "Arginine").SetPkas(2.2f, 9.0f, 12.5f, true).SetFormula("(H<sub>2</sub>N)<sub>2</sub>-C-NH-(CH<sub>2</sub>)<sub>3</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('N', "Asn", "Asparagine").SetPkas(2.0f, 8.8f).SetFormula("H<sub>2</sub>N-C=O-CH<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('C', "Cys", "Cystéine").SetPkas(1.7f, 10.8f, 8.3f, false).SetFormula("HS-CH<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('Q', "Gln", "Glutamine").SetPkas(2.1f, 9.1f).SetFormula("H<sub>2</sub>N-C=O-(CH<sub>2</sub>)<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('G', "Gly", "Glycine").SetPkas(2.4f, 9.7f).SetFormula("CH<sub>2</sub>-NH<sub>2</sub>-COOH"),
 				new AminoAcid('H', "His", "Histidine").SetPkas(1.8f, 9.2f, 6.0f, true).SetFormula("C<sub>6</sub>H<sub>9</sub>N<sub>3</sub>O<sub>2</sub>"),
-				new AminoAcid('I', "Ile", "Isoleucine").SetPkas(2.4f, 9.7f),
-				new AminoAcid('L', "Leu", "Leucine").SetPkas(2.4f, 9.6f),
-				new AminoAcid('K', "Lys", "Lysine").SetPkas(2.2f, 8.9f, 10.5f, true),
-				new AminoAcid('M', "Mét", "Méthionine").SetPkas(2.3f, 9.2f),
-				new AminoAcid('F', "Phé", "Phénylalanine").SetPkas(2.6f, 9.2f),
-				new AminoAcid('P', "Pro", "Proline").SetPkas(2.0f, 10.6f),
-				new AminoAcid('S', "Sér", "Sérine").SetPkas(2.2f, 9.2f),
-				new AminoAcid('T', "Thr", "Thréonine").SetPkas(2.6f, 10.4f),
-				new AminoAcid('W', "Trp", "Tryptophane").SetPkas(2.4f, 9.4f),
-				new AminoAcid('Y', "Tyr", "Tyrosine").SetPkas(2.2f, 9.1f, 10.0f, false),
-				new AminoAcid('V', "Val", "Valine").SetPkas(2.3f, 9.7f)
+				new AminoAcid('I', "Ile", "Isoleucine").SetPkas(2.4f, 9.7f).SetFormula("C<sub>6</sub>H<sub>13</sub>NO<sub>2</sub>"),
+				new AminoAcid('L', "Leu", "Leucine").SetPkas(2.4f, 9.6f).SetFormula("(H<sub>3</sub>C)<sub>2</sub>-CH-CH<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('K', "Lys", "Lysine").SetPkas(2.2f, 8.9f, 10.5f, true).SetFormula("H<sub>2</sub>N-(CH<sub>2</sub>)<sub>4</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('M', "Mét", "Méthionine").SetPkas(2.3f, 9.2f).SetFormula("H<sub>3</sub>C-S-(CH<sub>2</sub>)<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('F', "Phé", "Phénylalanine").SetPkas(2.6f, 9.2f).SetFormula("C<sub>9</sub>H<sub>11</sub>NO<sub>2</sub>"),
+				new AminoAcid('P', "Pro", "Proline").SetPkas(2.0f, 10.6f).SetFormula("C<sub>5</sub>H<sub>9</sub>NO<sub>2</sub>"),
+				new AminoAcid('S', "Sér", "Sérine").SetPkas(2.2f, 9.2f).SetFormula("HO-CH<sub>2</sub>-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('T', "Thr", "Thréonine").SetPkas(2.6f, 10.4f).SetFormula("H<sub>3</sub>C-OH-CH-CH-NH<sub>2</sub>-COOH"),
+				new AminoAcid('W', "Trp", "Tryptophane").SetPkas(2.4f, 9.4f).SetFormula("C<sub>11</sub>H<sub>12</sub>N<sub>2</sub>O<sub>2</sub>"),
+				new AminoAcid('Y', "Tyr", "Tyrosine").SetPkas(2.2f, 9.1f, 10.0f, false).SetFormula("C<sub>9</sub>H<sub>11</sub>NO<sub>3</sub>"),
+				new AminoAcid('V', "Val", "Valine").SetPkas(2.3f, 9.7f).SetFormula("(H<sub>3</sub>C)<sub>2</sub>-CH-CH-NH<sub>2</sub>-COOH")
 			};
 			return new ReadOnlyCollection<AminoAcid>(lstAminoAcids);
 		}
