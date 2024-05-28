@@ -33,29 +33,27 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Calculus", CalculusTest.Run);
 
 			DisplayMenu(dicTests);
-			var cki = Console.ReadKey();
-			while (Char.ToUpperInvariant(cki.KeyChar) != 'Q') {
-				if (Char.IsDigit(cki.KeyChar)) {
-					int intPressed = Convert.ToInt32(cki.KeyChar.ToString());
-					var i = 1;
-					var blnRan = false;
-					DateTime dtmStart;
-					foreach (var kvp in dicTests) {
-						if (i == intPressed) {
-							Console.Write(Environment.NewLine);
-							dtmStart = DateTime.UtcNow;
-							kvp.Value(args);
-							TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
-							blnRan = true;
-							Console.WriteLine("{0} Test took {1:n3}s", kvp.Key, tsElapsed.TotalSeconds);
-						}
-						i++;
-					}
-					if (blnRan) {
+			bool blnWordaroundCygwin = false;
+			char chrPressed;
+			try {
+				chrPressed = Console.ReadKey().KeyChar;
+			} catch (InvalidOperationException) {
+				blnWordaroundCygwin = true;
+				chrPressed = (char)Console.Read();
+			}
+			while (Char.ToUpperInvariant(chrPressed) != 'Q') {
+				if (Char.IsDigit(chrPressed)) {
+					int intPressed = Int32.Parse(chrPressed.ToString());				
+					if ((intPressed >= 1) && (intPressed <= dicTests.Count)) {
+						Console.Write(Environment.NewLine);
+						DateTime dtmStart = DateTime.UtcNow;
+						dicTests.Values[intPressed - 1](args);
+						TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
+						Console.WriteLine("{0} Test took {1:n3}s", dicTests.Keys[intPressed - 1], tsElapsed.TotalSeconds);
 						DisplayMenu(dicTests);
 					}
 				}
-				cki = Console.ReadKey();
+				chrPressed = blnWordaroundCygwin ? (char)Console.Read() : Console.ReadKey().KeyChar;
 			}
 		}
 
