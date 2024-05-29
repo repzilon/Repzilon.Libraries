@@ -17,6 +17,13 @@ using System.Runtime.InteropServices;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
+	internal enum TriState : byte
+	{
+		Unknown,
+		False,
+		True
+	}
+
 	internal static class Program
 	{
 		private static void Main(string[] args)
@@ -29,35 +36,64 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Linear Regression", LinearRegressionTest.Run);
 			dicTests.Add("Chemistry", MolarMassTest.Run);
 			dicTests.Add("Dilution", DilutionTest.Run);
+#if !NET20
 			dicTests.Add("Peptides", PeptideGuess.Run);
 			dicTests.Add("Calculus", CalculusTest.Run);
+#endif
 
-			DisplayMenu(dicTests);
-			bool blnWordaroundCygwin = false;
-			char chrPressed;
-			try {
-				chrPressed = Console.ReadKey().KeyChar;
-			} catch (InvalidOperationException) {
-				blnWordaroundCygwin = true;
-				chrPressed = (char)Console.Read();
-			}
-			while (Char.ToUpperInvariant(chrPressed) != 'Q') {
-				if (Char.IsDigit(chrPressed)) {
-					int intPressed = Int32.Parse(chrPressed.ToString());				
+#if NET40 || NET35 || NET20
+			TriState enuWorkaroundCygwin = TriState.Unknown;
+#else
+			TriState enuWorkaroundCygwin = Console.IsInputRedirected ? TriState.True : TriState.Unknown;
+#endif
+			DisplayMenu(enuWorkaroundCygwin, dicTests);
+			char chrPressed = MyReadKey(ref enuWorkaroundCygwin);
+			while (char.ToUpperInvariant(chrPressed) != 'Q') {
+				if (char.IsDigit(chrPressed)) {
+					int intPressed = int.Parse(chrPressed.ToString());
 					if ((intPressed >= 1) && (intPressed <= dicTests.Count)) {
 						Console.Write(Environment.NewLine);
 						DateTime dtmStart = DateTime.UtcNow;
 						dicTests.Values[intPressed - 1](args);
 						TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
 						Console.WriteLine("{0} Test took {1:n3}s", dicTests.Keys[intPressed - 1], tsElapsed.TotalSeconds);
-						DisplayMenu(dicTests);
+						DisplayMenu(enuWorkaroundCygwin, dicTests);
 					}
 				}
-				chrPressed = blnWordaroundCygwin ? (char)Console.Read() : Console.ReadKey().KeyChar;
+				chrPressed = MyReadKey(ref enuWorkaroundCygwin);
 			}
 		}
 
-		private static void DisplayMenu(IDictionary<string, Action<string[]>> allTests)
+		private static char MyReadKey(ref TriState workaroundCygwin)
+		{
+			if (workaroundCygwin == TriState.True) {
+				return ReadFirstCharOfLine();
+			} else if (workaroundCygwin == TriState.False) {
+				return ReadKey2();
+			} else {
+				try {
+					return ReadKey2();
+				} catch (InvalidOperationException) {
+					workaroundCygwin = TriState.True;
+					//System.Diagnostics.Debugger.Launch();
+					return ReadFirstCharOfLine();
+				}
+			}
+		}
+
+		private static char ReadFirstCharOfLine()
+		{
+			System.Threading.Thread.Sleep(10000);
+			var strLine = Console.ReadLine().Trim();
+			return (strLine.Length­ > 0) ? strLine[0] : 'Q';
+		}
+
+		private static char ReadKey2()
+		{
+			return Console.ReadKey().KeyChar;
+		}
+
+		private static void DisplayMenu(TriState workaroundCygwin, IDictionary<string, Action<string[]>> allTests)
 		{
 			Console.WriteLine("====================================");
 			Console.WriteLine("Repzilon Libraries Interactive Tests");
@@ -70,13 +106,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Console.Write(Environment.NewLine);
-			Console.Write("Press the number corresponding to the test, or Q to quit: ");
+			Console.Write(workaroundCygwin == TriState.True ?
+			 "In the next 10 seconds, type the number of the test or Q and press Return: " :
+			 "Press the number corresponding to the test, or Q to quit: ");
 		}
 
 		internal static void OutputSizeOf<T>() where T : struct
 		{
 			try {
+#if NET40 || NET35 || NET20
+				Type typT = typeof(T);
+				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name, Marshal.SizeOf(typT));
+#else
 				Console.WriteLine("Size of struct {0} is {1} bytes", typeof(T).Name, Marshal.SizeOf<T>());
+#endif
 			} catch (ArgumentException) {
 				// do nothing
 			}
