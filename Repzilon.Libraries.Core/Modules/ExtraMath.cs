@@ -18,6 +18,8 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ExtraMath
 	{
+		public const decimal PI = 3.141592653589793238462643383327950m;
+
 		/// <summary>
 		/// Solves a quadratic equation axx + bx + c = 0 .
 		/// </summary>
@@ -141,6 +143,29 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			return GenericArithmetic<T>.sub(expression(b), expression(a));
+		}
+
+		/// <summary>
+		/// Computes iteratively the factorial of a natural number.
+		/// </summary>
+		/// <param name="n">A natural number</param>
+		/// <returns>The factorial</returns>
+		/// <remarks>
+		/// Anyone using recursion for this function must stay away from programming forever.
+		/// You are not showing any elite programming, you just put trash into the CPU stack,
+		/// and make the source code unreadable. This is not to say recursion is useless, it
+		/// is just because you are able to use it that you should use it everywhere.
+		/// </remarks>
+		public static long Factorial(byte n)
+		{
+			if (n > 20) {
+				throw new ArgumentOutOfRangeException("n", n, "The factorial of 21 overflows a 64-bit integer.");
+			}
+			long bang = n;
+			for (byte i = 3; i <= n; i++) {
+				bang *= i;
+			}
+			return bang;
 		}
 	}
 }
