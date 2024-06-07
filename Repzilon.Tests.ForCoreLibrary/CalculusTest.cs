@@ -26,8 +26,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
 
 			Console.WriteLine("Distributions de Student");
-			// The ProbabilityDistributions.Student breaks at 92 degrees of liberty
-			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89 };
+			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
 			int i;
 			Console.Write("x");
 			for (i = 0; i < karLiberties.Length; i++) {
