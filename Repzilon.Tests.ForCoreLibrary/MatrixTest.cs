@@ -21,6 +21,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
+#if !NET20
 			Console.WriteLine("Exemple 80 :");
 			var ex80_a = new Matrix<short>(3, 3, 2, -1, 5, -3, 4, 7, 1, -1, 0);
 			var ex80_b = new Matrix<short>(3, 3, 1, 4, 0, -3, 6, -5, 1, 0, -1);
@@ -123,7 +124,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Console.WriteLine("Exemple 87 :");
 			var ex87_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
-			var ex87_ai = ex87_a.AugmentWithIdentity();
+			var ex87_ai = MatrixExtensionMethods.AugmentWithIdentity(ex87_a);
 			ex87_ai.RunCommand(1, -3, 2, null);
 			ex87_ai.RunCommand(2, -1, null, 2);
 			ex87_ai.RunCommand(2, null, -5, 9);
@@ -137,7 +138,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex87_aif);
 			Console.WriteLine(~ex87_a);
 			var ex87_b = new Matrix<short>(3, 3, 2, 1, -1, 0, -2, 1, 6, 1, -2);
-			var ex87_bi = ex87_b.AugmentWithIdentity();
+			var ex87_bi = MatrixExtensionMethods.AugmentWithIdentity(ex87_b);
 			ex87_bi.RunCommand(2, -3, null, 1);
 			ex87_bi.RunCommand(2, null, 1, -1);
 			Console.WriteLine(ex87_bi);
@@ -148,17 +149,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex88_b = new Matrix<short>(3, 1, 1, 16, 9);
 			var ex88_plus = ex88_a | ex88_b;
 			Console.WriteLine(ex88_plus);
-			Console.WriteLine(ex88_a.AugmentWithIdentity());
+			Console.WriteLine(MatrixExtensionMethods.AugmentWithIdentity(ex88_a));
 			var ex88_m1 = ~ex88_a;
 			Console.WriteLine(ex88_m1);
 			Console.WriteLine(ex88_m1 * ex88_b);
 			TrySolve("", ex88_a, ex88_b, "x", "y", "z");
+#endif
 
 			Console.WriteLine("Exemple 89 :");
 			var ex89_a = new Matrix<short>(3, 3, 2, 1, -4, 3, 1, 5, -2, 8, 7);
 			OutputExample89(ex89_a, (short)2);
 			OutputExample89(ex89_a, (short)5);
 
+#if !NET20
 			Console.WriteLine("Exemple 90 :");
 			var ex_89 = new Matrix<short>(2, 2, 3, 7, 2, 4);
 			Console.WriteLine("{0} det(M) = {1}", ex_89, ex_89.Determinant());
@@ -207,7 +210,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex.Message);
 			}
-			var t2_8re = t2_8A.AugmentWithIdentity();
+			var t2_8re = MatrixExtensionMethods.AugmentWithIdentity(t2_8A);
 			t2_8re.RunCommand(1, 3, 1, null);
 			t2_8re.RunCommand(2, -4, null, 1);
 			t2_8re.RunCommand(2, null, 6, 7);
@@ -234,8 +237,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			fql10_a.RunCommand(2, null, -7, 3);
 			Console.WriteLine(fql10_coef);
 			Console.WriteLine(fql10_a);
+#endif
 		}
 
+#if !NET20
 		private static void TrySolve<T>(string prefix, Matrix<T> coefficients, Matrix<T> constants,
 		params string[] variables)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
@@ -247,8 +252,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Error.WriteLine(ex.Message);
 			}
 		}
+#endif
 
+#if NET40 || NET35 || NET20
+		private static void OutputSolution<T>(string prefix, IDictionary<string, T> solution)
+#else
 		private static void OutputSolution<T>(string prefix, IReadOnlyDictionary<string, T> solution)
+#endif
 		{
 			Console.Write(prefix);
 			if ((solution == null) || (solution.Count < 1)) {

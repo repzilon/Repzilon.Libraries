@@ -16,9 +16,12 @@ using System.Collections.Generic;
 #if NET6_0 || NETCOREAPP3_1
 using System.Diagnostics.CodeAnalysis;
 #endif
+#if !NET20
 using System.Linq;
+#endif
 using Repzilon.Libraries.Core;
 
+#if !NET20
 namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal sealed class PolypeptideComparer : IEqualityComparer<List<AlphaAminoAcid>>
@@ -112,7 +115,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				for (var f = 100; f <= 1400; f += 5) {
 					var pH = RoundOff.Error(f * 0.01f);
 					var q = saaarLateral[a].WeightedCharge(pH);
-					if (!Single.IsNaN(q)) {
+					if (!float.IsNaN(q)) {
 						if (n > 0) {
 							Console.Write(',');
 						}
@@ -406,7 +409,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return new List<AlphaAminoAcid>(symbols);
 		}
 
+#if NET40 || NET35 || NET20
+		private static void Fill(List<AlphaAminoAcid>[] destination, IList<AlphaAminoAcid> source)
+#else
 		private static void Fill(List<AlphaAminoAcid>[] destination, IReadOnlyList<AlphaAminoAcid> source)
+#endif
 		{
 			for (var i = 0; i < destination.Length; i++) {
 				if (destination[i] == null) {
@@ -514,3 +521,4 @@ namespace Repzilon.Tests.ForCoreLibrary
 		#endregion
 	}
 }
+#endif

@@ -27,12 +27,14 @@ namespace Repzilon.Libraries.Core.Vectors
 		public T Value { get; private set; }
 		public AngleUnit Unit { get; private set; }
 
-		decimal IAngle.DecimalValue {
-			get { return this.DecimalValue; }
+		decimal IAngle.DecimalValue
+		{
+			get { return DecimalValue; }
 		}
 
-		private decimal DecimalValue {
-			get { return Convert.ToDecimal(this.Value); }
+		private decimal DecimalValue
+		{
+			get { return Convert.ToDecimal(Value); }
 		}
 		#endregion
 
@@ -40,7 +42,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		public Angle(T value, AngleUnit unit)
 		{
 			Value = value;
-			if (unit.IsDefined()) {
+			if (AngleExtensions.IsDefined(unit)) {
 				Unit = unit;
 			} else {
 				throw NewUnknownUnitException(unit);
@@ -50,7 +52,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, AngleUnit unit)
 		where TFrom : struct
 		{
-			return new Angle<T>(valueInOtherDataType.ConvertTo<T>(), unit);
+			return new Angle<T>(MatrixExtensionMethods.ConvertTo<T>(valueInOtherDataType), unit);
 		}
 
 		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, double conversionFactor, AngleUnit unit)
@@ -79,18 +81,35 @@ namespace Repzilon.Libraries.Core.Vectors
 		#region ConvertTo method
 		IAngle IAngle.ConvertTo(AngleUnit unit)
 		{
-			return this.ConvertTo<decimal>(unit, false);
+#if NET20
+			return ConvertTo<decimal>(unit);
+#else
+			return ConvertTo<decimal>(unit, false);
+#endif
 		}
 
 		public Angle<T> ConvertTo(AngleUnit unit)
 		{
-			return this.ConvertTo<T>(unit, false);
+#if NET20
+			return ConvertTo<T>(unit);
+#else
+			return ConvertTo<T>(unit, false);
+#endif
 		}
 
+#if NET20
+		public Angle<TOut> ConvertTo<TOut>(AngleUnit unit)
+		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
+#else
 		public Angle<TOut> ConvertTo<TOut>(AngleUnit unit, bool normalize)
 		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
+#endif
 		{
-			var x = normalize ? this.Normalize() : this;
+#if NET20
+			var x = this;
+#else
+			var x = normalize ? Normalize() : this;
+#endif
 			var v = x.Value;
 			var tu = this.Unit;
 			if (unit == tu) {
@@ -150,11 +169,16 @@ namespace Repzilon.Libraries.Core.Vectors
 		public Angle<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
 		{
-			return this.ConvertTo<TOut>(this.Unit, false);
+#if NET20
+			return ConvertTo<TOut>(Unit);
+#else
+			return ConvertTo<TOut>(Unit, false);
+#endif
 		}
 		#endregion
 
 		#region Normalize method
+#if !NET20
 		IAngle IAngle.Normalize()
 		{
 			return this.Normalize();
@@ -185,6 +209,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 			return new Angle<T>(angle, this.Unit);
 		}
+#endif
 		#endregion
 
 		#region Equals
@@ -203,7 +228,11 @@ namespace Repzilon.Libraries.Core.Vectors
 			var u = this.Unit;
 			var v = this.Value;
 			return (u == other.Unit) ? v.Equals(other.Value) :
+#if NET20
+			 (Convert.ToDecimal(v) == other.ConvertTo<decimal>(u).Value);
+#else
 			 (Convert.ToDecimal(v) == other.ConvertTo<decimal>(u, false).Value);
+#endif
 		}
 
 		public bool Equals(IAngle other)
@@ -264,7 +293,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		/// </remarks>
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(format)) {
 #else
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -302,7 +331,11 @@ namespace Repzilon.Libraries.Core.Vectors
 			var u = this.Unit;
 			var v = this.Value;
 			return (u == other.Unit) ? v.CompareTo(other.Value) :
+#if NET20
+			 Math.Sign(Convert.ToDecimal(v) - other.ConvertTo<decimal>(u).Value);
+#else
 			 Math.Sign(Convert.ToDecimal(v) - other.ConvertTo<decimal>(u, false).Value);
+#endif
 		}
 
 		public int CompareTo(IAngle other)
@@ -367,16 +400,25 @@ namespace Repzilon.Libraries.Core.Vectors
 		#region Trigonometric functions
 		public double Sin()
 		{
-			return Math.Sin(this.ConvertTo<double>(AngleUnit.Radian, true).Value);
+#if NET20
+			return Math.Sin(ConvertTo<double>(AngleUnit.Radian).Value);
+#else
+			return Math.Sin(ConvertTo<double>(AngleUnit.Radian, true).Value);
+#endif
 		}
 
 		public double Cos()
 		{
-			return Math.Cos(this.ConvertTo<double>(AngleUnit.Radian, true).Value);
+#if NET20
+			return Math.Cos(ConvertTo<double>(AngleUnit.Radian).Value);
+#else
+			return Math.Cos(ConvertTo<double>(AngleUnit.Radian, true).Value);
+#endif
 		}
 		#endregion
 
 		#region Addition operator
+#if !NET20
 		public static IAngle operator +(Angle<T> x, Angle<T> y)
 		{
 			var u = x.Unit;
@@ -388,6 +430,7 @@ namespace Repzilon.Libraries.Core.Vectors
 				return new Angle<decimal>(dx.Value + dy.Value, AngleUnit.Radian);
 			}
 		}
+#endif
 
 		public static Angle<decimal> operator +(Angle<T> x, IAngle y)
 		{
@@ -395,7 +438,11 @@ namespace Repzilon.Libraries.Core.Vectors
 			if (u == y.Unit) {
 				return new Angle<decimal>(x.DecimalValue + y.DecimalValue, u);
 			} else {
+#if NET20
+				var dx = x.ConvertTo<decimal>(AngleUnit.Radian);
+#else
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
+#endif
 				var dy = y.ConvertTo(AngleUnit.Radian);
 				return new Angle<decimal>(dx.DecimalValue + dy.DecimalValue, AngleUnit.Radian);
 			}
@@ -403,6 +450,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Subtraction operator
+#if !NET20
 		public static IAngle operator -(Angle<T> x, Angle<T> y)
 		{
 			var u = x.Unit;
@@ -414,6 +462,7 @@ namespace Repzilon.Libraries.Core.Vectors
 				return new Angle<decimal>(dx.Value - dy.Value, AngleUnit.Radian);
 			}
 		}
+#endif
 
 		public static Angle<decimal> operator -(Angle<T> x, IAngle y)
 		{
@@ -421,7 +470,11 @@ namespace Repzilon.Libraries.Core.Vectors
 			if (u == y.Unit) {
 				return new Angle<decimal>(x.DecimalValue - y.DecimalValue, u);
 			} else {
+#if NET20
+				var dx = x.ConvertTo<decimal>(AngleUnit.Radian);
+#else
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
+#endif
 				var dy = y.ConvertTo(AngleUnit.Radian);
 				return new Angle<decimal>(dx.DecimalValue - dy.DecimalValue, AngleUnit.Radian);
 			}
@@ -431,12 +484,17 @@ namespace Repzilon.Libraries.Core.Vectors
 
 	public static class AngleExtensions
 	{
+#if NET20
+		public static bool IsDefined(AngleUnit unit)
+#else
 		public static bool IsDefined(this AngleUnit unit)
+#endif
 		{
 			return (unit == AngleUnit.Gradian) || (unit == AngleUnit.Degree) || (unit == AngleUnit.Radian);
 		}
 
 		#region Multiplications with possible enlargements
+#if !NET20
 		private static Angle<TAngle> MultiplyInteger<TAngle, TInteger>(Angle<TAngle> angle, TInteger multiplier)
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
 		where TInteger : struct, IEquatable<TInteger>
@@ -468,58 +526,105 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return MultiplyInteger(angle, multiplier);
 		}
+#endif
 
+#if NET20
+		public static Angle<double> Multiply(Angle<float> angle, long multiplier)
+#else
 		public static Angle<double> Multiply(this Angle<float> angle, long multiplier)
+#endif
 		{
 			return new Angle<double>(angle.Value * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<double> Multiply(Angle<double> angle, long multiplier)
+#else
 		public static Angle<double> Multiply(this Angle<double> angle, long multiplier)
+#endif
 		{
 			return new Angle<double>(angle.Value * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<double> Multiply(Angle<long> angle, float multiplier)
+#else
 		public static Angle<double> Multiply(this Angle<long> angle, float multiplier)
+#endif
 		{
 			return new Angle<double>(angle.Value * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<float> Multiply(Angle<float> angle, float multiplier)
+#else
 		public static Angle<float> Multiply(this Angle<float> angle, float multiplier)
+#endif
 		{
 			return new Angle<float>(angle.Value * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<double> Multiply(Angle<double> angle, float multiplier)
+#else
 		public static Angle<double> Multiply(this Angle<double> angle, float multiplier)
+#endif
+
 		{
 			return new Angle<double>(angle.Value * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<decimal> Multiply<TMultiplier>(Angle<decimal> angle, TMultiplier multiplier)
+		where TMultiplier : struct, IEquatable<TMultiplier>, IComparable<TMultiplier>
+#else
 		public static Angle<decimal> Multiply<TMultiplier>(this Angle<decimal> angle, TMultiplier multiplier)
 		where TMultiplier : struct, IEquatable<TMultiplier>, IComparable<TMultiplier>
+#endif
 		{
 			return new Angle<decimal>(angle.Value * Convert.ToDecimal(multiplier), angle.Unit);
 		}
 
+#if NET20
+		public static Angle<long> Multiply<TAngle>(Angle<TAngle> angle, long multiplier)
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#else
 		public static Angle<long> Multiply<TAngle>(this Angle<TAngle> angle, long multiplier)
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#endif
 		{
 			return new Angle<long>(Convert.ToInt64(angle.Value) * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<float> Multiply<TAngle>(Angle<TAngle> angle, float multiplier)
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#else
 		public static Angle<float> Multiply<TAngle>(this Angle<TAngle> angle, float multiplier)
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#endif
 		{
 			return new Angle<float>(Convert.ToSingle(angle.Value) * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<double> Multiply<TAngle>(Angle<TAngle> angle, double multiplier)
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#else
 		public static Angle<double> Multiply<TAngle>(this Angle<TAngle> angle, double multiplier)
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#endif
 		{
 			return new Angle<double>(Convert.ToDouble(angle.Value) * multiplier, angle.Unit);
 		}
 
+#if NET20
+		public static Angle<decimal> Multiply<TAngle>(Angle<TAngle> angle, decimal multiplier)
+		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#else
 		public static Angle<decimal> Multiply<TAngle>(this Angle<TAngle> angle, decimal multiplier)
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
+#endif
 		{
 			return new Angle<decimal>(Convert.ToDecimal(angle.Value) * multiplier, angle.Unit);
 		}

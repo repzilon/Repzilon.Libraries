@@ -27,12 +27,14 @@ namespace Repzilon.Libraries.Core
 		public T Middle { get; private set; }
 		public T Margin { get; private set; }
 
-		IComparable IComparableErrorMargin.Middle {
-			get { return this.Middle; }
+		IComparable IComparableErrorMargin.Middle
+		{
+			get { return Middle; }
 		}
 
-		IComparable IComparableErrorMargin.Margin {
-			get { return this.Margin; }
+		IComparable IComparableErrorMargin.Margin
+		{
+			get { return Margin; }
 		}
 
 		public ErrorMargin(T middle, T margin)
@@ -60,9 +62,11 @@ namespace Repzilon.Libraries.Core
 		public ErrorMargin<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable
 		{
-			return new ErrorMargin<TOut>(this.Middle.ConvertTo<TOut>(), this.Margin.ConvertTo<TOut>());
+			return new ErrorMargin<TOut>(MatrixExtensionMethods.ConvertTo<TOut>(this.Middle),
+			 MatrixExtensionMethods.ConvertTo<TOut>(this.Margin));
 		}
 
+#if !NET20
 		public T Min()
 		{
 			return GenericArithmetic<T>.sub(Middle, Margin);
@@ -72,6 +76,7 @@ namespace Repzilon.Libraries.Core
 		{
 			return GenericArithmetic<T>.adder(Middle, Margin);
 		}
+#endif
 
 		#region ToString
 		public override string ToString()
@@ -81,7 +86,7 @@ namespace Repzilon.Libraries.Core
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(format)) {
 #else
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -98,9 +103,11 @@ namespace Repzilon.Libraries.Core
 			if (format.StartsWith("G")) {
 				stbInterval.Append(" -> ");
 			}
+#if !NET20
 			if (!format.StartsWith("g")) {
 				stbInterval.Append('[').Append(this.Min().ToString(format, formatProvider)).Append("; ").Append(this.Max().ToString(format, formatProvider)).Append(']');
 			}
+#endif
 			return stbInterval.ToString();
 		}
 		#endregion

@@ -87,7 +87,11 @@ namespace Repzilon.Libraries.Core
 			return dcmjarPascal;
 		}
 
+#if NET20
+		public static string ToString<T>(T[][] jagged, CultureInfo culture) where T : IFormattable
+#else
 		public static string ToString<T>(this T[][] jagged, CultureInfo culture) where T : IFormattable
+#endif
 		{
 			var stbJagged = new StringBuilder();
 			if (jagged != null) {

@@ -49,7 +49,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 new byte[] { 1, 1, 1, 1, 1, 3, 5, 2, 3, 4, 4, 1, 1, 1, 3, 4, 2, 3, 3 }, toConsole);
 				Console.Write(Environment.NewLine);
 				// */
+#if NET40 || NET35 || NET20
+				System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-CA");
+#else
 				CultureInfo.CurrentCulture = new CultureInfo("fr-CA");
+#endif
 				TestDigitCount(
 				 new string[] { "-2", "-1", "0", "1", "2", "123", "43,567", "0,0054", "0,124", "25,02", "2005", "3,00", "300,0", "2000", "325", "3002", "34 000", "40,40", "0,000 103 00", "2,005" + "\xA0" + "700e14", "5,4e-3", "3,000E2" },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 5, 2, 3, 4, 4, 3, 4, 1, 3, 4, 2, 4, 5, 7, 2, 4 }, toConsole);
@@ -104,7 +108,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				return blnarOK;
 			}
+#if NET40 || NET35 || NET20
+			return new bool[0];
+#else
 			return Array.Empty<bool>();
+#endif
 		}
 
 		private static void WriteCompact(string text)

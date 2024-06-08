@@ -73,7 +73,7 @@ namespace Repzilon.Libraries.Core
 		/// with each word being 6.61 characters (space included) long on average.</remarks>
 		public static TimeSpan SpeechDuration(string text)
 		{
-#if NET35
+#if NET35 || NET20
 			return RetroCompat.IsNullOrWhiteSpace(text) ?
 #else
 			return String.IsNullOrWhiteSpace(text) ?
@@ -120,6 +120,7 @@ namespace Repzilon.Libraries.Core
 			return (e > 0) ? (double)r : 1.0 / r;
 		}
 
+#if !NET20
 		public static T Summation<T>(int m, int n, Func<int, T> forEach)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
@@ -144,6 +145,7 @@ namespace Repzilon.Libraries.Core
 		{
 			return GenericArithmetic<T>.sub(expression(b), expression(a));
 		}
+#endif
 
 		/// <summary>
 		/// Computes iteratively the factorial of a natural number.

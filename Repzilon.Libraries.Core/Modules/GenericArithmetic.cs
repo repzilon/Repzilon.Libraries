@@ -11,6 +11,7 @@
 // not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
+#if !NET20
 using System;
 using System.Linq.Expressions;
 
@@ -79,4 +80,4 @@ namespace Repzilon.Libraries.Core
 		}
 	}
 }
-
+#endif

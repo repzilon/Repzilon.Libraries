@@ -93,77 +93,133 @@ namespace Repzilon.Libraries.Core
 
 	public static class AlphaAminoAcidExtension
 	{
+#if NET20
+		public static bool IsAlkali(AlphaAminoAcid y)
+#else
 		public static bool IsAlkali(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Lys) || (y == AlphaAminoAcid.Arg) || (y == AlphaAminoAcid.His);
 		}
 
+#if NET20
+		public static bool IsAcidic(AlphaAminoAcid y)
+#else
 		public static bool IsAcidic(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Asp) || (y == AlphaAminoAcid.Glu);
 		}
 
+#if NET20
+		public static bool IsBranched(AlphaAminoAcid y)
+#else
 		public static bool IsBranched(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Val) || (y == AlphaAminoAcid.Leu) || (y == AlphaAminoAcid.Ile);
 		}
 
+#if NET20
+		public static bool HasAlcohol(AlphaAminoAcid y)
+#else
 		public static bool HasAlcohol(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Ser) || (y == AlphaAminoAcid.Thr);
 		}
 
+#if NET20
+		public static bool HasTwoAsymetricCarbons(AlphaAminoAcid y)
+#else
 		public static bool HasTwoAsymetricCarbons(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Ser) || (y == AlphaAminoAcid.Thr) || (y == AlphaAminoAcid.Ile);
 		}
 
+#if NET20
+		public static bool IsAromatic(AlphaAminoAcid y)
+#else
 		public static bool IsAromatic(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Phe) || (y == AlphaAminoAcid.Tyr) || (y == AlphaAminoAcid.Trp);
 		}
 
+#if NET20
+		public static bool HasSulfur(AlphaAminoAcid y)
+#else
 		public static bool HasSulfur(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Cys) || (y == AlphaAminoAcid.Met);
 		}
 
+#if NET20
+		public static bool HasAmide(AlphaAminoAcid y)
+#else
 		public static bool HasAmide(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Asn) || (y == AlphaAminoAcid.Gln);
 		}
 
+#if NET20
+		public static bool HasPkaR(AlphaAminoAcid y)
+#else
 		public static bool HasPkaR(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Lys) || (y == AlphaAminoAcid.Arg) || (y == AlphaAminoAcid.His) ||
 			 (y == AlphaAminoAcid.Asp) || (y == AlphaAminoAcid.Glu) ||
 			 (y == AlphaAminoAcid.Tyr) || (y == AlphaAminoAcid.Cys);
 		}
 
+#if NET20
+		public static byte CationCountWhenVeryAcidic(AlphaAminoAcid y)
+#else
 		public static byte CationCountWhenVeryAcidic(this AlphaAminoAcid y)
+#endif
 		{
-			return y.IsAlkali() ? (byte)2 : (byte)1;
+			return IsAlkali(y) ? (byte)2 : (byte)1;
 		}
 
+#if NET20
+		public static byte AsymetricCarbonCount(AlphaAminoAcid y)
+#else
 		public static byte AsymetricCarbonCount(this AlphaAminoAcid y)
+#endif
 		{
-			if (y.HasTwoAsymetricCarbons()) {
+			if (HasTwoAsymetricCarbons(y)) {
 				return 2;
+#pragma warning disable IDE0046 // Convert to conditional expression
+#pragma warning disable CC0013 // Use ternary operator
 			} else if (y == AlphaAminoAcid.Gly) {
+#pragma warning restore CC0013 // Use ternary operator
+#pragma warning restore IDE0046 // Convert to conditional expression
 				return 0;
 			} else {
 				return 1;
 			}
 		}
 
+#if NET20
+		public static bool IsEssentialForAdults(AlphaAminoAcid y)
+#else
 		public static bool IsEssentialForAdults(this AlphaAminoAcid y)
+#endif
 		{
 			return (y == AlphaAminoAcid.Leu) || (y == AlphaAminoAcid.Ile) || (y == AlphaAminoAcid.Phe) ||
 			 (y == AlphaAminoAcid.Trp) || (y == AlphaAminoAcid.Thr) || (y == AlphaAminoAcid.Lys) ||
 			 (y == AlphaAminoAcid.Val) || (y == AlphaAminoAcid.Met);
 		}
 
+#if NET20
+		public static bool IsEssentialForKids(AlphaAminoAcid y)
+#else
 		public static bool IsEssentialForKids(this AlphaAminoAcid y)
+#endif
 		{
 			return IsEssentialForAdults(y) || (y == AlphaAminoAcid.His) || (y == AlphaAminoAcid.Arg);
 		}

@@ -38,7 +38,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			public static FattyAcid Create(string name, float meltingPointInCelsius, string formula)
 			{
+#if NET35 || NET20
+				if (RetroCompat.IsNullOrWhiteSpace(name)) {
+#else
 				if (String.IsNullOrWhiteSpace(name)) {
+#endif
 					throw new ArgumentNullException("name");
 				}
 				if (meltingPointInCelsius < -273.15) {

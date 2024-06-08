@@ -44,6 +44,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 	public static class Vector<T> where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 	{
+#if !NET20
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
@@ -76,6 +77,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return Dot(norm1, norm2, new Angle<T>(angleBetween, unit));
 		}
+#endif
 	}
 }
 

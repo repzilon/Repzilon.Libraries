@@ -39,7 +39,7 @@ namespace Repzilon.Libraries.Core
 			if (!Char.IsLetter(letter)) {
 				throw new ArgumentOutOfRangeException("letter");
 			}
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(code)) {
 				throw new ArgumentNullException("code");
 			}
@@ -189,13 +189,13 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 		public static readonly ReadOnlyCollection<AminoAcid> AlphaList = MakeAlphaList();
 #else
 		public static readonly IReadOnlyList<AminoAcid> AlphaList = MakeAlphaList();
 #endif
 
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 		private static ReadOnlyCollection<AminoAcid> MakeAlphaList()
 #else
 		private static IReadOnlyList<AminoAcid> MakeAlphaList()

@@ -1,6 +1,12 @@
 <Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' == '17.0' ">
+    <TargetFrameworks>net20;net35;net46;net5.0;net6.0;netstandard1.1;netstandard1.3;netstandard1.6;netstandard2.0</TargetFrameworks>
+    <NoWarn>NETSDK1138</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(VisualStudioVersion)' != '17.0' ">
+    <TargetFrameworks>netstandard2.0;netstandard1.6;netstandard1.3;netstandard1.1;net46;net40;net35;net20</TargetFrameworks>
+  </PropertyGroup>
   <PropertyGroup>
-    <TargetFrameworks>netstandard2.0;netstandard1.6;netstandard1.3;netstandard1.1</TargetFrameworks>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
@@ -10,7 +16,6 @@
     <LangVersion>3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Modules\" />
     <Folder Include="Structures\" />
     <Folder Include="Interfaces\" />
   </ItemGroup>

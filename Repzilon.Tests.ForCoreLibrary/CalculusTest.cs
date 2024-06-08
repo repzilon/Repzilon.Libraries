@@ -11,6 +11,7 @@
 // not distributed with this file, You can obtain one at 
 // https://mozilla.org/MPL/2.0/.
 //
+#if !NET20
 using System;
 using Repzilon.Libraries.Core;
 
@@ -20,11 +21,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
+#if !NET20
 			Console.WriteLine("Calcul intégral travail 1 #2");
 			SummationTest(10000, 729, "Math.Pow", CalculusWork1No2FP);
 			SummationTest(10000, 729, "Pow(i32, u16)", CalculusWork1No2Int64);
 			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
-
+#endif
 			Console.WriteLine("Distributions de Student");
 			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
 			int i;
@@ -46,6 +48,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
+#if !NET20
 		private static void SummationTest<T>(int benchLoops, int summationUpper, string legend, Func<int, T> forEach)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
@@ -84,5 +87,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			return r;
 		}
+#endif
 	}
 }
+#endif

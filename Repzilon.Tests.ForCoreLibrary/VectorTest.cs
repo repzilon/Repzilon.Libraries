@@ -21,6 +21,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
+#if !NET20
 			var exa55b_i2 = Vector<short>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_f4 = Vector<float>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_f8 = Vector<double>.Sum(3, 4, 45, AngleUnit.Degree);
@@ -40,6 +41,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa58_v = new TwoDVector<short>(5, 3);
 			var exa58_n = ((2 * exa58_u) + exa58_v).Norm();
 			Console.WriteLine("Exemple 58  : ||2u+v||={0}", exa58_n);
+#endif
 
 			var exa60_b = new TwoDVector<short>(-3 - 1, 7 - 1).ToPolar().ConvertTo(AngleUnit.Degree);
 			Console.WriteLine("Exemple 60  : DC={0:g}", exa60_b);
@@ -50,16 +52,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa62 = new PolarVector<float>(3, 210, AngleUnit.Degree).ToCartesian();
 			Console.WriteLine("Exemple 62  : v={0}", exa62);
 
+#if !NET20
 			var exa63_u = new PolarVector<float>(2, 45, AngleUnit.Degree);
 			var exa63_v = new PolarVector<float>(4, -30, AngleUnit.Degree);
 			var exa63_a = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
 			var exa63_ng = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
 			var exa63_s = exa63_u + exa63_v;
 			Console.WriteLine("Exemple 63  : ||R||={0} u+v={1} ||u+v||={2}", exa63_ng, exa63_s, exa63_s.Norm());
+#endif
 
 			var exa64_u = Vector.New(1.0f, 3.0f, 4.0f);
 			Console.WriteLine("Exemple 64  : ||u||={0:f3}", exa64_u.Norm());
 
+#if !NET20
 			var exa65_u = Vector.New(2, 4, 1);
 			var exa65_v = Vector.New(-1, -2, 5);
 			Console.WriteLine("Exemple 65a : u//v is {0}", ThreeDVector<int>.AreParallel(exa65_u, exa65_v));
@@ -72,12 +77,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex66_abf = exa66_ab.Cast<float>();
 			var exa66_v = ex66_abf.ToUnitary();
 			Console.WriteLine("Exemple 66c : v={0}, (float)AB==AB is {1}", exa66_v, ex66_abf.Equals(exa66_ab));
+#endif
 
 			var exa67_theta = new Angle<float>(40.0f, AngleUnit.Degree);
 			var exa67_A = 700 * exa67_theta.Cos() / exa67_theta.Sin();
 			var exa67_T = 700 / exa67_theta.Sin();
 			Console.WriteLine("Exemple 67  : ||A||={0:f2} ||T||={1:f2}", exa67_A, exa67_T);
 
+#if !NET20
 			var exa68_u = new PolarVector<float>(9, 35, AngleUnit.Degree);
 			var exa68_v = new PolarVector<float>(5, 90 + 20, AngleUnit.Degree);
 			var exa68_w = new PolarVector<float>(3, 180 + 50, AngleUnit.Degree);
@@ -114,11 +121,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_v = Vector.New(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
 			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());
+#endif
 
 			Program.OutputSizeOf<Exp>();
 		}
 
 		#region Example 69 implementations
+#if !NET20
 		private static float Example69WithSingle(bool consoleOutput, bool roundErrors)
 		{
 			const float exa69_q1 = 0.000003f;
@@ -132,10 +141,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			var exa69_v13 = new PolarVector<float>(exa69_f13, 90, AngleUnit.Degree).ToCartesian();
 			var angle = new Angle<float>(270, AngleUnit.Degree) + new Angle<float>((float)Math.Atan2(4, 3), AngleUnit.Radian);
-			var exa69_v23 = new PolarVector<float>(exa69_f23, ((Angle<decimal>)angle).Cast<float>()).ToCartesian();
+			var exa69_v23 = new PolarVector<float>(exa69_f23, angle.Cast<float>()).ToCartesian();
 			if (roundErrors) {
-				exa69_v13 = exa69_v13.RoundError();
-				exa69_v23 = exa69_v23.RoundError();
+				exa69_v13 = TwoDVectorExtensions.RoundError(exa69_v13);
+				exa69_v23 = TwoDVectorExtensions.RoundError(exa69_v23);
 			}
 			var exa69_r = Convert.ToSingle((exa69_v13 + exa69_v23).Norm());
 			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, exa69_r);
@@ -165,10 +174,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			exa69_v13 = new PolarVector<double>(exa69_f13, 90, AngleUnit.Degree).ToCartesian();
 			var angle = new Angle<double>(270, AngleUnit.Degree) + new Angle<double>(Math.Atan2(4, 3), AngleUnit.Radian);
-			exa69_v23 = new PolarVector<double>(exa69_f23, ((Angle<decimal>)angle).Cast<double>()).ToCartesian();
+			exa69_v23 = new PolarVector<double>(exa69_f23, angle.Cast<double>()).ToCartesian();
 			if (roundErrors) {
-				exa69_v13 = exa69_v13.RoundError();
-				exa69_v23 = exa69_v23.RoundError();
+				exa69_v13 = TwoDVectorExtensions.RoundError(exa69_v13);
+				exa69_v23 = TwoDVectorExtensions.RoundError(exa69_v23);
 			}
 			exa69_r = (exa69_v13 + exa69_v23).Norm();
 		}
@@ -185,11 +194,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				exa69_f23 = RoundOff.Error(exa69_f23);
 			}
 			var exa69_v13 = new PolarVector<decimal>(exa69_f13, 90, AngleUnit.Degree).ToCartesian();
-			var angle = new Angle<decimal>(270, AngleUnit.Degree) + new Angle<decimal>((decimal)Math.Atan2(4, 3), AngleUnit.Radian);
-			var exa69_v23 = new PolarVector<decimal>(exa69_f23, (Angle<decimal>)angle).ToCartesian();
+			var angle = (Angle<decimal>)(new Angle<decimal>(270, AngleUnit.Degree) + new Angle<decimal>((decimal)Math.Atan2(4, 3), AngleUnit.Radian));
+			var exa69_v23 = new PolarVector<decimal>(exa69_f23, angle).ToCartesian();
 			if (roundErrors) {
-				exa69_v13 = exa69_v13.RoundError();
-				exa69_v23 = exa69_v23.RoundError();
+				exa69_v13 = TwoDVectorExtensions.RoundError(exa69_v13);
+				exa69_v23 = TwoDVectorExtensions.RoundError(exa69_v23);
 			}
 			var exa69_vr = exa69_v13 + exa69_v23;
 			var exa69_r = ExtraMath.Hypoth(exa69_vr.X, exa69_vr.Y);
@@ -218,9 +227,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, result);
 			return result;
 		}
+#endif
 		#endregion
 
 		#region Example 69 showcasing
+#if !NET20
 		private static void ShowcaseExample69<T>(decimal referenceResult, Func<bool, bool, T> implementation)
 		{
 			Console.Write(Environment.NewLine);
@@ -257,6 +268,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.WriteLine("Exemple 69c : F13={0} F23={1} ||R||={2}", exa69_v13, exa69_v23, exa69_r);
 			}
 		}
+#endif
 		#endregion
 	}
 }

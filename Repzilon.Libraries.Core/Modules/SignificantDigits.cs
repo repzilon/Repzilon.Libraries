@@ -170,7 +170,7 @@ namespace Repzilon.Libraries.Core
 		#region Count String overloads
 		public static byte Count(string value)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(value)) {
 #else
 			if (String.IsNullOrWhiteSpace(value)) {
@@ -187,7 +187,7 @@ namespace Repzilon.Libraries.Core
 		{
 			const NumberStyles kNumberStyles = NumberStyles.Number | NumberStyles.AllowExponent | NumberStyles.AllowCurrencySymbol | NumberStyles.AllowThousands;
 			double dblValue;
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(value)) {
 #else
 			if (String.IsNullOrWhiteSpace(value)) {

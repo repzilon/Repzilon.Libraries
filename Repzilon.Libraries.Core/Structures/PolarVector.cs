@@ -43,14 +43,22 @@ namespace Repzilon.Libraries.Core.Vectors
 		public PolarVector(T norm, Angle<T> angle)
 		{
 			Norm = norm;
+#if NET20
+			Angle = angle;
+#else
 			Angle = angle.Normalize();
+#endif
 		}
 
 		public PolarVector(T norm, T angle, AngleUnit unit) : this(norm, new Angle<T>(angle, unit))
 		{
 		}
 
+#if NET20
+		public PolarVector(T norm, Angle<T> angle, AngleUnit newUnit) : this(norm, angle.ConvertTo<T>(newUnit))
+#else
 		public PolarVector(T norm, Angle<T> angle, AngleUnit newUnit) : this(norm, angle.ConvertTo<T>(newUnit, true))
+#endif
 		{
 		}
 
@@ -72,7 +80,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			var a = this.Angle;
-			return new PolarVector<TOut>(this.Norm.ConvertTo<TOut>(), a.Value.ConvertTo<TOut>(), a.Unit);
+			return new PolarVector<TOut>(MatrixExtensionMethods.ConvertTo<TOut>(this.Norm), MatrixExtensionMethods.ConvertTo<TOut>(a.Value), a.Unit);
 		}
 
 		public TwoDVector<T> ToCartesian()
@@ -166,7 +174,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(format)) {
 #else
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -185,6 +193,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		#region Operators
 		// TODO : make addition and subtraction of polar vector return a polar vector
+#if !NET20
 		public static TwoDVector<T> operator +(PolarVector<T> u, PolarVector<T> v)
 		{
 			return new TwoDVector<T>(u) + new TwoDVector<T>(v);
@@ -209,11 +218,16 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return Vector<T>.Dot(u.Norm, v.Norm, AngleBetween(u, v));
 		}
+#endif
 		#endregion
 
 		public static Angle<T> AngleBetween(PolarVector<T> u, PolarVector<T> v)
 		{
+#if NET20
+			return (v.Angle - u.Angle).Cast<T>();
+#else
 			return (v.Angle.Normalize() - u.Angle.Normalize()).Normalize().Cast<T>();
+#endif
 		}
 
 		public static bool AreParallel(PolarVector<T> u, PolarVector<T> v)
@@ -223,7 +237,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static bool ArePerpendicular(PolarVector<T> u, PolarVector<T> v)
 		{
-			return AngleBetween(u, v) == new Angle<T>(90.ConvertTo<T>(), AngleUnit.Degree);
+			return AngleBetween(u, v) == new Angle<T>(MatrixExtensionMethods.ConvertTo<T>(90), AngleUnit.Degree);
 		}
 	}
 }

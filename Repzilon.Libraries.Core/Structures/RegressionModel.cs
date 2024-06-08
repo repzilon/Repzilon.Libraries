@@ -71,10 +71,12 @@ namespace Repzilon.Libraries.Core
 #endif
 		#endregion
 
+#if !NET20
 		public T Determination()
 		{
 			return GenericArithmetic<T>.BuildMultiplier<T>()(R, R);
 		}
+#endif
 
 		#region Equals
 		public override bool Equals(object obj)
@@ -135,7 +137,7 @@ namespace Repzilon.Libraries.Core
 		/// </remarks>
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(format)) {
 #else
 			if (String.IsNullOrWhiteSpace(format)) {

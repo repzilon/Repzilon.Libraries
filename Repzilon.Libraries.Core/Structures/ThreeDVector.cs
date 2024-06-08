@@ -27,16 +27,19 @@ namespace Repzilon.Libraries.Core.Vectors
 		public T Y { get; private set; }
 		public T Z { get; private set; }
 
-		IComparable IComparableThreeDVector.X {
-			get { return this.X; }
+		IComparable IComparableThreeDVector.X
+		{
+			get { return X; }
 		}
 
-		IComparable IComparableThreeDVector.Y {
-			get { return this.Y; }
+		IComparable IComparableThreeDVector.Y
+		{
+			get { return Y; }
 		}
 
-		IComparable IComparableThreeDVector.Z {
-			get { return this.Z; }
+		IComparable IComparableThreeDVector.Z
+		{
+			get { return Z; }
 		}
 
 		public ThreeDVector(T x, T y, T z)
@@ -78,7 +81,10 @@ namespace Repzilon.Libraries.Core.Vectors
 		public ThreeDVector<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
-			return new ThreeDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>(), Z.ConvertTo<TOut>());
+			return new ThreeDVector<TOut>(
+			 MatrixExtensionMethods.ConvertTo<TOut>(X),
+			 MatrixExtensionMethods.ConvertTo<TOut>(Y),
+			 MatrixExtensionMethods.ConvertTo<TOut>(Z));
 		}
 
 		ICartesianVector<TOut> ICartesianVector<T>.Cast<TOut>()
@@ -95,9 +101,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var f = 1.0 / this.Norm();
 			return new ThreeDVector<T>(
-			 (f * Convert.ToDouble(X)).ConvertTo<T>(),
-			 (f * Convert.ToDouble(Y)).ConvertTo<T>(),
-			 (f * Convert.ToDouble(Z)).ConvertTo<T>());
+			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(X)),
+			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Y)),
+			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Z)));
 		}
 		#endregion
 
@@ -154,7 +160,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(format)) {
 #else
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -173,6 +179,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Operators
+#if !NET20
 		public static ThreeDVector<T> operator +(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			var addi = GenericArithmetic<T>.adder;
@@ -216,8 +223,10 @@ namespace Repzilon.Libraries.Core.Vectors
 			 sub(mult(u.Z, v.X), mult(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
 			 sub(mult(u.X, v.Y), mult(u.Y, v.X)));
 		}
+#endif
 		#endregion
 
+#if !NET20
 		public static bool ArePerpendicular(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			return Dot(u, v).Equals(default(T));
@@ -225,8 +234,13 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static bool AreParallel(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
+#if NET20
+			var ux = Convert.ToDecimal(u.X);
+			var vx = Convert.ToDecimal(v.X);
+#else
 			var ux = u.X.ConvertTo<decimal>();
 			var vx = v.X.ConvertTo<decimal>();
+#endif
 			decimal k;
 			if (Math.Abs(vx) < Math.Abs(ux)) {
 				k = ux / vx;
@@ -241,10 +255,12 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);
 		}
+#endif
 	}
 
 	public static class ThreeDVectorExtensions
 	{
+#if !NET20
 		public static ThreeDVector<T> Multiply<T, TScalar>(this ThreeDVector<T> v, TScalar k)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
@@ -252,18 +268,31 @@ namespace Repzilon.Libraries.Core.Vectors
 			var mult = GenericArithmetic<T>.BuildMultiplier<TScalar>();
 			return new ThreeDVector<T>(mult(k, v.X), mult(k, v.Y), mult(k, v.Z));
 		}
+#endif
 
+#if NET20
+		public static ThreeDVector<float> RoundError(ThreeDVector<float> v)
+#else
 		public static ThreeDVector<float> RoundError(this ThreeDVector<float> v)
+#endif
 		{
 			return new ThreeDVector<float>(RoundOff.Error(v.X), RoundOff.Error(v.Y), RoundOff.Error(v.Z));
 		}
 
+#if NET20
+		public static ThreeDVector<double> RoundError(ThreeDVector<double> v)
+#else
 		public static ThreeDVector<double> RoundError(this ThreeDVector<double> v)
+#endif
 		{
 			return new ThreeDVector<double>(RoundOff.Error(v.X), RoundOff.Error(v.Y), RoundOff.Error(v.Z));
 		}
 
+#if NET20
+		public static ThreeDVector<decimal> RoundError(ThreeDVector<decimal> v)
+#else
 		public static ThreeDVector<decimal> RoundError(this ThreeDVector<decimal> v)
+#endif
 		{
 			return new ThreeDVector<decimal>(RoundOff.Error(v.X), RoundOff.Error(v.Y), RoundOff.Error(v.Z));
 		}

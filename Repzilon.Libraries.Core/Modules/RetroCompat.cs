@@ -14,13 +14,19 @@
 
 namespace Repzilon.Libraries.Core
 {
-	internal static class RetroCompat
+	public static class RetroCompat
 	{
-#if NET35
-		internal static bool IsNullOrWhiteSpace(string text)
+#if NET35 || NET20
+		public static bool IsNullOrWhiteSpace(string text)
 		{
 			return (text == null) || (text.Length < 1) || (text.Trim().Length < 1);
 		}
 #endif
 	}
+
+#if NET20
+	public delegate TResult Func<T1, T2, TResult>(T1 arg1, T2 arg2);
+
+	public delegate TResult Func<TResult>();
+#endif
 }

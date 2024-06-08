@@ -70,7 +70,7 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Identity(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			var one = 1.ConvertTo<T>();
+			var one = MatrixExtensionMethods.ConvertTo<T>(1);
 			for (byte i = 0; i < size; i++) {
 				m[i, i] = one;
 			}
@@ -80,8 +80,8 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Signature(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			var plusOne = 1.ConvertTo<T>();
-			var minusOne = (-1).ConvertTo<T>();
+			var plusOne = MatrixExtensionMethods.ConvertTo<T>(1);
+			var minusOne = MatrixExtensionMethods.ConvertTo<T>(-1);
 			for (byte i = 0; i < size; i++) {
 				for (byte j = 0; j < size; j++) {
 					m[i, j] = (i + j) % 2 == 0 ? plusOne : minusOne;
@@ -151,7 +151,7 @@ namespace Repzilon.Libraries.Core
 			var other = new Matrix<TOut>(source.Lines, sc, source.m_bytAugmentedColumn);
 			for (byte i = 0; i < source.Lines; i++) {
 				for (byte j = 0; j < sc; j++) {
-					other[i, j] = source[i, j].ConvertTo<TOut>();
+					other[i, j] = MatrixExtensionMethods.ConvertTo<TOut>(source[i, j]);
 				}
 			}
 			return other;
@@ -244,7 +244,7 @@ namespace Repzilon.Libraries.Core
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(format)) {
 #else
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -307,6 +307,7 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Operators
+#if !NET20
 		public static Matrix<T> operator +(Matrix<T> a, Matrix<T> b)
 		{
 			var ac = a.Columns;
@@ -381,12 +382,14 @@ namespace Repzilon.Libraries.Core
 				 a.Lines, a.Columns, b.Lines, b.Columns));
 			}
 		}
+#endif
 
 		public static Matrix<T> operator |(Matrix<T> coefficients, Matrix<T> values)
 		{
-			return coefficients.Augment(values);
+			return MatrixExtensionMethods.Augment(coefficients, values);
 		}
 
+#if !NET20
 		/// <summary>
 		/// Inverts the matrix using the Gauss-Jordan technique.
 		/// </summary>
@@ -475,8 +478,10 @@ namespace Repzilon.Libraries.Core
 			coeffs[l] = augmented[c, c];
 			augmented.RunCommand(l, coeffs);
 		}
+#endif
 		#endregion
 
+#if !NET20
 		/// <summary>
 		/// Runs a line command on an augmented matrix. This method mutates the matrix.
 		/// </summary>
@@ -515,6 +520,7 @@ namespace Repzilon.Libraries.Core
 				}
 			}
 		}
+#endif
 
 		/// <summary>
 		/// Swap two lines of matrix, generally an augmented one. This method mutates the matrix.
@@ -541,6 +547,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if !NET20
 		public T Determinant()
 		{
 			if (!this.IsSquare) {
@@ -584,6 +591,7 @@ namespace Repzilon.Libraries.Core
 				}
 			}
 		}
+#endif
 
 		public Matrix<T> Left()
 		{
@@ -659,6 +667,7 @@ namespace Repzilon.Libraries.Core
 			return null;
 		}
 
+#if !NET20
 		/// <summary>
 		/// Tries to solve an equation system using the Cramer technique, using this matrix containing the
 		/// coefficients of the variable part of the equation system.
@@ -812,10 +821,12 @@ namespace Repzilon.Libraries.Core
 			}
 			return dicSolved;
 		}
+#endif
 	}
 
 	public static class MatrixExtensionMethods
 	{
+#if !NET20
 		public static Matrix<T> Multiply<T, TScalar>(this Matrix<T> m, TScalar k)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		where TScalar : struct
@@ -829,9 +840,15 @@ namespace Repzilon.Libraries.Core
 			}
 			return mm;
 		}
+#endif
 
+#if NET20
+		public static Matrix<T> Augment<T>(Matrix<T> coefficients, Matrix<T> values)
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+#else
 		public static Matrix<T> Augment<T>(this Matrix<T> coefficients, Matrix<T> values)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+#endif
 		{
 			var cl = coefficients.Lines;
 			if (values.Lines == cl) {
@@ -855,17 +872,26 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if NET20
+		public static Matrix<T> AugmentWithIdentity<T>(Matrix<T> coefficients)
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+#else
 		public static Matrix<T> AugmentWithIdentity<T>(this Matrix<T> coefficients)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+#endif
 		{
-			return coefficients.Augment(Matrix<T>.Identity(coefficients.Lines));
+			return MatrixExtensionMethods.Augment(coefficients, Matrix<T>.Identity(coefficients.Lines));
 		}
 
 		/// <summary>
 		/// Rounds off calculation errors of this matrix. This method mutates the matrix.
 		/// </summary>
 		/// <param name="matrix">Matrix to round</param>
+#if NET20
+		public static void RoundErrors(Matrix<float> matrix)
+#else
 		public static void RoundErrors(this Matrix<float> matrix)
+#endif
 		{
 			for (byte i = 0; i < matrix.Lines; i++) {
 				for (byte j = 0; j < matrix.Columns; j++) {
@@ -878,7 +904,11 @@ namespace Repzilon.Libraries.Core
 		/// Rounds off calculation errors of this matrix. This method mutates the matrix.
 		/// </summary>
 		/// <param name="matrix">Matrix to round</param>
+#if NET20
+		public static void RoundErrors(Matrix<double> matrix)
+#else
 		public static void RoundErrors(this Matrix<double> matrix)
+#endif
 		{
 			for (byte i = 0; i < matrix.Lines; i++) {
 				for (byte j = 0; j < matrix.Columns; j++) {
@@ -887,8 +917,13 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if NET20
+		public static TOut ConvertTo<TOut>(ValueType value)
+		where TOut : struct
+#else
 		public static TOut ConvertTo<TOut>(this ValueType value)
 		where TOut : struct
+#endif
 		{
 			return (TOut)Convert.ChangeType(value, typeof(TOut));
 		}

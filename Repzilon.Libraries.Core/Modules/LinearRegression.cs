@@ -13,7 +13,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Linq;
 
 namespace Repzilon.Libraries.Core
 {
@@ -149,7 +148,10 @@ namespace Repzilon.Libraries.Core
 				LinearRegression.Compute(lstSemiLogY).ChangeModel(MathematicalModel.SemiLogY),
 				LinearRegression.Compute(lstLogLog).ChangeModel(MathematicalModel.LogLog)
 			};
-			return rmarAll.OrderBy(x => x.R).Last();
+			Array.Sort(rmarAll, delegate (RegressionModel<double> x, RegressionModel<double> y) {
+				return -1 * x.R.CompareTo(y.R);
+			});
+			return rmarAll[0];
 		}
 	}
 }

@@ -27,12 +27,14 @@ namespace Repzilon.Libraries.Core.Vectors
 		public T X { get; private set; }
 		public T Y { get; private set; }
 
-		IComparable IComparableTwoDVector.X {
-			get { return this.X; }
+		IComparable IComparableTwoDVector.X
+		{
+			get { return X; }
 		}
 
-		IComparable IComparableTwoDVector.Y {
-			get { return this.Y; }
+		IComparable IComparableTwoDVector.Y
+		{
+			get { return Y; }
 		}
 
 		public TwoDVector(T x, T y)
@@ -63,7 +65,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			var vav = Convert.ToDouble(va.Value);
 			var zt = default(T);
 			var n = Convert.ToDouble(nt);
-			var mnt = (-1 * n).ConvertTo<T>();
+			var mnt = MatrixExtensionMethods.ConvertTo<T>(-1 * n);
 			if (vav == 0) {
 				return new KeyValuePair<T, T>(nt, zt);
 			} else if (vav == quarterTurn) {
@@ -79,9 +81,14 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		private static KeyValuePair<T, T> ToCartesian(double n, Angle<T> va)
 		{
+#if NET20
+			var theta = va.ConvertTo<double>(AngleUnit.Radian).Value;
+#else
 			var theta = va.ConvertTo<double>(AngleUnit.Radian, true).Value;
-			return new KeyValuePair<T, T>((n * Math.Cos(theta)).ConvertTo<T>(),
-			 (n * Math.Sin(theta)).ConvertTo<T>());
+#endif
+			return new KeyValuePair<T, T>(
+			 MatrixExtensionMethods.ConvertTo<T>(n * Math.Cos(theta)),
+			 MatrixExtensionMethods.ConvertTo<T>(n * Math.Sin(theta)));
 		}
 
 		#region ICloneable members
@@ -115,7 +122,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		public TwoDVector<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
-			return new TwoDVector<TOut>(X.ConvertTo<TOut>(), Y.ConvertTo<TOut>());
+			return new TwoDVector<TOut>(
+			 MatrixExtensionMethods.ConvertTo<TOut>(X),
+			 MatrixExtensionMethods.ConvertTo<TOut>(Y));
 		}
 
 		ICartesianVector<TOut> ICartesianVector<T>.Cast<TOut>()
@@ -131,14 +140,20 @@ namespace Repzilon.Libraries.Core.Vectors
 		public TwoDVector<T> ToUnitary()
 		{
 			var f = 1.0 / this.Norm();
-			return new TwoDVector<T>((f * Convert.ToDouble(X)).ConvertTo<T>(), (f * Convert.ToDouble(Y)).ConvertTo<T>());
+			return new TwoDVector<T>(
+			  MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(X)),
+			  MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Y)));
 		}
 		#endregion
 
 		#region ToPolar
 		public Angle<double> Angle()
 		{
+#if NET20
+			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian);
+#else
 			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian).Normalize();
+#endif
 		}
 
 		public PolarVector<double> ToPolar()
@@ -156,8 +171,14 @@ namespace Repzilon.Libraries.Core.Vectors
 			// casting to IConvertible reduces IL size
 			var tc = ((IConvertible)this.X).GetTypeCode();
 			// Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
-			return new PolarVector<TOut>(Norm().ConvertTo<TOut>(), Angle().ConvertTo<TOut>(
+			return new PolarVector<TOut>(MatrixExtensionMethods.ConvertTo<TOut>(this.Norm()),
+#if (NET20)
+			 Angle().ConvertTo<TOut>(
+			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree));
+#else
+			 Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
+#endif
 #endif
 		}
 		#endregion
@@ -203,8 +224,9 @@ namespace Repzilon.Libraries.Core.Vectors
 				var n = this.Norm();
 				if (n == Convert.ToDouble(other.Norm)) {
 					var oa = other.Angle;
-					return Equals(new TwoDVector<T>((n * oa.Cos()).ConvertTo<T>(),
-					 (n * oa.Sin()).ConvertTo<T>()));
+					return Equals(new TwoDVector<T>(
+					 MatrixExtensionMethods.ConvertTo<T>(n * oa.Cos()),
+					 MatrixExtensionMethods.ConvertTo<T>(n * oa.Sin())));
 				}
 			}
 			return false;
@@ -252,7 +274,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
-#if NET35
+#if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(format)) {
 #else
 			if (String.IsNullOrWhiteSpace(format)) {
@@ -270,6 +292,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Operators
+#if !NET20
 		public static TwoDVector<T> operator +(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var addi = GenericArithmetic<T>.adder;
@@ -308,10 +331,12 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return Cross(u, v);
 		}
+#endif
 
 		// TODO : implement operators between TwoDVector and PolarVector
 		#endregion
 
+#if !NET20
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
@@ -322,14 +347,16 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return Dot(u, v).Equals(default(T));
 		}
+#endif
 
 		public static bool AreParallel(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var bu = u.Y.ConvertTo<decimal>() / u.X.ConvertTo<decimal>();
-			var bv = v.Y.ConvertTo<decimal>() / v.X.ConvertTo<decimal>();
+			var bu = MatrixExtensionMethods.ConvertTo<decimal>(u.Y) / MatrixExtensionMethods.ConvertTo<decimal>(u.X);
+			var bv = MatrixExtensionMethods.ConvertTo<decimal>(v.Y) / MatrixExtensionMethods.ConvertTo<decimal>(v.X);
 			return (bu == bv); // identical slope
 		}
 
+#if !NET20
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
@@ -341,10 +368,12 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);
 		}
+#endif
 	}
 
 	public static class TwoDVectorExtensions
 	{
+#if !NET20
 		public static TwoDVector<T> Multiply<T, TScalar>(this TwoDVector<T> v, TScalar k)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
@@ -352,18 +381,31 @@ namespace Repzilon.Libraries.Core.Vectors
 			var mult = GenericArithmetic<T>.BuildMultiplier<TScalar>();
 			return new TwoDVector<T>(mult(k, v.X), mult(k, v.Y));
 		}
+#endif
 
+#if NET20
+		public static TwoDVector<float> RoundError(TwoDVector<float> v)
+#else
 		public static TwoDVector<float> RoundError(this TwoDVector<float> v)
+#endif
 		{
 			return new TwoDVector<float>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
 		}
 
+#if NET20
+		public static TwoDVector<double> RoundError(TwoDVector<double> v)
+#else
 		public static TwoDVector<double> RoundError(this TwoDVector<double> v)
+#endif
 		{
 			return new TwoDVector<double>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
 		}
 
+#if NET20
+		public static TwoDVector<decimal> RoundError(TwoDVector<decimal> v)
+#else
 		public static TwoDVector<decimal> RoundError(this TwoDVector<decimal> v)
+#endif
 		{
 			return new TwoDVector<decimal>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
 		}
