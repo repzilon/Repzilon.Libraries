@@ -13,7 +13,9 @@
 //
 using System;
 using System.Collections.Generic;
+#if !(NET40 || NET35 || NET20)
 using System.Collections.ObjectModel;
+#endif
 using System.Text.RegularExpressions;
 
 namespace Repzilon.Libraries.Core
@@ -27,16 +29,16 @@ namespace Repzilon.Libraries.Core
 #endif
 
 		public static float AminoAcidIsoelectric(float pKa1, float pKa2,
-		byte cationCount_ph1andhalf, float pKaR)
+		byte cationCountAtPh1AndHalf, float pKaR)
 		{
-			if (cationCount_ph1andhalf > 2) {
-				throw new ArgumentOutOfRangeException("cationCount_ph1andhalf", cationCount_ph1andhalf,
+			if (cationCountAtPh1AndHalf > 2) {
+				throw new ArgumentOutOfRangeException("cationCountAtPh1AndHalf", cationCountAtPh1AndHalf,
 				 "The lateral chain of a amino acid can only form a cation, a dication or no cation at all under very acidic conditions.");
 			} else {
 				float sum;
-				if (cationCount_ph1andhalf == 2) {
+				if (cationCountAtPh1AndHalf == 2) {
 					sum = pKa2 + pKaR;
-				} else if ((cationCount_ph1andhalf == 1) && (pKaR < pKa2)) {
+				} else if ((cationCountAtPh1AndHalf == 1) && (pKaR < pKa2)) {
 					sum = pKa1 + pKaR;
 				} else {
 					sum = pKa1 + pKa2;
@@ -110,33 +112,33 @@ namespace Repzilon.Libraries.Core
 
 		public static float MolarMass(string formula)
 		{
-			float M = 0;
+			float mass = 0;
 			int c;
-			// The following line transforms hydratation to sub-group
+			// The following line transforms hydration to subgroup
 			formula = Regex.Replace(formula, "[.•]([0-9]+)\\s*([A-Za-z0-9<>/=-]+)$", "-($2)<sub>$1</sub>");
 			var mccChemicalGroups = MatchChemicalGroups(formula, out c);
 			for (int i = 0; i < c; i++) {
 				var grcIter = mccChemicalGroups[i].Groups;
-				M += CoreMolarMass(grcIter[1].Value) * Int32.Parse(grcIter[2].Value);
+				mass += CoreMolarMass(grcIter[1].Value) * Int32.Parse(grcIter[2].Value);
 			}
 			formula = RemoveChemicalGroups(formula, mccChemicalGroups, c);
 			// Add what is left
-			M += CoreMolarMass(formula);
-			return (float)Math.Round(M, 3);
+			mass += CoreMolarMass(formula);
+			return (float)Math.Round(mass, 3);
 		}
 
 		private static float CoreMolarMass(string formula)
 		{
-			float M = 0;
+			float mass = 0;
 			var mccElements = Regex.Matches(formula, @"([A-Z][a-z]?)(?:<sub>([0-9]+)</sub>)?");
 			var c = mccElements.Count;
 			for (int i = 0; i < c; i++) {
 				var grcElement = mccElements[i].Groups;
 				var strElementCount = grcElement[2].Value;
 				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
-				M += ElementMasses[grcElement[1].Value] * intElementCount;
+				mass += ElementMasses[grcElement[1].Value] * intElementCount;
 			}
-			return M;
+			return mass;
 		}
 
 		public static IDictionary<string, int> ElementComposition(string formula)
