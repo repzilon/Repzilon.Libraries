@@ -149,7 +149,7 @@ namespace Repzilon.Libraries.Core
 				LinearRegression.Compute(lstLogLog).ChangeModel(MathematicalModel.LogLog)
 			};
 			Array.Sort(rmarAll, delegate (RegressionModel<double> x, RegressionModel<double> y) {
-				return -1 * x.R.CompareTo(y.R);
+				return -1 * (x.R * x.R).CompareTo(y.R * y.R);
 			});
 			return rmarAll[0];
 		}
