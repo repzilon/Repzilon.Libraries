@@ -10,6 +10,12 @@
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <NoWarn>NETSDK1138;NU1902;NU1903</NoWarn>
+  </PropertyGroup>
+  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
+    <NoWarn>NETSDK1138;NU1902;NU1903</NoWarn>
+  </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Repzilon.Libraries.Core\Repzilon.Libraries.Core.csproj" />
   </ItemGroup>
