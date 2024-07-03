@@ -58,30 +58,18 @@ namespace Repzilon.Libraries.Core
 		private static IReadOnlyDictionary<string, float> InitElementMasses()
 #endif
 		{
-			var dicMasses = new Dictionary<string, float>
-			{
-				{ "C", 12.011f },
-				{ "H", 1.008f },
-				{ "O", 15.999f },
-				{ "N", 14.007f },
-				{ "P", 30.974f },
-				{ "S", 32.06f },
-				{ "Na", 22.99f },
-				{ "Mg", 24.305f },
-				{ "K", 39.098f },
-				{ "Ca", 40.078f },
-				{ "F", 18.998f },
-				{ "Cl", 35.45f  },
-				{ "Br", 79.904f },
-				{ "I", 126.90f },
-				{ "B", 10.81f },
-				{ "Fe", 55.845f },
-				{ "Co", 58.933f },
-				{ "Cu", 63.546f },
-				{ "Zn", 65.38f }
-			};
+			const int k = 19;
+			var dicMasses = new Dictionary<string, float>(k);
+			var karSymbols = new string[k]
+				{ "C", "H", "O", "N", "P", "S", "Na", "Mg", "K", "Ca", "F", "Cl", "Br", "I", "B", "Fe", "Co", "Cu", "Zn" };
+			var karMasses = new float[k] 
+				{ 12.011f, 1.008f, 15.999f, 14.007f, 30.974f, 32.06f, 22.99f, 24.305f, 39.098f, 40.078f, 18.998f, 35.45f, 79.904f, 126.90f, 10.81f, 55.845f, 58.933f, 63.546f, 65.38f };
+			for (int i = 0; i < k; i++) {
+				dicMasses.Add(karSymbols[i], karMasses[i]);
+			}
+
 #if NET40 || NET35 || NET20
-			return new Dictionary<string, float>(dicMasses);
+			return dicMasses;
 #else
 			return new ReadOnlyDictionary<string, float>(dicMasses);
 #endif
@@ -121,10 +109,15 @@ namespace Repzilon.Libraries.Core
 				var grcIter = mccChemicalGroups[i].Groups;
 				mass += CoreMolarMass(grcIter[1].Value) * Int32.Parse(grcIter[2].Value);
 			}
+#if DEBUG
 			formula = RemoveChemicalGroups(formula, mccChemicalGroups, c);
 			// Add what is left
 			mass += CoreMolarMass(formula);
 			return (float)Math.Round(mass, 3);
+#else
+			// Add what is left
+			return (float)Math.Round(mass + CoreMolarMass(RemoveChemicalGroups(formula, mccChemicalGroups, c)), 3);
+#endif
 		}
 
 		private static float CoreMolarMass(string formula)
@@ -135,8 +128,12 @@ namespace Repzilon.Libraries.Core
 			for (int i = 0; i < c; i++) {
 				var grcElement = mccElements[i].Groups;
 				var strElementCount = grcElement[2].Value;
+#if DEBUG
 				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
 				mass += ElementMasses[grcElement[1].Value] * intElementCount;
+#else
+				mass += ElementMasses[grcElement[1].Value] * (String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount));
+#endif
 			}
 			return mass;
 		}
@@ -163,14 +160,15 @@ namespace Repzilon.Libraries.Core
 			for (int i = 0; i < c; i++) {
 				var grcElement = mccElements[i].Groups;
 				var strElementCount = grcElement[2].Value;
-				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
 				var strSymbol = grcElement[1].Value;
 				int e;
-				if (counts.TryGetValue(strSymbol, out e)) {
-					counts[strSymbol] = e + (intElementCount * multiplicator);
-				} else {
-					counts.Add(strSymbol, intElementCount * multiplicator);
-				}
+				counts.TryGetValue(strSymbol, out e);
+#if DEBUG				
+				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
+				counts[strSymbol] = e + (intElementCount * multiplicator);
+#else
+				counts[strSymbol] = e + ((String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount)) * multiplicator);
+#endif				
 			}
 		}
 	}
