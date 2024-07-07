@@ -11,7 +11,6 @@
 // not distributed with this file, You can obtain one at 
 // https://mozilla.org/MPL/2.0/.
 //
-#if !NET20
 using System;
 using Repzilon.Libraries.Core;
 
@@ -90,4 +89,3 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 	}
 }
-#endif
