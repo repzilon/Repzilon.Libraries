@@ -11,6 +11,7 @@
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
+    <WarningsAsErrors>NU1605</WarningsAsErrors>
     <NoWarn>NETSDK1138;NU1902;NU1903</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
