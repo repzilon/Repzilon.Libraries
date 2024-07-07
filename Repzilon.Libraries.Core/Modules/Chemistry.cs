@@ -61,9 +61,9 @@ namespace Repzilon.Libraries.Core
 			const int k = 19;
 			var dicMasses = new Dictionary<string, float>(k);
 			var karSymbols = new string[k]
-				{ "C", "H", "O", "N", "P", "S", "Na", "Mg", "K", "Ca", "F", "Cl", "Br", "I", "B", "Fe", "Co", "Cu", "Zn" };
-			var karMasses = new float[k] 
-				{ 12.011f, 1.008f, 15.999f, 14.007f, 30.974f, 32.06f, 22.99f, 24.305f, 39.098f, 40.078f, 18.998f, 35.45f, 79.904f, 126.90f, 10.81f, 55.845f, 58.933f, 63.546f, 65.38f };
+			 { "C", "H", "O", "N", "P", "S", "Na", "Mg", "K", "Ca", "F", "Cl", "Br", "I", "B", "Fe", "Co", "Cu", "Zn" };
+			var karMasses = new float[k]
+			 { 12.011f, 1.008f, 15.999f, 14.007f, 30.974f, 32.06f, 22.99f, 24.305f, 39.098f, 40.078f, 18.998f, 35.45f, 79.904f, 126.90f, 10.81f, 55.845f, 58.933f, 63.546f, 65.38f };
 			for (int i = 0; i < k; i++) {
 				dicMasses.Add(karSymbols[i], karMasses[i]);
 			}
@@ -163,13 +163,42 @@ namespace Repzilon.Libraries.Core
 				var strSymbol = grcElement[1].Value;
 				int e;
 				counts.TryGetValue(strSymbol, out e);
-#if DEBUG				
+#if DEBUG
 				var intElementCount = String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount);
 				counts[strSymbol] = e + (intElementCount * multiplicator);
 #else
 				counts[strSymbol] = e + ((String.IsNullOrEmpty(strElementCount) ? 1 : Int32.Parse(strElementCount)) * multiplicator);
-#endif				
+#endif
 			}
+		}
+
+		public static EnzymeKinematic<double> SpeedOfEnzyme(string concentrationUnit, string speedUnit,
+		EnzymeSpeedRepresentation representation, params PointD[] dataPoints)
+		{
+			var rm = RegressionModel.Compute(dataPoints);
+			if (rm.Model != MathematicalModel.Affine) {
+				throw new NotSupportedException("The SpeedOfEnzyme method is unable to solve non-linear equations.");
+			}
+			var slope = rm.B;
+			var intercept = rm.A;
+			double vmax, km;
+			if (representation == EnzymeSpeedRepresentation.EadieHofstee) {
+				vmax = intercept;
+				km = -1 * slope;
+			} else if (representation == EnzymeSpeedRepresentation.LineweaverBurk) {
+				vmax = 1.0 / intercept;
+				km = vmax * slope;
+			} else if (representation == EnzymeSpeedRepresentation.MichaelisMenten) {
+				throw new NotSupportedException("The SpeedOfEnzyme method cannot solve a non-linear model.");
+			} else if (representation == EnzymeSpeedRepresentation.HanesWoolf) {
+				vmax = 1.0 / slope;
+				km = vmax * intercept;
+			} else {
+				throw new ArgumentOutOfRangeException("representation");
+				//throw new System.ComponentModel.InvalidEnumArgumentException(
+				// "representation", (int)representation, typeof(EnzymeSpeedRepresentation));
+			}
+			return new EnzymeKinematic<double>(vmax, speedUnit, km, concentrationUnit, rm.R);
 		}
 	}
 }

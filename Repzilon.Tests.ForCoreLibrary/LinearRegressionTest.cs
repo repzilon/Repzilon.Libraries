@@ -282,7 +282,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
-		private static void OutputRegressionModel(RegressionModel<double> mathModel)
+		internal static void OutputRegressionModel(RegressionModel<double> mathModel)
 		{
 			Console.WriteLine("{0:g6}\tr={1:g6}", mathModel, mathModel.R);
 			var kind = mathModel.Model;
