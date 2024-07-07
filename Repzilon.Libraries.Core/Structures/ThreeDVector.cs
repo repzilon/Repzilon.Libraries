@@ -42,7 +42,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			get { return Z; }
 		}
 
-		public ThreeDVector(T x, T y, T z)
+		public ThreeDVector(T x, T y, T z) : this()
 		{
 			X = x;
 			Y = y;
@@ -122,8 +122,8 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var typT = typeof(T);
 			return (other != null) && (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
-			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0) &&
-			 (this.Z.CompareTo(Convert.ChangeType(other.Z, typT)) == 0);
+				   (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0) &&
+				   (this.Z.CompareTo(Convert.ChangeType(other.Z, typT)) == 0);
 		}
 
 		bool IEquatable<IComparableThreeDVector>.Equals(IComparableThreeDVector other)
@@ -217,7 +217,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static ThreeDVector<T> Cross(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
-			var sub = GenericArithmetic<T>.sub;
+			var sub  = GenericArithmetic<T>.sub;
 			return new ThreeDVector<T>(
 			 sub(mult(u.Y, v.Z), mult(u.Z, v.Y)),
 			 sub(mult(u.Z, v.X), mult(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
@@ -253,7 +253,8 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);
+			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())),
+			 AngleUnit.Radian);
 		}
 #endif
 	}

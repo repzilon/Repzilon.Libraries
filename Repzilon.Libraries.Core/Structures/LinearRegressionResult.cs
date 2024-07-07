@@ -36,7 +36,8 @@ namespace Repzilon.Libraries.Core
 		public readonly double MaxY;
 
 		internal LinearRegressionResult(int n, double intercept, double slope, double correlation,
-		double minX, double minY, double maxX, double maxY, double averageX, double averageY, double stdDevX, double stdDevY)
+		double minX, double minY, double maxX, double maxY, double averageX, double averageY, double stdDevX,
+		double stdDevY) : this()
 		{
 			this.Count = n;
 			this.Slope = slope;
@@ -53,7 +54,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		#region ICloneable members
-		public LinearRegressionResult(LinearRegressionResult other)
+		public LinearRegressionResult(LinearRegressionResult other) : this()
 		{
 			this.Count = other.Count;
 			this.Slope = other.Slope;
@@ -108,7 +109,8 @@ namespace Repzilon.Libraries.Core
 				formatProvider = CultureInfo.CurrentCulture;
 			}
 			var stbFormula = new StringBuilder();
-			stbFormula.Append("y = ").Append(this.Intercept.ToString(format, formatProvider)).Append(" + ").Append(this.Slope.ToString(format, formatProvider)).Append("x");
+			stbFormula.Append("y = ").Append(this.Intercept.ToString(format, formatProvider)).Append(" + ")
+			 .Append(this.Slope.ToString(format, formatProvider)).Append("x");
 			return stbFormula.ToString();
 		}
 		#endregion
@@ -305,7 +307,7 @@ namespace Repzilon.Libraries.Core
 		internal static RegressionModel<double> ChangeModel(double a, double b, double r, MathematicalModel newModel)
 		{
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
-#pragma warning disable CC0019 // Use 'switch'
+#pragma warning disable CC0019   // Use 'switch'
 			if (newModel == MathematicalModel.Affine) {
 				return new RegressionModel<double>(a, b, r, newModel);
 			} else if (newModel == MathematicalModel.Power) {
@@ -317,7 +319,7 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw new ArgumentOutOfRangeException("newModel");
 			}
-#pragma warning restore CC0019 // Use 'switch'
+#pragma warning restore CC0019   // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}
 	}

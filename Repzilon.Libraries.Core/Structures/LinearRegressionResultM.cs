@@ -20,7 +20,7 @@ namespace Repzilon.Libraries.Core
 {
 	[StructLayout(LayoutKind.Auto)]
 	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
-	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
+		IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
 	{
 		public readonly int Count;
 		public decimal Slope { get; set; }
@@ -36,7 +36,8 @@ namespace Repzilon.Libraries.Core
 		public readonly decimal MaxY;
 
 		internal DecimalLinearRegressionResult(int n, decimal intercept, decimal slope, decimal correlation,
-		decimal minX, decimal minY, decimal maxX, decimal maxY, decimal averageX, decimal averageY, decimal stdDevX, decimal stdDevY)
+		decimal minX, decimal minY, decimal maxX, decimal maxY, decimal averageX, decimal averageY, decimal stdDevX,
+		decimal stdDevY) : this()
 		{
 			this.Count = n;
 			this.Slope = slope;
@@ -53,7 +54,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		#region ICloneable members
-		public DecimalLinearRegressionResult(DecimalLinearRegressionResult other)
+		public DecimalLinearRegressionResult(DecimalLinearRegressionResult other) : this()
 		{
 			this.Count = other.Count;
 			this.Slope = other.Slope;
@@ -85,8 +86,8 @@ namespace Repzilon.Libraries.Core
 		public LinearRegressionResult ToDouble()
 		{
 			return new LinearRegressionResult(this.Count, (double)this.Intercept, (double)this.Slope,
-			 (double)this.Correlation, (double)this.MinX, (double)this.MinY, (double)this.MaxX, (double)this.MaxY,
-			 (double)this.AverageX, (double)this.AverageY, (double)this.StdDevOfX, (double)this.StdDevOfY);
+				(double)this.Correlation, (double)this.MinX, (double)this.MinY, (double)this.MaxX, (double)this.MaxY,
+				(double)this.AverageX, (double)this.AverageY, (double)this.StdDevOfX, (double)this.StdDevOfY);
 		}
 
 		#region ToString
@@ -108,7 +109,8 @@ namespace Repzilon.Libraries.Core
 				formatProvider = CultureInfo.CurrentCulture;
 			}
 			var stbFormula = new StringBuilder();
-			stbFormula.Append("y = ").Append(this.Intercept.ToString(format, formatProvider)).Append(" + ").Append(this.Slope.ToString(format, formatProvider)).Append("x");
+			stbFormula.Append("y = ").Append(this.Intercept.ToString(format, formatProvider)).Append(" + ")
+			 .Append(this.Slope.ToString(format, formatProvider)).Append("x");
 			return stbFormula.ToString();
 		}
 		#endregion
@@ -120,7 +122,7 @@ namespace Repzilon.Libraries.Core
 			var max = this.MaxX;
 			if ((x < min) || (x > max)) {
 				throw new ArgumentOutOfRangeException("x",
-				 String.Format("x is outside the range [{0}; {1}]", min, max));
+					String.Format("x is outside the range [{0}; {1}]", min, max));
 			}
 			return this.Intercept + (x * this.Slope);
 		}
@@ -131,7 +133,7 @@ namespace Repzilon.Libraries.Core
 			var max = this.MaxY;
 			if ((y < min) || (y > max)) {
 				throw new ArgumentOutOfRangeException("y",
-				 String.Format("y is outside the range [{0}; {1}]", min, max));
+					String.Format("y is outside the range [{0}; {1}]", min, max));
 			}
 			return (y - this.Intercept) / this.Slope;
 		}
@@ -209,7 +211,8 @@ namespace Repzilon.Libraries.Core
 			var b = this.Slope;
 			var n = this.Count;
 			var sx = this.StdDevOfX;
-			return this.ResidualStdDev() / b * ExtraMath.Sqrt((1.0m / k) + (1.0m / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
+			return this.ResidualStdDev() / b *
+				   ExtraMath.Sqrt((1.0m / k) + (1.0m / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
 		}
 		#endregion
 
@@ -299,7 +302,8 @@ namespace Repzilon.Libraries.Core
 
 		public RegressionModel<double> ChangeModel(MathematicalModel newModel)
 		{
-			return LinearRegressionResult.ChangeModel((double)this.Intercept, (double)this.Slope, (double)this.Correlation, newModel);
+			return LinearRegressionResult.ChangeModel((double)this.Intercept, (double)this.Slope,
+			 (double)this.Correlation, newModel);
 		}
 	}
 }

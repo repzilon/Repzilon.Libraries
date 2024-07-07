@@ -26,7 +26,7 @@ namespace Repzilon.Libraries.Core
 		public decimal X { get; private set; }
 		public decimal Y { get; private set; }
 
-		public PointM(decimal x, decimal y)
+		public PointM(decimal x, decimal y) : this()
 		{
 			X = x;
 			Y = y;

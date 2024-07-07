@@ -39,7 +39,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Constructors
-		public Angle(T value, AngleUnit unit)
+		public Angle(T value, AngleUnit unit) : this()
 		{
 			Value = value;
 			if (AngleExtensions.IsDefined(unit)) {
@@ -55,7 +55,8 @@ namespace Repzilon.Libraries.Core.Vectors
 			return new Angle<T>(MatrixExtensionMethods.ConvertTo<T>(valueInOtherDataType), unit);
 		}
 
-		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, double conversionFactor, AngleUnit unit)
+		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, double conversionFactor,
+		AngleUnit unit)
 		where TFrom : struct
 		{
 			return FromOtherType(Convert.ToDouble(valueInOtherDataType) * conversionFactor, unit);
@@ -239,8 +240,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var u = this.Unit;
 			var v = this.DecimalValue;
-			return (u == other.Unit) ? v.Equals(other.DecimalValue) :
-			 v.Equals(other.ConvertTo(u).DecimalValue);
+			return (u == other.Unit) ? v.Equals(other.DecimalValue) : v.Equals(other.ConvertTo(u).DecimalValue);
 		}
 
 		public override int GetHashCode()
@@ -342,8 +342,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var u = this.Unit;
 			var v = this.DecimalValue;
-			return (u == other.Unit) ? v.CompareTo(other.DecimalValue) :
-			 Math.Sign(v - other.ConvertTo(u).DecimalValue);
+			return (u == other.Unit) ? v.CompareTo(other.DecimalValue) : Math.Sign(v - other.ConvertTo(u).DecimalValue);
 		}
 
 		public int CompareTo(object obj)

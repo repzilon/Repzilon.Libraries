@@ -37,7 +37,7 @@ namespace Repzilon.Libraries.Core
 			get { return Margin; }
 		}
 
-		public ErrorMargin(T middle, T margin)
+		public ErrorMargin(T middle, T margin) : this()
 		{
 			Middle = middle;
 			Margin = margin;
@@ -98,14 +98,16 @@ namespace Repzilon.Libraries.Core
 			}
 			var stbInterval = new StringBuilder();
 			if (format.StartsWith("G") || format.StartsWith("g")) {
-				stbInterval.Append(this.Middle.ToString(format, formatProvider)).Append(" ± ").Append(this.Margin.ToString(format, formatProvider));
+				stbInterval.Append(this.Middle.ToString(format, formatProvider)).Append(" ± ")
+				 .Append(this.Margin.ToString(format, formatProvider));
 			}
 			if (format.StartsWith("G")) {
 				stbInterval.Append(" -> ");
 			}
 #if !NET20
 			if (!format.StartsWith("g")) {
-				stbInterval.Append('[').Append(this.Min().ToString(format, formatProvider)).Append("; ").Append(this.Max().ToString(format, formatProvider)).Append(']');
+				stbInterval.Append('[').Append(this.Min().ToString(format, formatProvider)).Append("; ")
+				 .Append(this.Max().ToString(format, formatProvider)).Append(']');
 			}
 #endif
 			return stbInterval.ToString();
@@ -127,7 +129,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var typT = typeof(T);
 			return (other != null) && (this.Middle.CompareTo(Convert.ChangeType(other.Middle, typT)) == 0) &&
-			 (this.Margin.CompareTo(Convert.ChangeType(other.Margin, typT)) == 0);
+				   (this.Margin.CompareTo(Convert.ChangeType(other.Margin, typT)) == 0);
 		}
 
 		bool IEquatable<IComparableErrorMargin>.Equals(IComparableErrorMargin other)

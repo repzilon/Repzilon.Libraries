@@ -37,13 +37,13 @@ namespace Repzilon.Libraries.Core.Vectors
 			get { return Y; }
 		}
 
-		public TwoDVector(T x, T y)
+		public TwoDVector(T x, T y) : this()
 		{
 			X = x;
 			Y = y;
 		}
 
-		public TwoDVector(PolarVector<T> vector)
+		public TwoDVector(PolarVector<T> vector) : this()
 		{
 			var nt = vector.Norm;
 			var va = vector.Angle;
@@ -123,8 +123,8 @@ namespace Repzilon.Libraries.Core.Vectors
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			return new TwoDVector<TOut>(
-			 MatrixExtensionMethods.ConvertTo<TOut>(X),
-			 MatrixExtensionMethods.ConvertTo<TOut>(Y));
+				MatrixExtensionMethods.ConvertTo<TOut>(X),
+				MatrixExtensionMethods.ConvertTo<TOut>(Y));
 		}
 
 		ICartesianVector<TOut> ICartesianVector<T>.Cast<TOut>()
@@ -141,8 +141,8 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var f = 1.0 / this.Norm();
 			return new TwoDVector<T>(
-			  MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(X)),
-			  MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Y)));
+			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(X)),
+			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Y)));
 		}
 		#endregion
 
@@ -152,7 +152,8 @@ namespace Repzilon.Libraries.Core.Vectors
 #if NET20
 			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian);
 #else
-			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian).Normalize();
+			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian)
+			 .Normalize();
 #endif
 		}
 
@@ -176,8 +177,8 @@ namespace Repzilon.Libraries.Core.Vectors
 			 Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree));
 #else
-			 Angle().ConvertTo<TOut>(
-			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
+				Angle().ConvertTo<TOut>(
+					(tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
 #endif
 #endif
 		}
@@ -210,7 +211,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var typT = typeof(T);
 			return (other != null) && (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
-			 (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0);
+				   (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0);
 		}
 
 		bool IEquatable<IComparableTwoDVector>.Equals(IComparableTwoDVector other)
@@ -366,7 +367,8 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())), AngleUnit.Radian);
+			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())),
+			 AngleUnit.Radian);
 		}
 #endif
 	}

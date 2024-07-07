@@ -26,7 +26,7 @@ namespace Repzilon.Libraries.Core
 		public double X { get; private set; }
 		public double Y { get; private set; }
 
-		public PointD(double x, double y)
+		public PointD(double x, double y) : this()
 		{
 			X = x;
 			Y = y;
