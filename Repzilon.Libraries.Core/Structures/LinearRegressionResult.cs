@@ -304,7 +304,7 @@ namespace Repzilon.Libraries.Core
 			return ChangeModel(this.Intercept, this.Slope, this.Correlation, newModel);
 		}
 
-		internal static RegressionModel<double> ChangeModel(double a, double b, double r, MathematicalModel newModel)
+		private static RegressionModel<double> ChangeModel(double a, double b, double r, MathematicalModel newModel)
 		{
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
 #pragma warning disable CC0019   // Use 'switch'

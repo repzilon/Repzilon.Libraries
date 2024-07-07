@@ -300,10 +300,28 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-		public RegressionModel<double> ChangeModel(MathematicalModel newModel)
+		public RegressionModel<decimal> ChangeModel(MathematicalModel newModel)
 		{
-			return LinearRegressionResult.ChangeModel((double)this.Intercept, (double)this.Slope,
-			 (double)this.Correlation, newModel);
+			return ChangeModel(this.Intercept, this.Slope, this.Correlation, newModel);
+		}
+
+		private static RegressionModel<decimal> ChangeModel(decimal a, decimal b, decimal r, MathematicalModel newModel)
+		{
+#pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
+#pragma warning disable CC0019   // Use 'switch'
+			if (newModel == MathematicalModel.Affine) {
+				return new RegressionModel<decimal>(a, b, r, newModel);
+			} else if (newModel == MathematicalModel.Power) {
+				return new RegressionModel<decimal>((decimal)Math.Pow(10, (double)a), b, r, newModel);
+			} else if (newModel == MathematicalModel.Exponential) {
+				return new RegressionModel<decimal>((decimal)Math.Pow(10, (double)a), (decimal)Math.Pow(10, (double)b), r, newModel);
+			} else if (newModel == MathematicalModel.Logarithmic) { // this is wierd
+				return new RegressionModel<decimal>(b, a, r, newModel);
+			} else {
+				throw new ArgumentOutOfRangeException("newModel");
+			}
+#pragma warning restore CC0019   // Use 'switch'
+#pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}
 	}
 }

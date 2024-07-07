@@ -293,6 +293,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
+		internal static void OutputRegressionModel(RegressionModel<decimal> mathModel)
+		{
+			Console.WriteLine("{0:g6}\tr={1:g6}", mathModel, mathModel.R);
+			var kind = mathModel.Model;
+			if (kind == MathematicalModel.Exponential) {
+				Console.WriteLine("{0:eg6}\tGrowth rate: {1:p2}", mathModel, mathModel.GrowthRate());
+			} else if (kind == MathematicalModel.Logarithmic) {
+				Console.WriteLine("{0:eg6}", mathModel);
+			}
+		}
+
 		private static double RoundedInverse(string valueAsText)
 		{
 			var ciFrCa = new CultureInfo("fr-CA");

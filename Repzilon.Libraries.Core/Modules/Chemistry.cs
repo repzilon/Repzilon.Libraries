@@ -200,5 +200,34 @@ namespace Repzilon.Libraries.Core
 			}
 			return new EnzymeKinematic<double>(vmax, speedUnit, km, concentrationUnit, rm.R);
 		}
+
+		public static EnzymeKinematic<decimal> SpeedOfEnzyme(string concentrationUnit, string speedUnit,
+		EnzymeSpeedRepresentation representation, params PointM[] dataPoints)
+		{
+			var rm = RegressionModel.Compute(dataPoints);
+			if (rm.Model != MathematicalModel.Affine) {
+				throw new NotSupportedException("The SpeedOfEnzyme method is unable to solve non-linear equations.");
+			}
+			var slope = rm.B;
+			var intercept = rm.A;
+			decimal vmax, km;
+			if (representation == EnzymeSpeedRepresentation.EadieHofstee) {
+				vmax = intercept;
+				km = -1 * slope;
+			} else if (representation == EnzymeSpeedRepresentation.LineweaverBurk) {
+				vmax = 1.0m / intercept;
+				km = vmax * slope;
+			} else if (representation == EnzymeSpeedRepresentation.MichaelisMenten) {
+				throw new NotSupportedException("The SpeedOfEnzyme method cannot solve a non-linear model.");
+			} else if (representation == EnzymeSpeedRepresentation.HanesWoolf) {
+				vmax = 1.0m / slope;
+				km = vmax * intercept;
+			} else {
+				throw new ArgumentOutOfRangeException("representation");
+				//throw new System.ComponentModel.InvalidEnumArgumentException(
+				// "representation", (int)representation, typeof(EnzymeSpeedRepresentation));
+			}
+			return new EnzymeKinematic<decimal>(vmax, speedUnit, km, concentrationUnit, rm.R);
+		}
 	}
 }

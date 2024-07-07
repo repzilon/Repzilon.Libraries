@@ -153,5 +153,39 @@ namespace Repzilon.Libraries.Core
 			});
 			return rmarAll[0];
 		}
+
+		public static RegressionModel<decimal> Compute(params PointM[] points)
+		{
+			return Compute((IEnumerable<PointM>)points);
+		}
+
+		public static RegressionModel<decimal> Compute(IEnumerable<PointM> points)
+		{
+			if (points == null) {
+				throw new ArgumentNullException("points");
+			}
+			var lstSemiLogX = new List<PointM>();
+			var lstSemiLogY = new List<PointM>();
+			var lstLogLog = new List<PointM>();
+			var i = 0;
+			foreach (var pt in points) {
+				var log10x = (decimal)Math.Log10((double)pt.X);
+				var log10y = (decimal)Math.Log10((double)pt.Y);
+				lstSemiLogX.Add(new PointM(log10x, pt.Y));
+				lstSemiLogY.Add(new PointM(pt.X, log10y));
+				lstLogLog.Add(new PointM(log10x, log10y));
+				i++;
+			}
+			var rmarAll = new RegressionModel<decimal>[] {
+				LinearRegression.Compute(points).ChangeModel(MathematicalModel.Affine),
+				LinearRegression.Compute(lstSemiLogX).ChangeModel(MathematicalModel.SemiLogX),
+				LinearRegression.Compute(lstSemiLogY).ChangeModel(MathematicalModel.SemiLogY),
+				LinearRegression.Compute(lstLogLog).ChangeModel(MathematicalModel.LogLog)
+			};
+			Array.Sort(rmarAll, delegate (RegressionModel<decimal> x, RegressionModel<decimal> y) {
+				return -1 * (x.R * x.R).CompareTo(y.R * y.R);
+			});
+			return rmarAll[0];
+		}
 	}
 }
