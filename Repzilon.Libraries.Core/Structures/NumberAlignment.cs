@@ -26,7 +26,11 @@ namespace Repzilon.Libraries.Core
 		NegativeExponent = 8
 	}
 
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	internal struct NumberAlignment
 	{
 		public NumberAlignmentFlags Flags;

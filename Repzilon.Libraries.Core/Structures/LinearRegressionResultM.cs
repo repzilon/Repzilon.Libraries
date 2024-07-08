@@ -18,9 +18,13 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
-		IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
+	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
 	{
 		public readonly int Count;
 		public decimal Slope { get; set; }

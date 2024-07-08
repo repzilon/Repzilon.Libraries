@@ -18,7 +18,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core.Vectors
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct PolarVector<T> : IFormattable,
 	IEquatable<PolarVector<T>>, IEquatable<TwoDVector<T>>,
 	IComparablePolarVector, IEquatable<IComparablePolarVector>, IEquatable<IComparableTwoDVector>

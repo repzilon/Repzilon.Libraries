@@ -116,9 +116,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			try {
 #if NET40 || NET35 || NET20
 				Type typT = typeof(T);
-				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name, Marshal.SizeOf(typT));
+				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", "<T>"), Marshal.SizeOf(typT));
 #else
-				Console.WriteLine("Size of struct {0} is {1} bytes", typeof(T).Name, Marshal.SizeOf<T>());
+				var newT = new T();
+				var typT = newT.GetType();
+				var strOfT = "<T>";
+				if (typT.GenericTypeArguments.Length == 1) {
+					strOfT = "<" + typT.GenericTypeArguments[0].Name + ">";
+				}
+				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", strOfT), Marshal.SizeOf<T>(newT));
 #endif
 			} catch (ArgumentException) {
 				// do nothing

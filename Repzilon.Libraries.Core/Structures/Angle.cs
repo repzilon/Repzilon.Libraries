@@ -19,7 +19,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core.Vectors
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct Angle<T> : IAngle, IEquatable<Angle<T>>, IComparable<Angle<T>>
 	where T : struct, IFormattable, IComparable<T>, IEquatable<T>
 	{

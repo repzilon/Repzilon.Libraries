@@ -26,7 +26,11 @@ namespace Repzilon.Libraries.Core
 		HanesWoolf
 	}
 
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct EnzymeKinematic<T> : IEquatable<EnzymeKinematic<T>>, IFormattable,
 	IComparableEnzymeKinematic, IEquatable<IComparableEnzymeKinematic>
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6

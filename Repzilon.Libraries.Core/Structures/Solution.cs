@@ -20,7 +20,11 @@ using Measure = System.Collections.Generic.KeyValuePair<string, float>;
 
 namespace Repzilon.Libraries.Core
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct Solution : IEquatable<Solution>
 	{
 		public readonly Measure Concentration;

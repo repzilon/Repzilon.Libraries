@@ -20,7 +20,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct Matrix<T> : IEquatable<Matrix<T>>, IFormattable,
 	IComparableMatrix, IEquatable<IComparableMatrix>
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6

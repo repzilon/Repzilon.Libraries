@@ -21,7 +21,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class MolarMassTest
 	{
+#if DEBUG
+		[StructLayout(LayoutKind.Sequential)]
+#else
 		[StructLayout(LayoutKind.Auto)]
+#endif
 		private struct FattyAcid
 		{
 			public string Name;
@@ -171,6 +175,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				ptdarHW_raw[i]   = new PointD(karSubstrate[i], karSubstrate[i] / v0);
 			}
 
+			Program.OutputSizeOf<RegressionModel<double>>();
+			Program.OutputSizeOf<EnzymeKinematic<double>>();
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, false, ptdarMM);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_raw);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_table);
@@ -204,6 +210,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				ptdarHW_raw[i]   = new PointM(karSubstrate[i], karSubstrate[i] / v0);
 			}
 
+			Program.OutputSizeOf<RegressionModel<decimal>>();
+			Program.OutputSizeOf<EnzymeKinematic<decimal>>();
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, false, ptdarMM);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_raw);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_table);

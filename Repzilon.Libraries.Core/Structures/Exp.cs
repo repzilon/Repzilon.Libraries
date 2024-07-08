@@ -24,7 +24,12 @@ namespace Repzilon.Libraries.Core
 	// TODO : Create a new version with a signed 18-bit mantissa (yes 18),
 	//		  a 6-bit adjusted base ([2; 65] stored as [0; 63]) and the
 	//        same signed 8-bit exponent, for more precision.
-	[StructLayout(LayoutKind.Auto), CLSCompliant(false)]
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
+	[StructLayout(LayoutKind.Auto)]
+#endif
+	[CLSCompliant(false)]
 	public struct Exp : IComparable, IFormattable, IEquatable<Exp>, IComparable<Exp>,
 	IEquatable<double>, IEquatable<decimal>,
 	IComparable<double>, IComparable<decimal>

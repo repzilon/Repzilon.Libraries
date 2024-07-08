@@ -18,7 +18,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core.Vectors
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct ThreeDVector<T> : ICartesianVector<T>, IEquatable<ThreeDVector<T>>,
 	IComparableThreeDVector, IEquatable<IComparableThreeDVector>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable

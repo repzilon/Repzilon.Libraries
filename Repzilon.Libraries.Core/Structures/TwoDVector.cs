@@ -19,7 +19,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core.Vectors
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct TwoDVector<T> : ICartesianVector<T>, IEquatable<TwoDVector<T>>, IEquatable<PolarVector<T>>,
 	IComparableTwoDVector, IEquatable<IComparableTwoDVector>, IEquatable<IComparablePolarVector>
 	where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable

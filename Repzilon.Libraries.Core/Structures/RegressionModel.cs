@@ -13,6 +13,7 @@
 //
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
@@ -30,6 +31,11 @@ namespace Repzilon.Libraries.Core
 		LogLin = 3
 	}
 
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
+	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct RegressionModel<T> : IEquatable<RegressionModel<T>>, IFormattable
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable

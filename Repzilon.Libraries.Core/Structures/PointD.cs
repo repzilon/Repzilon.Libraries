@@ -18,7 +18,11 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct PointD : IPoint<double>,
 	IEquatable<PointD>, IEquatable<IPoint<double>>, IEquatable<PointM>, IEquatable<IPoint<decimal>>,
 	IFormattable

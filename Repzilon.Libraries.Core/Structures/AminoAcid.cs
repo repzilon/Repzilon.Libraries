@@ -18,7 +18,11 @@ using System.Runtime.InteropServices;
 
 namespace Repzilon.Libraries.Core
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
 	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct AminoAcid : IEquatable<AminoAcid>
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable

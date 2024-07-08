@@ -13,10 +13,16 @@
 //
 using System;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
+	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct ErrorMargin<T> : IEquatable<ErrorMargin<T>>, IFormattable,
 	IComparableErrorMargin, IEquatable<IComparableErrorMargin>
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
