@@ -146,19 +146,24 @@ namespace Repzilon.Libraries.Core
 
 		public override string ToString()
 		{
+			var kvpVmax = this.Vmax;
+			var kvpKm = this.Km;
 			return String.Format("v<sub>max</sub>:\xA0{0}\xA0{1}; k<sub>m</sub>:\xA0{2}\xA0{3} (r={4:f6})",
-			 Vmax.Key, Vmax.Value, Km.Key, Km.Value, Correlation);
+			 kvpVmax.Key, kvpVmax.Value, kvpKm.Key, kvpKm.Value, Correlation);
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			var stbAsString = new StringBuilder();
-			stbAsString.Append("v<sub>max</sub>:\xA0").Append(Vmax.Key.ToString(format, formatProvider));
-			stbAsString.Append(' ').Append(Vmax.Value);
-			stbAsString.Append("; k<sub>m</sub>:\xA0").Append(Km.Key.ToString(format, formatProvider));
-			stbAsString.Append(' ').Append(Km.Value);
-			stbAsString.Append(" (r=").Append(Correlation.ToString(format, formatProvider)).Append(')');
-			return stbAsString.ToString();
+			AppendMeasure(stbAsString.Append("v<sub>max</sub>:\xA0"), Vmax, format, formatProvider);
+			AppendMeasure(stbAsString.Append("; k<sub>m</sub>:\xA0"), Km, format, formatProvider);
+			return stbAsString.Append(" (r=").Append(Correlation.ToString(format, formatProvider)).Append(')').ToString();
+		}
+
+		private static void AppendMeasure(StringBuilder buffer, KeyValuePair<T, string> measure, string format,
+		IFormatProvider formatProvider)
+		{
+			buffer.Append(measure.Key.ToString(format, formatProvider)).Append(' ').Append(measure.Value);
 		}
 	}
 
@@ -179,9 +184,11 @@ namespace Repzilon.Libraries.Core
 		public static EnzymeKinematic<float> RoundedToPrecision(this EnzymeKinematic<float> self, byte forConcentration, byte forSpeed)
 #endif
 		{
+			var kvpVmax = self.Vmax;
+			var kvpKm = self.Km;
 			return new EnzymeKinematic<float>(
-			 SignificantDigits.Round(self.Vmax.Key, forSpeed, RoundingMode.ToEven), self.Vmax.Value,
-			 SignificantDigits.Round(self.Km.Key, forConcentration, RoundingMode.ToEven), self.Km.Value, self.Correlation);
+			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
+			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation);
 		}
 
 #if NET20
@@ -199,9 +206,11 @@ namespace Repzilon.Libraries.Core
 		public static EnzymeKinematic<double> RoundedToPrecision(this EnzymeKinematic<double> self, byte forConcentration, byte forSpeed)
 #endif
 		{
+			var kvpVmax = self.Vmax;
+			var kvpKm = self.Km;
 			return new EnzymeKinematic<double>(
-			 SignificantDigits.Round(self.Vmax.Key, forSpeed, RoundingMode.ToEven), self.Vmax.Value,
-			 SignificantDigits.Round(self.Km.Key, forConcentration, RoundingMode.ToEven), self.Km.Value, self.Correlation);
+			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
+			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation);
 		}
 
 #if NET20
@@ -219,9 +228,11 @@ namespace Repzilon.Libraries.Core
 		public static EnzymeKinematic<decimal> RoundedToPrecision(this EnzymeKinematic<decimal> self, byte forConcentration, byte forSpeed)
 #endif
 		{
+			var kvpVmax = self.Vmax;
+			var kvpKm = self.Km;
 			return new EnzymeKinematic<decimal>(
-			 SignificantDigits.Round(self.Vmax.Key, forSpeed, RoundingMode.ToEven), self.Vmax.Value,
-			 SignificantDigits.Round(self.Km.Key, forConcentration, RoundingMode.ToEven), self.Km.Value, self.Correlation);
+			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
+			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation);
 		}
 
 #if NET20
@@ -239,9 +250,11 @@ namespace Repzilon.Libraries.Core
 		public static EnzymeKinematic<float> RoundedToDecimals(this EnzymeKinematic<float> self, byte forConcentration, byte forSpeed)
 #endif
 		{
+			var kvpVmax = self.Vmax;
+			var kvpKm = self.Km;
 			return new EnzymeKinematic<float>(
-			 (float)Math.Round(self.Vmax.Key, forSpeed, MidpointRounding.ToEven), self.Vmax.Value,
-			 (float)Math.Round(self.Km.Key, forConcentration, MidpointRounding.ToEven), self.Km.Value, self.Correlation);
+			 (float)Math.Round(kvpVmax.Key, forSpeed, MidpointRounding.ToEven), kvpVmax.Value,
+			 (float)Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation);
 		}
 
 #if NET20
@@ -259,9 +272,11 @@ namespace Repzilon.Libraries.Core
 		public static EnzymeKinematic<double> RoundedToDecimals(this EnzymeKinematic<double> self, byte forConcentration, byte forSpeed)
 #endif
 		{
+			var kvpVmax = self.Vmax;
+			var kvpKm = self.Km;
 			return new EnzymeKinematic<double>(
-			 Math.Round(self.Vmax.Key, forSpeed, MidpointRounding.ToEven), self.Vmax.Value,
-			 Math.Round(self.Km.Key, forConcentration, MidpointRounding.ToEven), self.Km.Value, self.Correlation);
+			 Math.Round(kvpVmax.Key, forSpeed, MidpointRounding.ToEven), kvpVmax.Value,
+			 Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation);
 		}
 
 #if NET20
@@ -279,9 +294,11 @@ namespace Repzilon.Libraries.Core
 		public static EnzymeKinematic<decimal> RoundedToDecimals(this EnzymeKinematic<decimal> self, byte forConcentration, byte forSpeed)
 #endif
 		{
+			var kvpVmax = self.Vmax;
+			var kvpKm = self.Km;
 			return new EnzymeKinematic<decimal>(
-			 Math.Round(self.Vmax.Key, forSpeed, MidpointRounding.ToEven), self.Vmax.Value,
-			 Math.Round(self.Km.Key, forConcentration, MidpointRounding.ToEven), self.Km.Value, self.Correlation);
+			 Math.Round(kvpVmax.Key, forSpeed, MidpointRounding.ToEven), kvpVmax.Value,
+			 Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation);
 		}
 	}
 }

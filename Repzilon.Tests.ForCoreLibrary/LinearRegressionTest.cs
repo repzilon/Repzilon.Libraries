@@ -260,40 +260,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 k.ToString(numberFormat, culture),
 			 new ErrorMargin<T>(Divide(GenericArithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), GenericArithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
 		}
-#endif
 
 		private static T Divide<T>(T dividend, T divisor) where T : struct, IConvertible
 		{
 			var tc = dividend.GetTypeCode();
 			if (tc == TypeCode.Double) {
-#if NET20
-				return MatrixExtensionMethods.ConvertTo<T>(Convert.ToDouble(dividend) / Convert.ToDouble(divisor));
-#else
 				return (dividend.ConvertTo<double>() / divisor.ConvertTo<double>()).ConvertTo<T>();
-#endif
 			} else if (tc == TypeCode.Decimal) {
-#if NET20
-				return MatrixExtensionMethods.ConvertTo<T>(Decimal.Divide(Convert.ToDecimal(dividend), Convert.ToDecimal(divisor)));
-#else
 				return Decimal.Divide(dividend.ConvertTo<decimal>(), divisor.ConvertTo<decimal>()).ConvertTo<T>();
-#endif
 			} else {
 				throw new NotSupportedException();
 			}
 		}
+#endif
 
-		internal static void OutputRegressionModel(RegressionModel<double> mathModel)
-		{
-			Console.WriteLine("{0:g6}\tr={1:g6}", mathModel, mathModel.R);
-			var kind = mathModel.Model;
-			if (kind == MathematicalModel.Exponential) {
-				Console.WriteLine("{0:eg6}\tGrowth rate: {1:p2}", mathModel, mathModel.GrowthRate());
-			} else if (kind == MathematicalModel.Logarithmic) {
-				Console.WriteLine("{0:eg6}", mathModel);
-			}
-		}
-
-		internal static void OutputRegressionModel(RegressionModel<decimal> mathModel)
+		internal static void OutputRegressionModel<T>(RegressionModel<T> mathModel)
+		where T : struct, IFormattable, IEquatable<T>
 		{
 			Console.WriteLine("{0:g6}\tr={1:g6}", mathModel, mathModel.R);
 			var kind = mathModel.Model;

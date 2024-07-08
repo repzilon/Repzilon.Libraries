@@ -308,17 +308,19 @@ namespace Repzilon.Libraries.Core
 		{
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
 #pragma warning disable CC0019   // Use 'switch'
-			if (newModel == MathematicalModel.Affine) {
-				return new RegressionModel<double>(a, b, r, newModel);
-			} else if (newModel == MathematicalModel.Power) {
-				return new RegressionModel<double>(Math.Pow(10, a), b, r, newModel);
-			} else if (newModel == MathematicalModel.Exponential) {
-				return new RegressionModel<double>(Math.Pow(10, a), Math.Pow(10, b), r, newModel);
+			double na = a, nb = b;
+			if ((newModel == MathematicalModel.Power) || (newModel == MathematicalModel.Exponential)) {
+				na = Math.Pow(10, a);
+			}
+			if (newModel == MathematicalModel.Exponential) {
+				nb = Math.Pow(10, b);
 			} else if (newModel == MathematicalModel.Logarithmic) { // this is wierd
-				return new RegressionModel<double>(b, a, r, newModel);
-			} else {
+				na = b;
+				nb = a;
+			} else if ((newModel != MathematicalModel.Affine) && (newModel != MathematicalModel.Power)) {
 				throw new ArgumentOutOfRangeException("newModel");
 			}
+			return new RegressionModel<double>(na, nb, r, newModel);
 #pragma warning restore CC0019   // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}

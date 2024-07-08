@@ -226,12 +226,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (withKinematic) {
 				var strRounded = EnzymeKinematicExtension.RoundedToPrecision(Chemistry.SpeedOfEnzyme(
 				 "mmol/L", A240By30s, representation, dataPoints), 3).ToString();
-				if (IsMacOsX()) {
-					strRounded = strRounded.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
-				}
-				Console.Write(strRounded);
-				Console.Write("\twith ");
-				Console.WriteLine(representation);
+				OutputEnzymeKinematic(representation, strRounded);
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
@@ -242,15 +237,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (withKinematic) {
 				var strRounded = EnzymeKinematicExtension.RoundedToPrecision(Chemistry.SpeedOfEnzyme(
 				 "mmol/L", A240By30s, representation, dataPoints), 3).ToString();
-				if (IsMacOsX()) {
-					strRounded = strRounded.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
-				}
-				Console.Write(strRounded);
-				Console.Write("\twith ");
-				Console.WriteLine(representation);
+				OutputEnzymeKinematic(representation, strRounded);
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
+		}
+
+		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, string textFromRounded)
+		{
+			if (IsMacOsX()) {
+				textFromRounded = textFromRounded.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
+			}
+			Console.Write(textFromRounded);
+			Console.Write("\twith ");
+			Console.WriteLine(representation);
 		}
 	}
 }
