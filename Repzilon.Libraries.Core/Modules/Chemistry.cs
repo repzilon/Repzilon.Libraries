@@ -200,9 +200,7 @@ namespace Repzilon.Libraries.Core
 				vmax = 1.0 / slope;
 				km = vmax * intercept;
 			} else {
-				throw new ArgumentOutOfRangeException("representation");
-				//throw new System.ComponentModel.InvalidEnumArgumentException(
-				// "representation", (int)representation, typeof(EnzymeSpeedRepresentation));
+				throw RetroCompat.NewUndefinedEnumException("representation", representation);
 			}
 			return new EnzymeKinematic<double>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);
 		}
@@ -229,9 +227,7 @@ namespace Repzilon.Libraries.Core
 				vmax = 1.0m / slope;
 				km = vmax * intercept;
 			} else {
-				throw new ArgumentOutOfRangeException("representation");
-				//throw new System.ComponentModel.InvalidEnumArgumentException(
-				// "representation", (int)representation, typeof(EnzymeSpeedRepresentation));
+				throw RetroCompat.NewUndefinedEnumException("representation", representation);
 			}
 			return new EnzymeKinematic<decimal>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);
 		}

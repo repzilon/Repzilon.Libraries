@@ -336,7 +336,7 @@ namespace Repzilon.Libraries.Core
 					return Math.Floor(value * bubble) / bubble;
 				}
 			} else {
-				throw new ArgumentOutOfRangeException("rounding");
+				throw RetroCompat.NewUndefinedEnumException("rounding", rounding);
 			}
 #pragma warning restore CC0019 // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement

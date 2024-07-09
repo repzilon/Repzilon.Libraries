@@ -12,7 +12,6 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-using System.ComponentModel;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -49,7 +48,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			if (AngleExtensions.IsDefined(unit)) {
 				Unit = unit;
 			} else {
-				throw NewUnknownUnitException(unit);
+				throw RetroCompat.NewUndefinedEnumException("unit", unit);
 			}
 		}
 
@@ -149,7 +148,7 @@ namespace Repzilon.Libraries.Core.Vectors
 					throw NewConversionException(unit);
 				}
 			} else {
-				throw NewUnknownUnitException(unit);
+				throw RetroCompat.NewUndefinedEnumException("unit", unit);
 			}
 		}
 
@@ -158,18 +157,6 @@ namespace Repzilon.Libraries.Core.Vectors
 			throw new NotSupportedException(String.Format(
 			 "Cannot convert angle from {0} to {1}.", this.Unit, destinationUnit));
 		}
-
-#if NETCOREAPP1_0 || NETSTANDARD1_1 || NETSTANDARD1_3 || NETSTANDARD1_6
-		private static ArgumentOutOfRangeException NewUnknownUnitException(AngleUnit unit)
-		{
-			return new ArgumentOutOfRangeException("unit", (int)unit, "Unknown angle unit.");
-		}
-#else
-		private static InvalidEnumArgumentException NewUnknownUnitException(AngleUnit unit)
-		{
-			return new InvalidEnumArgumentException("unit", (int)unit, typeof(AngleUnit));
-		}
-#endif
 
 		public Angle<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IComparable<TOut>, IEquatable<TOut>
