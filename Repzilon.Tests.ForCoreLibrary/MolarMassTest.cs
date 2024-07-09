@@ -164,7 +164,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ptdarEH_table   = new PointD[5];
 			var ptdarHW_raw     = new PointD[5];
 
-			var ciFrCa = new CultureInfo("fr-CA");
 			for (int i = 0; i < 5; i++) {
 				var v0 = Math.Round(karVelocity[i], 3); // stupid C# compiler
 				ptdarMM[i]     = new PointD(karSubstrate[i], v0);
@@ -183,6 +182,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_raw);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, ptdarHW_raw);
+
+			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(
+			 Chemistry.SpeedOfEnzyme("mmol/L", A240By30s, ptdarMM), 4));
 		}
 
 		private static void EnzymeSpeedDecimal()
@@ -192,32 +194,31 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var karSubstrateInv = new decimal[5] { 0.08m, 0.05m, 0.04m, 0.02m, 0.01m };
 			var karVelocityInv  = new decimal[5] { 27, 20, 18.2m, 13.7m, 11 };
 			var karVbyS         = new decimal[5] { 0.0030m, 0.0025m, 0.0022m, 0.0015m, 0.00091m };
-			var ptdarMM         = new PointM[5];
-			var ptdarLB_raw     = new PointM[5];
-			var ptdarLB_table   = new PointM[5];
-			var ptdarEH_raw     = new PointM[5];
-			var ptdarEH_table   = new PointM[5];
-			var ptdarHW_raw     = new PointM[5];
+			var ptmarMM         = new PointM[5];
+			var ptmarLB_raw     = new PointM[5];
+			var ptmarLB_table   = new PointM[5];
+			var ptmarEH_raw     = new PointM[5];
+			var ptmarEH_table   = new PointM[5];
+			var ptmarHW_raw     = new PointM[5];
 
-			var ciFrCa = new CultureInfo("fr-CA");
 			for (int i = 0; i < 5; i++) {
 				var v0 = karVelocity[i];
-				ptdarMM[i]     = new PointM(karSubstrate[i], v0);
-				ptdarLB_raw[i] = new PointM(1.0m / karSubstrate[i], 1.0m / v0);
-				ptdarLB_table[i] = new PointM(karSubstrateInv[i], karVelocityInv[i]);
-				ptdarEH_raw[i]   = new PointM(v0 / karSubstrate[i], v0);
-				ptdarEH_table[i] = new PointM(karVbyS[i], v0);
-				ptdarHW_raw[i]   = new PointM(karSubstrate[i], karSubstrate[i] / v0);
+				ptmarMM[i]     = new PointM(karSubstrate[i], v0);
+				ptmarLB_raw[i] = new PointM(1.0m / karSubstrate[i], 1.0m / v0);
+				ptmarLB_table[i] = new PointM(karSubstrateInv[i], karVelocityInv[i]);
+				ptmarEH_raw[i]   = new PointM(v0 / karSubstrate[i], v0);
+				ptmarEH_table[i] = new PointM(karVbyS[i], v0);
+				ptmarHW_raw[i]   = new PointM(karSubstrate[i], karSubstrate[i] / v0);
 			}
 
 			Program.OutputSizeOf<RegressionModel<decimal>>();
 			Program.OutputSizeOf<EnzymeKinematic<decimal>>();
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, false, ptdarMM);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_raw);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_table);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_raw);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_table);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, ptdarHW_raw);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, false, ptmarMM);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptmarLB_raw);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptmarLB_table);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptmarEH_raw);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptmarEH_table);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, ptmarHW_raw);
 		}
 
 		private static string Nanable(float value, string format)
@@ -232,9 +233,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic, params PointD[] dataPoints)
 		{
 			if (withKinematic) {
-				var strRounded = EnzymeKinematicExtension.RoundedToPrecision(Chemistry.SpeedOfEnzyme(
-				 "mmol/L", A240By30s, representation, dataPoints), 3).ToString();
-				OutputEnzymeKinematic(representation, strRounded);
+				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(Chemistry.SpeedOfEnzyme(
+				 "mmol/L", A240By30s, representation, dataPoints), 4));
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
@@ -243,22 +243,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic, params PointM[] dataPoints)
 		{
 			if (withKinematic) {
-				var strRounded = EnzymeKinematicExtension.RoundedToPrecision(Chemistry.SpeedOfEnzyme(
-				 "mmol/L", A240By30s, representation, dataPoints), 3).ToString();
-				OutputEnzymeKinematic(representation, strRounded);
+				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(Chemistry.SpeedOfEnzyme(
+				 "mmol/L", A240By30s, representation, dataPoints), 4));
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
 		}
 
-		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, string textFromRounded)
+		private static void OutputEnzymeKinematic<T>(EnzymeKinematic<T> kinematic)
+		where T : struct, IComparable, IComparable<T>, IEquatable<T>, IFormattable
 		{
+			var strKinematic = kinematic.ToString("g", CultureInfo.CurrentCulture);
 			if (IsMacOsX()) {
-				textFromRounded = textFromRounded.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
+				strKinematic = strKinematic.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
 			}
-			Console.Write(textFromRounded);
-			Console.Write("\twith ");
-			Console.WriteLine(representation);
+			Console.WriteLine(strKinematic);
 		}
 	}
 }

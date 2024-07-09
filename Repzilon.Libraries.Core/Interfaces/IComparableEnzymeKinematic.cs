@@ -22,5 +22,6 @@ namespace Repzilon.Libraries.Core
 		IComparable KmNumber { get; }
 		string KmUnit { get; }
 		IComparable Correlation { get; }
+		EnzymeSpeedRepresentation Representation { get; }
 	}
 }

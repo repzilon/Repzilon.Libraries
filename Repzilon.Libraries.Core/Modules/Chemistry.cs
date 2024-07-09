@@ -179,6 +179,12 @@ namespace Repzilon.Libraries.Core
 			if (rm.Model != MathematicalModel.Affine) {
 				throw new NotSupportedException("The SpeedOfEnzyme method is unable to solve non-linear equations.");
 			}
+			return SpeedOfEnzyme(concentrationUnit, speedUnit, representation, rm);
+		}
+
+		private static EnzymeKinematic<double> SpeedOfEnzyme(string concentrationUnit, string speedUnit,
+		EnzymeSpeedRepresentation representation, RegressionModel<double> rm)
+		{
 			var slope = rm.B;
 			var intercept = rm.A;
 			double vmax, km;
@@ -198,7 +204,7 @@ namespace Repzilon.Libraries.Core
 				//throw new System.ComponentModel.InvalidEnumArgumentException(
 				// "representation", (int)representation, typeof(EnzymeSpeedRepresentation));
 			}
-			return new EnzymeKinematic<double>(vmax, speedUnit, km, concentrationUnit, rm.R);
+			return new EnzymeKinematic<double>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);
 		}
 
 		public static EnzymeKinematic<decimal> SpeedOfEnzyme(string concentrationUnit, string speedUnit,
@@ -227,7 +233,51 @@ namespace Repzilon.Libraries.Core
 				//throw new System.ComponentModel.InvalidEnumArgumentException(
 				// "representation", (int)representation, typeof(EnzymeSpeedRepresentation));
 			}
-			return new EnzymeKinematic<decimal>(vmax, speedUnit, km, concentrationUnit, rm.R);
+			return new EnzymeKinematic<decimal>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);
+		}
+
+		public static EnzymeKinematic<double> SpeedOfEnzyme(string concentrationUnit, string speedUnit,
+		params PointD[] michaelisMentenDataPoints)
+		{
+			int i;
+			var c = michaelisMentenDataPoints.Length;
+			double s, v0;
+			var ptdMatrix = new PointD[4][];	
+
+			for (i = 0; i < 4; i++) {
+				ptdMatrix[i] = new PointD[c];
+			}
+			for (i = 0; i < c; i++) {
+				var mmdp = michaelisMentenDataPoints[i];
+				s = mmdp.X;
+				v0 = mmdp.Y;
+				ptdMatrix[0][i] = mmdp;
+				ptdMatrix[1][i] = new PointD(1.0 / s, 1.0 / v0);
+				ptdMatrix[2][i] = new PointD(v0 / s, v0);
+				ptdMatrix[3][i] = new PointD(s, s / v0);
+			}
+
+			var rmdarAll = new RegressionModel<double>[4];
+			for (i = 0; i < 4; i++) {
+				rmdarAll[i] = RegressionModel.Compute(ptdMatrix[i]);
+			}
+			// Meaning for s, c and v0 change here
+			s = 0;	// best absolute correlation
+			c = -1;	// index of regression model having the best correlation
+			for (i = 0; i < 4; i++) {
+				if (rmdarAll[i].Model == MathematicalModel.Affine) {
+					v0 = Math.Abs(rmdarAll[i].R);	// absolute correlation at current index
+					if (v0 > s) {
+						s = v0;
+						c = i;
+					}
+				}
+			}
+			if (c >= 0) {
+				return SpeedOfEnzyme(concentrationUnit, speedUnit, (EnzymeSpeedRepresentation)c, rmdarAll[c]);
+			} else {
+				throw new Exception("Unable to transform to a linearized model for computing enzyme kinematics.");
+			}
 		}
 	}
 }

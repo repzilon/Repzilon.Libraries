@@ -42,6 +42,8 @@ namespace Repzilon.Libraries.Core
 		public readonly KeyValuePair<T, string> Km;
 		public readonly T Correlation;
 
+		public EnzymeSpeedRepresentation Representation { get; private set; }
+
 		IComparable IComparableEnzymeKinematic.VmaxNumber
 		{
 			get { return Vmax.Key; }
@@ -67,21 +69,26 @@ namespace Repzilon.Libraries.Core
 			get { return Correlation; }
 		}
 
-		public EnzymeKinematic(KeyValuePair<T, string> vmax, KeyValuePair<T, string> km, T correlation)
+		public EnzymeKinematic(KeyValuePair<T, string> vmax, KeyValuePair<T, string> km, T correlation,
+		EnzymeSpeedRepresentation representation)
 		{
 			Vmax = vmax;
 			Km = km;
 			Correlation = correlation;
+			Representation = representation;
 		}
 
-		public EnzymeKinematic(T vmaxValue, string vmaxUnit, T kmValue, string kmUnit, T correlation)
+		public EnzymeKinematic(T vmaxValue, string vmaxUnit, T kmValue, string kmUnit, T correlation,
+		EnzymeSpeedRepresentation representation)
 		{
 			Vmax = new KeyValuePair<T, string>(vmaxValue, vmaxUnit);
 			Km = new KeyValuePair<T, string>(kmValue, kmUnit);
 			Correlation = correlation;
+			Representation = representation;
 		}
 
-		public EnzymeKinematic(EnzymeKinematic<T> source) : this(source.Vmax, source.Km, source.Correlation)
+		public EnzymeKinematic(EnzymeKinematic<T> source) : this(source.Vmax, source.Km, source.Correlation,
+		source.Representation)
 		{
 		}
 
@@ -101,7 +108,8 @@ namespace Repzilon.Libraries.Core
 		{
 			var eqcKVP = EqualityComparer<KeyValuePair<T, string>>.Default;
 			return eqcKVP.Equals(Vmax, other.Vmax) && eqcKVP.Equals(Km, other.Km) &&
-			 EqualityComparer<T>.Default.Equals(Correlation, other.Correlation);
+			 EqualityComparer<T>.Default.Equals(Correlation, other.Correlation) &&
+			 (other.Representation == Representation);
 		}
 
 		private bool Equals(IComparableEnzymeKinematic other)
@@ -113,7 +121,8 @@ namespace Repzilon.Libraries.Core
 				var kvpKm = this.Km;
 				return ((IComparable)kvpVmax.Key == other.VmaxNumber) && (kvpVmax.Value == other.VmaxUnit) &&
 				 ((IComparable)kvpKm.Key == other.KmNumber) && (kvpKm.Value == other.KmUnit) &&
-				 ((IComparable)this.Correlation == other.Correlation);
+				 ((IComparable)this.Correlation == other.Correlation) &&
+				 (other.Representation == Representation);
 			}
 		}
 
@@ -134,6 +143,7 @@ namespace Repzilon.Libraries.Core
 				hashCode = hashCode * -1521134295 + Vmax.GetHashCode();
 				hashCode = hashCode * -1521134295 + Km.GetHashCode();
 				hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
+				hashCode = hashCode * -1521134295 + (int)Representation;
 				return hashCode;
 			}
 		}
@@ -152,8 +162,8 @@ namespace Repzilon.Libraries.Core
 		{
 			var kvpVmax = this.Vmax;
 			var kvpKm = this.Km;
-			return String.Format("v<sub>max</sub>:\xA0{0}\xA0{1}; k<sub>m</sub>:\xA0{2}\xA0{3} (r={4:f6})",
-			 kvpVmax.Key, kvpVmax.Value, kvpKm.Key, kvpKm.Value, Correlation);
+			return String.Format("v<sub>max</sub>:\xA0{0}\xA0{1}; k<sub>m</sub>:\xA0{2}\xA0{3} (r={4:f6} with {5})",
+			 kvpVmax.Key, kvpVmax.Value, kvpKm.Key, kvpKm.Value, Correlation, Representation);
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
@@ -161,7 +171,8 @@ namespace Repzilon.Libraries.Core
 			var stbAsString = new StringBuilder();
 			AppendMeasure(stbAsString.Append("v<sub>max</sub>:\xA0"), Vmax, format, formatProvider);
 			AppendMeasure(stbAsString.Append("; k<sub>m</sub>:\xA0"), Km, format, formatProvider);
-			return stbAsString.Append(" (r=").Append(Correlation.ToString(format, formatProvider)).Append(')').ToString();
+			return stbAsString.Append(" (r=").Append(Correlation.ToString(format, formatProvider))
+			 .Append(" with ").Append(Representation).Append(')').ToString();
 		}
 
 		private static void AppendMeasure(StringBuilder buffer, KeyValuePair<T, string> measure, string format,
@@ -192,7 +203,8 @@ namespace Repzilon.Libraries.Core
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<float>(
 			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
-			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation);
+			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation,
+			 self.Representation);
 		}
 
 #if NET20
@@ -214,7 +226,8 @@ namespace Repzilon.Libraries.Core
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<double>(
 			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
-			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation);
+			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation,
+			 self.Representation);
 		}
 
 #if NET20
@@ -236,7 +249,8 @@ namespace Repzilon.Libraries.Core
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<decimal>(
 			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
-			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation);
+			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation,
+			 self.Representation);
 		}
 
 #if NET20
@@ -258,7 +272,8 @@ namespace Repzilon.Libraries.Core
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<float>(
 			 (float)Math.Round(kvpVmax.Key, forSpeed, MidpointRounding.ToEven), kvpVmax.Value,
-			 (float)Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation);
+			 (float)Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation,
+			 self.Representation);
 		}
 
 #if NET20
@@ -280,7 +295,8 @@ namespace Repzilon.Libraries.Core
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<double>(
 			 Math.Round(kvpVmax.Key, forSpeed, MidpointRounding.ToEven), kvpVmax.Value,
-			 Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation);
+			 Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation,
+			 self.Representation);
 		}
 
 #if NET20
@@ -302,7 +318,8 @@ namespace Repzilon.Libraries.Core
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<decimal>(
 			 Math.Round(kvpVmax.Key, forSpeed, MidpointRounding.ToEven), kvpVmax.Value,
-			 Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation);
+			 Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation,
+			 self.Representation);
 		}
 	}
 }

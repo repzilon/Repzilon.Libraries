@@ -118,6 +118,31 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(rmdBC2Ch1p16);
 
 			Console.Write(Environment.NewLine);
+			Console.WriteLine("Biochemistry II ch. 1 pp. 22-23");
+			Console.WriteLine("-------------------------------");
+			var rmdBC2Ch1p22V0 = RegressionModel.Compute(
+				new PointD(1.0, 31.25),
+				new PointD(0.4, 18.18),
+				new PointD(0.2, 13.89),
+				new PointD(0.1, 11.11)
+			);
+			OutputRegressionModel(rmdBC2Ch1p22V0);
+			var rmdBC2Ch1p22VI = RegressionModel.Compute(
+				new PointD(1.0, 47.62),
+				new PointD(0.4, 24.39),
+				new PointD(0.2, 16.95),
+				new PointD(0.1, 12.99)
+			);
+			OutputRegressionModel(rmdBC2Ch1p22VI);
+			var rmdBC2Ch1p22VIp = RegressionModel.Compute(
+				new PointD(1.0, 47.62),
+				new PointD(0.4, 26.32),
+				new PointD(0.2, 20),
+				new PointD(0.1, 16.39)
+			);
+			OutputRegressionModel(rmdBC2Ch1p22VIp);
+
+			Console.Write(Environment.NewLine);
 			Console.WriteLine("Biochemistry II ch. 1 exercise 3");
 			Console.WriteLine("--------------------------------");
 			var lrrBC2Ch1Ex3 = LinearRegression.Compute(
