@@ -214,6 +214,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(10, 1.1257)
 			);
 			OutputRegressionModel(rmdCC2Healing);
+
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Factorial (1 to 16)");
+			Console.WriteLine("-------------------");
+			var factorialSuite = new PointM[16];
+			for (byte i = 1; i <= 16; i++) {
+				factorialSuite[i - 1] = new PointM(i, ExtraMath.Factorial(i));
+			}
+			OutputRegressionModel(RegressionModel.Compute(factorialSuite));
 		}
 
 		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
