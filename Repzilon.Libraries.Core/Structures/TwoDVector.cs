@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
+// ReSharper disable InvokeAsExtensionMethod
 
 namespace Repzilon.Libraries.Core.Vectors
 {

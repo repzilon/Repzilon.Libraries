@@ -14,6 +14,7 @@
 using System;
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Vectors;
+// ReSharper disable InvokeAsExtensionMethod
 
 namespace Repzilon.Tests.ForCoreLibrary
 {

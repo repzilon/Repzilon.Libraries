@@ -240,6 +240,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write(Environment.NewLine);
 #else
 			if (checkBiaises) {
+				// ReSharper disable once InvokeAsExtensionMethod
 				Console.WriteLine("\trelative bias: {0:p}", GenericArithmetic<T>.SubtractScalars(b, MatrixExtensionMethods.ConvertTo<T>(1)));
 			} else {
 				Console.Write(Environment.NewLine);
