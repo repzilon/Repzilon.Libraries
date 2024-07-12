@@ -195,6 +195,7 @@ namespace Repzilon.Libraries.Core
 		public double InterceptStdDev()
 		{
 			var n = this.Count;
+			// ReSharper disable once InconsistentNaming
 			var x_ = this.AverageX;
 			var sx = this.StdDevOfX;
 			return this.ResidualStdDev() * Math.Sqrt((1.0 / n) + (x_ * x_ / ((n - 1) * sx * sx)));

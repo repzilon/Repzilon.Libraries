@@ -20,6 +20,7 @@ using System.Diagnostics.CodeAnalysis;
 using System.Linq;
 #endif
 using Repzilon.Libraries.Core;
+// ReSharper disable InconsistentNaming
 
 #if !NET20
 namespace Repzilon.Tests.ForCoreLibrary
