@@ -96,17 +96,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 					messageWriter(String.Format("Data type: {0}", typeof(T).Name));
 				}
 
-				var blnarOK = new bool[c];
+				var blnarOk = new bool[c];
 				for (int i = 0; i < c; i++) {
 					var d = SignificantDigits.Count(values[i]);
-					blnarOK[i] = d == expectedCounts[i];
+					blnarOk[i] = d == expectedCounts[i];
 					if (messageWriter != null) {
 						messageWriter(String.Format(
-						 blnarOK[i] ? "{0,13} -> {1} correct" : "{0,13} -> {1} WRONG (should be {2})",
+						 blnarOk[i] ? "{0,13} -> {1} correct" : "{0,13} -> {1} WRONG (should be {2})",
 						 values[i], d, expectedCounts[i]));
 					}
 				}
-				return blnarOK;
+				return blnarOk;
 			}
 #if NET40 || NET35 || NET20
 			return new bool[0];

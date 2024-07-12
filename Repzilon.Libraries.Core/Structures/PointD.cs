@@ -24,8 +24,7 @@ namespace Repzilon.Libraries.Core
 	[StructLayout(LayoutKind.Auto)]
 #endif
 	public struct PointD : IPoint<double>,
-	IEquatable<PointD>, IEquatable<IPoint<double>>, IEquatable<PointM>, IEquatable<IPoint<decimal>>,
-	IFormattable
+	IEquatable<PointD>, IEquatable<IPoint<double>>, IEquatable<PointM>, IEquatable<IPoint<decimal>>
 	{
 		public double X { get; private set; }
 		public double Y { get; private set; }
@@ -140,10 +139,10 @@ namespace Repzilon.Libraries.Core
 			if (formatProvider == null) {
 				formatProvider = CultureInfo.CurrentCulture;
 			}
-			var stbCoord = new StringBuilder();
-			stbCoord.Append('{').Append(this.X.ToString(format, formatProvider)).Append("; ")
+			var stbCoordinates = new StringBuilder();
+			stbCoordinates.Append('{').Append(this.X.ToString(format, formatProvider)).Append("; ")
 			 .Append(this.Y.ToString(format, formatProvider)).Append('}');
-			return stbCoord.ToString();
+			return stbCoordinates.ToString();
 		}
 		#endregion
 

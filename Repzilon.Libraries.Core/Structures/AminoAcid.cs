@@ -260,19 +260,19 @@ namespace Repzilon.Libraries.Core
 				}
 			} else { // with lateral chain
 				dicat = this.DicationWhenVeryAcid;
-				var a2ltar = (this.pKa2 < ar);
+				var a2Ltar = (this.pKa2 < ar);
 				if (pH == pkI) {
 					return 0;
 				} else if (pH == this.pKa1) {
 					return dicat ? 1.5f : 0.5f;
 				} else if (pH == this.pKa2) {
-					return ChargeOfLateral(false, a2ltar, dicat);
+					return ChargeOfLateral(false, a2Ltar, dicat);
 				} else if (pH == ar) {
-					return ChargeOfLateral(true, a2ltar, dicat);
+					return ChargeOfLateral(true, a2Ltar, dicat);
 				} else {
 					float pJ;
 					if (dicat) {
-						pJ = a2ltar ? this.pKa1 + this.pKa2 : this.pKa1 + ar;
+						pJ = a2Ltar ? this.pKa1 + this.pKa2 : this.pKa1 + ar;
 					} else {
 						pJ = this.pKa2 + ar;
 					}

@@ -796,7 +796,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		/// <summary>
-		/// Tries to solves a linear equation system, using this matrix containing the coefficients of the variable
+		/// Tries to solve a linear equation system, using this matrix containing the coefficients of the variable
 		/// part of the equation system. For now, it can only find a solution for single unique solution equation systems.
 		/// </summary>
 		/// <param name="constants">A Nx1 matrix having the constant part of the equation system</param>

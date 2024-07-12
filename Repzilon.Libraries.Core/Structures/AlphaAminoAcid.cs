@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 		$2 = (byte)'$1'
 	 */
 	/// <summary>
-	/// List of alpha amino acid three letter codes
+	/// List of alpha amino acid three-letter codes
 	/// </summary>
 	/// <remarks>
 	/// The numeric representation is the ASCII/ISO-8859-1/Unicode
@@ -130,9 +130,9 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NET20
-		public static bool HasTwoAsymetricCarbons(AlphaAminoAcid y)
+		public static bool HasTwoAsymmetricCarbons(AlphaAminoAcid y)
 #else
-		public static bool HasTwoAsymetricCarbons(this AlphaAminoAcid y)
+		public static bool HasTwoAsymmetricCarbons(this AlphaAminoAcid y)
 #endif
 		{
 			return (y == AlphaAminoAcid.Ser) || (y == AlphaAminoAcid.Thr) || (y == AlphaAminoAcid.Ile);
@@ -186,12 +186,12 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NET20
-		public static byte AsymetricCarbonCount(AlphaAminoAcid y)
+		public static byte AsymmetricCarbonCount(AlphaAminoAcid y)
 #else
-		public static byte AsymetricCarbonCount(this AlphaAminoAcid y)
+		public static byte AsymmetricCarbonCount(this AlphaAminoAcid y)
 #endif
 		{
-			if (HasTwoAsymetricCarbons(y)) {
+			if (HasTwoAsymmetricCarbons(y)) {
 				return 2;
 #pragma warning disable IDE0046 // Convert to conditional expression
 #pragma warning disable CC0013 // Use ternary operator
