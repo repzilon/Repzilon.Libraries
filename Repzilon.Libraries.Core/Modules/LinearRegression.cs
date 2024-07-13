@@ -31,7 +31,7 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("points");
 			}
 			var n = 0;
-			double dblSumX = 0, dblSumY = 0, dblSumXY = 0;
+			double dblSumX = 0, dblSumY = 0, dblSumXy = 0;
 			var dblMinX = Double.MaxValue;
 			var dblMinY = Double.MaxValue;
 			var dblMaxX = Double.MinValue;
@@ -40,7 +40,7 @@ namespace Repzilon.Libraries.Core
 				n++;
 				dblSumX += pt.X;
 				dblSumY += pt.Y;
-				dblSumXY += pt.X * pt.Y;
+				dblSumXy += pt.X * pt.Y;
 				dblMinX = Math.Min(dblMinX, pt.X);
 				dblMaxX = Math.Max(dblMaxX, pt.X);
 				dblMinY = Math.Min(dblMinY, pt.Y);
@@ -61,7 +61,7 @@ namespace Repzilon.Libraries.Core
 			}
 			dblStdDevX = Math.Sqrt(dblStdDevX / (n - 1));
 			dblStdDevY = Math.Sqrt(dblStdDevY / (n - 1));
-			var b = (dblSumXY - (n * dblAverageX * dblAverageY)) / ((n - 1) * dblStdDevX * dblStdDevX);
+			var b = (dblSumXy - (n * dblAverageX * dblAverageY)) / ((n - 1) * dblStdDevX * dblStdDevX);
 			var a = dblAverageY - (b * dblAverageX);
 			var r = b * dblStdDevX / dblStdDevY;
 
@@ -80,7 +80,7 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("points");
 			}
 			var n = 0;
-			decimal dcmSumX = 0, dcmSumY = 0, dcmSumXY = 0;
+			decimal dcmSumX = 0, dcmSumY = 0, dcmSumXy = 0;
 			var dcmMinX = Decimal.MaxValue;
 			var dcmMinY = Decimal.MaxValue;
 			var dcmMaxX = Decimal.MinValue;
@@ -89,7 +89,7 @@ namespace Repzilon.Libraries.Core
 				n++;
 				dcmSumX += pt.X;
 				dcmSumY += pt.Y;
-				dcmSumXY += pt.X * pt.Y;
+				dcmSumXy += pt.X * pt.Y;
 				dcmMinX = Math.Min(dcmMinX, pt.X);
 				dcmMaxX = Math.Max(dcmMaxX, pt.X);
 				dcmMinY = Math.Min(dcmMinY, pt.Y);
@@ -110,7 +110,7 @@ namespace Repzilon.Libraries.Core
 			}
 			dcmStdDevX = ExtraMath.Sqrt(dcmStdDevX / (n - 1));
 			dblStdDevY = ExtraMath.Sqrt(dblStdDevY / (n - 1));
-			var b = (dcmSumXY - (n * dcmAverageX * dcmAverageY)) / ((n - 1) * dcmStdDevX * dcmStdDevX);
+			var b = (dcmSumXy - (n * dcmAverageX * dcmAverageY)) / ((n - 1) * dcmStdDevX * dcmStdDevX);
 			var a = dcmAverageY - (b * dcmAverageX);
 			var r = b * dcmStdDevX / dblStdDevY;
 			return new DecimalLinearRegressionResult(n, RoundOff.Error(a), b, r,
@@ -135,11 +135,11 @@ namespace Repzilon.Libraries.Core
 			var lstLogLog = new List<PointD>();
 			var i = 0;
 			foreach (var pt in points) {
-				var log10x = Math.Log10(pt.X);
-				var log10y = Math.Log10(pt.Y);
-				lstSemiLogX.Add(new PointD(log10x, pt.Y));
-				lstSemiLogY.Add(new PointD(pt.X, log10y));
-				lstLogLog.Add(new PointD(log10x, log10y));
+				var log10X = Math.Log10(pt.X);
+				var log10Y = Math.Log10(pt.Y);
+				lstSemiLogX.Add(new PointD(log10X, pt.Y));
+				lstSemiLogY.Add(new PointD(pt.X, log10Y));
+				lstLogLog.Add(new PointD(log10X, log10Y));
 				i++;
 			}
 			var rmarAll = new RegressionModel<double>[] {
@@ -169,11 +169,11 @@ namespace Repzilon.Libraries.Core
 			var lstLogLog = new List<PointM>();
 			var i = 0;
 			foreach (var pt in points) {
-				var log10x = (decimal)Math.Log10((double)pt.X);
-				var log10y = (decimal)Math.Log10((double)pt.Y);
-				lstSemiLogX.Add(new PointM(log10x, pt.Y));
-				lstSemiLogY.Add(new PointM(pt.X, log10y));
-				lstLogLog.Add(new PointM(log10x, log10y));
+				var log10X = (decimal)Math.Log10((double)pt.X);
+				var log10Y = (decimal)Math.Log10((double)pt.Y);
+				lstSemiLogX.Add(new PointM(log10X, pt.Y));
+				lstSemiLogY.Add(new PointM(pt.X, log10Y));
+				lstLogLog.Add(new PointM(log10X, log10Y));
 				i++;
 			}
 			var rmarAll = new RegressionModel<decimal>[] {

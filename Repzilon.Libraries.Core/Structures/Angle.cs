@@ -195,10 +195,10 @@ namespace Repzilon.Libraries.Core.Vectors
 			}
 
 			while (angle.CompareTo(zero) < 0) {
-				angle = GenericArithmetic<T>.adder(angle, turn);
+				angle = GenericArithmetic<T>.Adder(angle, turn);
 			}
 			while (angle.CompareTo(turn) > 0) {
-				angle = GenericArithmetic<T>.sub(angle, turn);
+				angle = GenericArithmetic<T>.Sub(angle, turn);
 			}
 
 			return new Angle<T>(angle, this.Unit);
@@ -415,7 +415,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var u = x.Unit;
 			if (u == y.Unit) {
-				return new Angle<T>(GenericArithmetic<T>.adder(x.Value, y.Value), u);
+				return new Angle<T>(GenericArithmetic<T>.Adder(x.Value, y.Value), u);
 			} else {
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
 				var dy = y.ConvertTo<decimal>(AngleUnit.Radian, false);
@@ -447,7 +447,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var u = x.Unit;
 			if (u == y.Unit) {
-				return new Angle<T>(GenericArithmetic<T>.sub(x.Value, y.Value), u);
+				return new Angle<T>(GenericArithmetic<T>.Sub(x.Value, y.Value), u);
 			} else {
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
 				var dy = y.ConvertTo<decimal>(AngleUnit.Radian, false);

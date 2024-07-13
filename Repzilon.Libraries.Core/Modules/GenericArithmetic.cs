@@ -33,8 +33,8 @@ namespace Repzilon.Libraries.Core
 			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
 		}
 
-		internal static readonly Func<T, T, T> adder = BuildAdder();
-		internal static readonly Func<T, T, T> sub = BuildSubtractor();
+		internal static readonly Func<T, T, T> Adder = BuildAdder();
+		internal static readonly Func<T, T, T> Sub = BuildSubtractor();
 
 		private static Func<T, T, T> BuildAdder()
 		{
@@ -60,12 +60,12 @@ namespace Repzilon.Libraries.Core
 
 		public static T AddScalars(T a, T b)
 		{
-			return adder(a, b);
+			return Adder(a, b);
 		}
 
 		public static T SubtractScalars(T a, T b)
 		{
-			return sub(a, b);
+			return Sub(a, b);
 		}
 
 		public static T MultiplyScalars(T a, T b)

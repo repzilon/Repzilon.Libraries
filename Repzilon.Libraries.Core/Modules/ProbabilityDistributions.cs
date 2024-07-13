@@ -234,7 +234,7 @@ namespace Repzilon.Libraries.Core
 				if (numbers[i] == "√k") {
 					nd *= ExtraMath.Sqrt(k);
 				} else if (numbers[i] == "√π") {
-					nd *= ExtraMath.Sqrt(ExtraMath.PI);
+					nd *= ExtraMath.Sqrt(ExtraMath.Pi);
 				} else {
 					nd *= Decimal.Parse(numbers[i], NumberStyles.Any);
 				}
@@ -260,7 +260,7 @@ namespace Repzilon.Libraries.Core
 					if (inDouble) {
 						nf *= Math.Sqrt(Math.PI);
 					} else {
-						nd *= ExtraMath.Sqrt(ExtraMath.PI);
+						nd *= ExtraMath.Sqrt(ExtraMath.Pi);
 					}	
 				} else if (inDouble) {
 					nf *= Double.Parse(numbers[i]);

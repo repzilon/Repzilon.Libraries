@@ -106,8 +106,8 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(EnzymeKinematic<T> other)
 		{
-			var eqcKVP = EqualityComparer<KeyValuePair<T, string>>.Default;
-			return eqcKVP.Equals(Vmax, other.Vmax) && eqcKVP.Equals(Km, other.Km) &&
+			var eqcKvp = EqualityComparer<KeyValuePair<T, string>>.Default;
+			return eqcKvp.Equals(Vmax, other.Vmax) && eqcKvp.Equals(Km, other.Km) &&
 			 EqualityComparer<T>.Default.Equals(Correlation, other.Correlation) &&
 			 (other.Representation == Representation);
 		}

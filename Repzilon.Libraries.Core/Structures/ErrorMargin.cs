@@ -76,12 +76,12 @@ namespace Repzilon.Libraries.Core
 #if !NET20
 		public T Min()
 		{
-			return GenericArithmetic<T>.sub(Middle, Margin);
+			return GenericArithmetic<T>.Sub(Middle, Margin);
 		}
 
 		public T Max()
 		{
-			return GenericArithmetic<T>.adder(Middle, Margin);
+			return GenericArithmetic<T>.Adder(Middle, Margin);
 		}
 #endif
 

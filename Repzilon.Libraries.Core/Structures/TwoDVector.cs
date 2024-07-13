@@ -301,13 +301,13 @@ namespace Repzilon.Libraries.Core.Vectors
 #if !NET20
 		public static TwoDVector<T> operator +(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var addi = GenericArithmetic<T>.adder;
+			var addi = GenericArithmetic<T>.Adder;
 			return new TwoDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y));
 		}
 
 		public static TwoDVector<T> operator -(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var sub = GenericArithmetic<T>.sub;
+			var sub = GenericArithmetic<T>.Sub;
 			return new TwoDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y));
 		}
 
@@ -346,7 +346,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
-			return GenericArithmetic<T>.adder(mult(u.X, v.X), mult(u.Y, v.Y));
+			return GenericArithmetic<T>.Adder(mult(u.X, v.X), mult(u.Y, v.Y));
 		}
 
 		public static bool ArePerpendicular(TwoDVector<T> u, TwoDVector<T> v)
@@ -367,7 +367,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			return new ThreeDVector<T>(default(T), default(T),
-			 GenericArithmetic<T>.sub(mult(u.X, v.Y), mult(u.Y, v.X)));
+			 GenericArithmetic<T>.Sub(mult(u.X, v.Y), mult(u.Y, v.X)));
 		}
 
 		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)

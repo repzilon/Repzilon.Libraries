@@ -320,7 +320,7 @@ namespace Repzilon.Libraries.Core
 				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
-						m[i, j] = GenericArithmetic<T>.adder(a[i, j], b[i, j]);
+						m[i, j] = GenericArithmetic<T>.Adder(a[i, j], b[i, j]);
 					}
 				}
 				return m;
@@ -338,7 +338,7 @@ namespace Repzilon.Libraries.Core
 				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
-						m[i, j] = GenericArithmetic<T>.sub(a[i, j], b[i, j]);
+						m[i, j] = GenericArithmetic<T>.Sub(a[i, j], b[i, j]);
 					}
 				}
 				return m;
@@ -375,7 +375,7 @@ namespace Repzilon.Libraries.Core
 					for (byte j = 0; j < c.Columns; j++) {
 						var sumOfCell = default(T);
 						for (byte x = 0; x < b.Lines; x++) {
-							sumOfCell = GenericArithmetic<T>.adder(sumOfCell, mult(a[i, x], b[x, j]));
+							sumOfCell = GenericArithmetic<T>.Adder(sumOfCell, mult(a[i, x], b[x, j]));
 						}
 						c[i, j] = sumOfCell;
 					}
@@ -516,7 +516,7 @@ namespace Repzilon.Libraries.Core
 				for (byte i = 0; i < coefficients.Length; i++) {
 					if (coefficients[i].HasValue) {
 						for (j = 0; j < this.Columns; j++) {
-							accumulator[j] = GenericArithmetic<T>.adder(accumulator[j], mult(coefficients[i].Value, this[i, j]));
+							accumulator[j] = GenericArithmetic<T>.Adder(accumulator[j], mult(coefficients[i].Value, this[i, j]));
 						}
 					}
 				}
@@ -566,7 +566,7 @@ namespace Repzilon.Libraries.Core
 					return m_values[0, 0];
 				} else if (l == 2) { // we already know it is a square matrix
 					mult = BuildMultiplier<T>();
-					return GenericArithmetic<T>.sub(mult(m_values[0, 0], m_values[1, 1]), mult(m_values[0, 1], m_values[1, 0]));
+					return GenericArithmetic<T>.Sub(mult(m_values[0, 0], m_values[1, 1]), mult(m_values[0, 1], m_values[1, 0]));
 				} else {
 					var c = this.Columns;
 					var plusOne = 1.ConvertTo<T>();
@@ -590,7 +590,7 @@ namespace Repzilon.Libraries.Core
 
 						// Accumulate determinant value at column
 						// det += m_values[0, j] * (-1)^(i+j) * det(subMatrix)
-						det = GenericArithmetic<T>.adder(det, mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
+						det = GenericArithmetic<T>.Adder(det, mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
 					}
 					return det;
 				}

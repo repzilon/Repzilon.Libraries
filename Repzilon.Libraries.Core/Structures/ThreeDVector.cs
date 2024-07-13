@@ -187,13 +187,13 @@ namespace Repzilon.Libraries.Core.Vectors
 #if !NET20
 		public static ThreeDVector<T> operator +(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var addi = GenericArithmetic<T>.adder;
+			var addi = GenericArithmetic<T>.Adder;
 			return new ThreeDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y), addi(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> operator -(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			var sub = GenericArithmetic<T>.sub;
+			var sub = GenericArithmetic<T>.Sub;
 			return new ThreeDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y), sub(u.Z, v.Z));
 		}
 
@@ -215,14 +215,14 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static T Dot(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
-			var addi = GenericArithmetic<T>.adder;
+			var addi = GenericArithmetic<T>.Adder;
 			return addi(addi(mult(u.X, v.X), mult(u.Y, v.Y)), mult(u.Z, v.Z));
 		}
 
 		public static ThreeDVector<T> Cross(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
-			var sub  = GenericArithmetic<T>.sub;
+			var sub  = GenericArithmetic<T>.Sub;
 			return new ThreeDVector<T>(
 			 sub(mult(u.Y, v.Z), mult(u.Z, v.Y)),
 			 sub(mult(u.Z, v.X), mult(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]

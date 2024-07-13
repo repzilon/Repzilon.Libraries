@@ -18,7 +18,7 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ExtraMath
 	{
-		public const decimal PI = 3.141592653589793238462643383327950m;
+		public const decimal Pi = 3.141592653589793238462643383327950m;
 
 		/// <summary>
 		/// Solves a quadratic equation axx + bx + c = 0 .
@@ -134,7 +134,7 @@ namespace Repzilon.Libraries.Core
 				T value = forEach(k);
 				sum = GenericArithmetic<T>.adder(sum, value);
 #else
-				sum = GenericArithmetic<T>.adder(sum, forEach(k));
+				sum = GenericArithmetic<T>.Adder(sum, forEach(k));
 #endif
 			}
 			return sum;
@@ -143,7 +143,7 @@ namespace Repzilon.Libraries.Core
 		public static T DifferenceOfPrimitives<T>(T a, T b, Func<T, T> expression)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
-			return GenericArithmetic<T>.sub(expression(b), expression(a));
+			return GenericArithmetic<T>.Sub(expression(b), expression(a));
 		}
 #endif
 

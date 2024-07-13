@@ -48,7 +48,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
-			var addi = GenericArithmetic<T>.adder;
+			var addi = GenericArithmetic<T>.Adder;
 			var squaredResult = addi(addi(mult(norm1, norm1), mult(norm2, norm2)),
 			 mult(mult(mult(norm1, norm2), (new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree) - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
 #if NETSTANDARD1_1
