@@ -25,7 +25,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			SummationTest(10000, 729, "Math.Pow", CalculusWork1No2FP);
 			SummationTest(10000, 729, "Pow(i32, u16)", CalculusWork1No2Int64);
 			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
+			SummationTest(10000, 729, "IIfn", CalculusWork1No2IIfn);
+			SummationTest(10000, 729, "IIfd", CalculusWork1No2IIfd);
 #endif
+
 			Console.WriteLine("Distributions de Student");
 			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
 			int i;
@@ -45,9 +48,40 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				Console.Write(Environment.NewLine);
 			}
+
+			Console.WriteLine("20! is {0}", ExtraMath.Factorial(20));
+
+#if !NET20
+			Console.WriteLine("Intégrale d'une loi normale centrée réduite");
+			var dblOneOfRoot2Pi = 1.0 / Math.Sqrt(2 * Math.PI);
+			var dblIntegral = 1 + ExtraMath.DifferenceOfPrimitives(0.0, 1.0, ExponentialSeries);
+			Console.WriteLine("∫[0; 1][𝒩(0; 1)] ≈ {0}", dblOneOfRoot2Pi * dblIntegral);
+#endif
 		}
 
 #if !NET20
+		private static double ExponentialSeries(double x)
+		{
+			return ExtraMath.Summation(1, 16 - 1, k =>
+			{
+				return ExponentialSuite(x, k);
+			});
+		}
+
+		private static double ExponentialSuite(double x, int k)
+		{
+			var odd = (2 * k) + 1;
+#if DEBUG
+			var t = Math.Pow(-1, k) * Math.Pow(x, odd);
+			var d = checked(odd * (1 << k) * ExtraMath.Factorial((byte)k));
+			var r = t / d;
+			Console.WriteLine("x={0} k={1} {2}/{3}={4}", x, k, t, d, r);
+			return r;
+#else
+			return (Math.Pow(-1, k) * Math.Pow(x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k));
+#endif
+		}
+
 		private static void SummationTest<T>(int benchLoops, int summationUpper, string legend, Func<int, T> forEach)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
@@ -75,6 +109,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static long CalculusWork1No2IIf(int k)
 		{
 			return 3 * k * (((k - 1) % 2 == 0) ? 1 : -1);
+		}
+
+		private static long CalculusWork1No2IIfn(int k)
+		{
+			return 3 * k * ((k % 2 == 0) ? -1 : 1);
+		}
+
+		private static long CalculusWork1No2IIfd(int k)
+		{
+			return 3 * k * ((k % 2 != 0) ? 1 : -1);
 		}
 
 		[Obsolete("15 times slower than Math.Pow.")]

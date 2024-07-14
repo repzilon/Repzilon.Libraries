@@ -78,7 +78,6 @@ namespace Repzilon.Libraries.Core
 #else
 			return String.IsNullOrWhiteSpace(text) ?
 #endif
-
 			 TimeSpan.Zero :
 			 TimeSpan.FromMilliseconds(Math.Max(700, 400 + (text.Trim().Length * 70)));
 		}
@@ -154,20 +153,32 @@ namespace Repzilon.Libraries.Core
 		/// <returns>The factorial</returns>
 		/// <remarks>
 		/// Anyone using recursion for this function must stay away from programming forever.
-		/// You are not showing any elite programming, you just put trash into the CPU stack,
-		/// and make the source code unreadable. This is not to say recursion is useless, it
-		/// is just because you are able to use it that you should use it everywhere.
+		/// You are not showing any elite skills, you are just puting trash into the CPU stack
+		/// and making the source code unreadable. This is not to say recursion is useless, it
+		/// is just not because you are able to use something you should use it everywhere.
 		/// </remarks>
 		public static long Factorial(byte n)
 		{
+#if !DEBUG
 			if (n > 20) {
 				throw new ArgumentOutOfRangeException("n", n, "The factorial of 21 overflows a 64-bit integer.");
 			}
-			long bang = n;
-			for (byte i = 3; i <= n; i++) {
-				bang *= i;
-			}
-			return bang;
+#endif
+			if (n <= 2) {
+				return n;
+			} else {
+				long bang = 6; // 3! is 6
+				for (byte i = 4; i <= n; i++) {
+#if DEBUG
+					checked {
+						bang *= i;
+					}
+#else
+					bang *= i;
+#endif
+				}
+				return bang;
+			}			
 		}
 	}
 }
