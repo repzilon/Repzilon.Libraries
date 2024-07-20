@@ -133,14 +133,12 @@ namespace Repzilon.Libraries.Core
 			var lstSemiLogX = new List<PointD>();
 			var lstSemiLogY = new List<PointD>();
 			var lstLogLog = new List<PointD>();
-			var i = 0;
 			foreach (var pt in points) {
 				var log10x = Math.Log10(pt.X);
 				var log10y = Math.Log10(pt.Y);
 				lstSemiLogX.Add(new PointD(log10x, pt.Y));
 				lstSemiLogY.Add(new PointD(pt.X, log10y));
 				lstLogLog.Add(new PointD(log10x, log10y));
-				i++;
 			}
 			var rmarAll = new RegressionModel<double>[] {
 				LinearRegression.Compute(points).ChangeModel(MathematicalModel.Affine),
@@ -148,10 +146,15 @@ namespace Repzilon.Libraries.Core
 				LinearRegression.Compute(lstSemiLogY).ChangeModel(MathematicalModel.SemiLogY),
 				LinearRegression.Compute(lstLogLog).ChangeModel(MathematicalModel.LogLog)
 			};
-			Array.Sort(rmarAll, delegate (RegressionModel<double> x, RegressionModel<double> y) {
-				return -1 * (x.R * x.R).CompareTo(y.R * y.R);
-			});
+			Array.Sort(rmarAll, OrderByDeterminationDesc);
 			return rmarAll[0];
+		}
+
+		private static int OrderByDeterminationDesc(RegressionModel<double> x, RegressionModel<double> y)
+		{
+			var xR = x.R;
+			var yR = y.R;
+			return -1 * (xR * xR).CompareTo(yR * yR);
 		}
 
 		public static RegressionModel<decimal> Compute(params PointM[] points)
@@ -167,14 +170,12 @@ namespace Repzilon.Libraries.Core
 			var lstSemiLogX = new List<PointM>();
 			var lstSemiLogY = new List<PointM>();
 			var lstLogLog = new List<PointM>();
-			var i = 0;
 			foreach (var pt in points) {
 				var log10x = (decimal)Math.Log10((double)pt.X);
 				var log10y = (decimal)Math.Log10((double)pt.Y);
 				lstSemiLogX.Add(new PointM(log10x, pt.Y));
 				lstSemiLogY.Add(new PointM(pt.X, log10y));
 				lstLogLog.Add(new PointM(log10x, log10y));
-				i++;
 			}
 			var rmarAll = new RegressionModel<decimal>[] {
 				LinearRegression.Compute(points).ChangeModel(MathematicalModel.Affine),
@@ -182,10 +183,15 @@ namespace Repzilon.Libraries.Core
 				LinearRegression.Compute(lstSemiLogY).ChangeModel(MathematicalModel.SemiLogY),
 				LinearRegression.Compute(lstLogLog).ChangeModel(MathematicalModel.LogLog)
 			};
-			Array.Sort(rmarAll, delegate (RegressionModel<decimal> x, RegressionModel<decimal> y) {
-				return -1 * (x.R * x.R).CompareTo(y.R * y.R);
-			});
+			Array.Sort(rmarAll, OrderByDeterminationDesc);
 			return rmarAll[0];
+		}
+
+		private static int OrderByDeterminationDesc(RegressionModel<decimal> x, RegressionModel<decimal> y)
+		{
+			var xR = x.R;
+			var yR = y.R;
+			return -1 * (xR * xR).CompareTo(yR * yR);
 		}
 	}
 }
