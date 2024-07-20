@@ -238,7 +238,7 @@ namespace Repzilon.Libraries.Core
 			int i;
 			var c = michaelisMentenDataPoints.Length;
 			double s, v0;
-			var ptdMatrix = new PointD[4][];	
+			var ptdMatrix = new PointD[4][];
 
 			for (i = 0; i < 4; i++) {
 				ptdMatrix[i] = new PointD[c];
@@ -258,11 +258,11 @@ namespace Repzilon.Libraries.Core
 				rmdarAll[i] = RegressionModel.Compute(ptdMatrix[i]);
 			}
 			// Meaning for s, c and v0 change here
-			s = 0;	// best absolute correlation
-			c = -1;	// index of regression model having the best correlation
+			s = 0;  // best absolute correlation
+			c = -1; // index of regression model having the best correlation
 			for (i = 0; i < 4; i++) {
 				if (rmdarAll[i].Model == MathematicalModel.Affine) {
-					v0 = Math.Abs(rmdarAll[i].R);	// absolute correlation at current index
+					v0 = Math.Abs(rmdarAll[i].R);   // absolute correlation at current index
 					if (v0 > s) {
 						s = v0;
 						c = i;
@@ -274,6 +274,54 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw new Exception("Unable to transform to a linearized model for computing enzyme kinematics.");
 			}
+		}
+
+		public static EnzymeKinematic<double> DirectLinearPlot(string concentrationUnit, string speedUnit,
+		params PointD[] michaelisMentenDataPoints)
+		{
+			int i;
+			int k = 0;
+			var c = michaelisMentenDataPoints.Length;
+			var prdarIntersections = new PointD[checked(c * (c - 1) / 2)];
+			// 1. Find the parameter space equations
+			var dblarSlopes = new double[c];
+			PointD pt;
+			for (i = 0; i < c; i++) {
+				pt = michaelisMentenDataPoints[i];
+				dblarSlopes[i] = pt.Y / pt.X;
+			}
+			// 2. Find the intersection of all equation pairs
+			double s;
+			for (i = 0; i < c; i++) {
+				for (var j = 0; j < c; j++) {
+					if (j > i) {
+						pt = michaelisMentenDataPoints[i];
+						s = RoundOff.Error((michaelisMentenDataPoints[j].Y - pt.Y) / (dblarSlopes[i] - dblarSlopes[j]));
+						prdarIntersections[k] = new PointD(s, RoundOff.Error((dblarSlopes[i] * s) + pt.Y));
+						k++;
+					}
+				}
+			}
+			// 4. Do a median to get Km and Vmax
+			Array.Sort(prdarIntersections, OrderByX);
+			pt = prdarIntersections[k / 2];
+			s = k % 2 == 1 ? pt.X : 0.5 * (prdarIntersections[(k / 2) - 1].X + pt.X);
+			Array.Sort(prdarIntersections, OrderByY);
+			pt = prdarIntersections[k / 2];
+			// 5. Return value
+			return new EnzymeKinematic<double>(k % 2 == 1 ? pt.Y : 0.5 * (prdarIntersections[(k / 2) - 1].Y + pt.Y),
+			 speedUnit, s /* cannot inline because of the 2nd sorting side-effect */ , concentrationUnit,
+			 LinearRegression.Compute(prdarIntersections).Correlation, EnzymeSpeedRepresentation.DirectLinearMedian);
+		}
+
+		private static int OrderByX(PointD a, PointD b)
+		{
+			return Math.Sign(a.X - b.X);
+		}
+
+		private static int OrderByY(PointD a, PointD b)
+		{
+			return Math.Sign(a.Y - b.Y);
 		}
 	}
 }

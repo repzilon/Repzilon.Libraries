@@ -185,6 +185,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(
 			 Chemistry.SpeedOfEnzyme("mmol/L", A240By30s, ptdarMM), 4));
+			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(
+			 Chemistry.DirectLinearPlot("mmol/L", A240By30s, ptdarMM), 4));
 		}
 
 		private static void EnzymeSpeedDecimal()
