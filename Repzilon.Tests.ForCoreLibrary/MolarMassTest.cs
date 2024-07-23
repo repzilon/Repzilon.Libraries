@@ -103,6 +103,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 Nanable(aa.MolarMass, "f3"), aa.Formula);
 			}
 
+			const string kBovineSerumAlbuminPeptides = /*"MKWVTFISLLLLFSSAYSRGVFRR" +*/ @"DTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
+DEHVKLVNELTEFAKTCVADESHAGCEKSLHTLFGDELCKVASLRETYGDMADCCEKQEP
+ERNECFLSHKDDSPDLPKLKPDPNTLCDEFKADEKKFWGKYLYEIARRHPYFYAPELLYY
+ANKYNGVFQECCQAEDKGACLLPKIETMREKVLASSARQRLRCASIQKFGERALKAWSVA
+RLSQKFPKAEFVEVTKLVTDLTKVHKECCHGDLLECADDRADLAKYICDNQDTISSKLKE
+CCDKPLLEKSHCIAEVEKDAIPENLPPLTADFAEDKDVCKNYQEAKDAFLGSFLYEYSRR
+HPEYAVSVLLRLAKEYEATLEECCAKDDPHACYSTVFDKLKHLVDEPQNLIKQNCDQFEK
+LGEYGFQNALIVRYTRKVPQVSTPTLVEVSRSLGKVGTRCCTKPESERMPCTEDYLSLIL
+NRLCVLHEKTPVSEKVTKCCTESLVNRRPCFSALTPDETYVPKAFDEKLFTFHADICTLP
+DTEKQIKKQTALVELLKHKPKATEEQLKTVMENFVAFVDKCCAADDKEACFAVEGPKLVV
+STQTALA";
+			Console.WriteLine("Molar mass of BSA (Bovine Serum Albumin) is {0:n3} g/mol", PolypeptideMass(kBovineSerumAlbuminPeptides.ToCharArray()));
+
 			Program.OutputSizeOf<FattyAcid>();
 			var lstFats = new List<FattyAcid>
 			{
@@ -148,6 +161,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			EnzymeSpeedFloat();
 			EnzymeSpeedDecimal();
+		}
+
+		private static float PolypeptideMass(char[] peptideSequenceLetters)
+		{
+			float mass = 0;
+			int n = 0;
+			var aal = AminoAcid.AlphaLookup;
+			for (int i = 0; i < peptideSequenceLetters.Length; i++) {
+				var l = peptideSequenceLetters[i];
+				AminoAcid aa;
+				if (Char.IsLetter(l) && aal.TryGetValue((AlphaAminoAcid)(int)Char.ToUpperInvariant(l), out aa)) {
+					mass += aa.MolarMass;
+					n++;
+				}
+			}
+			return (float)Math.Round(mass - ((n - 1) * 18.015f), 3); // a peptidic bond formation is a dehydration
 		}
 
 		private static void EnzymeSpeedFloat()

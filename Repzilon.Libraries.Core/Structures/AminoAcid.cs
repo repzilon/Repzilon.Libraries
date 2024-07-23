@@ -231,6 +231,35 @@ namespace Repzilon.Libraries.Core
 			return new ReadOnlyCollection<AminoAcid>(lstAminoAcids);
 		}
 
+#if NET40 || NET35 || NET20 || NETSTANDARD1_1
+		public static readonly IDictionary<AlphaAminoAcid, AminoAcid> AlphaLookup = MakeAlphaLookup();
+#else
+		public static readonly IReadOnlyDictionary<AlphaAminoAcid, AminoAcid> AlphaLookup = MakeAlphaLookup();
+#endif
+
+#if NET40 || NET35 || NET20 || NETSTANDARD1_1
+		private static IDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
+#else
+		private static IReadOnlyDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
+#endif
+		{
+			var lstAminoAcids = AminoAcid.AlphaList;
+			var dicAminoAcids = new SortedDictionary<AlphaAminoAcid, AminoAcid>();
+			for (int i = 0; i < lstAminoAcids.Count; i++) {
+#if NETFRAMEWORK || NETCOREAPP1_0 || NETSTANDARD
+				var enuSymbol = (AlphaAminoAcid)Enum.Parse(typeof(AlphaAminoAcid), lstAminoAcids[i].Symbol.Replace('é', 'e'));
+#else
+				var enuSymbol = Enum.Parse<AlphaAminoAcid>(lstAminoAcids[i].Symbol.Replace('é', 'e'));
+#endif
+				dicAminoAcids.Add(enuSymbol, lstAminoAcids[i]);
+			}
+#if NET46 || NETCOREAPP || NETSTANDARD
+			return new ReadOnlyDictionary<AlphaAminoAcid, AminoAcid>(dicAminoAcids);
+#else
+			return dicAminoAcids;
+#endif
+		}
+
 		public float WeightedCharge(float pH)
 		{
 			if ((pH < 1) || (pH > 14)) {
