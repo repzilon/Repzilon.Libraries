@@ -41,6 +41,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Peptides", PeptideGuess.Run);
 #endif
 			dicTests.Add("Calculus", CalculusTest.Run);
+			dicTests.Add("Optics", OpticsTest.Run);
 
 #if NET40 || NET35 || NET20
 			TriState enuWorkaroundCygwin = TriState.Unknown;
