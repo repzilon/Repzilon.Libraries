@@ -91,8 +91,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static char ReadFirstCharOfLine()
 		{
 			System.Threading.Thread.Sleep(10000);
-			var strLine = Console.ReadLine().Trim();
-			return (strLine.Length­ > 0) ? strLine[0] : 'Q';
+			var strLine = Console.ReadLine();
+			if (strLine != null) {
+				strLine = strLine.Trim();
+			}
+			return !String.IsNullOrEmpty(strLine) ? strLine[0] : 'Q';
 		}
 
 		private static char ReadKey2()

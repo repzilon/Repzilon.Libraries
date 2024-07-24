@@ -29,6 +29,7 @@ namespace Repzilon.Libraries.Core
 				ValidateUnits(mother, child, blnInitialMotherVolume, mother,
 				 "Child solution volume unit is different from the mother solution.");
 
+				// ReSharper disable PossibleInvalidOperationException
 				var childSolutionVolume = (Coefficient)child.SolutionVolume.Value.Value;
 				var solute = (Coefficient)(childSolutionVolume * child.Concentration.Value / mother.Concentration.Value);
 				child = Solution.Init(child, childSolutionVolume - solute, solute);
@@ -41,6 +42,7 @@ namespace Repzilon.Libraries.Core
 					motherVolume = solute;
 				}
 				mother = Solution.Init(mother, motherVolume, child.SolutionVolume.Value.Key);
+				// ReSharper restore PossibleInvalidOperationException
 
 				children[i] = child;
 			}
@@ -59,12 +61,14 @@ namespace Repzilon.Libraries.Core
 				ValidateUnits(mother, child, i > 0, adjacent,
 				 "Adjacent child solution volume units are different.");
 
+				// ReSharper disable PossibleInvalidOperationException
 				var tempVolume = (Coefficient)(child.SolutionVolume.Value.Value + volumeFromPrevious);
 				volumeFromPrevious = (Coefficient)(child.Concentration.Value * tempVolume / adjacent.Concentration.Value);
 				children[i] = Solution.Init(child, RoundOff.Error(tempVolume - volumeFromPrevious), RoundOff.Error(volumeFromPrevious));
 			}
 			child = children[0];
 			mother = Solution.Init(mother, child.SoluteVolume.Value, child.SolutionVolume.Value.Key);
+			// ReSharper restore PossibleInvalidOperationException
 			return children;
 		}
 
@@ -81,7 +85,9 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentException("Child solution concentration unit is different from the mother solution.");
 			}
 			if (checkVolume) {
+				// ReSharper disable PossibleInvalidOperationException
 				if (child.SolutionVolume.Value.Key != other.SolutionVolume.Value.Key) {
+					// ReSharper restore PossibleInvalidOperationException
 					throw new ArgumentException(volumeUnitDifferentMessage);
 				}
 			}

@@ -154,6 +154,7 @@ namespace Repzilon.Libraries.Core
 			} else if (enuTC == TypeCode.UInt32) {
 				return Count(Convert.ToInt64(value));
 			} else if (enuTC == TypeCode.UInt64) {
+				// ReSharper disable once PossibleInvalidCastException
 				return ((ulong)value > Int64.MaxValue) ? Count(Convert.ToDecimal(value)) : Count((long)value);
 			} else if (enuTC == TypeCode.Double) {
 				return Count((double)value);
@@ -230,9 +231,11 @@ namespace Repzilon.Libraries.Core
 
 			if (value != null) {
 				value = value.Trim().Replace(" ", "");
+			} else {
+				throw new ArgumentNullException("value");
 			}
 
-#if NETSTANDARD2_0
+#if NETFRAMEWORK || NETSTANDARD2_0 || NET50 || NET60
 			var karCultures = new CultureInfo[] { CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture, CultureInfo.InstalledUICulture, CultureInfo.InvariantCulture };
 #else
 			var karCultures = new CultureInfo[] { CultureInfo.CurrentCulture, CultureInfo.CurrentUICulture, CultureInfo.InvariantCulture };
