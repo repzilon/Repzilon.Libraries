@@ -19,6 +19,7 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ProbabilityDistributions
 	{
+		#region Normal distribution
 		private static readonly double OneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 
 		public static double Normal(double x, double mean, double standardDeviation, bool cumulative)
@@ -29,7 +30,7 @@ namespace Repzilon.Libraries.Core
 			}
 			if (cumulative) {
 				throw new NotImplementedException("Cumulative mode for normal distribution is not yet implemented " +
-				  "(Integral calculus is not part of base libraries of any general purpose programming language).");
+				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
 			} else {
 				var z = (x - mean) / standardDeviation;
 				return OneOfRootOfTwoPi / standardDeviation * Math.Exp(-0.5 * z * z);
@@ -39,18 +40,41 @@ namespace Repzilon.Libraries.Core
 		public static double Normal(double z, bool cumulative)
 		{
 			if (cumulative) {
-				throw new NotImplementedException("Cumulative mode for normal distribution is not yet implemented " +
-				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
+				if (z == 0) {
+					return 0.5;
+				} else if (Double.IsNegativeInfinity(z)) {
+					return 0;
+				} else if (Double.IsPositiveInfinity(z)) {
+					return 1;
+				} else if (z < 0) {
+					return 0.5 - (OneOfRootOfTwoPi * RiemannForNormal(-1 * z));
+				} else {
+					return 0.5 + (OneOfRootOfTwoPi * RiemannForNormal(z));
+				}
 			} else {
 				return OneOfRootOfTwoPi * Math.Exp(-0.5 * z * z);
 			}
 		}
 
+		private static double RiemannForNormal(double b)
+		{
+			const int n = 10 * 1000 * 1000;
+			double sum = 0;
+			var deltaXk = b / n;
+			var minusHalfdeltaXk2 = -0.5 * deltaXk * deltaXk;
+			for (var k = 1; k <= n; k++) {		
+				sum += Math.Exp(minusHalfdeltaXk2 * k * k) * deltaXk;
+			}
+			return sum;
+		}
+		#endregion
+
+		#region Student distribution
 		public static double Student(double x, byte liberties, bool cumulative)
 		{
 			if (cumulative) {
 				throw new NotImplementedException("Cumulative mode for Student distribution is not yet implemented " +
-				  "(Integral calculus is not part of base libraries of any general purpose programming language).");
+				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
 			} else {
 #if (DEBUG)
 				var lastPower = Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
@@ -299,5 +323,6 @@ namespace Repzilon.Libraries.Core
 				destination.Add(i.ToString(invariant));
 			}
 		}
+		#endregion
 	}
 }

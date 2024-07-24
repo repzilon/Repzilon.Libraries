@@ -78,7 +78,6 @@ namespace Repzilon.Libraries.Core
 #else
 			return String.IsNullOrWhiteSpace(text) ?
 #endif
-
 			 TimeSpan.Zero :
 			 TimeSpan.FromMilliseconds(Math.Max(700, 400 + (text.Trim().Length * 70)));
 		}
@@ -121,6 +120,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if !NET20
+		[Obsolete]
 		public static T Summation<T>(int m, int n, Func<int, T> forEach)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
@@ -140,12 +140,108 @@ namespace Repzilon.Libraries.Core
 			return sum;
 		}
 
+		[Obsolete]
 		public static T DifferenceOfPrimitives<T>(T a, T b, Func<T, T> expression)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			return GenericArithmetic<T>.Sub(expression(b), expression(a));
 		}
 #endif
+
+#if NETFRAMEWORK
+		public static long Summation(int m, int n, Converter<int, long> forEach)
+#else
+		public static long Summation(int m, int n, Func<int, long> forEach)
+#endif
+		{
+			if (forEach == null) {
+				throw new ArgumentNullException("forEach");
+			}
+
+			long sum = 0;
+			for (var k = m; k <= n; k++) {
+				sum += forEach(k);
+			}
+			return sum;
+		}
+
+#if NETFRAMEWORK
+		public static float Summation(int m, int n, Converter<int, float> forEach)
+#else
+		public static float Summation(int m, int n, Func<int, float> forEach)
+#endif
+		{
+			if (forEach == null) {
+				throw new ArgumentNullException("forEach");
+			}
+
+			float sum = 0;
+			for (var k = m; k <= n; k++) {
+				sum += forEach(k);
+			}
+			return sum;
+		}
+
+#if NETFRAMEWORK
+		public static double Summation(int m, int n, Converter<int, double> forEach)
+#else
+		public static double Summation(int m, int n, Func<int, double> forEach)
+#endif
+		{
+			if (forEach == null) {
+				throw new ArgumentNullException("forEach");
+			}
+
+			double sum = 0;
+			for (var k = m; k <= n; k++) {
+				sum += forEach(k);
+			}
+			return sum;
+		}
+
+#if NETFRAMEWORK
+		public static decimal Summation(int m, int n, Converter<int, decimal> forEach)
+#else
+		public static decimal Summation(int m, int n, Func<int, decimal> forEach)
+#endif
+		{
+			if (forEach == null) {
+				throw new ArgumentNullException("forEach");
+			}
+
+			decimal sum = 0;
+			for (var k = m; k <= n; k++) {
+				sum += forEach(k);
+			}
+			return sum;
+		}
+
+#if NETFRAMEWORK
+		public static float DifferenceOfPrimitives(float a, float b, Converter<float, float> expression)
+#else
+		public static float DifferenceOfPrimitives(float a, float b, Func<float, float> expression)
+#endif
+		{
+			return expression(b) - expression(a);
+		}
+
+#if NETFRAMEWORK
+		public static double DifferenceOfPrimitives(double a, double b, Converter<double, double> expression)
+#else
+		public static double DifferenceOfPrimitives(double a, double b, Func<double, double> expression)
+#endif
+		{
+			return expression(b) -  expression(a);
+		}
+
+#if NETFRAMEWORK
+		public static decimal DifferenceOfPrimitives(decimal a, decimal b, Converter<decimal, decimal> expression)
+#else
+		public static decimal DifferenceOfPrimitives(decimal a, decimal b, Func<decimal, decimal> expression)
+#endif
+		{
+			return expression(b) - expression(a);
+		}
 
 		/// <summary>
 		/// Computes iteratively the factorial of a natural number.
@@ -154,20 +250,32 @@ namespace Repzilon.Libraries.Core
 		/// <returns>The factorial</returns>
 		/// <remarks>
 		/// Anyone using recursion for this function must stay away from programming forever.
-		/// You are not showing any elite programming, you just put trash into the CPU stack,
-		/// and make the source code unreadable. This is not to say recursion is useless, it
-		/// is just because you are able to use it that you should use it everywhere.
+		/// You are not showing any elite skills, you are just puting trash into the CPU stack
+		/// and making the source code unreadable. This is not to say recursion is useless, it
+		/// is just not because you are able to use something you should use it everywhere.
 		/// </remarks>
 		public static long Factorial(byte n)
 		{
+#if !DEBUG
 			if (n > 20) {
 				throw new ArgumentOutOfRangeException("n", n, "The factorial of 21 overflows a 64-bit integer.");
 			}
-			long bang = n;
-			for (byte i = 3; i <= n; i++) {
-				bang *= i;
-			}
-			return bang;
+#endif
+			if (n <= 2) {
+				return n;
+			} else {
+				long bang = 6; // 3! is 6
+				for (byte i = 4; i <= n; i++) {
+#if DEBUG
+					checked {
+						bang *= i;
+					}
+#else
+					bang *= i;
+#endif
+				}
+				return bang;
+			}			
 		}
 	}
 }

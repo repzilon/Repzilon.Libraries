@@ -23,7 +23,8 @@ namespace Repzilon.Libraries.Core
 		MichaelisMenten,
 		LineweaverBurk,
 		EadieHofstee,
-		HanesWoolf
+		HanesWoolf,
+		DirectLinearMedian
 	}
 
 #if DEBUG

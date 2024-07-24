@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Collections.Generic;
 using System.Globalization;
 using Repzilon.Libraries.Core;
 // ReSharper disable InconsistentNaming
@@ -32,8 +33,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(10.00, 10.8),
 				new PointD(12.00, 12.9)
 			);
-			Console.WriteLine("Double data type");
-			Console.WriteLine("----------------");
+			OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
 			OutputLinearRegression2<LinearRegressionResult, double>(lrp, kTalpha0_025n4, "G",
@@ -48,18 +48,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointM(10.00m, 10.8m),
 				new PointM(12.00m, 12.9m)
 			);
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Decimal data type");
-			Console.WriteLine("-----------------");
+			OutputHeading("Decimal data type");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
 			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(dlrp, (decimal)kTalpha0_025n4,
 			 "G18", true, 7, 7.5m);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Revision");
-			Console.WriteLine("--------");
+			OutputHeading("Revision");
 			var lrrRev5 = LinearRegression.Compute(
 				new PointM(0, 0.06m),
 				new PointM(5, 1.25m),
@@ -70,9 +66,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(lrrRev5, 3.1824m,
 			 "G7", false, 12, 4.154m);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Math I Example 38");
-			Console.WriteLine("-----------------");
+			OutputHeading("Math I Example 38");
 			var lrrM1Ex38 = LinearRegression.Compute(
 				PointD.LogLog(100.0, 0.240),
 				PointD.LogLog(150.0, 0.295),
@@ -84,9 +78,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var rmdMEx38 = lrrM1Ex38.ChangeModel(MathematicalModel.LogLog);
 			OutputRegressionModel(rmdMEx38);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Math I Exercise");
-			Console.WriteLine("---------------");
+			OutputHeading("Math I Exercise");
 			var lrrM1Exer = LinearRegression.Compute(
 				PointD.SemiLogY(8.0, 9858),
 				PointD.SemiLogY(14.0, 9416),
@@ -99,9 +91,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var rmdM1Exer = lrrM1Exer.ChangeModel(MathematicalModel.Exponential);
 			OutputRegressionModel(rmdM1Exer);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Biochemistry II ch. 1 pp. 15-16");
-			Console.WriteLine("-------------------------------");
+			OutputHeading("Biochemistry II ch. 1 pp. 15-16");
 			var lrrBC2Ch1p15 = LinearRegression.Compute(
 				PointD.LogLog(12.5, 0.037),
 				PointD.LogLog(20, 0.050),
@@ -121,9 +111,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(rmdBC2Ch1p16);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Biochemistry II ch. 1 pp. 22-23");
-			Console.WriteLine("-------------------------------");
+			OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			var rmdBC2Ch1p22V0 = RegressionModel.Compute(
 				new PointD(1.0, 31.25),
 				new PointD(0.4, 18.18),
@@ -146,9 +134,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(rmdBC2Ch1p22VIp);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Biochemistry II ch. 1 exercise 3");
-			Console.WriteLine("--------------------------------");
+			OutputHeading("Biochemistry II ch. 1 exercise 3");
 			var lrrBC2Ch1Ex3 = LinearRegression.Compute(
 				new PointD(1e6, SignificantDigits.Round(1.0 / 1.16, 3, RoundingMode.ToEven)),
 				new PointD(1e5, SignificantDigits.Round(1.0 / 8.46, 3, RoundingMode.ToEven)),
@@ -161,9 +147,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var Km0 = lrrBC2Ch1Ex3.Slope * vmax0;
 			Console.WriteLine("Vmax = {0:g4} nmol/min\tKm = {1:g4} mol/L", vmax0 / 60, Km0);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Biochemistry II ch. 1 exercise 4");
-			Console.WriteLine("--------------------------------");
+			OutputHeading("Biochemistry II ch. 1 exercise 4");
 			var lrrBC2Ch1Ex4_0 = LinearRegression.Compute(
 				new PointD(100, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
 				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 20, 3, RoundingMode.ToEven)),
@@ -191,9 +175,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ki = 0.02 / ((Km1 / Km0) - 1);
 			Console.WriteLine("Ki = {0:g3} mol/L", ki);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Biochemistry II ch. 1 exercise 5");
-			Console.WriteLine("--------------------------------");
+			OutputHeading("Biochemistry II ch. 1 exercise 5");
 			var lrrBC2Ch1Ex5_0 = LinearRegression.Compute(
 				new PointD(RoundedInverse("0,010"), RoundedInverse("0,27")),
 				new PointD(RoundedInverse("0,022"), RoundedInverse("0,50")),
@@ -209,9 +191,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(lrrBC2Ch1Ex5_0.ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(lrrBC2Ch1Ex5_1.ChangeModel(MathematicalModel.Affine));
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Cellular culture II Wound healing");
-			Console.WriteLine("---------------------------------");
+			OutputHeading("Cellular culture II Wound healing");
 			var rmdCC2Healing = RegressionModel.Compute(
 				new PointD(0, -0.2779),
 				new PointD(1, 0.2434),
@@ -219,14 +199,69 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(rmdCC2Healing);
 
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Factorial (1 to 16)");
-			Console.WriteLine("-------------------");
-			var factorialSuite = new PointM[16];
-			for (byte i = 1; i <= 16; i++) {
-				factorialSuite[i - 1] = new PointM(i, ExtraMath.Factorial(i));
+			OutputHeading("Factorial (1 to 16)");
+			var factorialSuite = new List<PointM>(16);
+			var lstA = new List<PointM>(16);
+			var lstB = new List<PointM>(16);
+			byte i;
+			for (i = 1; i <= 16; i++) {
+				var pt = new PointM(i, ExtraMath.Factorial(i));
+				factorialSuite.Add(pt);
+				Console.WriteLine("{0}! is {1}", pt.X, pt.Y);
+				if (i > 1) {
+					var rm = RegressionModel.Compute(factorialSuite);
+					OutputRegressionModel(rm);
+					if (rm.Model == MathematicalModel.Exponential) {
+						lstA.Add(new PointM(i, rm.A));
+						lstB.Add(new PointM(i, rm.B));
+					}
+					if (i == 16) {
+						for (byte j = 1; j <= 16; j++) {
+							OutputFactorialEstimate(j, rm.A * Pow(rm.B, j));
+						}
+					}
+				}
 			}
-			OutputRegressionModel(RegressionModel.Compute(factorialSuite));
+			var rmA = RegressionModel.Compute(lstA);
+			var rmB = RegressionModel.Compute(lstB);
+			OutputRegressionModel(rmA);
+			OutputRegressionModel(rmB);
+			Console.WriteLine("n! ≈ ({0} * {1}^n) * ({2} + {3}n)^n", rmA.A, rmA.B, rmB.A, rmB.B);
+			var rmC = FindFactotrialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB));
+			OutputRegressionModel(rmC);
+			Console.WriteLine("n! ≈ ({0} * {1}^n) * ({2} + {3}n)^n * ({4} * {5}^n)",
+			 rmA.A, rmA.B, rmB.A, rmB.B, rmC.A, rmC.B);
+			OutputRegressionModel(FindFactotrialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB, rmC)));
+		}
+
+#if NETFRAMEWORK
+		private static RegressionModel<decimal> FindFactotrialApproximationCorrection(Converter<byte, decimal> estimateFactorial)
+#else
+		private static RegressionModel<decimal> FindFactotrialApproximationCorrection(Func<byte, decimal> estimateFactorial)
+#endif
+		{
+			var lstC = new List<PointM>(16);
+			for (byte i = 1; i <= 16; i++) {
+				decimal nbang = estimateFactorial(i);
+				lstC.Add(new PointM(i, ExtraMath.Factorial(i) / nbang));
+				OutputFactorialEstimate(i, nbang);
+			}
+			return RegressionModel.Compute(lstC);
+		}
+
+		private static void OutputFactorialEstimate(byte n, decimal estimate)
+		{
+			Console.WriteLine("{0,2}! is {1,18:n0} ≈ {2,34:n15}", n, ExtraMath.Factorial(n), estimate);
+		}
+
+		private static decimal EstimateFactorial(byte i, RegressionModel<decimal> rmA, RegressionModel<decimal> rmB)
+		{
+			return (rmA.A * Pow(rmA.B, i)) * Pow(rmB.A + (rmB.B * i), i);
+		}
+
+		private static decimal EstimateFactorial(byte i, RegressionModel<decimal> rmA, RegressionModel<decimal> rmB, RegressionModel<decimal> rmC)
+		{
+			return (rmA.A * Pow(rmA.B, i)) * Pow(rmB.A + (rmB.B * i), i) * (rmC.A * Pow(rmC.B, i));
 		}
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp, TStorage studentLawValue,
@@ -337,6 +372,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ciFrCa = new CultureInfo("fr-CA");
 			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
+		}
+
+		private static decimal Pow(decimal basis, byte exponent)
+		{
+			decimal power = 1;
+			for (byte i = 1; i <= exponent; i++) {
+				power *= basis;
+			}
+			return power;
+		}
+
+		private static void OutputHeading(string text)
+		{
+			Console.Write(Environment.NewLine);
+			Console.WriteLine(text);
+			Console.WriteLine(new String('-', text.Length));
 		}
 	}
 }

@@ -82,6 +82,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Console.Write(Environment.NewLine);
+
+			const decimal b = -1.55859375m;
+			const decimal c = -4.8828125m;
+			var pr = ExtraMath.SolveQuadratic(1, b, c);
+			Console.WriteLine("Zeros for 1x² + {0}x + {1} : {2}", b, c, pr);
 		}
 
 		private static bool[] TestDigitCount<T>(

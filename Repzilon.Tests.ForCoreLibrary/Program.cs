@@ -13,6 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Globalization;
 using System.Runtime.InteropServices;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -40,6 +41,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Peptides", PeptideGuess.Run);
 #endif
 			dicTests.Add("Calculus", CalculusTest.Run);
+			dicTests.Add("Optics", OpticsTest.Run);
 
 #if NET40 || NET35 || NET20
 			TriState enuWorkaroundCygwin = TriState.Unknown;
@@ -49,8 +51,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			DisplayMenu(enuWorkaroundCygwin, dicTests);
 			char chrPressed = MyReadKey(ref enuWorkaroundCygwin);
 			while (char.ToUpperInvariant(chrPressed) != 'Q') {
-				if (char.IsDigit(chrPressed)) {
-					int intPressed = int.Parse(chrPressed.ToString());
+#if NETCOREAPP1_0
+				if (Char.IsDigit(chrPressed)) {
+					int intPressed = Int32.Parse(chrPressed.ToString());
+#else
+				if (Uri.IsHexDigit(chrPressed)) {
+					int intPressed = Int32.Parse(chrPressed.ToString(), NumberStyles.HexNumber);
+#endif
 					if ((intPressed >= 1) && (intPressed <= dicTests.Count)) {
 						Console.Write(Environment.NewLine);
 						DateTime dtmStart = DateTime.UtcNow;
@@ -101,8 +108,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write(Environment.NewLine);
 			var i = 1;
 			foreach (var kvp in allTests) {
-				Console.WriteLine(@"    ({0}) {1}", i, kvp.Key);
+#if (NETCOREAPP1_0)
+				if (i < 10) {
+#endif
+				Console.WriteLine(@"    ({0:X}) {1}", i, kvp.Key);
 				i++;
+#if (NETCOREAPP1_0)
+				}
+#endif
 			}
 
 			Console.Write(Environment.NewLine);
