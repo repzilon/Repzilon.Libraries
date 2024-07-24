@@ -11,15 +11,15 @@
 // not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
+#if !NET20
 using System;
 using System.Collections.Generic;
 #if NET6_0 || NETCOREAPP3_1
 using System.Diagnostics.CodeAnalysis;
 #endif
-#if !NET20
 using System.Linq;
-#endif
 using Repzilon.Libraries.Core;
+#endif
 // ReSharper disable InconsistentNaming
 
 #if !NET20
@@ -233,11 +233,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 		#region Revision exercise number 11
 		private static List<List<AlphaAminoAcid>> SolveRevision11()
 		{
-			var rev11_allowed = new List<AlphaAminoAcid> {
-				AlphaAminoAcid.Asp, AlphaAminoAcid.Lys, AlphaAminoAcid.Tyr,
-				AlphaAminoAcid.Met, AlphaAminoAcid.Phe, AlphaAminoAcid.Leu
-			};
-
 			var rev11_AspTyrPhe = new AlphaAminoAcid[] {
 				AlphaAminoAcid.Asp, AlphaAminoAcid.Tyr, AlphaAminoAcid.Phe
 			};
@@ -440,7 +435,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}// */
 
-		//*
+		/*
 		private static long CountPermutations<T>(ICollection<T>[] slots)
 		{
 			long permutations = 1;

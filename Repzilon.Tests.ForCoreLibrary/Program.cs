@@ -124,7 +124,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				if (typT.GenericTypeArguments.Length == 1) {
 					strOfT = "<" + typT.GenericTypeArguments[0].Name + ">";
 				}
-				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", strOfT), Marshal.SizeOf<T>(newT));
+				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", strOfT), Marshal.SizeOf(newT));
 #endif
 			} catch (ArgumentException) {
 				// do nothing

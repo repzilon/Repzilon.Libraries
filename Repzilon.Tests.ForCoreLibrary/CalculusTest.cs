@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -22,9 +22,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 #if !NET20
 			Console.WriteLine("Calcul intégral travail 1 #2");
-			SummationTest(10000, 729, "Math.Pow", CalculusWork1No2FP);
-			SummationTest(10000, 729, "Pow(i32, u16)", CalculusWork1No2Int64);
-			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
+			SummationTest<double>(10000, 729, "Math.Pow", CalculusWork1No2FP);
+			SummationTest<long>(10000, 729, "Pow(i32, u16)", CalculusWork1No2Int64);
+			SummationTest<long>(10000, 729, "IIf", CalculusWork1No2IIf);
 #endif
 			Console.WriteLine("Distributions de Student");
 			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };

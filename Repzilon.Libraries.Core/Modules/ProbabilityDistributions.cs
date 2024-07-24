@@ -6,11 +6,11 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
-// 
+//
 using System;
 using System.Collections.Generic;
 using System.Globalization;
@@ -56,7 +56,7 @@ namespace Repzilon.Libraries.Core
 				var lastPower = Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
 				return GammaRatio(liberties) * lastPower;
 #else
-				return GammaRatio(liberties) * Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1)); ;
+				return GammaRatio(liberties) * Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
 #endif
 			}
 		}
@@ -86,7 +86,7 @@ namespace Repzilon.Libraries.Core
 
 			// Simplify fraction
 			RemoveIdenticalFactors(numerators, denominators);
-		
+
 			if (k >= 29) {
 				RemoveDividableFactors(2, ciC, numerators, denominators);
 			}
@@ -261,7 +261,7 @@ namespace Repzilon.Libraries.Core
 						nf *= Math.Sqrt(Math.PI);
 					} else {
 						nd *= ExtraMath.Sqrt(ExtraMath.Pi);
-					}	
+					}
 				} else if (inDouble) {
 					nf *= Double.Parse(numbers[i]);
 				} else {
@@ -270,7 +270,7 @@ namespace Repzilon.Libraries.Core
 					} catch (OverflowException) {
 						inDouble = true;
 						nf = (double)nd * Double.Parse(numbers[i]);
-					}			
+					}
 				}
 			}
 			return new KeyValuePair<decimal, double>(nd, nf);

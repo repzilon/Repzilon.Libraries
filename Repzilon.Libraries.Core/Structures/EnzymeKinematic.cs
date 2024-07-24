@@ -70,7 +70,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public EnzymeKinematic(KeyValuePair<T, string> vmax, KeyValuePair<T, string> km, T correlation,
-		EnzymeSpeedRepresentation representation)
+		EnzymeSpeedRepresentation representation) : this()
 		{
 			Vmax = vmax;
 			Km = km;
@@ -79,7 +79,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		public EnzymeKinematic(T vmaxValue, string vmaxUnit, T kmValue, string kmUnit, T correlation,
-		EnzymeSpeedRepresentation representation)
+		EnzymeSpeedRepresentation representation) : this()
 		{
 			Vmax = new KeyValuePair<T, string>(vmaxValue, vmaxUnit);
 			Km = new KeyValuePair<T, string>(kmValue, kmUnit);

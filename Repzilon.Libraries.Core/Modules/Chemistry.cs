@@ -60,8 +60,10 @@ namespace Repzilon.Libraries.Core
 		{
 			const int k = 19;
 			var dicMasses = new Dictionary<string, float>(k);
+			// ReSharper disable once RedundantExplicitArraySize
 			var karSymbols = new string[k]
 			 { "C", "H", "O", "N", "P", "S", "Na", "Mg", "K", "Ca", "F", "Cl", "Br", "I", "B", "Fe", "Co", "Cu", "Zn" };
+			// ReSharper disable once RedundantExplicitArraySize
 			var karMasses = new float[k]
 			 { 12.011f, 1.008f, 15.999f, 14.007f, 30.974f, 32.06f, 22.99f, 24.305f, 39.098f, 40.078f, 18.998f, 35.45f, 79.904f, 126.90f, 10.81f, 55.845f, 58.933f, 63.546f, 65.38f };
 			for (int i = 0; i < k; i++) {
@@ -238,7 +240,7 @@ namespace Repzilon.Libraries.Core
 			int i;
 			var c = michaelisMentenDataPoints.Length;
 			double s, v0;
-			var ptdMatrix = new PointD[4][];	
+			var ptdMatrix = new PointD[4][];
 
 			for (i = 0; i < 4; i++) {
 				ptdMatrix[i] = new PointD[c];

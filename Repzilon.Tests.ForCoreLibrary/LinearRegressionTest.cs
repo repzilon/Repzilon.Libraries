@@ -14,6 +14,7 @@
 using System;
 using System.Globalization;
 using Repzilon.Libraries.Core;
+// ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -35,7 +36,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("----------------");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
-			OutputLinearRegression2(lrp, kTalpha0_025n4, "G", true, 8.25f, 3.4);
+			OutputLinearRegression2<LinearRegressionResult, double>(lrp, kTalpha0_025n4, "G",
+			 true, 8.25f, 3.4);
 			// x can also be 7 or 8, and y can also be 7.5
 
 			var dlrp = LinearRegression.Compute(
@@ -51,7 +53,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("-----------------");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
-			OutputLinearRegression2(dlrp, (decimal)kTalpha0_025n4, "G18", true, 7, 7.5m);
+			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(dlrp, (decimal)kTalpha0_025n4,
+			 "G18", true, 7, 7.5m);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 
 			Console.Write(Environment.NewLine);
@@ -64,7 +67,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointM(15, 3.58m),
 				new PointM(20, 4.61m)
 			);
-			OutputLinearRegression2(lrrRev5, 3.1824m, "G7", false, 12, 4.154m);
+			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(lrrRev5, 3.1824m,
+			 "G7", false, 12, 4.154m);
 
 			Console.Write(Environment.NewLine);
 			Console.WriteLine("Math I Example 38");
@@ -225,15 +229,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(RegressionModel.Compute(factorialSuite));
 		}
 
-		private static void OutputLinearRegression2<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
-		string numberFormat, bool checkBiaises, T? xForYExtrapolation, T? yForXExtrapolation)
-		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp, TStorage studentLawValue,
+		string numberFormat, bool checkBiaises, TStorage? xForYExtrapolation, TStorage? yForXExtrapolation)
+		where TRegression : struct, ILinearRegressionResult<TStorage>
+		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
 		{
 			var ciCu = CultureInfo.CurrentCulture;
 			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
 
-			T b = lrp.Slope;
-			T sr = lrp.ResidualStdDev();
+			TStorage b = lrp.Slope;
+			TStorage sr = lrp.ResidualStdDev();
 
 			Console.Write("r = {0}\tr^2 = {1}", lrp.Correlation.ToString(numberFormat, ciCu), lrp.Determination().ToString(numberFormat, ciCu));
 #if NET20
@@ -241,16 +246,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 #else
 			if (checkBiaises) {
 				// ReSharper disable once InvokeAsExtensionMethod
-				Console.WriteLine("\trelative bias: {0:p}", GenericArithmetic<T>.SubtractScalars(b, MatrixExtensionMethods.ConvertTo<T>(1)));
+				Console.WriteLine("\trelative bias: {0:p}",
+				 GenericArithmetic<TStorage>.SubtractScalars(b, MatrixExtensionMethods.ConvertTo<TStorage>(1)));
 			} else {
 				Console.Write(Environment.NewLine);
 			}
 #endif
-			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, ciCu), lrp.ExplainedVariation().ToString(numberFormat, ciCu), lrp.UnexplainedVariation().ToString(numberFormat, ciCu));
-			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu), lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
+			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, ciCu),
+			 lrp.ExplainedVariation().ToString(numberFormat, ciCu),
+			 lrp.UnexplainedVariation().ToString(numberFormat, ciCu));
+			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu),
+			 lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
 #if !NET20
-			Console.WriteLine("b = {0}", new ErrorMargin<T>(b, GenericArithmetic<T>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
-			Console.WriteLine("a = {0}", new ErrorMargin<T>(lrp.Intercept, GenericArithmetic<T>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
+			Console.WriteLine("b = {0}", new ErrorMargin<TStorage>(b,
+			 GenericArithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
+			Console.WriteLine("a = {0}", new ErrorMargin<TStorage>(lrp.Intercept,
+			 GenericArithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
 #endif
 			if (xForYExtrapolation.HasValue) {
 				var x = xForYExtrapolation.Value;

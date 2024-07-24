@@ -12,7 +12,9 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+#if !(NETSTANDARD1_1 || NETCOREAPP1_0 || NETSTANDARD1_3 || NETSTANDARD1_6)
 using System.ComponentModel;
+#endif
 
 namespace Repzilon.Libraries.Core
 {

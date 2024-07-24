@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Repzilon.Libraries.Core;
+// ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -183,6 +184,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, ptdarHW_raw);
 
+			// ReSharper disable once InvokeAsExtensionMethod
 			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(
 			 Chemistry.SpeedOfEnzyme("mmol/L", A240By30s, ptdarMM), 4));
 		}

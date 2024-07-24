@@ -13,7 +13,7 @@
 //
 using System;
 using Coefficient = System.Single;
-using Measure = System.Collections.Generic.KeyValuePair<string, float>;
+//using Measure = System.Collections.Generic.KeyValuePair<string, float>;
 
 namespace Repzilon.Libraries.Core
 {

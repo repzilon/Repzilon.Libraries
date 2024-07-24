@@ -12,7 +12,9 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+#if !NET20
 using System.Collections.Generic;
+#endif
 using Repzilon.Libraries.Core;
 // ReSharper disable InvokeAsExtensionMethod
 // ReSharper disable InconsistentNaming
@@ -254,7 +256,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Error.WriteLine(ex.Message);
 			}
 		}
-#endif
 
 #if NET40 || NET35 || NET20
 		private static void OutputSolution<T>(string prefix, IDictionary<string, T> solution)
@@ -272,6 +273,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			Console.Write(Environment.NewLine);
 		}
+#endif
 
 		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable

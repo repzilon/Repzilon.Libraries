@@ -69,7 +69,7 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		/// <param name="text">The text to say.</param>
 		/// <returns>The time to say the text, or TimeSpan.Zero if the argument is empty text.</returns>
-		/// <remarks>Based on a average speech rate of 130 words per minute,
+		/// <remarks>Based on an average speech rate of 130 words per minute,
 		/// with each word being 6.61 characters (space included) long on average.</remarks>
 		public static TimeSpan SpeechDuration(string text)
 		{

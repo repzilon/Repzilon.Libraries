@@ -13,6 +13,7 @@
 //
 using System;
 using Repzilon.Libraries.Core;
+// ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary
 {

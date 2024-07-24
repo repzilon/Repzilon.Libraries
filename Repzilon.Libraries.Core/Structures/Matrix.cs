@@ -13,7 +13,9 @@
 //
 using System;
 using System.Collections.Generic;
+#if !(NET35 || NET40)
 using System.Collections.ObjectModel;
+#endif
 using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
@@ -263,7 +265,7 @@ namespace Repzilon.Libraries.Core
 			byte i, j;
 			var tl = this.Lines;
 
-			var blnCI = formatProvider == CultureInfo.InvariantCulture;
+			var blnCi = formatProvider == CultureInfo.InvariantCulture;
 			var nalarCols = new NumberAlignment[this.Columns];
 			for (j = 0; j < this.Columns; j++) {
 				for (i = 0; i < tl; i++) {
@@ -275,9 +277,9 @@ namespace Repzilon.Libraries.Core
 				if (tl == 1) {
 					stbDesc.Append('[');
 				} else if (i == 0) {
-					stbDesc.Append(blnCI ? '/' : '⎡');
+					stbDesc.Append(blnCi ? '/' : '⎡');
 				} else if (i == tl - 1) {
-					stbDesc.Append(blnCI ? '\\' : '⎣');
+					stbDesc.Append(blnCi ? '\\' : '⎣');
 				} else {
 					stbDesc.Append('|');
 				}
@@ -295,9 +297,9 @@ namespace Repzilon.Libraries.Core
 				if (tl == 1) {
 					stbDesc.Append(']');
 				} else if (i == 0) {
-					stbDesc.Append(blnCI ? '\\' : '⎤');
+					stbDesc.Append(blnCi ? '\\' : '⎤');
 				} else if (i == tl - 1) {
-					stbDesc.Append(blnCI ? '/' : '⎦');
+					stbDesc.Append(blnCi ? '/' : '⎦');
 				} else {
 					stbDesc.Append('|');
 				}

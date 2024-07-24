@@ -133,14 +133,12 @@ namespace Repzilon.Libraries.Core
 			var lstSemiLogX = new List<PointD>();
 			var lstSemiLogY = new List<PointD>();
 			var lstLogLog = new List<PointD>();
-			var i = 0;
 			foreach (var pt in points) {
 				var log10X = Math.Log10(pt.X);
 				var log10Y = Math.Log10(pt.Y);
 				lstSemiLogX.Add(new PointD(log10X, pt.Y));
 				lstSemiLogY.Add(new PointD(pt.X, log10Y));
 				lstLogLog.Add(new PointD(log10X, log10Y));
-				i++;
 			}
 			var rmarAll = new RegressionModel<double>[] {
 				LinearRegression.Compute(points).ChangeModel(MathematicalModel.Affine),
@@ -167,14 +165,12 @@ namespace Repzilon.Libraries.Core
 			var lstSemiLogX = new List<PointM>();
 			var lstSemiLogY = new List<PointM>();
 			var lstLogLog = new List<PointM>();
-			var i = 0;
 			foreach (var pt in points) {
 				var log10X = (decimal)Math.Log10((double)pt.X);
 				var log10Y = (decimal)Math.Log10((double)pt.Y);
 				lstSemiLogX.Add(new PointM(log10X, pt.Y));
 				lstSemiLogY.Add(new PointM(pt.X, log10Y));
 				lstLogLog.Add(new PointM(log10X, log10Y));
-				i++;
 			}
 			var rmarAll = new RegressionModel<decimal>[] {
 				LinearRegression.Compute(points).ChangeModel(MathematicalModel.Affine),

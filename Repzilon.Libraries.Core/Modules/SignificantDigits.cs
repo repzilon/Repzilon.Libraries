@@ -141,6 +141,7 @@ namespace Repzilon.Libraries.Core
 			if (value == null) {
 				throw new ArgumentNullException("value");
 			}
+			// ReSharper disable once InconsistentNaming
 			var enuTC = value.GetTypeCode();
 			if (enuTC == TypeCode.String) {
 				return Count((string)value);
