@@ -94,10 +94,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 68  : R={0:g4}", exa68_r);
 
 			decimal exa69_ref = ExtraMath.Sqrt(692.64m);
-			ShowcaseExample69<float>(exa69_ref, Example69WithSingle);
-			ShowcaseExample69<double>(exa69_ref, Example69WithDouble);
-			ShowcaseExample69<decimal>(exa69_ref, Example69WithDecimal);
-			ShowcaseExample69<Exp>(exa69_ref, Example69WithExp);
+			ShowcaseExample69(exa69_ref, Example69WithSingle);
+			ShowcaseExample69(exa69_ref, Example69WithDouble);
+			ShowcaseExample69(exa69_ref, Example69WithDecimal);
+			ShowcaseExample69(exa69_ref, Example69WithExp);
 			Console.Write(Environment.NewLine);
 
 			var exa70_u = Vector.New(2, 30, AngleUnit.Degree);

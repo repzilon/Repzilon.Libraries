@@ -13,7 +13,9 @@
 //
 using System;
 using System.Collections.Generic;
+#if !NETCOREAPP1_0
 using System.Globalization;
+#endif
 using System.Runtime.InteropServices;
 
 namespace Repzilon.Tests.ForCoreLibrary

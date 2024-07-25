@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -24,8 +24,6 @@ namespace Repzilon.Libraries.Core
 
 		class LuminosityComparer : IComparer<MicroscopeObjective>
 		{
-			internal LuminosityComparer() { }
-
 			public int Compare(MicroscopeObjective x, MicroscopeObjective y)
 			{
 				return Math.Sign(x.Aperture() - y.Aperture());
@@ -34,8 +32,6 @@ namespace Repzilon.Libraries.Core
 
 		class FieldOfViewComparer : IComparer<MicroscopeObjective>
 		{
-			internal FieldOfViewComparer() { }
-
 			public int Compare(MicroscopeObjective x, MicroscopeObjective y)
 			{
 				return Math.Sign(FieldOfViewRatio(x) - FieldOfViewRatio(y));
@@ -49,8 +45,6 @@ namespace Repzilon.Libraries.Core
 
 		class ResolutionComparer : IComparer<MicroscopeObjective>
 		{
-			internal ResolutionComparer() { }
-
 			public int Compare(MicroscopeObjective x, MicroscopeObjective y)
 			{
 				const float ySquared = 0.0256f; // 16 centimeters is standardized distance
@@ -63,4 +57,3 @@ namespace Repzilon.Libraries.Core
 		}
 	}
 }
-

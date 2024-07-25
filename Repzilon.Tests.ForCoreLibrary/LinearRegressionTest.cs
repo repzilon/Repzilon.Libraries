@@ -36,7 +36,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
-			OutputLinearRegression2<LinearRegressionResult, double>(lrp, kTalpha0_025n4, "G",
+			OutputLinearRegression2(lrp, kTalpha0_025n4, "G",
 			 true, 8.25f, 3.4);
 			// x can also be 7 or 8, and y can also be 7.5
 
@@ -51,7 +51,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputHeading("Decimal data type");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
-			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(dlrp, (decimal)kTalpha0_025n4,
+			OutputLinearRegression2(dlrp, (decimal)kTalpha0_025n4,
 			 "G18", true, 7, 7.5m);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 
@@ -63,7 +63,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointM(15, 3.58m),
 				new PointM(20, 4.61m)
 			);
-			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(lrrRev5, 3.1824m,
+			OutputLinearRegression2(lrrRev5, 3.1824m,
 			 "G7", false, 12, 4.154m);
 
 			OutputHeading("Math I Example 38");
@@ -271,8 +271,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var ciCu = CultureInfo.CurrentCulture;
 			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
-
+#if !NET20
 			TStorage b = lrp.Slope;
+#endif
 			TStorage sr = lrp.ResidualStdDev();
 
 			Console.Write("r = {0}\tr^2 = {1}", lrp.Correlation.ToString(numberFormat, ciCu), lrp.Determination().ToString(numberFormat, ciCu));

@@ -13,7 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
-#if !(NET35 || NET40)
+#if !(NET20 || NET35 || NET40)
 using System.Collections.ObjectModel;
 #endif
 using System.Globalization;
