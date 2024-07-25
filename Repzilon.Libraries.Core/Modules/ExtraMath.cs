@@ -132,7 +132,7 @@ namespace Repzilon.Libraries.Core
 			for (var k = m; k <= n; k++) {
 #if DEBUG
 				T value = forEach(k);
-				sum = GenericArithmetic<T>.adder(sum, value);
+				sum = GenericArithmetic<T>.Adder(sum, value);
 #else
 				sum = GenericArithmetic<T>.Adder(sum, forEach(k));
 #endif
