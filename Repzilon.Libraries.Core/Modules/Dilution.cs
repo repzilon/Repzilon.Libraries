@@ -30,14 +30,14 @@ namespace Repzilon.Libraries.Core
 				 "Child solution volume unit is different from the mother solution.");
 
 				// ReSharper disable PossibleInvalidOperationException
-				var childSolutionVolume = (Coefficient)child.SolutionVolume.Value.Value;
-				var solute = (Coefficient)(childSolutionVolume * child.Concentration.Value / mother.Concentration.Value);
+				var childSolutionVolume = child.SolutionVolume.Value.Value;
+				var solute = childSolutionVolume * child.Concentration.Value / mother.Concentration.Value;
 				child = Solution.Init(child, childSolutionVolume - solute, solute);
 
 				Coefficient motherVolume;
 				if (blnInitialMotherVolume || mother.SolutionVolume.HasValue) {
 					var msvv = mother.SolutionVolume.Value.Value;
-					motherVolume = blnInitialMotherVolume ? (Coefficient)(msvv - solute) : (Coefficient)(msvv + solute);
+					motherVolume = blnInitialMotherVolume ? msvv - solute : msvv + solute;
 				} else {
 					motherVolume = solute;
 				}
@@ -62,8 +62,8 @@ namespace Repzilon.Libraries.Core
 				 "Adjacent child solution volume units are different.");
 
 				// ReSharper disable PossibleInvalidOperationException
-				var tempVolume = (Coefficient)(child.SolutionVolume.Value.Value + volumeFromPrevious);
-				volumeFromPrevious = (Coefficient)(child.Concentration.Value * tempVolume / adjacent.Concentration.Value);
+				var tempVolume = child.SolutionVolume.Value.Value + volumeFromPrevious;
+				volumeFromPrevious = child.Concentration.Value * tempVolume / adjacent.Concentration.Value;
 				children[i] = Solution.Init(child, RoundOff.Error(tempVolume - volumeFromPrevious), RoundOff.Error(volumeFromPrevious));
 			}
 			child = children[0];

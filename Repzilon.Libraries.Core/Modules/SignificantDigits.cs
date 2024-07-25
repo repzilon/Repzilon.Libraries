@@ -306,8 +306,8 @@ namespace Repzilon.Libraries.Core
 				figures = 1;
 			}
 			var power = (float)PowerOf(value);
-			var mantissa = (float)RoundWithMode((float)(value / power), figures - 1, rounding);
-			return (float)(mantissa * power);
+			var mantissa = (float)RoundWithMode(value / power, figures - 1, rounding);
+			return mantissa * power;
 		}
 
 		private static double PowerOf(double value)

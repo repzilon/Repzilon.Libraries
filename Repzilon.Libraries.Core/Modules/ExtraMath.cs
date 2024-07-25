@@ -116,7 +116,7 @@ namespace Repzilon.Libraries.Core
 			for (var i = 1; i <= ae; i++) {
 				r *= b;
 			}
-			return (e > 0) ? (double)r : 1.0 / r;
+			return (e > 0) ? r : 1.0 / r;
 		}
 
 #if !NET20

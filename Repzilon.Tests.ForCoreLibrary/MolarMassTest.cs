@@ -172,7 +172,7 @@ STQTALA";
 			for (int i = 0; i < peptideSequenceLetters.Length; i++) {
 				var l = peptideSequenceLetters[i];
 				AminoAcid aa;
-				if (Char.IsLetter(l) && aal.TryGetValue((AlphaAminoAcid)(int)Char.ToUpperInvariant(l), out aa)) {
+				if (Char.IsLetter(l) && aal.TryGetValue((AlphaAminoAcid)Char.ToUpperInvariant(l), out aa)) {
 					mass += aa.MolarMass;
 					n++;
 				}
