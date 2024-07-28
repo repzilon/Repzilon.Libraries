@@ -265,7 +265,7 @@ namespace Repzilon.Libraries.Core
 			byte i, j;
 			var tl = this.Lines;
 
-			var blnCi = formatProvider == CultureInfo.InvariantCulture;
+			var blnCi     = Equals(formatProvider, CultureInfo.InvariantCulture);
 			var nalarCols = new NumberAlignment[this.Columns];
 			for (j = 0; j < this.Columns; j++) {
 				for (i = 0; i < tl; i++) {
@@ -561,7 +561,7 @@ namespace Repzilon.Libraries.Core
 				throw new ArrayTypeMismatchException("A determinant is possible for square matrices only.");
 			} else {
 				var l = this.Lines;
-				Func<T, T, T> mult = null;
+				Func<T, T, T> mult;
 				if (l == 0) {
 					throw new InvalidOperationException("This zero-sized matrix should not exist.");
 				} else if (l == 1) {
@@ -716,6 +716,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if false
 #if NET40 || NET35
 		private IDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
 #else
@@ -737,6 +738,7 @@ namespace Repzilon.Libraries.Core
 				return null;
 			}
 		}
+#endif
 
 #if NET40 || NET35
 		private IDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)

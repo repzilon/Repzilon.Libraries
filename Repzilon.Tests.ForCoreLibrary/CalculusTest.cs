@@ -93,12 +93,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 		{
 			var dtmStart = DateTime.UtcNow;
-			long result;
 			for (int i = 0; i < benchLoops; i++) {
-				result = ExtraMath.Summation(1, summationUpper, forEach);
+				ExtraMath.Summation(1, summationUpper, forEach);
 			}
 			var tsDuration = DateTime.UtcNow - dtmStart;
-			result = ExtraMath.Summation(1, summationUpper, forEach);
+			long result = ExtraMath.Summation(1, summationUpper, forEach);
 			Console.WriteLine("={0}\t{2,-16} {1,7:n0} Hz", result, benchLoops / tsDuration.TotalSeconds, legend);
 		}
 

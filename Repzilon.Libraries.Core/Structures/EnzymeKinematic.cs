@@ -120,10 +120,10 @@ namespace Repzilon.Libraries.Core
 			} else {
 				var kvpVmax = this.Vmax;
 				var kvpKm = this.Km;
-				return ((IComparable)kvpVmax.Key == other.VmaxNumber) && (kvpVmax.Value == other.VmaxUnit) &&
-				 ((IComparable)kvpKm.Key == other.KmNumber) && (kvpKm.Value == other.KmUnit) &&
-				 ((IComparable)this.Correlation == other.Correlation) &&
-				 (other.Representation == Representation);
+				return Equals(kvpVmax.Key, other.VmaxNumber) && kvpVmax.Value == other.VmaxUnit &&
+				 Equals(kvpKm.Key, other.KmNumber) && kvpKm.Value == other.KmUnit &&
+				 Equals(this.Correlation, other.Correlation) &&
+				 other.Representation == this.Representation;
 			}
 		}
 

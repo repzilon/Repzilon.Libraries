@@ -182,19 +182,22 @@ STQTALA";
 
 		private static void EnzymeSpeedFloat()
 		{
-			var karSubstrate    = new float[5] { 12.5f, 20, 25, 50, 100 };
-			var karVelocity     = new float[5] { 0.037f, 0.050f, 0.055f, 0.073f, 0.091f };
-			var karSubstrateInv = new float[5] { 0.08f, 0.05f, 0.04f, 0.02f, 0.01f };
-			var karVelocityInv  = new float[5] { 27, 20, 18.2f, 13.7f, 11 };
-			var karVbyS         = new float[5] { 0.0030f, 0.0025f, 0.0022f, 0.0015f, 0.00091f };
-			var ptdarMM         = new PointD[5];
-			var ptdarLB_raw     = new PointD[5];
-			var ptdarLB_table   = new PointD[5];
-			var ptdarEH_raw     = new PointD[5];
-			var ptdarEH_table   = new PointD[5];
-			var ptdarHW_raw     = new PointD[5];
+			const int kPoints = 5;
+			// ReSharper disable RedundantExplicitArraySize
+			var karSubstrate    = new float[kPoints] { 12.5f, 20, 25, 50, 100 };
+			var karVelocity     = new float[kPoints] { 0.037f, 0.050f, 0.055f, 0.073f, 0.091f };
+			var karSubstrateInv = new float[kPoints] { 0.08f, 0.05f, 0.04f, 0.02f, 0.01f };
+			var karVelocityInv  = new float[kPoints] { 27, 20, 18.2f, 13.7f, 11 };
+			var karVbyS         = new float[kPoints] { 0.0030f, 0.0025f, 0.0022f, 0.0015f, 0.00091f };
+			// ReSharper restore RedundantExplicitArraySize
+			var ptdarMM       = new PointD[kPoints];
+			var ptdarLB_raw   = new PointD[kPoints];
+			var ptdarLB_table = new PointD[kPoints];
+			var ptdarEH_raw   = new PointD[kPoints];
+			var ptdarEH_table = new PointD[kPoints];
+			var ptdarHW_raw   = new PointD[kPoints];
 
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < kPoints; i++) {
 				var v0 = Math.Round(karVelocity[i], 3); // stupid C# compiler
 				ptdarMM[i]     = new PointD(karSubstrate[i], v0);
 				ptdarLB_raw[i] = new PointD(1.0 / karSubstrate[i], 1.0 / v0);
@@ -219,19 +222,22 @@ STQTALA";
 
 		private static void EnzymeSpeedDecimal()
 		{
-			var karSubstrate    = new decimal[5] { 12.5m, 20, 25, 50, 100 };
-			var karVelocity     = new decimal[5] { 0.037m, 0.050m, 0.055m, 0.073m, 0.091m };
-			var karSubstrateInv = new decimal[5] { 0.08m, 0.05m, 0.04m, 0.02m, 0.01m };
-			var karVelocityInv  = new decimal[5] { 27, 20, 18.2m, 13.7m, 11 };
-			var karVbyS         = new decimal[5] { 0.0030m, 0.0025m, 0.0022m, 0.0015m, 0.00091m };
-			var ptmarMM         = new PointM[5];
-			var ptmarLB_raw     = new PointM[5];
-			var ptmarLB_table   = new PointM[5];
-			var ptmarEH_raw     = new PointM[5];
-			var ptmarEH_table   = new PointM[5];
-			var ptmarHW_raw     = new PointM[5];
+			const int kPoints = 5;
+			// ReSharper disable RedundantExplicitArraySize
+			var karSubstrate    = new decimal[kPoints] { 12.5m, 20, 25, 50, 100 };
+			var karVelocity     = new decimal[kPoints] { 0.037m, 0.050m, 0.055m, 0.073m, 0.091m };
+			var karSubstrateInv = new decimal[kPoints] { 0.08m, 0.05m, 0.04m, 0.02m, 0.01m };
+			var karVelocityInv  = new decimal[kPoints] { 27, 20, 18.2m, 13.7m, 11 };
+			var karVbyS         = new decimal[kPoints] { 0.0030m, 0.0025m, 0.0022m, 0.0015m, 0.00091m };
+			// ReSharper restore RedundantExplicitArraySize
+			var ptmarMM       = new PointM[kPoints];
+			var ptmarLB_raw   = new PointM[kPoints];
+			var ptmarLB_table = new PointM[kPoints];
+			var ptmarEH_raw   = new PointM[kPoints];
+			var ptmarEH_table = new PointM[kPoints];
+			var ptmarHW_raw   = new PointM[kPoints];
 
-			for (int i = 0; i < 5; i++) {
+			for (int i = 0; i < kPoints; i++) {
 				var v0 = karVelocity[i];
 				ptmarMM[i]     = new PointM(karSubstrate[i], v0);
 				ptmarLB_raw[i] = new PointM(1.0m / karSubstrate[i], 1.0m / v0);
@@ -253,11 +259,9 @@ STQTALA";
 
 		private static string Nanable(float value, string format)
 		{
-			if (Single.IsNaN(value) && CultureInfo.CurrentCulture.Name.StartsWith("fr")) {
-				return "!Num"; // «Non numérique» is too long
-			} else {
-				return value.ToString(format);
-			}
+			// «Non numérique» is too long
+			return Single.IsNaN(value) && CultureInfo.CurrentCulture.Name.StartsWith("fr") ?
+			 "!Num" : value.ToString(format);
 		}
 
 		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic, params PointD[] dataPoints)
