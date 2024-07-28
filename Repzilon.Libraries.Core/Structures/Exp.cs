@@ -141,7 +141,7 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(double other)
 		{
-			return this.ToDouble() == other;
+			return RoundOff.Equals(this.ToDouble(), other);
 		}
 
 		public bool Equals(decimal other)
@@ -152,7 +152,7 @@ namespace Repzilon.Libraries.Core
 #if !NETSTANDARD1_1
 		public bool Equals(IConvertible other)
 		{
-			return (other != null) && (this.ToDouble() == Convert.ToDouble(other));
+			return (other != null) && RoundOff.Equals(this.ToDouble(), Convert.ToDouble(other));
 		}
 #endif
 

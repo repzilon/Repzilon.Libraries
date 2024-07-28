@@ -35,5 +35,23 @@ namespace Repzilon.Libraries.Core
 			var s = x.ToString(ciC);
 			return s.Contains(".") ? Decimal.Parse(s.TrimEnd('0'), ciC) : x;
 		}
+
+		public static bool Equals(float value, int k)
+		{
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			return Error(value) == k;
+		}
+
+		public static bool Equals(double value, int k)
+		{
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			return Error(value) == k;
+		}
+
+		public static bool Equals(float a, float b)
+		{
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			return Error(a) == Error(b);
+		}
 	}
 }

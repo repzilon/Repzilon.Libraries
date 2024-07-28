@@ -73,11 +73,11 @@ namespace Repzilon.Libraries.Core.Vectors
 			var mnt = MatrixExtensionMethods.ConvertTo<T>(-1 * n);
 			if (vav == 0) {
 				return new KeyValuePair<T, T>(nt, zt);
-			} else if (vav == quarterTurn) {
+			} else if (RoundOff.Equals(vav, quarterTurn)) {
 				return new KeyValuePair<T, T>(zt, nt);
-			} else if (vav == 2 * quarterTurn) {
+			} else if (RoundOff.Equals(vav, 2 * quarterTurn)) {
 				return new KeyValuePair<T, T>(mnt, zt);
-			} else if (vav == 3 * quarterTurn) {
+			} else if (RoundOff.Equals(vav, 3 * quarterTurn)) {
 				return new KeyValuePair<T, T>(zt, mnt);
 			} else {
 				return ToCartesian(n, va);
@@ -228,7 +228,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			if (other != null) {
 				var n = this.Norm();
-				if (n == Convert.ToDouble(other.Norm)) {
+				if (RoundOff.Equals(n, Convert.ToDouble(other.Norm))) {
 					var oa = other.Angle;
 					return Equals(new TwoDVector<T>(
 					 MatrixExtensionMethods.ConvertTo<T>(n * oa.Cos()),

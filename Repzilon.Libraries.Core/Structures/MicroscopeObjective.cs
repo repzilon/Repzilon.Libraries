@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -62,8 +62,8 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(MicroscopeObjective other)
 		{
-			return FocalLengthInMeters == other.FocalLengthInMeters &&
-				   FocalNumber == other.FocalNumber;
+			return RoundOff.Equals(FocalLengthInMeters, other.FocalLengthInMeters) &&
+				   RoundOff.Equals(FocalNumber, other.FocalNumber);
 		}
 
 		public override int GetHashCode()
@@ -71,7 +71,7 @@ namespace Repzilon.Libraries.Core
 			unchecked {
 				int hashCode = 1696355206 * -1521134295 + FocalLengthInMeters.GetHashCode();
 				return hashCode * -1521134295 + FocalNumber.GetHashCode();
-			}		
+			}
 		}
 
 		public static bool operator ==(MicroscopeObjective left, MicroscopeObjective right)
@@ -115,4 +115,3 @@ namespace Repzilon.Libraries.Core
 		}
 	}
 }
-

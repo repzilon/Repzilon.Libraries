@@ -74,7 +74,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var karFiveFiguresExpected = new double[] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
 				for (int i = 0; i < karFiveFiguresInput.Length; i++) {
 					var dblComputed = SignificantDigits.Round(karFiveFiguresInput[i], 5, RoundingMode.AwayFromZero);
-					Console.WriteLine((dblComputed == karFiveFiguresExpected[i]) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
+					Console.WriteLine(RoundOff.Equals(dblComputed, karFiveFiguresExpected[i]) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
 					 karFiveFiguresInput[i], dblComputed, karFiveFiguresExpected[i]);
 				}
 			} catch (Exception ex) {

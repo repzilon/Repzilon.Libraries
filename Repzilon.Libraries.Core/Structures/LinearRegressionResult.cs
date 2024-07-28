@@ -235,17 +235,17 @@ namespace Repzilon.Libraries.Core
 		public bool Equals(LinearRegressionResult other)
 		{
 			return Count == other.Count &&
-				   Slope == other.Slope &&
-				   Intercept == other.Intercept &&
-				   Correlation == other.Correlation &&
-				   StdDevOfY == other.StdDevOfY &&
-				   StdDevOfX == other.StdDevOfX &&
-				   AverageX == other.AverageX &&
-				   AverageY == other.AverageY &&
-				   MinX == other.MinX &&
-				   MaxY == other.MaxX &&
-				   MinY == other.MinY &&
-				   MaxY == other.MaxY;
+				   RoundOff.Equals(Slope, other.Slope) &&
+				   RoundOff.Equals(Intercept, other.Intercept) &&
+				   RoundOff.Equals(Correlation, other.Correlation) &&
+				   RoundOff.Equals(StdDevOfY, other.StdDevOfY) &&
+				   RoundOff.Equals(StdDevOfX, other.StdDevOfX) &&
+				   RoundOff.Equals(AverageX, other.AverageX) &&
+				   RoundOff.Equals(AverageY, other.AverageY) &&
+				   RoundOff.Equals(MinX, other.MinX) &&
+				   RoundOff.Equals(MaxY, other.MaxX) &&
+				   RoundOff.Equals(MinY, other.MinY) &&
+				   RoundOff.Equals(MaxY, other.MaxY);
 		}
 
 		public override int GetHashCode()

@@ -155,10 +155,10 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(AminoAcid other)
 		{
-			return MolarMass == other.MolarMass &&
-				   pKa1 == other.pKa1 &&
-				   pKa2 == other.pKa2 &&
-				   pKaR == other.pKaR &&
+			return RoundOff.Equals(MolarMass, other.MolarMass) &&
+				   RoundOff.Equals(pKa1, other.pKa1) &&
+				   RoundOff.Equals(pKa2, other.pKa2) &&
+				   RoundOff.Equals(pKaR, other.pKaR) &&
 				   Letter == other.Letter &&
 				   DicationWhenVeryAcid == other.DicationWhenVeryAcid &&
 				   Symbol == other.Symbol &&
@@ -237,7 +237,7 @@ namespace Repzilon.Libraries.Core
 		public static readonly IReadOnlyDictionary<AlphaAminoAcid, AminoAcid> AlphaLookup = MakeAlphaLookup();
 #endif
 
-#if NET40 || NET35 || NET20 || NETSTANDARD1_1
+#if NET40 || NET35 || NET20 || NETSTANDARD1_1
 		private static IDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
 #else
 		private static IReadOnlyDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
@@ -270,11 +270,11 @@ namespace Repzilon.Libraries.Core
 			var pkI = this.Isoelectric();
 			float am;
 			if (Single.IsNaN(ar)) { // without lateral chain
-				if (pH == pkI) {
+				if (RoundOff.Equals(pH, pkI)) {
 					return 0;
-				} else if (pH == this.pKa1) {
+				} else if (RoundOff.Equals(pH, this.pKa1)) {
 					return 0.5f;
-				} else if (pH == this.pKa2) {
+				} else if (RoundOff.Equals(pH, this.pKa2)) {
 					return -0.5f;
 				} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f)) {
 					if (pH < pkI) {
@@ -290,13 +290,13 @@ namespace Repzilon.Libraries.Core
 			} else { // with lateral chain
 				dicat = this.DicationWhenVeryAcid;
 				var a2Ltar = (this.pKa2 < ar);
-				if (pH == pkI) {
+				if (RoundOff.Equals(pH, pkI)) {
 					return 0;
-				} else if (pH == this.pKa1) {
+				} else if (RoundOff.Equals(pH, this.pKa1)) {
 					return dicat ? 1.5f : 0.5f;
-				} else if (pH == this.pKa2) {
+				} else if (RoundOff.Equals(pH, this.pKa2)) {
 					return ChargeOfLateral(false, a2Ltar, dicat);
-				} else if (pH == ar) {
+				} else if (RoundOff.Equals(pH, ar)) {
 					return ChargeOfLateral(true, a2Ltar, dicat);
 				} else {
 					float pJ;
@@ -305,11 +305,10 @@ namespace Repzilon.Libraries.Core
 					} else {
 						pJ = this.pKa2 + ar;
 					}
-					pJ = RoundOff.Error(0.5f * pJ);
-					if (pH == pJ) {
+					if (RoundOff.Equals(pH, pJ * 0.5f)) {
 						return dicat ? 1 : -1;
 					} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f) ||
-					(Math.Abs(pH - this.pKaR) <= 1.0f)) {
+							   (Math.Abs(pH - this.pKaR) <= 1.0f)) {
 						am = Math.Min(this.pKa2, ar);
 						var ah = Math.Max(this.pKa2, ar);
 						if (2 * pH < this.pKa1 + am) { // pH < 0.5f * (this.pKa1 + am)

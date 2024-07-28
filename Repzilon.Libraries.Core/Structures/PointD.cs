@@ -74,12 +74,12 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(PointD other)
 		{
-			return (X == other.X) && (Y == other.Y);
+			return RoundOff.Equals(X, other.X) && RoundOff.Equals(Y, other.Y);
 		}
 
 		public bool Equals(IPoint<double> other)
 		{
-			return (other != null) && (X == other.X) && (Y == other.Y);
+			return (other != null) &&  RoundOff.Equals(X, other.X) && RoundOff.Equals(Y, other.Y);
 		}
 
 		public bool Equals(PointM other)
