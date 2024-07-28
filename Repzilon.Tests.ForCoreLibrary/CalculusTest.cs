@@ -21,7 +21,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 			Console.WriteLine("Calcul intégral travail 1 #2");
-			SummationTest(10000, 729, "Math.Pow", CalculusWork1No2FP);
+			SummationTest(10000, 729, "Math.Pow", CalculusWork1No2Fp);
 			SummationTest(10000, 729, "Pow(i32, u16)", CalculusWork1No2Int64);
 			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
 			SummationTest(10000, 729, "IIfn", CalculusWork1No2IIfn);
@@ -101,7 +101,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("={0}\t{2,-16} {1,7:n0} Hz", result, benchLoops / tsDuration.TotalSeconds, legend);
 		}
 
-		private static long CalculusWork1No2FP(int k)
+		private static long CalculusWork1No2Fp(int k)
 		{
 			return 3 * k * (long)Math.Pow(-1, k - 1);
 		}
