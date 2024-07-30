@@ -123,7 +123,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void WriteCompact(string text)
 		{
 			if (text.Contains(" correct")) {
-				Console.Write(text.Substring(0, text.IndexOf("->")).Trim());
+				Console.Write(text.Substring(0, text.IndexOf("->", StringComparison.Ordinal)).Trim());
 				Console.Write(" ; ");
 			} else {
 				Console.Write(Environment.NewLine);

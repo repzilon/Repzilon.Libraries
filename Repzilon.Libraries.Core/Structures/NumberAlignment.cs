@@ -90,8 +90,8 @@ namespace Repzilon.Libraries.Core
 					 (byte)(numberText.Length - posOfE - negativeExponent));
 				}
 				var nds = numberFormat.NumberDecimalSeparator;
-				posOfSep = numberText.IndexOf(nds);
-				posOfE = (posOfE > -1) ? posOfE : numberText.Length;
+				posOfSep = numberText.IndexOf(nds, Equals(numberFormat, NumberFormatInfo.InvariantInfo) ? StringComparison.Ordinal : StringComparison.CurrentCulture);
+				posOfE   = (posOfE > -1) ? posOfE : numberText.Length;
 				if (posOfSep > -1) {
 					this[NumberAlignmentFlags.DecimalSeparator] = true;
 					this.DecimalDigits = Math.Max(this.DecimalDigits,
@@ -114,11 +114,11 @@ namespace Repzilon.Libraries.Core
 				numberText = " " + numberText;
 			}
 
-			var posOfSep = numberText.IndexOf(nds);
+			var posOfSep = PosOfSep(numberText, nds, formatProvider);
 			if (posOfSep > -1) {
 				numberText = InsertIntegerSpaces(numberText, numberIsNegative, nds.Length, posOfSep, nfi);
 
-				var decimalDigits = numberText.Substring(numberText.IndexOf(nds) + 1).Length;
+				var decimalDigits = numberText.Substring(PosOfSep(numberText, nds, formatProvider) + 1).Length;
 				if (decimalDigits < allDecimals) {
 					numberText += new String(' ', allDecimals - decimalDigits);
 				}
@@ -131,6 +131,12 @@ namespace Repzilon.Libraries.Core
 			// FIXME : Format exponents
 
 			return numberText;
+		}
+
+		private static int PosOfSep(string numberText, string nds, IFormatProvider formatProvider)
+		{
+			return numberText.IndexOf(nds, Equals(formatProvider, CultureInfo.InvariantCulture) ?
+				StringComparison.Ordinal : StringComparison.CurrentCulture);
 		}
 
 		private string InsertIntegerSpaces(string numberText, bool numberIsNegative, int startWhenNegative, int endBound, NumberFormatInfo nfi)

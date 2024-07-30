@@ -181,7 +181,7 @@ namespace Repzilon.Libraries.Core
 			} else {
 				CultureInfo ci;
 				var dblValue = ParseQty(value, out ci);
-				return (dblValue == 0) ? (byte)1 : Count(value, dblValue, ci.NumberFormat);
+				return (dblValue == 0) ? (byte)1 : Count(value, dblValue, ci);
 			}
 		}
 
@@ -202,18 +202,19 @@ namespace Repzilon.Libraries.Core
 				if (culture == null) {
 					culture = CultureInfo.CurrentCulture;
 				}
-				return Count(value, dblValue, culture.NumberFormat);
+				return Count(value, dblValue, culture);
 			} else {
 				return 0;
 			}
 		}
 
-		private static byte Count(string value, double asDouble, NumberFormatInfo nf)
+		private static byte Count(string value, double asDouble, CultureInfo culture)
 		{
 			var dblAbsolute = Math.Abs(asDouble);
-			var strTrimmed = value.Trim().TrimStart('0');
-			var strDecSep = nf.NumberDecimalSeparator;
-			if (strTrimmed.IndexOf(strDecSep) != -1) {
+			var strTrimmed  = value.Trim().TrimStart('0');
+			var nf          = culture.NumberFormat;
+			var strDecSep   = nf.NumberDecimalSeparator;
+			if (strTrimmed.IndexOf(strDecSep, Equals(culture, CultureInfo.InvariantCulture) ? StringComparison.Ordinal : StringComparison.CurrentCulture) != -1) {
 				var intExponent = strTrimmed.IndexOfAny("eE".ToCharArray());
 				if (intExponent != -1) {
 					strTrimmed = strTrimmed.Substring(0, intExponent);
