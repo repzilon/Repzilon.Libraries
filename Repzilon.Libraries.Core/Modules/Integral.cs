@@ -120,13 +120,30 @@ namespace Repzilon.Libraries.Core
 #if NETFRAMEWORK
 		public static double Riemann(double a, double b, int n, Converter<double, double> expression)
 #else
-		public static double Riemann(double a, double b, int n, Func<double,double> expression)
+		public static double Riemann(double a, double b, int n, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
 				throw new ArgumentNullException("expression");
 			}
 			double sum = 0;
+			var deltaXk = b / n;
+			for (var k = 1; k <= n; k++) {
+				sum += expression(a + k * deltaXk) * deltaXk;
+			}
+			return sum;
+		}
+
+#if NETFRAMEWORK
+		public static decimal Riemann(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
+#else
+		public static decimal Riemann(decimal a, decimal b, int n, Func<decimal, decimal> expression)
+#endif
+		{
+			if (expression == null) {
+				throw new ArgumentNullException("expression");
+			}
+			decimal sum = 0;
 			var deltaXk = b / n;
 			for (var k = 1; k <= n; k++) {
 				sum += expression(a + k * deltaXk) * deltaXk;
@@ -173,7 +190,7 @@ namespace Repzilon.Libraries.Core
 #if NETFRAMEWORK
 		public static double SimpsonFirst(double a, double b, Converter<double, double> expression)
 #else
-		public static double SimpsonFirst(double a, double b, Func<double,double> expression)
+		public static double SimpsonFirst(double a, double b, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
@@ -186,7 +203,7 @@ namespace Repzilon.Libraries.Core
 #if NETFRAMEWORK
 		public static double SimpsonThreeEights(double a, double b, Converter<double, double> expression)
 #else
-		public static double SimpsonThreeEights(double a, double b, Func<double,double> expression)
+		public static double SimpsonThreeEights(double a, double b, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
@@ -199,7 +216,7 @@ namespace Repzilon.Libraries.Core
 #if NETFRAMEWORK
 		public static double SimpsonComposite(double a, double b, int n, Converter<double, double> expression)
 #else
-		public static double SimpsonComposite(double a, double b, int n, Func<double,double> expression)
+		public static double SimpsonComposite(double a, double b, int n, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
@@ -221,9 +238,33 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NETFRAMEWORK
+		public static decimal SimpsonComposite(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
+#else
+		public static decimal SimpsonComposite(decimal a, decimal b, int n, Func<decimal, decimal> expression)
+#endif
+		{
+			if (expression == null) {
+				throw new ArgumentNullException("expression");
+			}
+			const decimal kOneThird = 1.0m / 3;
+			var h = (b - a) / n;
+			var sum = expression(a) + expression(b);
+			for (int i = 1; i < n; i++) {
+#if DEBUG
+				var xi = a + (i * h);
+				var y = expression(xi);
+				sum += y * ((i % 2 == 1) ? 4 : 2);
+#else
+				sum += expression(a + (i * h)) * ((i % 2 == 1) ? 4 : 2);
+#endif
+			}
+			return kOneThird * h * sum;
+		}
+
+#if NETFRAMEWORK
 		public static double SimpsonCompositeThreeEights(double a, double b, int n, Converter<double, double> expression)
 #else
-		public static double SimpsonCompositeThreeEights(double a, double b, int n, Func<double,double> expression)
+		public static double SimpsonCompositeThreeEights(double a, double b, int n, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
@@ -258,6 +299,46 @@ namespace Repzilon.Libraries.Core
 #endif
 			}
 			return 0.375 * h * sum;
+		}
+
+#if NETFRAMEWORK
+		public static decimal SimpsonCompositeThreeEights(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
+#else
+		public static decimal SimpsonCompositeThreeEights(decimal a, decimal b, int n, Func<decimal, decimal> expression)
+#endif
+		{
+			if (expression == null) {
+				throw new ArgumentNullException("expression");
+			}
+			if (n % 3 != 0) {
+				throw new ArgumentOutOfRangeException("n", n, "The number of iterations must be a multiple of 3.");
+			}
+			var h = (b - a) / n;
+			var sum = expression(a) + expression(b);
+			for (int i = 1; i < n; i += 3) {
+#if DEBUG
+				var xi = a + (i * h);
+				var y = expression(xi);
+				sum += 3 * y;
+
+				xi = a + ((i + 1) * h);
+				y = expression(xi);
+				sum += 3 * y;
+
+				if (i + 2 < n) {
+					xi = a + ((i + 2) * h);
+					y = expression(xi);
+					sum += 2 * y;
+				}
+#else
+				var xi = a + (i * h);
+				sum += 3 * (expression(xi) + expression(xi + h));
+				if (i + 2 < n) {
+					sum += 2 * expression(xi + h + h);
+				}
+#endif
+			}
+			return 0.375m * h * sum;
 		}
 	}
 }
