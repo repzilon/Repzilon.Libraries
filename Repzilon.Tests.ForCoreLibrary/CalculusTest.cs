@@ -63,14 +63,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}  Δ = {1:e7}\tSérie de MacLaurin  (o=30 fonctionne qu'avec z=1)",
 			 dblOneOfRoot2Pi * dblIntegral, (dblOneOfRoot2Pi * dblIntegral) - karExpected[0] + 0.5);
 
-			const int n = 1482*14; // must be a multiple of 6
+			OutputNormalIntegral(1, karExpected[0], 0.5 + Integral.Riemann(0, 1, ProbabilityDistributions.RiemannIterations, NonCumulativeNormal), "Somme de Riemann                  (o=n=" + ProbabilityDistributions.RiemannIterations + ")");
+
+			const int n = 1482 * 14; // must be a multiple of 6
 			for (i = 0; i < karZ.Length; i++) {
 				var z = Math.Round(karZ[i], 2);
-				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Somme de Riemann                  (o=n=" + ProbabilityDistributions.RiemannIterations + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + ExtraMath.SimpsonComposite(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + ExtraMath.SimpsonCompositeThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + ExtraMath.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson           (o=4)");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + ExtraMath.SimpsonFirst(0, z, NonCumulativeNormal), "1re méthode de Simpson            (o=3)");
+				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Somme de Riemann embarquée        (o=n=" + ProbabilityDistributions.RiemannIterations + ")");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonComposite(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonCompositeThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson           (o=4)");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonFirst(0, z, NonCumulativeNormal), "1re méthode de Simpson            (o=3)");
 			}
 		}
 
@@ -115,10 +117,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var dtmStart = DateTime.UtcNow;
 			for (int i = 0; i < benchLoops; i++) {
-				ExtraMath.Summation(1, summationUpper, forEach);
+				Integral.Summation(1, summationUpper, forEach);
 			}
 			var tsDuration = DateTime.UtcNow - dtmStart;
-			long result = ExtraMath.Summation(1, summationUpper, forEach);
+			long result = Integral.Summation(1, summationUpper, forEach);
 			Console.WriteLine("={0}\t{2,-16} {1,7:n0} Hz", result, benchLoops / tsDuration.TotalSeconds, legend);
 		}
 
