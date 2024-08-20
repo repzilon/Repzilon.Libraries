@@ -73,10 +73,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (i = 0; i < karZ.Length; i++) {
 				var z = Math.Round(karZ[i], 2);
 				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Somme de Riemann embarquée        (o=n=" + ProbabilityDistributions.RiemannIterations + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonComposite(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonCompositeThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson           (o=4)");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonFirst(0, z, NonCumulativeNormal), "1re méthode de Simpson            (o=3)");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, NonCumulativeNormal), "1re méthode de Simpson            (o=3)");
 			}
 
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Double)");
@@ -107,8 +107,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				bool blnFound = false;
 				for (int n = 30; (!blnFound) && (n <= 9999996); n += 6) {
 					var r = 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal);
-					var s1 = 0.5 + Integral.SimpsonComposite(0, z, n, NonCumulativeNormal);
-					var s2 = 0.5 + Integral.SimpsonCompositeThreeEights(0, z, n, NonCumulativeNormal);
+					var s1 = 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal);
+					var s2 = 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
 					if (MoreExact(r, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
 						lstIterations.Add(n);
@@ -146,8 +146,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				bool blnFound = false;
 				for (int n = 30; (!blnFound) && (n <= 65532); n += 6) {
 					var r = 0.5m + Integral.Riemann(0, z, n, NonCumulativeNormal);
-					var s1 = 0.5m + Integral.SimpsonComposite(0, z, n, NonCumulativeNormal);
-					var s2 = 0.5m + Integral.SimpsonCompositeThreeEights(0, z, n, NonCumulativeNormal);
+					var s1 = 0.5m + Integral.Simpson(0, z, n, NonCumulativeNormal);
+					var s2 = 0.5m + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
 					if (MoreExact(r, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
 						lstIterations.Add(n);

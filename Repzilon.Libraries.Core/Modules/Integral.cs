@@ -188,9 +188,9 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NETFRAMEWORK
-		public static double SimpsonFirst(double a, double b, Converter<double, double> expression)
+		public static double Simpson(double a, double b, Converter<double, double> expression)
 #else
-		public static double SimpsonFirst(double a, double b, Func<double, double> expression)
+		public static double Simpson(double a, double b, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
@@ -214,9 +214,9 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NETFRAMEWORK
-		public static double SimpsonComposite(double a, double b, int n, Converter<double, double> expression)
+		public static double Simpson(double a, double b, int n, Converter<double, double> expression)
 #else
-		public static double SimpsonComposite(double a, double b, int n, Func<double, double> expression)
+		public static double Simpson(double a, double b, int n, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
@@ -238,9 +238,9 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NETFRAMEWORK
-		public static decimal SimpsonComposite(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
+		public static decimal Simpson(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
 #else
-		public static decimal SimpsonComposite(decimal a, decimal b, int n, Func<decimal, decimal> expression)
+		public static decimal Simpson(decimal a, decimal b, int n, Func<decimal, decimal> expression)
 #endif
 		{
 			if (expression == null) {
@@ -262,9 +262,9 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NETFRAMEWORK
-		public static double SimpsonCompositeThreeEights(double a, double b, int n, Converter<double, double> expression)
+		public static double SimpsonThreeEights(double a, double b, int n, Converter<double, double> expression)
 #else
-		public static double SimpsonCompositeThreeEights(double a, double b, int n, Func<double, double> expression)
+		public static double SimpsonThreeEights(double a, double b, int n, Func<double, double> expression)
 #endif
 		{
 			if (expression == null) {
@@ -302,9 +302,9 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NETFRAMEWORK
-		public static decimal SimpsonCompositeThreeEights(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
+		public static decimal SimpsonThreeEights(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
 #else
-		public static decimal SimpsonCompositeThreeEights(decimal a, decimal b, int n, Func<decimal, decimal> expression)
+		public static decimal SimpsonThreeEights(decimal a, decimal b, int n, Func<decimal, decimal> expression)
 #endif
 		{
 			if (expression == null) {
