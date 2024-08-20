@@ -67,16 +67,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}  Δ = {1:e7}\tSérie de MacLaurin  (o=30 fonctionne qu'avec z=1)",
 			 dblOneOfRoot2Pi * dblIntegral, dblTargetDelta);
 
-			OutputNormalIntegral(1, karExpected[0], 0.5 + Integral.Riemann(0, 1.0, ProbabilityDistributions.RiemannIterations, NonCumulativeNormal), "Somme de Riemann                  (o=n=" + ProbabilityDistributions.RiemannIterations + ")");
-
 			const int n = 1482 * 14; // must be a multiple of 6
 			for (i = 0; i < karZ.Length; i++) {
 				var z = Math.Round(karZ[i], 2);
-				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Somme de Riemann embarquée        (o=n=" + ProbabilityDistributions.RiemannIterations + ")");
+				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Méthode embarquée de Simpson      (o=n=" + ProbabilityDistributions.SimpsonIterations + ")");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson           (o=4)");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, NonCumulativeNormal), "1re méthode de Simpson            (o=3)");
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal), "Somme de Riemann                  (o=n=" + n + ")");
 			}
 
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Double)");
@@ -95,23 +94,24 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0}  Δ = {1:e}\tSérie de MacLaurin  (o=30 fonctionne qu'avec z=1)",
 			 OneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
-			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, Math.Abs(dcmTargetDelta));
+			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, (decimal)Math.Abs(dblTargetDelta));
 		}
 
 		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, double[] expected, double targetDelta)
 		{
 			int i;
-			var lstIterations = new List<int>();
-			for (i = 0; i < allZ.Length; i++) {
+			int c = allZ.Length;
+			var intarIterations = new int[c];
+			for (i = 0; i < c; i++) {
 				var z = Math.Round(allZ[i], 2);
 				bool blnFound = false;
-				for (int n = 30; (!blnFound) && (n <= 9999996); n += 6) {
+				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r = 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
 					if (MoreExact(r, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
-						lstIterations.Add(n);
+						intarIterations[i] = n;
 						OutputNormalIntegral(z, expected[i], r, "Somme de Riemann                  (o=n=" + n + ")");
 						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
 						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
@@ -119,38 +119,39 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 			}
 			double average = 0;
-			for (i = 0; i < allZ.Length; i++) {
-				average += lstIterations[i];
+			for (i = 0; i < c; i++) {
+				average += intarIterations[i];
 			}
-			average /= allZ.Length;
+			average /= c;
 			double stddev = 0;
-			for (i = 0; i < allZ.Length; i++) {
-				var d = lstIterations[i] - average;
+			for (i = 0; i < c; i++) {
+				var d = intarIterations[i] - average;
 				stddev += d * d;
 			}
-			stddev /= (allZ.Length - 1);
+			stddev /= (c - 1);
 			stddev = Math.Sqrt(stddev);
 			const float kT99percent_4degrees = 4.60409f;
 			var ideal = average + kT99percent_4degrees * stddev;
 			ideal = Math.Ceiling(ideal / 6) * 6;
-			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, lstIterations.Count, kT99percent_4degrees, ideal);
+			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99percent_4degrees, ideal);
 			return Convert.ToInt32(ideal);
 		}
 
 		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, decimal[] expected, decimal targetDelta)
 		{
 			int i;
-			var lstIterations = new List<int>();
-			for (i = 0; i < allZ.Length; i++) {
+			int c = allZ.Length;
+			var intarIterations = new int[c];
+			for (i = 0; i < c; i++) {
 				decimal z = (decimal)Math.Round(allZ[i], 2);
 				bool blnFound = false;
-				for (int n = 30; (!blnFound) && (n <= 65532); n += 6) {
+				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r = 0.5m + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5m + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5m + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
 					if (MoreExact(r, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
-						lstIterations.Add(n);
+						intarIterations[i] = n;
 						OutputNormalIntegral(z, expected[i], r, "Somme de Riemann                  (o=n=" + n + ")");
 						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
 						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
@@ -158,21 +159,31 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 			}
 			decimal average = 0;
-			for (i = 0; i < allZ.Length; i++) {
-				average += lstIterations[i];
+			for (i = 0; i < c; i++) {
+				average += intarIterations[i];
 			}
-			average /= allZ.Length;
+			average /= c;
 			decimal stddev = 0;
-			for (i = 0; i < allZ.Length; i++) {
-				var d = lstIterations[i] - average;
+			for (i = 0; i < c; i++) {
+				var d = intarIterations[i] - average;
 				stddev += d * d;
 			}
-			stddev /= (allZ.Length - 1);
+			stddev /= (c - 1);
 			stddev = ExtraMath.Sqrt(stddev);
 			const decimal kT99percent_4degrees = 4.60409m;
 			var ideal = average + kT99percent_4degrees * stddev;
 			ideal = Math.Ceiling(ideal / 6) * 6;
-			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, lstIterations.Count, kT99percent_4degrees, ideal);
+			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99percent_4degrees, ideal);
+
+			var ptmarIter = new PointM[c];
+			for (i = 0; i < c; i++) {
+				ptmarIter[i] = new PointM((decimal)Math.Round(allZ[i], 2), intarIterations[i]);
+			}
+			var rm = RegressionModel.Compute(ptmarIter);
+			Console.Write(rm);
+			Console.Write("\t r=");
+			Console.WriteLine(rm.R);
+
 			return Convert.ToInt32(ideal);
 		}
 

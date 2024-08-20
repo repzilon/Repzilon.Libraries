@@ -19,7 +19,7 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ProbabilityDistributions
 	{
-		public const int RiemannIterations = 10 * 1000 * 1000;
+		public const int SimpsonIterations = 3840; // Must be even, and preferably a multiple of 6
 
 		#region Normal distribution
 		private static readonly double OneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
@@ -50,24 +50,29 @@ namespace Repzilon.Libraries.Core
 				} else if (Double.IsPositiveInfinity(z)) {
 					return 1;
 				} else if (z < 0) {
-					return 0.5 - (OneOfRootOfTwoPi * RiemannForNormal(-1 * z));
+					return 0.5 - SimpsonForNormal(-1 * z);
 				} else {
-					return 0.5 + (OneOfRootOfTwoPi * RiemannForNormal(z));
+					return 0.5 + SimpsonForNormal(z);
 				}
 			} else {
-				return OneOfRootOfTwoPi * Math.Exp(-0.5 * z * z);
+				return NonCumulativeNormal(z);
 			}
 		}
 
-		private static double RiemannForNormal(double b)
+		private static double SimpsonForNormal(double z)
 		{
-			double sum = 0;
-			var deltaXk = b / RiemannIterations;
-			var minusHalfdeltaXk2 = -0.5 * deltaXk * deltaXk;
-			for (var k = 1; k <= RiemannIterations; k++) {
-				sum += Math.Exp(minusHalfdeltaXk2 * k * k) * deltaXk;
+			const double kOneThird = 1.0 / 3;
+			var h = z / SimpsonIterations;
+			var sum = OneOfRootOfTwoPi + NonCumulativeNormal(z); // OneOfRootOfTwoPi == NonCumulativeNormal(0)
+			for (int i = 1; i < SimpsonIterations; i++) {
+				sum += NonCumulativeNormal(i * h) * ((i % 2 == 1) ? 4 : 2);
 			}
-			return sum;
+			return kOneThird * h * sum;
+		}
+
+		private static double NonCumulativeNormal(double z)
+		{
+			return OneOfRootOfTwoPi * Math.Exp(-0.5 * z * z);
 		}
 		#endregion
 
