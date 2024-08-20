@@ -19,6 +19,8 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ProbabilityDistributions
 	{
+		public const int RiemannIterations = 10 * 1000 * 1000;
+
 		#region Normal distribution
 		private static readonly double OneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 
@@ -29,6 +31,7 @@ namespace Repzilon.Libraries.Core
 				 "A standard deviation cannot be neither zero nor a negative number.");
 			}
 			if (cumulative) {
+				// TODO: Implement Cumulative mode for normal distribution
 				throw new NotImplementedException("Cumulative mode for normal distribution is not yet implemented " +
 				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
 			} else {
@@ -58,11 +61,10 @@ namespace Repzilon.Libraries.Core
 
 		private static double RiemannForNormal(double b)
 		{
-			const int n = 10 * 1000 * 1000;
 			double sum = 0;
-			var deltaXk = b / n;
+			var deltaXk = b / RiemannIterations;
 			var minusHalfdeltaXk2 = -0.5 * deltaXk * deltaXk;
-			for (var k = 1; k <= n; k++) {		
+			for (var k = 1; k <= RiemannIterations; k++) {
 				sum += Math.Exp(minusHalfdeltaXk2 * k * k) * deltaXk;
 			}
 			return sum;
@@ -73,6 +75,7 @@ namespace Repzilon.Libraries.Core
 		public static double Student(double x, byte liberties, bool cumulative)
 		{
 			if (cumulative) {
+				// TODO : Implement Cumulative mode for Student distribution
 				throw new NotImplementedException("Cumulative mode for Student distribution is not yet implemented " +
 				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
 			} else {

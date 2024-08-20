@@ -231,7 +231,7 @@ namespace Repzilon.Libraries.Core
 		public static double DifferenceOfPrimitives(double a, double b, Func<double, double> expression)
 #endif
 		{
-			return expression(b) -  expression(a);
+			return expression(b) - expression(a);
 		}
 
 #if NETFRAMEWORK
@@ -275,7 +275,77 @@ namespace Repzilon.Libraries.Core
 #endif
 				}
 				return bang;
-			}			
+			}
+		}
+
+#if NETFRAMEWORK
+		public static double SimpsonFirst(double a, double b, Converter<double, double> expression)
+#else
+		public static double SimpsonFirst(double a, double b, Func<double,double> expression)
+#endif
+		{
+			const double kOneSixth = 1.0 / 6;
+			return (b - a) * kOneSixth * (expression(a) + (4 * expression(0.5 * (a + b))) + expression(b));
+		}
+
+#if NETFRAMEWORK
+		public static double SimpsonThreeEights(double a, double b, Converter<double, double> expression)
+#else
+		public static double SimpsonThreeEights(double a, double b, Func<double,double> expression)
+#endif
+		{
+			const double kOneThird = 1.0 / 3;
+			return (b - a) * 0.125 * (expression(a) + (3 * expression(kOneThird * (2 * a + b))) + (3 * expression(kOneThird * (a + 2 * b))) + expression(b));
+		}
+
+#if NETFRAMEWORK
+		public static double SimpsonComposite(double a, double b, int n, Converter<double, double> expression)
+#else
+		public static double SimpsonComposite(double a, double b, int n, Func<double,double> expression)
+#endif
+		{
+			const double kOneThird = 1.0 / 3;
+			var h = (b - a) / n;
+			var sum = expression(a) + expression(b);
+			for (int i = 1; i < n; i++) {
+#if DEBUG
+				var xi = a + (i * h);
+				var y = expression(xi);
+				sum += y * ((i % 2 == 1) ? 4 : 2);
+#else
+				sum += expression(a + (i * h)) * ((i % 2 == 1) ? 4 : 2);
+#endif
+			}
+			return kOneThird * h * sum;
+		}
+
+#if NETFRAMEWORK
+		public static double SimpsonCompositeThreeEights(double a, double b, int n, Converter<double, double> expression)
+#else
+		public static double SimpsonCompositeThreeEights(double a, double b, int n, Func<double,double> expression)
+#endif
+		{
+			if (n % 3 != 0) {
+				throw new ArgumentOutOfRangeException("n", n, "The number of iterations must be a multiple of 3.");
+			}
+			var h = (b - a) / n;
+			var sum = expression(a) + expression(b);
+			for (int i = 1; i < n; i += 3) {
+				var xi = a + (i * h);
+				var y = expression(xi);
+				sum += 3 * y;
+
+				xi = a + ((i + 1) * h);
+				y = expression(xi);
+				sum += 3 * y;
+
+				if (i + 2 < n) {
+					xi = a + ((i + 2) * h);
+					y = expression(xi);
+					sum += 2 * y;
+				}
+			}
+			return 0.375 * h * sum;
 		}
 	}
 }
