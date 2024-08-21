@@ -19,8 +19,6 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ProbabilityDistributions
 	{
-		public const int SimpsonIterations = 3840; // Must be even, and preferably a multiple of 6
-
 		#region Normal distribution
 		private static readonly double OneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 
@@ -59,12 +57,21 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		public static int SimpsonIterations(double z)
+		{
+			// y = 1887.12382957702 * 1.3860204248157^x	 r=0.9971790746821102570364573442
+			var n = 1887.12382957702 * Math.Pow(1.3860204248157, z);
+			const double kOneSixth = 1.0 / 6;
+			return (int)Math.Ceiling(n * kOneSixth) * 6;
+		}
+
 		private static double SimpsonForNormal(double z)
 		{
 			const double kOneThird = 1.0 / 3;
-			var h = z / SimpsonIterations;
+			var n = SimpsonIterations(z);
+			var h = z / n;
 			var sum = OneOfRootOfTwoPi + NonCumulativeNormal(z); // OneOfRootOfTwoPi == NonCumulativeNormal(0)
-			for (int i = 1; i < SimpsonIterations; i++) {
+			for (int i = 1; i < n; i++) {
 				sum += NonCumulativeNormal(i * h) * ((i % 2 == 1) ? 4 : 2);
 			}
 			return kOneThird * h * sum;

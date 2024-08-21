@@ -12,7 +12,6 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-using System.Collections.Generic;
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -67,10 +66,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}  Δ = {1:e7}\tSérie de MacLaurin  (o=30 fonctionne qu'avec z=1)",
 			 dblOneOfRoot2Pi * dblIntegral, dblTargetDelta);
 
-			const int n = 1482 * 14; // must be a multiple of 6
+			const int n = 7968; // must be a multiple of 6
 			for (i = 0; i < karZ.Length; i++) {
 				var z = Math.Round(karZ[i], 2);
-				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Méthode embarquée de Simpson      (o=n=" + ProbabilityDistributions.SimpsonIterations + ")");
+				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Méthode variable de Simpson       (o=n=" + ProbabilityDistributions.SimpsonIterations(z) + ")");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson           (o=4)");
@@ -106,13 +105,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var z = Math.Round(allZ[i], 2);
 				bool blnFound = false;
 				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
-					var r = 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal);
+					var r0 = 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
-					if (MoreExact(r, s1, s2, expected[i], targetDelta)) {
+					if (MoreExact(r0, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
 						intarIterations[i] = n;
-						OutputNormalIntegral(z, expected[i], r, "Somme de Riemann                  (o=n=" + n + ")");
+						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann                  (o=n=" + n + ")");
 						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
 						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
 					}
@@ -146,13 +145,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 				decimal z = (decimal)Math.Round(allZ[i], 2);
 				bool blnFound = false;
 				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
-					var r = 0.5m + Integral.Riemann(0, z, n, NonCumulativeNormal);
+					var r0 = 0.5m + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5m + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5m + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
-					if (MoreExact(r, s1, s2, expected[i], targetDelta)) {
+					if (MoreExact(r0, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
 						intarIterations[i] = n;
-						OutputNormalIntegral(z, expected[i], r, "Somme de Riemann                  (o=n=" + n + ")");
+						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann                  (o=n=" + n + ")");
 						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
 						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
 					}
@@ -208,7 +207,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return MoreExact(s1, expected, target) || MoreExact(s2, expected, target) || MoreExact(r, expected, target);
 		}
 
-		private static bool MoreExact(decimal value, decimal expected, decimal target) 
+		private static bool MoreExact(decimal value, decimal expected, decimal target)
 		{
 			var delta = Math.Abs(value - expected);
 			return (delta < target); // && !delta.ToString("e7").EndsWith("0000000e+000");
