@@ -65,12 +65,12 @@ namespace Repzilon.Libraries.Core
 			return (int)Math.Ceiling(n * kOneSixth) * 6;
 		}
 
-		private static double SimpsonForNormal(double z)
+		private static double SimpsonForNormal(double b)
 		{
 			const double kOneThird = 1.0 / 3;
-			var n = SimpsonIterations(z);
-			var h = z / n;
-			var sum = OneOfRootOfTwoPi + NonCumulativeNormal(z); // OneOfRootOfTwoPi == NonCumulativeNormal(0)
+			var n = SimpsonIterations(b);
+			var h = b / n;
+			var sum = OneOfRootOfTwoPi + NonCumulativeNormal(b); // OneOfRootOfTwoPi == NonCumulativeNormal(0) && a == 0
 			for (int i = 1; i < n; i++) {
 				sum += NonCumulativeNormal(i * h) * ((i % 2 == 1) ? 4 : 2);
 			}
@@ -87,9 +87,17 @@ namespace Repzilon.Libraries.Core
 		public static double Student(double x, byte liberties, bool cumulative)
 		{
 			if (cumulative) {
-				// TODO : Implement Cumulative mode for Student distribution
-				throw new NotImplementedException("Cumulative mode for Student distribution is not yet implemented " +
-				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
+				if (x == 0) {
+					return 0.5;
+				} else if (Double.IsNegativeInfinity(x)) {
+					return 0;
+				} else if (Double.IsPositiveInfinity(x)) {
+					return 1;
+				} else if (x < 0) {
+					return 0.5 - SimpsonForStudent(-1 * x, liberties);
+				} else {
+					return 0.5 + SimpsonForStudent(x, liberties);
+				}
 			} else {
 #if (DEBUG)
 				var lastPower = Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
@@ -98,6 +106,18 @@ namespace Repzilon.Libraries.Core
 				return GammaRatio(liberties) * Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
 #endif
 			}
+		}
+
+		private static double SimpsonForStudent(double b, byte k)
+		{
+			const double kOneThird = 1.0 / 3;
+			var n = SimpsonIterations(b);
+			var h = b / n;
+			var sum = Student(0, k, false) + Student(b, k, false);
+			for (int i = 1; i < n; i++) {
+				sum += Student(i * h, k, false) * ((i % 2 == 1) ? 4 : 2);
+			}
+			return kOneThird * h * sum;
 		}
 
 		/// <summary>
@@ -112,6 +132,7 @@ namespace Repzilon.Libraries.Core
 		private static double GammaRatio(byte k)
 		{
 			var ciC = CultureInfo.InvariantCulture;
+			// TODO : In GammaRatio, replace strings with a token structure
 			List<string> numerators = new List<string>(/*new string[] { "1", "1" }*/); // 1 is the multiplication neutral term
 			List<string> denominators = new List<string>(new string[] { "√k", "√π" });
 
