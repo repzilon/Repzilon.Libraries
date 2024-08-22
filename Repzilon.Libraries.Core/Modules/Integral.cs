@@ -237,7 +237,6 @@ namespace Repzilon.Libraries.Core
 			return kOneThird * h * sum;
 		}
 
-		[Obsolete("For an unknown reason, using Decimal yields an higher error than Double when integrating the normal law.")]
 #if NETFRAMEWORK
 		public static decimal Simpson(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
 #else
@@ -302,7 +301,6 @@ namespace Repzilon.Libraries.Core
 			return 0.375 * h * sum;
 		}
 
-		[Obsolete("For an unknown reason, using Decimal yields an higher error than Double when integrating the normal law.")]
 #if NETFRAMEWORK
 		public static decimal SimpsonThreeEights(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
 #else
