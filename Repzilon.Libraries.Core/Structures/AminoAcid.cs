@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Collections.ObjectModel;
 using System.Runtime.InteropServices;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Biochemistry
 {
 #if DEBUG
 	[StructLayout(LayoutKind.Sequential)]
@@ -143,8 +143,8 @@ namespace Repzilon.Libraries.Core
 			var a1 = this.pKa1;
 			var a2 = this.pKa2;
 			return Single.IsNaN(ar) ?
-			 Chemistry.AminoAcidIsoelectric(a1, a2) :
-			 Chemistry.AminoAcidIsoelectric(a1, a2, this.DicationWhenVeryAcid ? (byte)2 : (byte)1, ar);
+			 Isoelectric(a1, a2) :
+			 Isoelectric(a1, a2, this.DicationWhenVeryAcid ? (byte)2 : (byte)1, ar);
 		}
 
 		#region Equals
@@ -355,6 +355,30 @@ namespace Repzilon.Libraries.Core
 		{
 			var blnEquals = (pHEqualsPkar == pKa2LessThanPkar);
 			return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
+		}
+
+		public static float Isoelectric(float pKa1, float pKa2,
+		byte cationCountAtPh1AndHalf, float pKaR)
+		{
+			if (cationCountAtPh1AndHalf > 2) {
+				throw new ArgumentOutOfRangeException("cationCountAtPh1AndHalf", cationCountAtPh1AndHalf,
+				 "The lateral chain of a amino acid can only form a cation, a dication or no cation at all under very acidic conditions.");
+			} else {
+				float sum;
+				if (cationCountAtPh1AndHalf == 2) {
+					sum = pKa2 + pKaR;
+				} else if ((cationCountAtPh1AndHalf == 1) && (pKaR < pKa2)) {
+					sum = pKa1 + pKaR;
+				} else {
+					sum = pKa1 + pKa2;
+				}
+				return RoundOff.Error(0.5f * sum);
+			}
+		}
+
+		public static float Isoelectric(float pKa1, float pKa2)
+		{
+			return RoundOff.Error(0.5f * (pKa1 + pKa2));
 		}
 	}
 }

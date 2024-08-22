@@ -16,7 +16,7 @@ using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Biochemistry
 {
 	public enum EnzymeSpeedRepresentation : byte
 	{

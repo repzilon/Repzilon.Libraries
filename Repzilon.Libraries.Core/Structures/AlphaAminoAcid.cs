@@ -12,7 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Biochemistry
 {
 	/*	This was partly built using Regex.Replace
 		Match pattern:

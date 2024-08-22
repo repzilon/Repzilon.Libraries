@@ -16,6 +16,7 @@ using System.Collections.Generic;
 using System.Globalization;
 using System.Runtime.InteropServices;
 using Repzilon.Libraries.Core;
+using Repzilon.Libraries.Core.Biochemistry;
 // ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -216,8 +217,8 @@ STQTALA";
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, ptdarHW_raw);
 
-			OutputRoundedEnzymeKinematic(Chemistry.SpeedOfEnzyme("mmol/L", A240By30s, ptdarMM));
-			OutputRoundedEnzymeKinematic(Chemistry.DirectLinearPlot("mmol/L", A240By30s, ptdarMM));
+			OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM));
+			OutputRoundedEnzymeKinematic(Enzyme.DirectLinearPlot("mmol/L", A240By30s, ptdarMM));
 		}
 
 		private static void EnzymeSpeedDecimal()
@@ -267,7 +268,7 @@ STQTALA";
 		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic, params PointD[] dataPoints)
 		{
 			if (withKinematic) {
-				OutputRoundedEnzymeKinematic(Chemistry.SpeedOfEnzyme("mmol/L", A240By30s, representation, dataPoints));
+				OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints));
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
@@ -276,7 +277,7 @@ STQTALA";
 		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic, params PointM[] dataPoints)
 		{
 			if (withKinematic) {
-				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(Chemistry.SpeedOfEnzyme(
+				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(Enzyme.Speed(
 				 "mmol/L", A240By30s, representation, dataPoints), 4));
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
