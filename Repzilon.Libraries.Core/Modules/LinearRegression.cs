@@ -14,7 +14,7 @@
 using System;
 using System.Collections.Generic;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Regression
 {
 	public static class LinearRegression
 	{

@@ -16,7 +16,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using System.Text;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Regression
 {
 	public enum MathematicalModel : byte
 	{

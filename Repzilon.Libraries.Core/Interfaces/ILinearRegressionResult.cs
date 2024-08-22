@@ -13,7 +13,7 @@
 //
 using System;
 
-namespace Repzilon.Libraries.Core
+namespace Repzilon.Libraries.Core.Regression
 {
 	public interface ILinearRegressionResult<T> : IFormattable
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6

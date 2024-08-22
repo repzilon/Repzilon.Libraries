@@ -17,6 +17,7 @@ using System.Globalization;
 using System.Runtime.InteropServices;
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Biochemistry;
+using Repzilon.Libraries.Core.Regression;
 // ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary

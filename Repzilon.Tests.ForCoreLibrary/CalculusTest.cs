@@ -13,6 +13,7 @@
 //
 using System;
 using Repzilon.Libraries.Core;
+using Repzilon.Libraries.Core.Regression;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {

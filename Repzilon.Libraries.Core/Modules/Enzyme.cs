@@ -12,13 +12,14 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using Repzilon.Libraries.Core.Regression;
 
 namespace Repzilon.Libraries.Core.Biochemistry
 {
 	public static class Enzyme
 	{
 		public static EnzymeKinematic<double> Speed(string concentrationUnit, string speedUnit,
-EnzymeSpeedRepresentation representation, params PointD[] dataPoints)
+		EnzymeSpeedRepresentation representation, params PointD[] dataPoints)
 		{
 			var rm = RegressionModel.Compute(dataPoints);
 			if (rm.Model != MathematicalModel.Affine) {

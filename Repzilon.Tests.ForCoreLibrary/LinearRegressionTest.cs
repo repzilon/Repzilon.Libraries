@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Globalization;
 using Repzilon.Libraries.Core;
+using Repzilon.Libraries.Core.Regression;
 // ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary
