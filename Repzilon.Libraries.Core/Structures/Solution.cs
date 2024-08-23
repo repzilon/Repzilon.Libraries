@@ -48,7 +48,8 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(Solution other)
 		{
-			return EqualityComparer<Measure>.Default.Equals(Concentration, other.Concentration) &&
+			return this.Concentration.Key == other.Concentration.Key &&
+				   RoundOff.Equals(this.Concentration.Value, other.Concentration.Value) &&
 				   EqualityComparer<Measure?>.Default.Equals(SolutionVolume, other.SolutionVolume) &&
 				   MatrixExtensionMethods.Equals(SolventVolume, other.SolventVolume) &&
 				   MatrixExtensionMethods.Equals(SoluteVolume, other.SoluteVolume);
@@ -58,7 +59,9 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				var magic = -1521134295;
-				var hashCode = (-1047427533 * -1521134295) + Concentration.GetHashCode();
+				var kvpConcentration = this.Concentration;
+				var hashCode = (-1047427533 * -1521134295) + kvpConcentration.Key.GetHashCode();
+				hashCode = (hashCode * magic) + kvpConcentration.Value.GetHashCode();
 				hashCode = (hashCode * magic) + SolutionVolume.GetHashCode();
 				hashCode = (hashCode * magic) + SolventVolume.GetHashCode();
 				return (hashCode * magic) + SoluteVolume.GetHashCode();

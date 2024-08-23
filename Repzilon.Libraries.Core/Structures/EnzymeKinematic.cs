@@ -65,6 +65,26 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			get { return Km.Value; }
 		}
 
+		private IComparable VmaxNumber
+		{
+			get { return Vmax.Key; }
+		}
+
+		private string VmaxUnit
+		{
+			get { return Vmax.Value; }
+		}
+
+		private IComparable KmNumber
+		{
+			get { return Km.Key; }
+		}
+
+		private string KmUnit
+		{
+			get { return Km.Value; }
+		}
+
 		IComparable IComparableEnzymeKinematic.Correlation
 		{
 			get { return Correlation; }
@@ -107,8 +127,10 @@ namespace Repzilon.Libraries.Core.Biochemistry
 
 		public bool Equals(EnzymeKinematic<T> other)
 		{
-			var eqcKvp = EqualityComparer<KeyValuePair<T, string>>.Default;
-			return eqcKvp.Equals(Vmax, other.Vmax) && eqcKvp.Equals(Km, other.Km) &&
+			var kvpVmax = this.Vmax;
+			var kvpKm   = this.Km;
+			return Equals(kvpVmax.Key, other.VmaxNumber) && kvpVmax.Value == other.VmaxUnit &&
+			 Equals(kvpKm.Key, other.KmNumber) && kvpKm.Value == other.KmUnit &&
 			 EqualityComparer<T>.Default.Equals(Correlation, other.Correlation) &&
 			 (other.Representation == Representation);
 		}
@@ -141,8 +163,10 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			unchecked {
 				int hashCode = 667060969;
-				hashCode = hashCode * -1521134295 + Vmax.GetHashCode();
-				hashCode = hashCode * -1521134295 + Km.GetHashCode();
+				hashCode = hashCode * -1521134295 + Vmax.Key.GetHashCode();
+				hashCode = hashCode * -1521134295 + Vmax.Value.GetHashCode();
+				hashCode = hashCode * -1521134295 + Km.Key.GetHashCode();
+				hashCode = hashCode * -1521134295 + Km.Value.GetHashCode();
 				hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
 				hashCode = hashCode * -1521134295 + (int)Representation;
 				return hashCode;
