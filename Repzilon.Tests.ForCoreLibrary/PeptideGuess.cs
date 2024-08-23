@@ -19,6 +19,7 @@ using System.Diagnostics.CodeAnalysis;
 #endif
 using System.Linq;
 using Repzilon.Libraries.Core;
+using Repzilon.Libraries.Core.Biochemistry;
 #endif
 // ReSharper disable InconsistentNaming
 
