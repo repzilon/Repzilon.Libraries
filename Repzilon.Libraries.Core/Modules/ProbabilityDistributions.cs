@@ -259,13 +259,14 @@ namespace Repzilon.Libraries.Core
 		{
 			double nf = ProductOfIntegers(numbers);
 			var c = numbers.Count;
+			var invariant = CultureInfo.InvariantCulture;
 			for (var i = 0; i < c; i++) {
 				if (numbers[i] == "√k") {
 					nf *= Math.Sqrt(k);
 				} else if (numbers[i] == "√π") {
 					nf *= Math.Sqrt(Math.PI);
 				} else if (numbers[i].Contains("E")) {
-					nf *= Double.Parse(numbers[i]);
+					nf *= Double.Parse(numbers[i], invariant);
 				}
 			}
 			return nf;
@@ -290,13 +291,14 @@ namespace Repzilon.Libraries.Core
 		{
 			decimal nd = 1;
 			var c = numbers.Count;
+			var invariant = CultureInfo.InvariantCulture;
 			for (var i = 0; i < c; i++) {
 				if (numbers[i] == "√k") {
 					nd *= ExtraMath.Sqrt(k);
 				} else if (numbers[i] == "√π") {
 					nd *= ExtraMath.Sqrt(ExtraMath.Pi);
 				} else {
-					nd *= Decimal.Parse(numbers[i], NumberStyles.Any);
+					nd *= Decimal.Parse(numbers[i], NumberStyles.Any, invariant);
 				}
 			}
 			return nd;
@@ -308,6 +310,7 @@ namespace Repzilon.Libraries.Core
 			double nf = Double.NaN;
 			var c = numbers.Count;
 			bool inDouble = false;
+			var invariant = CultureInfo.InvariantCulture;
 
 			for (var i = 0; i < c; i++) {
 				if (numbers[i] == "√k") {
@@ -323,13 +326,13 @@ namespace Repzilon.Libraries.Core
 						nd *= ExtraMath.Sqrt(ExtraMath.Pi);
 					}
 				} else if (inDouble) {
-					nf *= Double.Parse(numbers[i]);
+					nf *= Double.Parse(numbers[i], invariant);
 				} else {
 					try {
-						nd *= Decimal.Parse(numbers[i], NumberStyles.Any);
+						nd *= Decimal.Parse(numbers[i], NumberStyles.Any, invariant);
 					} catch (OverflowException) {
 						inDouble = true;
-						nf = (double)nd * Double.Parse(numbers[i]);
+						nf = (double)nd * Double.Parse(numbers[i], invariant);
 					}
 				}
 			}
