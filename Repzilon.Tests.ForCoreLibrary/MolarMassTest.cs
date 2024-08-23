@@ -211,7 +211,7 @@ STQTALA";
 
 			Program.OutputSizeOf<RegressionModel<double>>();
 			Program.OutputSizeOf<EnzymeKinematic<double>>();
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, false, ptdarMM);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, true, ptdarMM);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_raw);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_raw);
@@ -251,7 +251,7 @@ STQTALA";
 
 			Program.OutputSizeOf<RegressionModel<decimal>>();
 			Program.OutputSizeOf<EnzymeKinematic<decimal>>();
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, false, ptmarMM);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, true, ptmarMM);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptmarLB_raw);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptmarLB_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptmarEH_raw);
