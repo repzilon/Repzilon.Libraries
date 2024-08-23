@@ -130,10 +130,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= (c - 1);
 			stddev = Math.Sqrt(stddev);
-			const float kT99percent_4degrees = 4.60409f;
-			var ideal = average + kT99percent_4degrees * stddev;
+			const float kT99Percent4Degrees = 4.60409f;
+			var ideal = average + kT99Percent4Degrees * stddev;
 			ideal = Math.Ceiling(ideal / 6) * 6;
-			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99percent_4degrees, ideal);
+			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99Percent4Degrees, ideal);
 			return Convert.ToInt32(ideal);
 		}
 
@@ -170,10 +170,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= (c - 1);
 			stddev = ExtraMath.Sqrt(stddev);
-			const decimal kT99percent_4degrees = 4.60409m;
-			var ideal = average + kT99percent_4degrees * stddev;
+			const decimal kT99Percent4Degrees = 4.60409m;
+			var ideal = average + kT99Percent4Degrees * stddev;
 			ideal = Math.Ceiling(ideal / 6) * 6;
-			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99percent_4degrees, ideal);
+			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99Percent4Degrees, ideal);
 
 			var ptmarIter = new PointM[c];
 			for (i = 0; i < c; i++) {
