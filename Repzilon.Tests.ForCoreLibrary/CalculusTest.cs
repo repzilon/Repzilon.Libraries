@@ -19,7 +19,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class CalculusTest
 	{
-		private static readonly decimal OneOfRootOfTwoPi = 1.0m / ExtraMath.Sqrt(2 * ExtraMath.Pi);
+		private static readonly decimal DecimalOneOfRootOfTwoPi = 1.0m / ExtraMath.Sqrt(2 * ExtraMath.Pi);
+		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 
 		internal static void Run(string[] args)
 		{
@@ -33,19 +34,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Distributions de Student");
 			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
 			int i;
-			Console.Write("x");
+			Console.Write("x    ");
 			for (i = 0; i < karLiberties.Length; i++) {
-				Console.Write("\tk=");
-				Console.Write(karLiberties[i]);
+				Console.Write(" k={0,-6}", karLiberties[i]);
 			}
 			Console.Write(Environment.NewLine);
 			for (var x = -30; x <= 30; x++) {
 				var z = RoundOff.Error(x * 0.1);
+				if (x >= 0) {
+					Console.Write(' ');
+				}
 				Console.Write(z.ToString("f1"));
+				Console.Write(' ');
 				for (i = 0; i < karLiberties.Length; i++) {
-					var v = ProbabilityDistributions.Student(z, karLiberties[i], false);
-					Console.Write('\t');
-					Console.Write(v.ToString("f5"));
+					Console.Write(" {0:f6}", ProbabilityDistributions.Student(z, karLiberties[i], false));
 				}
 				Console.Write(Environment.NewLine);
 			}
@@ -61,21 +63,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9772498680518207927997173628334665625282237762983215660163339998695237096472242516517308479242103851,
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829
 			};
-			var dblOneOfRoot2Pi = 1.0 / Math.Sqrt(2 * Math.PI);
 			var dblIntegral = 1 + ExponentialSeries(1.0) - ExponentialSeries(0.0);
-			var dblTargetDelta = (dblOneOfRoot2Pi * dblIntegral) - karExpected[0] + 0.5;
-			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}  Δ = {1:e7}\tSérie de MacLaurin  (o=30 fonctionne qu'avec z=1)",
-			 dblOneOfRoot2Pi * dblIntegral, dblTargetDelta);
+			var dblTargetDelta = (DoubleOneOfRootOfTwoPi * dblIntegral) - karExpected[0] + 0.5;
+			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}   Δ =  {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)",
+			 DoubleOneOfRootOfTwoPi * dblIntegral, dblTargetDelta);
 
 			const int n = 7968; // must be a multiple of 6
 			for (i = 0; i < karZ.Length; i++) {
 				var z = Math.Round(karZ[i], 2);
-				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Méthode variable de Simpson       (o=n=" + ProbabilityDistributions.SimpsonIterations(z) + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson           (o=4)");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, NonCumulativeNormal), "1re méthode de Simpson            (o=3)");
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal), "Somme de Riemann                  (o=n=" + n + ")");
+				var thomas = ProbabilityDistributions.SimpsonIterations(z);
+				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Méthode variable de Simpson", thomas, thomas);
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson", n, n + 1);
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson", n, n + 1);
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson", 3, 4);
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, NonCumulativeNormal), "1re méthode de Simpson", 2, 3);
+				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal), "Somme de Riemann", n, n);
 			}
 
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Double)");
@@ -89,10 +91,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829m
 			};
 			var dcmIntegral = 1 + ExponentialSeries(1.0m) - ExponentialSeries(0.0m);
-			var dcmTargetDelta = (OneOfRootOfTwoPi * dcmIntegral) - karExpectedDecimal[0] + 0.5m;
+			var dcmTargetDelta = (DecimalOneOfRootOfTwoPi * dcmIntegral) - karExpectedDecimal[0] + 0.5m;
 			Console.Write(Environment.NewLine);
-			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0}  Δ = {1:e}\tSérie de MacLaurin  (o=30 fonctionne qu'avec z=1)",
-			 OneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
+			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",
+			 DecimalOneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
 			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, (decimal)Math.Abs(dblTargetDelta));
 		}
@@ -112,9 +114,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 					if (MoreExact(r0, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
 						intarIterations[i] = n;
-						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann                  (o=n=" + n + ")");
-						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
-						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
+						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann", n, n);
+						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson", n, n + 1);
+						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson", n, n + 1);
 					}
 				}
 			}
@@ -152,9 +154,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 					if (MoreExact(r0, s1, s2, expected[i], targetDelta)) {
 						blnFound = true;
 						intarIterations[i] = n;
-						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann                  (o=n=" + n + ")");
-						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson      (n=" + n + " o=" + (n + 1) + ")");
-						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson (n=" + n + " o=" + (n + 1) + ")");
+						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann", n, n);
+						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson", n, n + 1);
+						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson", n, n + 1);
 					}
 				}
 			}
@@ -195,12 +197,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static bool MoreExact(double value, double expected, double target)
 		{
 			var delta = Math.Abs(value - expected);
-			return (delta < target); // && !delta.ToString("e7").EndsWith("0000000e+000");
+			return (delta < target);
 		}
 
-		private static void OutputNormalIntegral(double z, double expected, double integral, string source)
+		private static void OutputNormalIntegral(double z, double expected, double integral, string algorithm, int n, int o)
 		{
-			Console.WriteLine("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}  Δ = {2:e7}\t{3}", z, integral, integral - expected, source);
+			var delta = integral - expected;
+			if (delta == 0) {
+				delta = 1e-18;
+			}
+			Console.WriteLine("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {6}{2:e7}   {3,-33} (n={4,4} o={5,4})",
+			 z, integral, delta, algorithm, n, o, delta >= 0 ? " " : "");
 		}
 
 		private static bool MoreExact(decimal r, decimal s1, decimal s2, decimal expected, decimal target)
@@ -211,12 +218,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static bool MoreExact(decimal value, decimal expected, decimal target)
 		{
 			var delta = Math.Abs(value - expected);
-			return (delta < target); // && !delta.ToString("e7").EndsWith("0000000e+000");
+			return (delta < target);
 		}
 
-		private static void OutputNormalIntegral(decimal z, decimal expected, decimal integral, string source)
+		private static void OutputNormalIntegral(decimal z, decimal expected, decimal integral, string algorithm, int n, int o)
 		{
-			Console.WriteLine("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}  Δ = {2:e7}\t{3}", z, integral, integral - expected, source);
+			var delta = integral - expected;
+			Console.WriteLine("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {6}{2:e7}   {3,-33} (n={4,4} o={5,4})",
+			 z, integral, delta, algorithm, n, o, delta >= 0 ? " " : "");
 		}
 
 		private static double NonCumulativeNormal(double z)
@@ -227,7 +236,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static decimal NonCumulativeNormal(decimal z)
 		{
 			//return (decimal)ProbabilityDistributions.Normal((double)z, false);
-			return OneOfRootOfTwoPi * (decimal)Math.Exp((double)(-0.5m * z * z));
+			return DecimalOneOfRootOfTwoPi * (decimal)Math.Exp((double)(-0.5m * z * z));
 		}
 
 		private static double ExponentialSeries(double x)
