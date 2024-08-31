@@ -324,20 +324,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var odd = (2 * k) + 1;
 #if DEBUG
-			var t = Math.Pow(-1, k) * Math.Pow(x, odd);
+			var t = ExtraMath.Minus1Pow(k) * Math.Pow(x, odd);
 			var d = checked(odd * (1 << k) * ExtraMath.Factorial((byte)k));
 			var r = t / d;
 			Console.WriteLine("x={0} k={1} {2}/{3}={4}", x, k, t, d, r);
 			return r;
 #else
-			return (Math.Pow(-1, k) * Math.Pow(x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k));
+			return (ExtraMath.Minus1Pow(k) * Math.Pow(x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k));
 #endif
 		}
 
 		private static decimal ExponentialSuite(decimal x, int k)
 		{
 			var odd = (2 * k) + 1;
-			return (decimal)((Math.Pow(-1, k) * Math.Pow((double)x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k)));
+			return (decimal)((ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k)));
 		}
 
 		private static double MacLaurinPositiveNormalIntegral(double x, byte n)
@@ -346,11 +346,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (byte k = 1; k <= n - 1; k++) {
 				var odd = (2 * k) + 1;
 #if DEBUG
-				var t = Math.Pow(-1, k) * Math.Pow(x, odd);
+				var t = ExtraMath.Minus1Pow(k) * Math.Pow(x, odd);
 				var b = odd * (1 << k) * ExtraMath.Factorial(k);
 				sum += t / b;
 #else
-				sum += (Math.Pow(-1, k) * Math.Pow(x, odd)) / checked(odd * (1 << k) * ExtraMath.Factorial(k));
+				sum += (ExtraMath.Minus1Pow(k) * Math.Pow(x, odd)) / checked(odd * (1 << k) * ExtraMath.Factorial(k));
 #endif
 			}
 			return DoubleOneOfRootOfTwoPi * sum;
@@ -362,11 +362,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (byte k = 1; k <= n - 1; k++) {
 				var odd = (2 * k) + 1;
 #if DEBUG
-				var t = Math.Pow(-1, k) * Math.Pow((double)x, odd);
+				var t = ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd);
 				var b = odd * (1 << k) * ExtraMath.BigFactorial(k);
 				sum += (decimal)t / b;
 #else
-				sum += (decimal)(Math.Pow(-1, k) * Math.Pow((double)x, odd)) / checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
+				sum += (decimal)(ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd)) / checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
 #endif
 			}
 			return DecimalOneOfRootOfTwoPi * sum;

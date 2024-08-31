@@ -99,11 +99,11 @@ namespace Repzilon.Libraries.Core
 			for (byte k = 1; k <= kMacLaurinIterations - 1; k++) {
 				var odd = (2 * k) + 1;
 #if DEBUG
-				var t = Math.Pow(-1, k) * Math.Pow((double)x, odd);
+				var t = ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd);
 				var b = odd * (1 << k) * ExtraMath.BigFactorial(k);
 				sum += (decimal)t / b;
 #else
-				sum += (decimal)(Math.Pow(-1, k) * Math.Pow((double)x, odd)) / checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
+				sum += (decimal)(ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd)) / checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
 #endif
 			}
 			return DecimalOneOfRootOfTwoPi * sum;

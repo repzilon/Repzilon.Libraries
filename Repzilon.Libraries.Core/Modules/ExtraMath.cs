@@ -174,5 +174,15 @@ namespace Repzilon.Libraries.Core
 		{
 			return n > 20 ? BigFactorialCore(n) : Factorial(n);
 		}
+
+		/// <summary>
+		/// Faster alternative to Math.Pow(-1, k) when k is an integer
+		/// </summary>
+		/// <param name="k">Exponent to raise -1</param>
+		/// <returns>1 or -1</returns>
+		public static int Minus1Pow(int k)
+		{
+			return (k % 2 != 0) ? -1 : 1;
+		}
 	}
 }
