@@ -52,7 +52,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(Environment.NewLine);
 			}
 
+			Console.WriteLine("Factorielles");
 			Console.WriteLine("20! vaut {0}", ExtraMath.Factorial(20));
+			for (i = 21; i <= 27; i++) {
+				Console.WriteLine("{0}! vaut {1}", i, ExtraMath.BigFactorial((byte)i));
+			}
 
 			Console.WriteLine("Intégrale d'une loi normale centrée réduite");
 			var karZ = new float[] { 1, 1.23f, 1.96f, 2, 3 };
@@ -78,6 +82,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson", 3, 4);
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, NonCumulativeNormal), "1re méthode de Simpson", 2, 3);
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal), "Somme de Riemann", n, n);
+				OutputNormalIntegral(z, karExpected[i], 0.5 + MacLaurinPositiveNormalIntegral(z, 16), "Série de MacLaurin corrigée", 16, 15);
 			}
 
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Double)");
@@ -95,8 +100,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write(Environment.NewLine);
 			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",
 			 DecimalOneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
+
+#if true
+			decimal dcmFinalTargetDelta = (decimal)Math.Abs(dblTargetDelta);
+#else
+			decimal dcmFinalTargetDelta = Math.Abs(dcmTargetDelta);
+#endif
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
-			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, (decimal)Math.Abs(dblTargetDelta));
+			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, dcmFinalTargetDelta);
+
+			Console.WriteLine("Détermination du point de cassure de la série de MacLaurin");
+			FindMacLaurinBreakpointForNormalLawIntegral(dcmFinalTargetDelta);
 		}
 
 		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, double[] expected, double targetDelta)
@@ -159,6 +173,23 @@ namespace Repzilon.Tests.ForCoreLibrary
 						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson", n, n + 1);
 					}
 				}
+				blnFound = false;
+				int overflowAt = 0;
+				for (int n = 16; (overflowAt < 1) && (n <= 23); n++) {
+					try {
+						decimal ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)n);
+						if (MoreExact(ml, expected[i], targetDelta)) {
+							blnFound = true;
+							OutputNormalIntegral(z, expected[i], ml, "Série de MacLaurin corrigée", n, n - 1);
+						}
+					} catch (OverflowException) {
+						overflowAt = n;
+					}
+				}
+				if ((!blnFound) && (overflowAt > 0)) {
+					decimal ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)(overflowAt - 1));
+					OutputNormalIntegral(z, expected[i], ml, "Série de MacLaurin corrigée°", overflowAt - 1, overflowAt - 2);
+				}
 			}
 			decimal average = 0;
 			for (i = 0; i < c; i++) {
@@ -187,6 +218,38 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(rm.R);
 
 			return Convert.ToInt32(ideal);
+		}
+
+		private static void FindMacLaurinBreakpointForNormalLawIntegral(decimal targetDelta)
+		{
+			bool blnBroken = false;
+			var dcmarDeltas = new decimal[22 - 16 + 1];
+			for (int i = 200; (!blnBroken) && (i <= 300); i++) {
+				var z = i * 0.01m;
+				var n = ProbabilityDistributions.SimpsonIterations((double)z);
+				var simpson = Integral.Simpson(0, z, n, NonCumulativeNormal);
+				decimal bestDelta = 1;
+				byte bestK = 0;
+				decimal ml, delta;
+				for (byte k = 16; k <= 22; k++) {
+					ml = MacLaurinPositiveNormalIntegral(z, k);
+					delta = ml - simpson;
+					dcmarDeltas[k - 16] = delta;
+
+					if (Math.Abs(delta) < Math.Abs(bestDelta)) {
+						bestDelta = delta;
+						bestK = k;
+					}
+				}
+				ml = MacLaurinPositiveNormalIntegral(z, bestK);
+				delta = ml - simpson;
+				Console.WriteLine("∫[0; {0:f2}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {5}{2:e7} (s={3} m={4})",
+				 z, ml, delta, n, bestK, delta >= 0 ? " " : "");
+				if (Math.Abs(delta) > Math.Abs(targetDelta) * 10) {
+					blnBroken = true;
+					Console.WriteLine("Cassure lorsque Z>{0}", (i - 1) * 0.01m);
+				}
+			}
 		}
 
 		private static bool MoreExact(double r, double s1, double s2, double expected, double target)
@@ -275,6 +338,38 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var odd = (2 * k) + 1;
 			return (decimal)((Math.Pow(-1, k) * Math.Pow((double)x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k)));
+		}
+
+		private static double MacLaurinPositiveNormalIntegral(double x, byte n)
+		{
+			var sum = x;
+			for (byte k = 1; k <= n - 1; k++) {
+				var odd = (2 * k) + 1;
+#if DEBUG
+				var t = Math.Pow(-1, k) * Math.Pow(x, odd);
+				var b = odd * (1 << k) * ExtraMath.Factorial(k);
+				sum += t / b;
+#else
+				sum += (Math.Pow(-1, k) * Math.Pow(x, odd)) / checked(odd * (1 << k) * ExtraMath.Factorial(k));
+#endif
+			}
+			return DoubleOneOfRootOfTwoPi * sum;
+		}
+
+		private static decimal MacLaurinPositiveNormalIntegral(decimal x, byte n)
+		{
+			var sum = x;
+			for (byte k = 1; k <= n - 1; k++) {
+				var odd = (2 * k) + 1;
+#if DEBUG
+				var t = Math.Pow(-1, k) * Math.Pow((double)x, odd);
+				var b = odd * (1 << k) * ExtraMath.BigFactorial(k);
+				sum += (decimal)t / b;
+#else
+				sum += (decimal)(Math.Pow(-1, k) * Math.Pow((double)x, odd)) / checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
+#endif
+			}
+			return DecimalOneOfRootOfTwoPi * sum;
 		}
 
 #if NETFRAMEWORK

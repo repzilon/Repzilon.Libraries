@@ -153,5 +153,26 @@ namespace Repzilon.Libraries.Core
 				return bang;
 			}
 		}
+
+		private static decimal BigFactorialCore(byte n)
+		{
+			if (n > 27) {
+				throw new ArgumentOutOfRangeException("n", n, "The factorial of 28 overflows a decimal.");
+			}
+			if (n <= 2) {
+				return n;
+			} else {
+				decimal bang = 6; // 3! is 6
+				for (byte i = 4; i <= n; i++) {
+					bang *= i;
+				}
+				return bang;
+			}
+		}
+
+		public static decimal BigFactorial(byte n)
+		{
+			return n > 20 ? BigFactorialCore(n) : Factorial(n);
+		}
 	}
 }
