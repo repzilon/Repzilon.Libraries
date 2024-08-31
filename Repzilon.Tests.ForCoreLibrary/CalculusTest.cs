@@ -75,8 +75,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			const int n = 7968; // must be a multiple of 6
 			for (i = 0; i < karZ.Length; i++) {
 				var z = Math.Round(karZ[i], 2);
-				var thomas = ProbabilityDistributions.SimpsonIterations(z);
-				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "Méthode variable de Simpson", thomas, thomas);
+				var thomas = ProbabilityDistributions.Iterations(z);
+				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true), "MacLaurin ou Simpson composite", thomas, thomas > 1000 ? thomas + 1 : thomas);
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal), "Méthode composite de Simpson", n, n + 1);
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal), "Méthode 3/8e composite de Simpson", n, n + 1);
 				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal), "Méthode 3/8e de Simpson", 3, 4);

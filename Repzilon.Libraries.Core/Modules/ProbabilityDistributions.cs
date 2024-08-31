@@ -20,7 +20,10 @@ namespace Repzilon.Libraries.Core
 	public static class ProbabilityDistributions
 	{
 		#region Normal distribution
-		private static readonly double OneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
+		private const byte kMacLaurinIterations = 22; // 16 for Int64+Double, 22 for Decimal (higher accuracy)
+		private const float kMacLaurinBreakpoint = 2.07f;
+		private static readonly decimal DecimalOneOfRootOfTwoPi = 1.0m / ExtraMath.Sqrt(2 * ExtraMath.Pi);
+		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 
 		public static double Normal(double x, double mean, double standardDeviation, bool cumulative)
 		{
@@ -34,27 +37,35 @@ namespace Repzilon.Libraries.Core
 				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
 			} else {
 				var z = (x - mean) / standardDeviation;
-				return OneOfRootOfTwoPi / standardDeviation * Math.Exp(-0.5 * z * z);
+				return DoubleOneOfRootOfTwoPi / standardDeviation * Math.Exp(-0.5 * z * z);
 			}
 		}
 
 		public static double Normal(double z, bool cumulative)
 		{
-			if (cumulative) {
-				if (z == 0) {
-					return 0.5;
-				} else if (Double.IsNegativeInfinity(z)) {
-					return 0;
-				} else if (Double.IsPositiveInfinity(z)) {
-					return 1;
-				} else if (z < 0) {
-					return 0.5 - SimpsonForNormal(-1 * z);
-				} else {
-					return 0.5 + SimpsonForNormal(z);
-				}
-			} else {
+			if (!cumulative) {
 				return NonCumulativeNormal(z);
+			} else if (z == 0) {
+				return 0.5;
+			} else if (Double.IsNegativeInfinity(z)) {
+				return 0;
+			} else if (Double.IsPositiveInfinity(z)) {
+				return 1;
+			} else if (z < -1 * kMacLaurinBreakpoint) {
+				return 0.5 - SimpsonForNormal(-1 * z);
+			} else if (z < 0) {
+				return (double)(0.5m - MacLaurinPositiveNormalIntegral(-1 * (decimal)z));
+			} else if (z > kMacLaurinBreakpoint) {
+				return 0.5 + SimpsonForNormal(z);
+			} else {
+				return (double)(0.5m + MacLaurinPositiveNormalIntegral((decimal)z));
 			}
+		}
+
+		public static int Iterations(double z)
+		{
+			var abs = Math.Abs(z);
+			return abs > kMacLaurinBreakpoint ? SimpsonIterations(abs) : kMacLaurinIterations;
 		}
 
 		public static int SimpsonIterations(double z)
@@ -70,7 +81,7 @@ namespace Repzilon.Libraries.Core
 			const double kOneThird = 1.0 / 3;
 			var n = SimpsonIterations(b);
 			var h = b / n;
-			var sum = OneOfRootOfTwoPi + NonCumulativeNormal(b); // OneOfRootOfTwoPi == NonCumulativeNormal(0) && a == 0
+			var sum = DoubleOneOfRootOfTwoPi + NonCumulativeNormal(b); // OneOfRootOfTwoPi == NonCumulativeNormal(0) && a == 0
 			for (int i = 1; i < n; i++) {
 				sum += NonCumulativeNormal(i * h) * ((i % 2 == 1) ? 4 : 2);
 			}
@@ -79,7 +90,23 @@ namespace Repzilon.Libraries.Core
 
 		private static double NonCumulativeNormal(double z)
 		{
-			return OneOfRootOfTwoPi * Math.Exp(-0.5 * z * z);
+			return DoubleOneOfRootOfTwoPi * Math.Exp(-0.5 * z * z);
+		}
+
+		private static decimal MacLaurinPositiveNormalIntegral(decimal x)
+		{
+			var sum = x;
+			for (byte k = 1; k <= kMacLaurinIterations - 1; k++) {
+				var odd = (2 * k) + 1;
+#if DEBUG
+				var t = Math.Pow(-1, k) * Math.Pow((double)x, odd);
+				var b = odd * (1 << k) * ExtraMath.BigFactorial(k);
+				sum += (decimal)t / b;
+#else
+				sum += (decimal)(Math.Pow(-1, k) * Math.Pow((double)x, odd)) / checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
+#endif
+			}
+			return DecimalOneOfRootOfTwoPi * sum;
 		}
 		#endregion
 
