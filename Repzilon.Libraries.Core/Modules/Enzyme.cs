@@ -35,33 +35,32 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			double slope, vmax, km;
 			if ((representation == EnzymeSpeedRepresentation.MichaelisMenten) &&
-				(rm.Model == MathematicalModel.Logarithmic)) {
+			(rm.Model == MathematicalModel.Logarithmic)) {
 				slope = rm.A;
-				vmax  = slope * FourOnLn10;
-				km    = Math.Pow(10, TwoOnLn10 - (rm.B / slope));
-				goto returnKinematic; // FIXME : Replace goto without duplicating EnzymeKinematic ctor call
-			} else if (rm.Model != MathematicalModel.Affine) {
-				throw new NotSupportedException(NonLinearUnsupported);
-			}
-
-			slope = rm.B;
-			var intercept = rm.A;
-			if (representation == EnzymeSpeedRepresentation.EadieHofstee) {
-				vmax = intercept;
-				km   = -1 * slope;
-			} else if (representation == EnzymeSpeedRepresentation.LineweaverBurk) {
-				vmax = 1.0 / intercept;
-				km   = vmax * slope;
-			} else if (representation == EnzymeSpeedRepresentation.MichaelisMenten) {
-				throw new NotSupportedException(LinearMichaelisMenten);
-			} else if (representation == EnzymeSpeedRepresentation.HanesWoolf) {
-				vmax = 1.0 / slope;
-				km   = vmax * intercept;
+				vmax = slope * FourOnLn10;
+				km = Math.Pow(10, TwoOnLn10 - (rm.B / slope));
 			} else {
-				throw RetroCompat.NewUndefinedEnumException("representation", representation);
-			}
+				if (rm.Model != MathematicalModel.Affine) {
+					throw new NotSupportedException(NonLinearUnsupported);
+				}
 
-		returnKinematic:
+				slope = rm.B;
+				var intercept = rm.A;
+				if (representation == EnzymeSpeedRepresentation.EadieHofstee) {
+					vmax = intercept;
+					km = -1 * slope;
+				} else if (representation == EnzymeSpeedRepresentation.LineweaverBurk) {
+					vmax = 1.0 / intercept;
+					km = vmax * slope;
+				} else if (representation == EnzymeSpeedRepresentation.MichaelisMenten) {
+					throw new NotSupportedException(LinearMichaelisMenten);
+				} else if (representation == EnzymeSpeedRepresentation.HanesWoolf) {
+					vmax = 1.0 / slope;
+					km = vmax * intercept;
+				} else {
+					throw RetroCompat.NewUndefinedEnumException("representation", representation);
+				}
+			}
 			return new EnzymeKinematic<double>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);
 		}
 
@@ -71,33 +70,32 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			var rm = RegressionModel.Compute(dataPoints);
 			decimal slope, vmax, km;
 			if ((representation == EnzymeSpeedRepresentation.MichaelisMenten) &&
-				(rm.Model == MathematicalModel.Logarithmic)) {
+			(rm.Model == MathematicalModel.Logarithmic)) {
 				slope = rm.A;
-				vmax  = slope * (decimal)FourOnLn10;
-				km    = (decimal)Math.Pow(10, TwoOnLn10 - (double)(rm.B / slope));
-				goto returnDecimalKinematic; // FIXME : Replace goto without duplicating EnzymeKinematic ctor call
-			} else if (rm.Model != MathematicalModel.Affine) {
-				throw new NotSupportedException(NonLinearUnsupported);
-			}
-
-			slope = rm.B;
-			var intercept = rm.A;
-			if (representation == EnzymeSpeedRepresentation.EadieHofstee) {
-				vmax = intercept;
-				km   = -1 * slope;
-			} else if (representation == EnzymeSpeedRepresentation.LineweaverBurk) {
-				vmax = 1.0m / intercept;
-				km   = vmax * slope;
-			} else if (representation == EnzymeSpeedRepresentation.MichaelisMenten) {
-				throw new NotSupportedException(LinearMichaelisMenten);
-			} else if (representation == EnzymeSpeedRepresentation.HanesWoolf) {
-				vmax = 1.0m / slope;
-				km   = vmax * intercept;
+				vmax = slope * (decimal)FourOnLn10;
+				km = (decimal)Math.Pow(10, TwoOnLn10 - (double)(rm.B / slope));
 			} else {
-				throw RetroCompat.NewUndefinedEnumException("representation", representation);
-			}
+				if (rm.Model != MathematicalModel.Affine) {
+					throw new NotSupportedException(NonLinearUnsupported);
+				}
 
-		returnDecimalKinematic:
+				slope = rm.B;
+				var intercept = rm.A;
+				if (representation == EnzymeSpeedRepresentation.EadieHofstee) {
+					vmax = intercept;
+					km = -1 * slope;
+				} else if (representation == EnzymeSpeedRepresentation.LineweaverBurk) {
+					vmax = 1.0m / intercept;
+					km = vmax * slope;
+				} else if (representation == EnzymeSpeedRepresentation.MichaelisMenten) {
+					throw new NotSupportedException(LinearMichaelisMenten);
+				} else if (representation == EnzymeSpeedRepresentation.HanesWoolf) {
+					vmax = 1.0m / slope;
+					km = vmax * intercept;
+				} else {
+					throw RetroCompat.NewUndefinedEnumException("representation", representation);
+				}
+			}
 			return new EnzymeKinematic<decimal>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);
 		}
 
