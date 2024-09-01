@@ -242,7 +242,9 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static bool ArePerpendicular(PolarVector<T> u, PolarVector<T> v)
 		{
-			return AngleBetween(u, v) == new Angle<T>(MatrixExtensionMethods.ConvertTo<T>(90), AngleUnit.Degree);
+			return AngleBetween(u, v) == RightAngle;
 		}
+
+		private static readonly Angle<T> RightAngle = new Angle<T>(MatrixExtensionMethods.ConvertTo<T>(90), AngleUnit.Degree);
 	}
 }
