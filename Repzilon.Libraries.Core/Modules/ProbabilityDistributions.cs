@@ -13,7 +13,6 @@
 //
 using System;
 using System.Collections.Generic;
-using System.Globalization;
 
 namespace Repzilon.Libraries.Core
 {
@@ -159,16 +158,10 @@ namespace Repzilon.Libraries.Core
 			List<int> numerators = new List<int>(k);
 			List<int> denominators = new List<int>(k);
 
-			var multiplier = 1.0 / Math.Sqrt(k);
-			if (k % 2 == 0) { // k is even
-				AddGammaFactors(numerators, k - 1, 3);
-				AddGammaFactors(denominators, k - 2, 2);
-				multiplier = 0.5 * multiplier;
-			} else { // k is odd
-				AddGammaFactors(numerators, k - 1, 2);
-				AddGammaFactors(denominators, k - 2, 3);
-				multiplier = (1 / Math.PI) * multiplier;
-			}
+			int c = k % 2; // c means "oddity of k" here
+			var multiplier = (1.0 / Math.Sqrt(k)) * (c == 0 ? 0.5 : 1 / Math.PI);
+			AddGammaFactors(numerators, k - 1, 3 - c);
+			AddGammaFactors(denominators, k - 2, 2 + c);
 
 			// Simplify fraction
 			if (k >= 35) {
@@ -190,16 +183,16 @@ namespace Repzilon.Libraries.Core
 			if (k >= 66) {
 				Regroup(numerators);
 				Regroup(denominators);
-				var dc = denominators.Count;
-				if (dc == numerators.Count) {
-					return MultiplyByFractions(numerators, denominators, multiplier, dc);
-				} else if (numerators.Count == dc + 1) {
-					return MultiplyByFractions(numerators, denominators, multiplier, dc) * numerators[dc];
+				c = denominators.Count; // meaning changed for variable c
+				if (c == numerators.Count) {
+					return MultiplyByFractions(numerators, denominators, multiplier, c);
+				} else if (numerators.Count == c + 1) {
+					return MultiplyByFractions(numerators, denominators, multiplier, c) * numerators[c];
 				} else {
-					return MultiplyByFractions(numerators, denominators, multiplier, dc - 1) / denominators[dc - 1];
+					return MultiplyByFractions(numerators, denominators, multiplier, c - 1) / denominators[c - 1];
 				}
 			} else {
-				return (multiplier * Product(numerators)) / Product(denominators);
+				return multiplier * Product(numerators) / Product(denominators);
 			}
 		}
 
@@ -207,7 +200,7 @@ namespace Repzilon.Libraries.Core
 		{
 			SplitDividableBy(by, numerators);
 			SplitDividableBy(by, denominators);
-			RemoveIdenticalFactors(numerators, denominators);
+			RemoveIdenticalFactors(numerators, denominators, 0);
 		}
 
 		private static void SplitDividableBy(byte by, List<int> numbers)
@@ -222,10 +215,10 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		private static void RemoveIdenticalFactors<T>(List<T> numerators, List<T> denominators)
+		private static void RemoveIdenticalFactors<T>(List<T> numerators, List<T> denominators, int startAt)
 		{
 			int c = denominators.Count;
-			int i = typeof(T) == typeof(string) ? 1 : 0;
+			int i = startAt;
 			while (i < c) {
 				int posInNumerator = numerators.IndexOf(denominators[i]);
 				if (posInNumerator >= 0) {
@@ -243,14 +236,18 @@ namespace Repzilon.Libraries.Core
 			ulong n = 1;
 			var c = numbers.Count;
 			for (var i = 0; i < c; i++) {
+#if (DEBUG)
 				checked {
+#endif
 					n *= (uint)numbers[i];
+#if (DEBUG)
 				}
+#endif
 			}
 			return n;
 		}
 
-		private static void AddGammaFactors(List<int> destination, int max, byte min)
+		private static void AddGammaFactors(List<int> destination, int max, int min)
 		{
 			for (int k = max; k >= min; k -= 2) {
 				destination.Add(k);
@@ -260,11 +257,13 @@ namespace Repzilon.Libraries.Core
 		private static void Regroup(List<int> factors)
 		{
 			int i = 0;
-			while (i < factors.Count - 1) {
+			int c = factors.Count - 1;
+			while (i < c) {
 				int v;
 				if (TryMultiply(factors[i], factors[i + 1], out v)) {
 					factors.RemoveAt(i + 1);
 					factors[i] = v;
+					c--;
 				} else {
 					i++;
 				}
@@ -272,24 +271,19 @@ namespace Repzilon.Libraries.Core
 		}
 
 		/// <summary>
-		/// Multiplies two POSITIVE integers and checks for possible overflow
-		/// without checked arithmetic and especially without raising exceptions,
-		/// whaich are a significant performance hog.
+		/// Multiplies two POSITIVE integers and checks for possible overflow without checked arithmetic and
+		/// especially without raising exceptions, which are a significant performance hog.
 		/// </summary>
-		/// <param name="x">Positive integer. When you call multiple times this method, put the accumulated product here.</param>
-		/// <param name="y">Positive integer between 1 and 255. It could have been of type Byte but it hurts perfomance to have it as Byte.</param>
+		/// <param name="x">Positive integer.
+		/// When you repeatly call this method, put the accumulated product here.</param>
+		/// <param name="y">Positive integer between 1 and 255.
+		/// It could have been of type Byte but it hurts perfomance to have it as Byte.</param>
 		/// <param name="v">Outputs an unchecked product which should only be used when this method returns True.</param>
 		/// <returns>False when an overflow is detected</returns>
 		private static bool TryMultiply(int x, int y, out int v)
 		{
 			v = x * y;
-			if ((v < 0) || (x > 8421501)) { // The constant here is Int32.MaxValue / 255
-				return false;
-			} else if ((v > x) && (v > y)) {
-				return true;
-			} else {
-				return false;
-			}
+			return v >= 0 && x <= 8421501 && (v > x) && (v > y); // The constant is Int32.MaxValue / 255
 		}
 
 		private static double MultiplyByFractions(List<int> numerators, List<int> denominators, double multiplier, int commonCount)
