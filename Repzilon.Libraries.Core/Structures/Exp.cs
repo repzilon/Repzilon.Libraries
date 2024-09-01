@@ -18,7 +18,6 @@ using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Implement addition and subtraction operators
 	// TODO : Add method Parse
 	// TODO : Add method TryParse
 	// TODO : Create a new version with a signed 18-bit mantissa (yes 18),
@@ -184,6 +183,28 @@ namespace Repzilon.Libraries.Core
 		public decimal ToDecimal()
 		{
 			return 0.001m * mantissaThousandths * (decimal)ExtraMath.Pow(this.Base, this.Exponent);
+		}
+
+		public static Exp operator +(Exp x, Exp y)
+		{
+			var b = x.Base;
+			var p = x.Exponent;
+			if ((y.Base != b) || (y.Exponent != p)) {
+				throw new ArgumentException("Base and exponent must be identical");
+			} else {
+				return AdjustMantissaExponent(x.Mantissa + y.Mantissa, b, p);
+			}
+		}
+
+		public static Exp operator -(Exp x, Exp y)
+		{
+			var b = x.Base;
+			var p = x.Exponent;
+			if ((y.Base != b) || (y.Exponent != p)) {
+				throw new ArgumentException("Base and exponent must be identical");
+			} else {
+				return AdjustMantissaExponent(x.Mantissa - y.Mantissa, b, p);
+			}
 		}
 
 		public static Exp operator *(Exp x, Exp y)
