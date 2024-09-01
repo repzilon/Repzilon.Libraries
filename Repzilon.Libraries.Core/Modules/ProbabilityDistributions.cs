@@ -128,6 +128,30 @@ namespace Repzilon.Libraries.Core
 			} else {
 #if (DEBUG)
 				var lastPower = Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
+				return FastGammaRatio(liberties) * lastPower;
+#else
+				return FastGammaRatio(liberties) * Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
+#endif
+			}
+		}
+
+		public static double OldStudent(double x, byte liberties, bool cumulative)
+		{
+			if (cumulative) {
+				if (x == 0) {
+					return 0.5;
+				} else if (Double.IsNegativeInfinity(x)) {
+					return 0;
+				} else if (Double.IsPositiveInfinity(x)) {
+					return 1;
+				} else if (x < 0) {
+					return 0.5 - SimpsonForStudent(-1 * x, liberties);
+				} else {
+					return 0.5 + SimpsonForStudent(x, liberties);
+				}
+			} else {
+#if (DEBUG)
+				var lastPower = Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
 				return GammaRatio(liberties) * lastPower;
 #else
 				return GammaRatio(liberties) * Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
@@ -156,6 +180,7 @@ namespace Repzilon.Libraries.Core
 		/// <remarks>
 		/// Doing with the simplification of the fraction allows more degrees of liberty than dividing factorials
 		/// </remarks>
+		[Obsolete("FastGammaRatio is a faster equivalent implementation.")]
 		private static double GammaRatio(byte k)
 		{
 			var ciC = CultureInfo.InvariantCulture;
@@ -266,10 +291,10 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		private static void RemoveIdenticalFactors(List<string> numerators, List<string> denominators)
+		private static void RemoveIdenticalFactors<T>(List<T> numerators, List<T> denominators)
 		{
 			int c = denominators.Count;
-			int i = 1;
+			int i = typeof(T) == typeof(string) ? 1 : 0;
 			while (i < c) {
 				int posInNumerator = numerators.IndexOf(denominators[i]);
 				if (posInNumerator >= 0) {
@@ -388,6 +413,146 @@ namespace Repzilon.Libraries.Core
 			for (int i = n - 1; i >= 2; i--) {
 				destination.Add(i.ToString(invariant));
 			}
+		}
+		#endregion
+
+		#region Faster Student distribution
+		/// <summary>
+		/// Computes the part of the Student dealing with the ratio of Gamma functions
+		/// [1/sqrt(k*pi) * GAMMA(0.5*/(k+1)) / GAMMA(0.5k)] by simplifying the numerators and denominators
+		/// of the developments of gamma for positive integers and halves AND leaving
+		/// irrational numbers outside the developments
+		/// </summary>
+		/// <returns></returns>
+		/// <remarks>https://en.wikipedia.org/wiki/Student%27s_t-distribution#Probability_density_function</remarks>
+		private static double FastGammaRatio(byte k)
+		{
+			List<int> numerators = new List<int>(k);
+			List<int> denominators = new List<int>(k);
+
+			var multiplier = 1.0 / Math.Sqrt(k);
+			if (k % 2 == 0) { // k is even
+				AddGammaFactors(numerators, k - 1, 3);
+				AddGammaFactors(denominators, k - 2, 2);
+				multiplier = 0.5 * multiplier;
+			} else { // k is odd
+				AddGammaFactors(numerators, k - 1, 2);
+				AddGammaFactors(denominators, k - 2, 3);
+				multiplier = (1 / Math.PI) * multiplier;
+			}
+
+			// Simplify fraction
+			if (k >= 35) {
+				RemoveDividableFactors(2, numerators, denominators);
+				RemoveDividableFactors(3, numerators, denominators);
+				RemoveDividableFactors(5, numerators, denominators);
+				RemoveDividableFactors(7, numerators, denominators);
+			}
+			if (k >= 36) {
+				RemoveDividableFactors(3, numerators, denominators);
+			}
+			if (k >= 45) {
+				byte q = (byte)(k / 4);
+				for (byte p = 11; p <= q; p += 2) {
+					RemoveDividableFactors(p, numerators, denominators);
+				}
+			}
+
+			if (k >= 66) {
+				Regroup(numerators);
+				Regroup(denominators);
+				var dc = denominators.Count;
+				if (dc == numerators.Count) {
+					return MultiplyByFractions(numerators, denominators, multiplier, dc);
+				} else if (numerators.Count == dc + 1) {
+					return MultiplyByFractions(numerators, denominators, multiplier, dc) * numerators[dc];
+				} else {
+					return MultiplyByFractions(numerators, denominators, multiplier, dc - 1) / denominators[dc - 1];
+				}
+			} else {
+				return (multiplier * Product(numerators)) / Product(denominators);
+			}
+		}
+
+		private static void AddGammaFactors(List<int> destination, int max, byte min)
+		{
+			for (int k = max; k >= min; k -= 2) {
+				destination.Add(k);
+			}
+		}
+
+		private static ulong Product(List<int> numbers)
+		{
+			ulong n = 1;
+			var c = numbers.Count;
+			for (var i = 0; i < c; i++) {
+				checked {
+					n *= (uint)numbers[i];
+				}
+			}
+			return n;
+		}
+
+		private static void RemoveDividableFactors(byte by, List<int> numerators, List<int> denominators)
+		{
+			SplitDividableBy(by, numerators);
+			SplitDividableBy(by, denominators);
+			RemoveIdenticalFactors(numerators, denominators);
+		}
+
+		private static void SplitDividableBy(byte by, List<int> numbers)
+		{
+			int c = numbers.Count;
+			for (int i = 0; i < c; i++) {
+				var v = numbers[i];
+				if ((v > by) && (v % by == 0)) {
+					numbers[i] = v / by;
+					numbers.Add(by);
+				}
+			}
+		}
+
+		private static void Regroup(List<int> factors)
+		{
+			int i = 0;
+			while (i < factors.Count - 1) {
+				int v;
+				if (TryMultiply(factors[i], factors[i + 1], out v)) {
+					factors.RemoveAt(i + 1);
+					factors[i] = v;
+				} else {
+					i++;
+				}
+			}
+		}
+
+		/// <summary>
+		/// Multiplies two POSITIVE integers and checks for possible overflow
+		/// without checked arithmetic and especially without raising exceptions,
+		/// whaich are a significant performance hog.
+		/// </summary>
+		/// <param name="x">Positive integer. When you call multiple times this method, put the accumulated product here.</param>
+		/// <param name="y">Positive integer between 1 and 255. It could have been of type Byte but it hurts perfomance to have it as Byte.</param>
+		/// <param name="v">Outputs an unchecked product which should only be used when this method returns True.</param>
+		/// <returns>False when an overflow is detected</returns>
+		private static bool TryMultiply(int x, int y, out int v)
+		{
+			v = x * y;
+			if ((v < 0) || (x > 8421501)) { // The constant here is Int32.MaxValue / 255
+				return false;
+			} else if ((v > x) && (v > y)) {
+				return true;
+			} else {
+				return false;
+			}
+		}
+
+		private static double MultiplyByFractions(List<int> numerators, List<int> denominators, double multiplier, int commonCount)
+		{
+			for (int i = 0; i < commonCount; i++) {
+				multiplier *= 1.0 * numerators[i] / denominators[i];
+			}
+			return multiplier;
 		}
 		#endregion
 	}

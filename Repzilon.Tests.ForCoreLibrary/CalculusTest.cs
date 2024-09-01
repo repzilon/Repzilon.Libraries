@@ -32,6 +32,41 @@ namespace Repzilon.Tests.ForCoreLibrary
 			SummationTest(10000, 729, "IIfd", CalculusWork1No2IIfd);
 
 			Console.WriteLine("Distributions de Student");
+#if false
+			for (short k = 1; k <= 255; k++) {
+				try {
+					ProbabilityDistributions.Student(-3, (byte)k, false);
+				} catch (OverflowException exO) {
+#if NETCOREAPP1_0
+					throw new Exception(String.Format("Got an overflow with Student distribution of {0} degrees of liberty,", k), exO);
+#else
+					throw new ApplicationException(String.Format("Got an overflow with Student distribution of {0} degrees of liberty,", k), exO);
+#endif
+				}
+			}
+#endif
+			const int kStudentLoop = (300 - -300 + 1) * (255 - 1 + 1);
+#if true
+			DateTime dtmStart = DateTime.UtcNow;
+			for (var x = -300; x <= 300; x++) {
+				var z = RoundOff.Error(x * 0.01);
+				for (var k = 1; k <= 255; k++) {
+					var t = ProbabilityDistributions.OldStudent(z, (byte)k, false);
+				}
+			}
+			TimeSpan tsOld = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("Implémentation originale de GammaRatio : {0,6:n0} Hz", kStudentLoop / tsOld.TotalSeconds);
+#endif
+			dtmStart = DateTime.UtcNow;
+			for (var x = -300; x <= 300; x++) {
+				var z = RoundOff.Error(x * 0.01);
+				for (var k = 1; k <= 255; k++) {
+					var t = ProbabilityDistributions.Student(z, (byte)k, false);
+				}
+			}
+			TimeSpan tsNew = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("Implémentation accélérée de GammaRatio : {0,6:n0} Hz", kStudentLoop / tsNew.TotalSeconds);
+
 			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
 			int i;
 			Console.Write("x    ");
