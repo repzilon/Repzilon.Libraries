@@ -72,7 +72,7 @@ namespace Repzilon.Libraries.Core
 				var mtc = mccChemicalGroups[i];
 				var ix = mtc.Index;
 #if NET5_0 || NET6_0
-				formula = String.Concat(formula.AsSpan(0, 10), formula.AsSpan(ix + mtc.Length));
+				formula = String.Concat(formula.AsSpan(0, ix), formula.AsSpan(ix + mtc.Length));
 #else
 				formula = formula.Substring(0, ix) + formula.Substring(ix + mtc.Length);
 #endif
