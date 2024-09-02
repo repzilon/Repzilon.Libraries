@@ -163,12 +163,12 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			unchecked {
 				int hashCode = 667060969;
-				hashCode = hashCode * -1521134295 + Vmax.Key.GetHashCode();
-				hashCode = hashCode * -1521134295 + Vmax.Value.GetHashCode();
-				hashCode = hashCode * -1521134295 + Km.Key.GetHashCode();
-				hashCode = hashCode * -1521134295 + Km.Value.GetHashCode();
-				hashCode = hashCode * -1521134295 + Correlation.GetHashCode();
-				hashCode = hashCode * -1521134295 + (int)Representation;
+				hashCode = (hashCode * -1521134295) + Vmax.Key.GetHashCode();
+				hashCode = (hashCode * -1521134295) + Vmax.Value.GetHashCode();
+				hashCode = (hashCode * -1521134295) + Km.Key.GetHashCode();
+				hashCode = (hashCode * -1521134295) + Km.Value.GetHashCode();
+				hashCode = (hashCode * -1521134295) + Correlation.GetHashCode();
+				hashCode = (hashCode * -1521134295) + (int)Representation;
 				return hashCode;
 			}
 		}

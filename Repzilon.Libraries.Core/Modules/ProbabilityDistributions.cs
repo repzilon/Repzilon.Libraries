@@ -19,8 +19,8 @@ namespace Repzilon.Libraries.Core
 	public static class ProbabilityDistributions
 	{
 		#region Normal distribution
-		private const byte kMacLaurinIterations = 22; // 16 for Int64+Double, 22 for Decimal (higher accuracy)
-		private const float kMacLaurinBreakpoint = 2.07f;
+		private const byte MacLaurinIterations = 22; // 16 for Int64+Double, 22 for Decimal (higher accuracy)
+		private const float MacLaurinBreakpoint = 2.07f;
 		private static readonly decimal DecimalOneOfRootOfTwoPi = 1.0m / ExtraMath.Sqrt(2 * ExtraMath.Pi);
 		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 
@@ -50,11 +50,11 @@ namespace Repzilon.Libraries.Core
 				return 0;
 			} else if (Double.IsPositiveInfinity(z)) {
 				return 1;
-			} else if (z < -1 * kMacLaurinBreakpoint) {
+			} else if (z < -1 * MacLaurinBreakpoint) {
 				return 0.5 - SimpsonForNormal(-1 * z);
 			} else if (z < 0) {
 				return (double)(0.5m - MacLaurinPositiveNormalIntegral(-1 * (decimal)z));
-			} else if (z > kMacLaurinBreakpoint) {
+			} else if (z > MacLaurinBreakpoint) {
 				return 0.5 + SimpsonForNormal(z);
 			} else {
 				return (double)(0.5m + MacLaurinPositiveNormalIntegral((decimal)z));
@@ -64,7 +64,7 @@ namespace Repzilon.Libraries.Core
 		public static int Iterations(double z)
 		{
 			var abs = Math.Abs(z);
-			return abs > kMacLaurinBreakpoint ? SimpsonIterations(abs) : kMacLaurinIterations;
+			return abs > MacLaurinBreakpoint ? SimpsonIterations(abs) : MacLaurinIterations;
 		}
 
 		public static int SimpsonIterations(double z)
@@ -95,7 +95,7 @@ namespace Repzilon.Libraries.Core
 		private static decimal MacLaurinPositiveNormalIntegral(decimal x)
 		{
 			var sum = x;
-			for (byte k = 1; k <= kMacLaurinIterations - 1; k++) {
+			for (byte k = 1; k <= MacLaurinIterations - 1; k++) {
 				var odd = (2 * k) + 1;
 #if DEBUG
 				var t = ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd);
@@ -125,7 +125,7 @@ namespace Repzilon.Libraries.Core
 					return 0.5 + SimpsonForStudent(x, liberties);
 				}
 			} else {
-#if (DEBUG)
+#if DEBUG
 				var lastPower = Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
 				return FastGammaRatio(liberties) * lastPower;
 #else
@@ -159,7 +159,7 @@ namespace Repzilon.Libraries.Core
 			List<int> denominators = new List<int>(k);
 
 			int c = k % 2; // c means "oddity of k" here
-			var multiplier = (1.0 / Math.Sqrt(k)) * (c == 0 ? 0.5 : 1 / Math.PI);
+			var multiplier = 1.0 / Math.Sqrt(k) * (c == 0 ? 0.5 : 1 / Math.PI);
 			AddGammaFactors(numerators, k - 1, 3 - c);
 			AddGammaFactors(denominators, k - 2, 2 + c);
 
@@ -236,11 +236,11 @@ namespace Repzilon.Libraries.Core
 			ulong n = 1;
 			var c = numbers.Count;
 			for (var i = 0; i < c; i++) {
-#if (DEBUG)
+#if DEBUG
 				checked {
 #endif
 					n *= (uint)numbers[i];
-#if (DEBUG)
+#if DEBUG
 				}
 #endif
 			}

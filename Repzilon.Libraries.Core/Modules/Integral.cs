@@ -21,7 +21,7 @@ namespace Repzilon.Libraries.Core
 	public static class Integral
 	{
 #if !NET20
-		[Obsolete]
+		[Obsolete("The non-generic overloads are faster.")]
 		public static T Summation<T>(int m, int n, Func<int, T> forEach)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
@@ -41,7 +41,7 @@ namespace Repzilon.Libraries.Core
 			return sum;
 		}
 
-		[Obsolete]
+		[Obsolete("The non-generic overloads are faster.")]
 		public static T DifferenceOfPrimitives<T>(T a, T b, Func<T, T> expression)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
@@ -117,6 +117,21 @@ namespace Repzilon.Libraries.Core
 			return sum;
 		}
 
+		/// <summary>
+		/// Performs a right-rule Riemann sum.
+		/// </summary>
+		/// <param name="a">Lower intergration bound</param>
+		/// <param name="b">Upper intergration bound</param>
+		/// <param name="n">Number of partitions</param>
+		/// <param name="expression">The function to integrate</param>
+		/// <returns>A rough approximation of the definite integral of the function</returns>
+		/// <exception cref="ArgumentNullException">When no function is passed</exception>
+		/// <remarks>
+		/// Though part of the fundamental theorem of calculus, a Riemann sum is so inaccurate
+		/// you need a very large number of partitions (in the millions), which makes it slow
+		/// event for multi gigahertz CPUs. The worst of both world. Simply avoid it.
+		/// </remarks>
+		[Obsolete("Slow and inaccurate. Swap your method call with Simpson.")]
 #if NETFRAMEWORK
 		public static double Riemann(double a, double b, int n, Converter<double, double> expression)
 #else
@@ -127,13 +142,14 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("expression");
 			}
 			double sum = 0;
-			var deltaXk = b / n;
+			var deltaXk = (b - a) / n;
 			for (var k = 1; k <= n; k++) {
-				sum += expression(a + k * deltaXk) * deltaXk;
+				sum += expression(a + (k * deltaXk)) * deltaXk;
 			}
 			return sum;
 		}
 
+		[Obsolete("Slow and inaccurate. Swap your method call with Simpson.")]
 #if NETFRAMEWORK
 		public static decimal Riemann(decimal a, decimal b, int n, Converter<decimal, decimal> expression)
 #else
@@ -144,9 +160,9 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("expression");
 			}
 			decimal sum = 0;
-			var deltaXk = b / n;
+			var deltaXk = (b - a) / n;
 			for (var k = 1; k <= n; k++) {
-				sum += expression(a + k * deltaXk) * deltaXk;
+				sum += expression(a + (k * deltaXk)) * deltaXk;
 			}
 			return sum;
 		}
@@ -210,7 +226,7 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("expression");
 			}
 			const double kOneThird = 1.0 / 3;
-			return (b - a) * 0.125 * (expression(a) + (3 * expression(kOneThird * (2 * a + b))) + (3 * expression(kOneThird * (a + 2 * b))) + expression(b));
+			return (b - a) * 0.125 * (expression(a) + (3 * expression(kOneThird * ((2 * a) + b))) + (3 * expression(kOneThird * (a + (2 * b)))) + expression(b));
 		}
 
 #if NETFRAMEWORK

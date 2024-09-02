@@ -281,7 +281,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 						return (float)(1.0 / (1 + Math.Pow(10, pH - this.pKa1)));
 					} else {
 						var dblAlkaliRatio = Math.Pow(10, pH - this.pKa2);
-						return (float)((-1 * dblAlkaliRatio) / (1 + dblAlkaliRatio));
+						return (float)(-1 * dblAlkaliRatio / (1 + dblAlkaliRatio));
 					}
 				} else {
 					return -1 + ProtonationRatio(pH, this.pKa1) +
@@ -289,7 +289,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 				}
 			} else { // with lateral chain
 				dicat = this.DicationWhenVeryAcid;
-				var a2Ltar = (this.pKa2 < ar);
+				var a2Ltar = this.pKa2 < ar;
 				if (RoundOff.Equals(pH, pkI)) {
 					return 0;
 				} else if (RoundOff.Equals(pH, this.pKa1)) {
@@ -298,37 +298,20 @@ namespace Repzilon.Libraries.Core.Biochemistry
 					return ChargeOfLateral(false, a2Ltar, dicat);
 				} else if (RoundOff.Equals(pH, ar)) {
 					return ChargeOfLateral(true, a2Ltar, dicat);
+				} else if (RoundOff.Equals(pH, (dicat ? a2Ltar ? this.pKa1 + this.pKa2 : this.pKa1 + ar : this.pKa2 + ar) * 0.5f)) {
+					return dicat ? 1 : -1;
+				} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f) || (Math.Abs(pH - this.pKaR) <= 1.0f)) {
+					am = Math.Min(this.pKa2, ar);
+					var ah = Math.Max(this.pKa2, ar);
+					if (2 * pH < this.pKa1 + am) { // pH < 0.5f * (this.pKa1 + am)
+						return ChargeOfLateral(pH, this.pKa1, dicat, 2);
+					} else if (2 * pH < am + ah) {
+						return ChargeOfLateral(pH, am, dicat, 1);
+					} else {
+						return ChargeOfLateral(pH, ah, dicat, 0);
+					}
 				} else {
-					float pJ;
-					if (dicat) {
-						pJ = a2Ltar ? this.pKa1 + this.pKa2 : this.pKa1 + ar;
-					} else {
-						pJ = this.pKa2 + ar;
-					}
-					if (RoundOff.Equals(pH, pJ * 0.5f)) {
-						return dicat ? 1 : -1;
-					} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f) ||
-							   (Math.Abs(pH - this.pKaR) <= 1.0f)) {
-						am = Math.Min(this.pKa2, ar);
-						var ah = Math.Max(this.pKa2, ar);
-						if (2 * pH < this.pKa1 + am) { // pH < 0.5f * (this.pKa1 + am)
-							return ChargeOfLateral(pH, this.pKa1, dicat, 2);
-						} else if (2 * pH < am + ah) {
-							return ChargeOfLateral(pH, am, dicat, 1);
-						} else {
-							return ChargeOfLateral(pH, ah, dicat, 0);
-						}
-					} else {
-						if (dicat) {
-							return -1 + ProtonationRatio(pH, this.pKa1) +
-							 ProtonationRatio(pH, this.pKa2) +
-							 ProtonationRatio(pH, ar);
-						} else {
-							return -2 + ProtonationRatio(pH, this.pKa1) +
-							 ProtonationRatio(pH, this.pKa2) +
-							 ProtonationRatio(pH, ar);
-						}
-					}
+					return (dicat ? -1 : -2) + ProtonationRatio(pH, this.pKa1) + ProtonationRatio(pH, this.pKa2) + ProtonationRatio(pH, ar);
 				}
 			}
 		}
@@ -353,7 +336,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 
 		private static float ChargeOfLateral(bool pHEqualsPkar, bool pKa2LessThanPkar, bool dicat)
 		{
-			var blnEquals = (pHEqualsPkar == pKa2LessThanPkar);
+			var blnEquals = pHEqualsPkar == pKa2LessThanPkar;
 			return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
 		}
 

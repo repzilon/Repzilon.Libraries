@@ -214,7 +214,11 @@ namespace Repzilon.Libraries.Core
 			var strTrimmed  = value.Trim().TrimStart('0');
 			var nf          = culture.NumberFormat;
 			var strDecSep   = nf.NumberDecimalSeparator;
+#if NETFRAMEWORK || NETSTANDARD
 			if (strTrimmed.IndexOf(strDecSep, Equals(culture, CultureInfo.InvariantCulture) ? StringComparison.Ordinal : StringComparison.CurrentCulture) != -1) {
+#else
+			if (strTrimmed.Contains(strDecSep, Equals(culture, CultureInfo.InvariantCulture) ? StringComparison.Ordinal : StringComparison.CurrentCulture)) {
+#endif
 				var intExponent = strTrimmed.IndexOfAny("eE".ToCharArray());
 				if (intExponent != -1) {
 					strTrimmed = strTrimmed.Substring(0, intExponent);

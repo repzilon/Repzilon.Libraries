@@ -50,7 +50,7 @@ namespace Repzilon.Libraries.Core
 				const float ySquared = 0.0256f; // 16 centimeters is standardized distance
 				var halfD1 = x.Aperture() * 0.5f;
 				var halfD2 = y.Aperture() * 0.5f;
-				var ratio = (halfD1 * Math.Sqrt(ySquared + (halfD2 * halfD2))) /
+				var ratio = halfD1 * Math.Sqrt(ySquared + (halfD2 * halfD2)) /
 				 (halfD2 * Math.Sqrt(ySquared + (halfD1 * halfD1)));
 				return Math.Sign(Math.Log10(ratio));
 			}

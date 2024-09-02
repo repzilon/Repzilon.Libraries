@@ -52,8 +52,8 @@ namespace Repzilon.Libraries.Core.Regression
 			if (n < 1) {
 				throw new ArgumentNullException("points");
 			}
-			dblAverageX = dblAverageX / n;
-			dblAverageY = dblAverageY / n;
+			dblAverageX /= n;
+			dblAverageY /= n;
 			double dblStdDevX = 0;
 			double dblStdDevY = 0;
 			foreach (var pt in points) {
@@ -102,8 +102,8 @@ namespace Repzilon.Libraries.Core.Regression
 			if (n < 1) {
 				throw new ArgumentNullException("points");
 			}
-			dcmAverageX = dcmAverageX / n;
-			dcmAverageY = dcmAverageY / n;
+			dcmAverageX /= n;
+			dcmAverageY /= n;
 			decimal dcmStdDevX = 0;
 			decimal dblStdDevY = 0;
 			foreach (var pt in points) {

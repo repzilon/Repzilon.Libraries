@@ -169,7 +169,7 @@ namespace Repzilon.Libraries.Core.Regression
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
 #pragma warning disable CC0019 // Use 'switch'
 			if (enuModel == MathematicalModel.Affine) {
-				stbFormula.Append(strA).Append(" + ").Append(strB).Append("x");
+				stbFormula.Append(strA).Append(" + ").Append(strB).Append('x');
 			} else if (enuModel == MathematicalModel.Power) {
 				stbFormula.Append(strA).Append(" * x^").Append(strB);
 			} else if (enuModel == MathematicalModel.Exponential) {
@@ -177,7 +177,7 @@ namespace Repzilon.Libraries.Core.Regression
 				stbFormula.Append(strA);
 				if (blnDerivable) {
 					strB = Math.Log(Convert.ToDouble(B)).ToString(format, formatProvider);
-					stbFormula.Append(" * e^").Append(strB).Append("x");
+					stbFormula.Append(" * e^").Append(strB).Append('x');
 				} else {
 					stbFormula.Append(" * ").Append(strB).Append("^x");
 				}

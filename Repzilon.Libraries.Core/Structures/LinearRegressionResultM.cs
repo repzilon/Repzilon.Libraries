@@ -114,7 +114,7 @@ namespace Repzilon.Libraries.Core.Regression
 			}
 			var stbFormula = new StringBuilder();
 			stbFormula.Append("y = ").Append(this.Intercept.ToString(format, formatProvider)).Append(" + ")
-			 .Append(this.Slope.ToString(format, formatProvider)).Append("x");
+			 .Append(this.Slope.ToString(format, formatProvider)).Append('x');
 			return stbFormula.ToString();
 		}
 		#endregion

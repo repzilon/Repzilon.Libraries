@@ -113,12 +113,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write(Environment.NewLine);
 			var i = 1;
 			foreach (var kvp in allTests) {
-#if (NETCOREAPP1_0)
+#if NETCOREAPP1_0
 				if (i < 10) {
 #endif
 				Console.WriteLine(@"    ({0:X}) {1}", i, kvp.Key);
 				i++;
-#if (NETCOREAPP1_0)
+#if NETCOREAPP1_0
 				}
 #endif
 			}

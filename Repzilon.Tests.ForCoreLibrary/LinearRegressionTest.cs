@@ -257,12 +257,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static decimal EstimateFactorial(byte i, RegressionModel<decimal> rmA, RegressionModel<decimal> rmB)
 		{
-			return (rmA.A * Pow(rmA.B, i)) * Pow(rmB.A + (rmB.B * i), i);
+			return rmA.A * Pow(rmA.B, i) * Pow(rmB.A + (rmB.B * i), i);
 		}
 
 		private static decimal EstimateFactorial(byte i, RegressionModel<decimal> rmA, RegressionModel<decimal> rmB, RegressionModel<decimal> rmC)
 		{
-			return (rmA.A * Pow(rmA.B, i)) * Pow(rmB.A + (rmB.B * i), i) * (rmC.A * Pow(rmC.B, i));
+			return rmA.A * Pow(rmA.B, i) * Pow(rmB.A + (rmB.B * i), i) * rmC.A * Pow(rmC.B, i);
 		}
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp, TStorage studentLawValue,

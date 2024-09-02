@@ -149,7 +149,11 @@ namespace Repzilon.Libraries.Core
 				var spaces = new String(' ', allDigits - numberDigits);
 				if (numberIsNegative) {
 					var minus = nfi.NegativeSign;
+#if NET5_0 || NET6_0
+					return String.Concat(minus, spaces, numberText.AsSpan(minus.Length));
+#else
 					return minus + spaces + numberText.Substring(minus.Length);
+#endif
 				} else {
 					return spaces + numberText;
 				}

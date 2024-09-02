@@ -164,10 +164,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var d = intarIterations[i] - average;
 				stddev += d * d;
 			}
-			stddev /= (c - 1);
+			stddev /= c - 1;
 			stddev = Math.Sqrt(stddev);
 			const float kT99Percent4Degrees = 4.60409f;
-			var ideal = average + kT99Percent4Degrees * stddev;
+			var ideal = average + (kT99Percent4Degrees * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
 			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99Percent4Degrees, ideal);
 			return Convert.ToInt32(ideal);
@@ -221,10 +221,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var d = intarIterations[i] - average;
 				stddev += d * d;
 			}
-			stddev /= (c - 1);
+			stddev /= c - 1;
 			stddev = ExtraMath.Sqrt(stddev);
 			const decimal kT99Percent4Degrees = 4.60409m;
-			var ideal = average + kT99Percent4Degrees * stddev;
+			var ideal = average + (kT99Percent4Degrees * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
 			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c, kT99Percent4Degrees, ideal);
 
@@ -279,8 +279,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static bool MoreExact(double value, double expected, double target)
 		{
-			var delta = Math.Abs(value - expected);
-			return (delta < target);
+			return Math.Abs(value - expected) < target;
 		}
 
 		private static void OutputNormalIntegral(double z, double expected, double integral, string algorithm, int n, int o)
@@ -300,8 +299,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static bool MoreExact(decimal value, decimal expected, decimal target)
 		{
-			var delta = Math.Abs(value - expected);
-			return (delta < target);
+			return Math.Abs(value - expected) < target;
 		}
 
 		private static void OutputNormalIntegral(decimal z, decimal expected, decimal integral, string algorithm, int n, int o)
@@ -350,14 +348,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("x={0} k={1} {2}/{3}={4}", x, k, t, d, r);
 			return r;
 #else
-			return (ExtraMath.Minus1Pow(k) * Math.Pow(x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k));
+			return ExtraMath.Minus1Pow(k) * Math.Pow(x, odd) / (odd * (1 << k) * ExtraMath.Factorial((byte)k));
 #endif
 		}
 
 		private static decimal ExponentialSuite(decimal x, int k)
 		{
 			var odd = (2 * k) + 1;
-			return (decimal)((ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd)) / (odd * (1 << k) * ExtraMath.Factorial((byte)k)));
+			return (decimal)(ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd) / (odd * (1 << k) * ExtraMath.Factorial((byte)k)));
 		}
 
 		private static double MacLaurinPositiveNormalIntegral(double x, byte n)
@@ -370,7 +368,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var b = odd * (1 << k) * ExtraMath.Factorial(k);
 				sum += t / b;
 #else
-				sum += (ExtraMath.Minus1Pow(k) * Math.Pow(x, odd)) / checked(odd * (1 << k) * ExtraMath.Factorial(k));
+				sum += ExtraMath.Minus1Pow(k) * Math.Pow(x, odd) / checked(odd * (1 << k) * ExtraMath.Factorial(k));
 #endif
 			}
 			return DoubleOneOfRootOfTwoPi * sum;

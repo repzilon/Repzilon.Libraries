@@ -69,8 +69,8 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = 1696355206 * -1521134295 + FocalLengthInMeters.GetHashCode();
-				return hashCode * -1521134295 + FocalNumber.GetHashCode();
+				int hashCode = (1696355206 * -1521134295) + FocalLengthInMeters.GetHashCode();
+				return (hashCode * -1521134295) + FocalNumber.GetHashCode();
 			}
 		}
 

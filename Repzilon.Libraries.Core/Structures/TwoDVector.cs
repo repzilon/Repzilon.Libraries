@@ -178,7 +178,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			var tc = ((IConvertible)this.X).GetTypeCode();
 			// Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
 			return new PolarVector<TOut>(MatrixExtensionMethods.ConvertTo<TOut>(this.Norm()),
-#if (NET20)
+#if NET20
 			 Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree));
 #else
@@ -359,7 +359,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var bu = MatrixExtensionMethods.ConvertTo<decimal>(u.Y) / MatrixExtensionMethods.ConvertTo<decimal>(u.X);
 			var bv = MatrixExtensionMethods.ConvertTo<decimal>(v.Y) / MatrixExtensionMethods.ConvertTo<decimal>(v.X);
-			return (bu == bv); // identical slope
+			return bu == bv; // identical slope
 		}
 
 #if !NET20

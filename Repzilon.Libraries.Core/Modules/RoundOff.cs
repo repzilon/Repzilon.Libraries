@@ -33,7 +33,11 @@ namespace Repzilon.Libraries.Core
 			var x = Math.Round(value, 25, MidpointRounding.ToEven);
 			var ciC = CultureInfo.InvariantCulture;
 			var s = x.ToString(ciC);
+#if NETFRAMEWORK || NETSTANDARD
 			return s.Contains(".") ? Decimal.Parse(s.TrimEnd('0'), ciC) : x;
+#else
+			return s.Contains('.') ? Decimal.Parse(s.TrimEnd('0'), ciC) : x;
+#endif
 		}
 
 		public static bool Equals(float value, int k)
