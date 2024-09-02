@@ -265,36 +265,29 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			if ((pH < 1) || (pH > 14)) {
 				throw new ArgumentOutOfRangeException("pH");
 			}
-			bool dicat;
+			bool dicat = this.DicationWhenVeryAcid;
 			var ar = this.pKaR;
 			var pkI = this.Isoelectric();
 			float am;
-			if (Single.IsNaN(ar)) { // without lateral chain
-				if (RoundOff.Equals(pH, pkI)) {
-					return 0;
-				} else if (RoundOff.Equals(pH, this.pKa1)) {
-					return 0.5f;
-				} else if (RoundOff.Equals(pH, this.pKa2)) {
+			if (RoundOff.Equals(pH, pkI)) {
+				return 0;
+			} else if (RoundOff.Equals(pH, this.pKa1)) {
+				return dicat ? 1.5f : 0.5f;
+			} else if (Single.IsNaN(ar)) { // without lateral chain
+				if (RoundOff.Equals(pH, this.pKa2)) {
 					return -0.5f;
 				} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f)) {
 					if (pH < pkI) {
-						return (float)(1.0 / (1 + Math.Pow(10, pH - this.pKa1)));
+						return ProtonationRatio(pH, this.pKa1);
 					} else {
-						var dblAlkaliRatio = Math.Pow(10, pH - this.pKa2);
-						return (float)(-1 * dblAlkaliRatio / (1 + dblAlkaliRatio));
+						return ChargeOfLateral(pH, this.pKa2, false, 0 + 1);
 					}
 				} else {
-					return -1 + ProtonationRatio(pH, this.pKa1) +
-					 ProtonationRatio(pH, this.pKa2);
+					return -1 + ProtonationRatio(pH, this.pKa1) + ProtonationRatio(pH, this.pKa2);
 				}
 			} else { // with lateral chain
-				dicat = this.DicationWhenVeryAcid;
 				var a2Ltar = this.pKa2 < ar;
-				if (RoundOff.Equals(pH, pkI)) {
-					return 0;
-				} else if (RoundOff.Equals(pH, this.pKa1)) {
-					return dicat ? 1.5f : 0.5f;
-				} else if (RoundOff.Equals(pH, this.pKa2)) {
+				if (RoundOff.Equals(pH, this.pKa2)) {
 					return ChargeOfLateral(false, a2Ltar, dicat);
 				} else if (RoundOff.Equals(pH, ar)) {
 					return ChargeOfLateral(true, a2Ltar, dicat);
@@ -311,7 +304,8 @@ namespace Repzilon.Libraries.Core.Biochemistry
 						return ChargeOfLateral(pH, ah, dicat, 0);
 					}
 				} else {
-					return (dicat ? -1 : -2) + ProtonationRatio(pH, this.pKa1) + ProtonationRatio(pH, this.pKa2) + ProtonationRatio(pH, ar);
+					return (dicat ? -1 : -2) + ProtonationRatio(pH, this.pKa1) + ProtonationRatio(pH, this.pKa2) +
+					 ProtonationRatio(pH, ar);
 				}
 			}
 		}
@@ -325,11 +319,6 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private static float ChargeOfLateral(float pH, float pKa, bool dicat, short mostAcidicCharge)
 		{
 			var dblAlkaliRatio = Math.Pow(10, pH - pKa);
-			/*
-			short shrMid = (short)(mostAcidicCharge - 1);
-			short shrBase = (short)(mostAcidicCharge - 2);
-			return (float)((((dicat ? mostAcidicCharge : shrMid) * 1.0) + ((dicat ? shrMid : shrBase) * dblAlkaliRatio)) / (1 + dblAlkaliRatio));
-			// */
 			var c = dicat ? mostAcidicCharge : mostAcidicCharge - 1;
 			return (float)(c - (dblAlkaliRatio / (dblAlkaliRatio + 1)));
 		}
@@ -340,8 +329,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
 		}
 
-		public static float Isoelectric(float pKa1, float pKa2,
-		byte cationCountAtPh1AndHalf, float pKaR)
+		public static float Isoelectric(float pKa1, float pKa2, byte cationCountAtPh1AndHalf, float pKaR)
 		{
 			if (cationCountAtPh1AndHalf > 2) {
 				throw new ArgumentOutOfRangeException("cationCountAtPh1AndHalf", cationCountAtPh1AndHalf,
