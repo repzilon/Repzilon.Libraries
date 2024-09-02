@@ -127,9 +127,9 @@ namespace Repzilon.Libraries.Core
 			} else {
 #if DEBUG
 				var lastPower = Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
-				return FastGammaRatio(liberties) * lastPower;
+				return CachedGammaRatio(liberties) * lastPower;
 #else
-				return FastGammaRatio(liberties) * Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
+				return CachedGammaRatio(liberties) * Math.Pow(1 + (x * x / liberties), -0.5 * (liberties + 1));
 #endif
 			}
 		}
@@ -144,6 +144,24 @@ namespace Repzilon.Libraries.Core
 				sum += Student(i * h, k, false) * ((i % 2 == 1) ? 4 : 2);
 			}
 			return kOneThird * h * sum;
+		}
+
+		/// <summary>
+		/// Even with a six times faster algorithm, the gamma ratio is still the slowest part of
+		/// the Student probability distribution function. Cache the output. It will be very useful
+		/// for the computation of its integral with the Simpson rule, which will call the function
+		/// thousands of times for a single numeric integration. This array only takes 2 kibibytes.
+		/// </summary>
+		private static readonly double[] StudentGammaRatioCache = new double[255];
+
+		private static double CachedGammaRatio(byte k)
+		{
+			var ratio = StudentGammaRatioCache[k - 1];
+			if (ratio == 0) {
+				ratio = FastGammaRatio(k);
+				StudentGammaRatioCache[k - 1] = ratio;
+			}
+			return ratio;
 		}
 
 		/// <summary>
