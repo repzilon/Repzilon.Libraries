@@ -85,7 +85,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			var a = this.Angle;
-			return new PolarVector<TOut>(MatrixExtensionMethods.ConvertTo<TOut>(this.Norm), MatrixExtensionMethods.ConvertTo<TOut>(a.Value), a.Unit);
+			return new PolarVector<TOut>(ExtraMath.ConvertTo<TOut>(this.Norm), ExtraMath.ConvertTo<TOut>(a.Value), a.Unit);
 		}
 
 		public TwoDVector<T> ToCartesian()
@@ -245,6 +245,6 @@ namespace Repzilon.Libraries.Core.Vectors
 			return AngleBetween(u, v) == RightAngle;
 		}
 
-		private static readonly Angle<T> RightAngle = new Angle<T>(MatrixExtensionMethods.ConvertTo<T>(90), AngleUnit.Degree);
+		private static readonly Angle<T> RightAngle = new Angle<T>(ExtraMath.ConvertTo<T>(90), AngleUnit.Degree);
 	}
 }

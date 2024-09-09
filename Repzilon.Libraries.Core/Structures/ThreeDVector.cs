@@ -87,9 +87,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			return new ThreeDVector<TOut>(
-			 MatrixExtensionMethods.ConvertTo<TOut>(X),
-			 MatrixExtensionMethods.ConvertTo<TOut>(Y),
-			 MatrixExtensionMethods.ConvertTo<TOut>(Z));
+			 ExtraMath.ConvertTo<TOut>(X),
+			 ExtraMath.ConvertTo<TOut>(Y),
+			 ExtraMath.ConvertTo<TOut>(Z));
 		}
 
 		ICartesianVector<TOut> ICartesianVector<T>.Cast<TOut>()
@@ -106,9 +106,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var f = 1.0 / this.Norm();
 			return new ThreeDVector<T>(
-			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(X)),
-			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Y)),
-			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Z)));
+			 ExtraMath.ConvertTo<T>(f * Convert.ToDouble(X)),
+			 ExtraMath.ConvertTo<T>(f * Convert.ToDouble(Y)),
+			 ExtraMath.ConvertTo<T>(f * Convert.ToDouble(Z)));
 		}
 		#endregion
 

@@ -69,8 +69,8 @@ namespace Repzilon.Libraries.Core
 		public ErrorMargin<TOut> Cast<TOut>()
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable
 		{
-			return new ErrorMargin<TOut>(MatrixExtensionMethods.ConvertTo<TOut>(this.Middle),
-			 MatrixExtensionMethods.ConvertTo<TOut>(this.Margin));
+			return new ErrorMargin<TOut>(ExtraMath.ConvertTo<TOut>(this.Middle),
+			 ExtraMath.ConvertTo<TOut>(this.Margin));
 		}
 
 #if !NET20

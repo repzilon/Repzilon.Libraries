@@ -77,7 +77,7 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Identity(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			var one = MatrixExtensionMethods.ConvertTo<T>(1);
+			var one = ExtraMath.ConvertTo<T>(1);
 			for (byte i = 0; i < size; i++) {
 				m[i, i] = one;
 			}
@@ -87,8 +87,8 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> Signature(byte size)
 		{
 			var m = new Matrix<T>(size, size);
-			var plusOne = MatrixExtensionMethods.ConvertTo<T>(1);
-			var minusOne = MatrixExtensionMethods.ConvertTo<T>(-1);
+			var plusOne = ExtraMath.ConvertTo<T>(1);
+			var minusOne = ExtraMath.ConvertTo<T>(-1);
 			for (byte i = 0; i < size; i++) {
 				for (byte j = 0; j < size; j++) {
 					m[i, j] = (i + j) % 2 == 0 ? plusOne : minusOne;
@@ -158,7 +158,7 @@ namespace Repzilon.Libraries.Core
 			var other = new Matrix<TOut>(source.Lines, sc, source.m_bytAugmentedColumn);
 			for (byte i = 0; i < source.Lines; i++) {
 				for (byte j = 0; j < sc; j++) {
-					other[i, j] = MatrixExtensionMethods.ConvertTo<TOut>(source[i, j]);
+					other[i, j] = ExtraMath.ConvertTo<TOut>(source[i, j]);
 				}
 			}
 			return other;
@@ -924,17 +924,6 @@ namespace Repzilon.Libraries.Core
 					matrix[i, j] = RoundOff.Error(matrix[i, j]);
 				}
 			}
-		}
-
-#if NET20
-		public static TOut ConvertTo<TOut>(ValueType value)
-		where TOut : struct
-#else
-		public static TOut ConvertTo<TOut>(this ValueType value)
-		where TOut : struct
-#endif
-		{
-			return (TOut)Convert.ChangeType(value, typeof(TOut));
 		}
 
 		internal static bool Equals<T>(Nullable<T> a, Nullable<T> b) where T : struct

@@ -70,7 +70,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			var vav = Convert.ToDouble(va.Value);
 			var zt = default(T);
 			var n = Convert.ToDouble(nt);
-			var mnt = MatrixExtensionMethods.ConvertTo<T>(-1 * n);
+			var mnt = ExtraMath.ConvertTo<T>(-1 * n);
 			if (vav == 0) {
 				return new KeyValuePair<T, T>(nt, zt);
 			} else if (RoundOff.Equals(vav, quarterTurn)) {
@@ -92,8 +92,8 @@ namespace Repzilon.Libraries.Core.Vectors
 			var theta = va.ConvertTo<double>(AngleUnit.Radian, true).Value;
 #endif
 			return new KeyValuePair<T, T>(
-			 MatrixExtensionMethods.ConvertTo<T>(n * Math.Cos(theta)),
-			 MatrixExtensionMethods.ConvertTo<T>(n * Math.Sin(theta)));
+			 ExtraMath.ConvertTo<T>(n * Math.Cos(theta)),
+			 ExtraMath.ConvertTo<T>(n * Math.Sin(theta)));
 		}
 
 		#region ICloneable members
@@ -128,8 +128,8 @@ namespace Repzilon.Libraries.Core.Vectors
 		where TOut : struct, IFormattable, IEquatable<TOut>, IComparable<TOut>, IComparable
 		{
 			return new TwoDVector<TOut>(
-				MatrixExtensionMethods.ConvertTo<TOut>(X),
-				MatrixExtensionMethods.ConvertTo<TOut>(Y));
+				ExtraMath.ConvertTo<TOut>(X),
+				ExtraMath.ConvertTo<TOut>(Y));
 		}
 
 		ICartesianVector<TOut> ICartesianVector<T>.Cast<TOut>()
@@ -146,8 +146,8 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			var f = 1.0 / this.Norm();
 			return new TwoDVector<T>(
-			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(X)),
-			 MatrixExtensionMethods.ConvertTo<T>(f * Convert.ToDouble(Y)));
+			 ExtraMath.ConvertTo<T>(f * Convert.ToDouble(X)),
+			 ExtraMath.ConvertTo<T>(f * Convert.ToDouble(Y)));
 		}
 		#endregion
 
@@ -177,7 +177,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			// casting to IConvertible reduces IL size
 			var tc = ((IConvertible)this.X).GetTypeCode();
 			// Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
-			return new PolarVector<TOut>(MatrixExtensionMethods.ConvertTo<TOut>(this.Norm()),
+			return new PolarVector<TOut>(ExtraMath.ConvertTo<TOut>(this.Norm()),
 #if NET20
 			 Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree));
@@ -231,8 +231,8 @@ namespace Repzilon.Libraries.Core.Vectors
 				if (RoundOff.Equals(n, Convert.ToDouble(other.Norm))) {
 					var oa = other.Angle;
 					return Equals(new TwoDVector<T>(
-					 MatrixExtensionMethods.ConvertTo<T>(n * oa.Cos()),
-					 MatrixExtensionMethods.ConvertTo<T>(n * oa.Sin())));
+					 ExtraMath.ConvertTo<T>(n * oa.Cos()),
+					 ExtraMath.ConvertTo<T>(n * oa.Sin())));
 				}
 			}
 			return false;
@@ -357,8 +357,8 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static bool AreParallel(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var bu = MatrixExtensionMethods.ConvertTo<decimal>(u.Y) / MatrixExtensionMethods.ConvertTo<decimal>(u.X);
-			var bv = MatrixExtensionMethods.ConvertTo<decimal>(v.Y) / MatrixExtensionMethods.ConvertTo<decimal>(v.X);
+			var bu = ExtraMath.ConvertTo<decimal>(u.Y) / ExtraMath.ConvertTo<decimal>(u.X);
+			var bv = ExtraMath.ConvertTo<decimal>(v.Y) / ExtraMath.ConvertTo<decimal>(v.X);
 			return bu == bv; // identical slope
 		}
 

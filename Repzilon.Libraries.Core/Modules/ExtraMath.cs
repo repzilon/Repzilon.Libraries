@@ -184,5 +184,14 @@ namespace Repzilon.Libraries.Core
 		{
 			return (k % 2 != 0) ? -1 : 1;
 		}
+
+#if NET20
+		public static TOut ConvertTo<TOut>(ValueType value) where TOut : struct
+#else
+		public static TOut ConvertTo<TOut>(this ValueType value) where TOut : struct
+#endif
+		{
+			return (TOut)Convert.ChangeType(value, typeof(TOut));
+		}
 	}
 }

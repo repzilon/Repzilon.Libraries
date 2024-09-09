@@ -57,7 +57,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, AngleUnit unit)
 		where TFrom : struct
 		{
-			return new Angle<T>(MatrixExtensionMethods.ConvertTo<T>(valueInOtherDataType), unit);
+			return new Angle<T>(ExtraMath.ConvertTo<T>(valueInOtherDataType), unit);
 		}
 
 		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, double conversionFactor,
