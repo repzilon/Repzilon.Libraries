@@ -126,7 +126,7 @@ namespace Repzilon.Libraries.Core
 		/// <returns>The factorial</returns>
 		/// <remarks>
 		/// Anyone using recursion for this function must stay away from programming forever.
-		/// You are not showing any elite skills, you are just puting trash into the CPU stack
+		/// You are not showing any elite skills, you are just putting trash into the CPU stack
 		/// and making the source code unreadable. This is not to say recursion is useless, it
 		/// is just not because you are able to use something you should use it everywhere.
 		/// </remarks>

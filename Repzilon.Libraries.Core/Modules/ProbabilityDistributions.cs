@@ -150,7 +150,7 @@ namespace Repzilon.Libraries.Core
 		/// Even with a six times faster algorithm, the gamma ratio is still the slowest part of
 		/// the Student probability distribution function. Cache the output. It will be very useful
 		/// for the computation of its integral with the Simpson rule, which will call the function
-		/// thousands of times for a single numeric integration. This array only takes 2 kibibytes.
+		/// thousands of times for a single numeric integration. This array only takes 2 kilobytes.
 		/// </summary>
 		private static readonly double[] StudentGammaRatioCache = new double[255];
 
@@ -293,9 +293,9 @@ namespace Repzilon.Libraries.Core
 		/// especially without raising exceptions, which are a significant performance hog.
 		/// </summary>
 		/// <param name="x">Positive integer.
-		/// When you repeatly call this method, put the accumulated product here.</param>
+		/// When you repeatedly call this method, put the accumulated product here.</param>
 		/// <param name="y">Positive integer between 1 and 255.
-		/// It could have been of type Byte but it hurts perfomance to have it as Byte.</param>
+		/// It could have been of type Byte, but it hurts performance to have it as Byte.</param>
 		/// <param name="v">Outputs an unchecked product which should only be used when this method returns True.</param>
 		/// <returns>False when an overflow is detected</returns>
 		private static bool TryMultiply(int x, int y, out int v)

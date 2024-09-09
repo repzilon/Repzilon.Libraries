@@ -228,17 +228,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(rmA);
 			OutputRegressionModel(rmB);
 			Console.WriteLine("n! ≈ ({0} * {1}^n) * ({2} + {3}n)^n", rmA.A, rmA.B, rmB.A, rmB.B);
-			var rmC = FindFactotrialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB));
+			var rmC = FindFactorialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB));
 			OutputRegressionModel(rmC);
 			Console.WriteLine("n! ≈ ({0} * {1}^n) * ({2} + {3}n)^n * ({4} * {5}^n)",
 			 rmA.A, rmA.B, rmB.A, rmB.B, rmC.A, rmC.B);
-			OutputRegressionModel(FindFactotrialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB, rmC)));
+			OutputRegressionModel(FindFactorialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB, rmC)));
 		}
 
 #if NETFRAMEWORK
-		private static RegressionModel<decimal> FindFactotrialApproximationCorrection(Converter<byte, decimal> estimateFactorial)
+		private static RegressionModel<decimal> FindFactorialApproximationCorrection(Converter<byte, decimal> estimateFactorial)
 #else
-		private static RegressionModel<decimal> FindFactotrialApproximationCorrection(Func<byte, decimal> estimateFactorial)
+		private static RegressionModel<decimal> FindFactorialApproximationCorrection(Func<byte, decimal> estimateFactorial)
 #endif
 		{
 			var lstC = new List<PointM>(16);
@@ -266,7 +266,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp, TStorage studentLawValue,
-		string numberFormat, bool checkBiaises, TStorage? xForYExtrapolation, TStorage? yForXExtrapolation)
+		string numberFormat, bool checkBiases, TStorage? xForYExtrapolation, TStorage? yForXExtrapolation)
 		where TRegression : struct, ILinearRegressionResult<TStorage>
 		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
 		{
@@ -281,7 +281,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #if NET20
 			Console.Write(Environment.NewLine);
 #else
-			if (checkBiaises) {
+			if (checkBiases) {
 				// ReSharper disable once InvokeAsExtensionMethod
 				Console.WriteLine("\trelative bias: {0:p}",
 				 GenericArithmetic<TStorage>.SubtractScalars(b, ExtraMath.ConvertTo<TStorage>(1)));
@@ -306,7 +306,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, true);
 				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, false);
 #endif
-				if (checkBiaises) {
+				if (checkBiases) {
 					Console.WriteLine("x = {0}\t\ttotal error: {1}\trelative bias: {2}",
 					 x.ToString(numberFormat, ciCu),
 					 lrp.TotalError(x).ToString(numberFormat, ciCu),

@@ -120,8 +120,8 @@ namespace Repzilon.Libraries.Core
 		/// <summary>
 		/// Performs a right-rule Riemann sum.
 		/// </summary>
-		/// <param name="a">Lower intergration bound</param>
-		/// <param name="b">Upper intergration bound</param>
+		/// <param name="a">Lower integration bound</param>
+		/// <param name="b">Upper integration bound</param>
 		/// <param name="n">Number of partitions</param>
 		/// <param name="expression">The function to integrate</param>
 		/// <returns>A rough approximation of the definite integral of the function</returns>
