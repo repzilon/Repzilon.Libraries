@@ -343,7 +343,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var odd = (2 * k) + 1;
 #if DEBUG
 			var t = ExtraMath.Minus1Pow(k) * Math.Pow(x, odd);
-			var d = checked(odd * (1 << k) * ExtraMath.Factorial((byte)k));
+			var d = checked(odd * (1 << k) * ExtraMath.Factorial((byte)k));
 			var r = t / d;
 			Console.WriteLine("x={0} k={1} {2}/{3}={4}", x, k, t, d, r);
 			return r;
