@@ -231,7 +231,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var rca = RoundOff.Error(ca);
 				var bpmin = Convert.ToUInt16(rmMin.Evaluate(rca));
 				var bpmax = Convert.ToUInt16(rmMax.Evaluate(rca));
-				var dicCheck = new Dictionary<ushort, bool>();
+				var dicCheck = new Dictionary<ushort, bool>(karLambdaDigestedByHind3.Length);
 				for (i = 0; i < karLambdaDigestedByHind3.Length; i++) {
 					var l = karLambdaDigestedByHind3[i];
 					dicCheck.Add((ushort)l, (l >= bpmin) && (l <= bpmax));
