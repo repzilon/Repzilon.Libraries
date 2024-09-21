@@ -102,30 +102,30 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #endif
 		#endregion
 
-		public AminoAcid SetPkas(float pKa1, float pKa2)
+		public AminoAcid SetPkas(float pKa1NewValue, float pKa2NewValue)
 		{
-			return this.SetPkas(pKa1, pKa2, Single.NaN, false);
+			return this.SetPkas(pKa1NewValue, pKa2NewValue, Single.NaN, false);
 		}
 
-		public AminoAcid SetPkas(float pKa1, float pKa2, float pKaR, bool isDicationWhenVeryAcid)
+		public AminoAcid SetPkas(float pKa1NewValue, float pKa2NewValue, float pKaRnewValue, bool isDicationWhenVeryAcid)
 		{
-			if (Single.IsNaN(pKa1) || (pKa1 < 1.5f) || (pKa1 >= 14)) {
-				throw new ArgumentOutOfRangeException("pKa1");
+			if (Single.IsNaN(pKa1NewValue) || (pKa1NewValue < 1.5f) || (pKa1NewValue >= 14)) {
+				throw new ArgumentOutOfRangeException("pKa1NewValue");
 			}
-			if (Single.IsNaN(pKa2) || (pKa2 < 8) || (pKa2 >= 14)) {
-				throw new ArgumentOutOfRangeException("pKa2");
+			if (Single.IsNaN(pKa2NewValue) || (pKa2NewValue < 8) || (pKa2NewValue >= 14)) {
+				throw new ArgumentOutOfRangeException("pKa2NewValue");
 			}
-			if (!Single.IsNaN(pKaR)) {
-				if ((pKaR < 3) || (pKaR >= 14)) {
-					throw new ArgumentOutOfRangeException("pKaR");
+			if (!Single.IsNaN(pKaRnewValue)) {
+				if ((pKaRnewValue < 3) || (pKaRnewValue >= 14)) {
+					throw new ArgumentOutOfRangeException("pKaRnewValue");
 				}
 			} else if (isDicationWhenVeryAcid) {
 				throw new ArgumentException("An amino acid that is a dication under very acidic conditions must have a pKaR.", "isDicationWhenVeryAcid");
 			}
 
-			this.pKa1 = pKa1;
-			this.pKa2 = pKa2;
-			this.pKaR = pKaR;
+			this.pKa1 = pKa1NewValue;
+			this.pKa2 = pKa2NewValue;
+			this.pKaR = pKaRnewValue;
 			this.DicationWhenVeryAcid = isDicationWhenVeryAcid;
 			return this;
 		}
@@ -329,7 +329,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
 		}
 
-		public static float Isoelectric(float pKa1, float pKa2, byte cationCountAtPh1AndHalf, float pKaR)
+		private static float Isoelectric(float pKa1, float pKa2, byte cationCountAtPh1AndHalf, float pKaR)
 		{
 			if (cationCountAtPh1AndHalf > 2) {
 				throw new ArgumentOutOfRangeException("cationCountAtPh1AndHalf", cationCountAtPh1AndHalf,
@@ -347,7 +347,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			}
 		}
 
-		public static float Isoelectric(float pKa1, float pKa2)
+		private static float Isoelectric(float pKa1, float pKa2)
 		{
 			return RoundOff.Error(0.5f * (pKa1 + pKa2));
 		}
