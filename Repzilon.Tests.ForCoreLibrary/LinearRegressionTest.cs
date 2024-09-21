@@ -14,6 +14,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+#if !NET20
+using System.Linq;
+#endif
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Regression;
 // ReSharper disable InconsistentNaming
@@ -200,11 +203,73 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(rmdCC2Healing);
 
+			OutputHeading("Molecular biology lab. 3B");
+			var karAgarose = new float[7] { 0.3f, 0.6f, 0.7f, 0.9f, 1.2f, 1.5f, 2.0f };
+			var karMinSize = new short[7] { 5000, 1000, 800, 500, 400, 200, 100 };
+			var karMaxSize = new ushort[7] { 60000, 20000, 10000, 7000, 6000, 3000, 2000 };
+			byte i;
+			var lstMin = new List<PointD>(7);
+			var lstMax = new List<PointD>(7);
+			for (i = 0; i < 7; i++) {
+				var dblAgarose = Math.Round(karAgarose[i], 1);
+				lstMin.Add(new PointD(dblAgarose, karMinSize[i]));
+				lstMax.Add(new PointD(dblAgarose, karMaxSize[i]));
+			}
+			var rmMin = RegressionModel.Compute(lstMin);
+			var rmMax = RegressionModel.Compute(lstMax);
+			OutputRegressionModel(rmMin);
+			OutputRegressionModel(rmMax);
+
+#if !NET20
+			var karLambdaDigestedByHind3 = new short[] { 27491, 9416, 6682, 2322, 2024, 564 };
+			var agaroseForLargest = Math.Round(rmMax.Solve(karLambdaDigestedByHind3.Max()), 1);
+			var agaroseForSmallest = Math.Round(rmMin.Solve(karLambdaDigestedByHind3.Min()), 1);
+			var cmin = Math.Min(agaroseForLargest, agaroseForSmallest);
+			var cmax = Math.Max(agaroseForLargest, agaroseForSmallest);
+			var dicMatches = new Dictionary<double, Dictionary<ushort, bool>>();
+			for (var ca = cmin; ca <= cmax; ca += 0.1) {
+				var rca = RoundOff.Error(ca);
+				var bpmin = Convert.ToUInt16(rmMin.Evaluate(rca));
+				var bpmax = Convert.ToUInt16(rmMax.Evaluate(rca));
+				var dicCheck = new Dictionary<ushort, bool>();
+				for (i = 0; i < karLambdaDigestedByHind3.Length; i++) {
+					var l = karLambdaDigestedByHind3[i];
+					dicCheck.Add((ushort)l, (l >= bpmin) && (l <= bpmax));
+				}
+				dicMatches.Add(rca, dicCheck);
+			}
+			var maxMigrable = dicMatches.Max(x => {
+				return x.Value.Count(y => {
+					return y.Value == true;
+				});
+			});
+			var bestConcentrations = dicMatches.Where(x => {
+				return x.Value.Count(y => {
+					return y.Value == true;
+				}) == maxMigrable;
+			}).Select(x => x.Key);
+			foreach (var c in bestConcentrations) {
+				Console.Write(c);
+				Console.Write(" % m/v d'agarose migrera les fragments de longueurs ");
+				var m = 0;
+				foreach (var kvp in dicMatches[c]) {
+					if (kvp.Value) {
+						if (m > 0) {
+							Console.Write(", ");
+						}
+						Console.Write(kvp.Key);
+						m++;
+					}
+				}
+				Console.Write(Environment.NewLine);
+			}
+#endif
+
 			OutputHeading("Factorial (1 to 16)");
 			var factorialSuite = new List<PointM>(16);
 			var lstA = new List<PointM>(16);
 			var lstB = new List<PointM>(16);
-			byte i;
+
 			for (i = 1; i <= 16; i++) {
 				var pt = new PointM(i, ExtraMath.Factorial(i));
 				factorialSuite.Add(pt);

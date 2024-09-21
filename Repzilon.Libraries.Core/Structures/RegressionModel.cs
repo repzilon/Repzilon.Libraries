@@ -205,5 +205,52 @@ namespace Repzilon.Libraries.Core.Regression
 			}
 			return Convert.ToDouble(B) - 1;
 		}
+
+#if !NET20
+		public T Evaluate(T x)
+		{
+			var model = this.Model;
+			var b = this.B;
+			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+			var dblX = Convert.ToDouble(x);
+			var add = GenericArithmetic<T>.Adder;
+			if (model == MathematicalModel.Affine) {
+				return add(A, mul(b, x));
+			} else if (model == MathematicalModel.Exponential) {
+				return RisingConcaveUpwards(mul, Convert.ToDouble(b), dblX);
+			} else if (model == MathematicalModel.Logarithmic) {
+				return add(mul(A, Math.Log10(dblX).ConvertTo<T>()), b);
+			} else if (model == MathematicalModel.Power) {
+				return RisingConcaveUpwards(mul, dblX, Convert.ToDouble(b));
+			} else {
+				throw new NotSupportedException();
+			}
+		}
+
+		private T RisingConcaveUpwards(Func<T, T, T> mul, double radix, double exponent)
+		{
+			return mul(A, Math.Pow(radix, exponent).ConvertTo<T>());
+		}
+
+		public T Solve(T y)
+		{
+			var model = this.Model;
+			var yDivA = Convert.ToDouble(y) / Convert.ToDouble(A);
+			var dblB = Convert.ToDouble(B);
+			double dblSolution;
+			if (model == MathematicalModel.Affine) {
+				dblSolution = (Convert.ToDouble(GenericArithmetic<T>.Sub(y, A)) / dblB);
+			} else if (model == MathematicalModel.Exponential) {
+				dblSolution = Math.Log(yDivA, dblB);
+			} else if (model == MathematicalModel.Logarithmic) {
+				dblSolution = Math.Pow(10, Convert.ToDouble(GenericArithmetic<T>.Sub(y, B)) / Convert.ToDouble(A));
+			} else if (model == MathematicalModel.Power) {
+				dblSolution = Math.Pow(yDivA, 1.0 / dblB);
+			} else {
+				throw new NotSupportedException();
+			}
+			return dblSolution.ConvertTo<T>();
+		}
+#endif
 	}
 }
