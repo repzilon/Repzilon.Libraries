@@ -238,16 +238,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				dicMatches.Add(rca, dicCheck);
 			}
-			var maxMigrable = dicMatches.Max(x => {
-				return x.Value.Count(y => {
-					return y.Value == true;
-				});
-			});
-			var bestConcentrations = dicMatches.Where(x => {
-				return x.Value.Count(y => {
-					return y.Value == true;
-				}) == maxMigrable;
-			}).Select(x => x.Key);
+			var maxMigratable = dicMatches.Max(CountMigratableFragments);
+			var bestConcentrations = dicMatches.Where(x => CountMigratableFragments(x) == maxMigratable).Select(SelectKey);
 			foreach (var c in bestConcentrations) {
 				Console.Write(c);
 				Console.Write(" % m/v d'agarose migrera les fragments de longueurs ");
@@ -299,6 +291,24 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 rmA.A, rmA.B, rmB.A, rmB.B, rmC.A, rmC.B);
 			OutputRegressionModel(FindFactorialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB, rmC)));
 		}
+
+#if !NET20
+		private static double SelectKey(KeyValuePair<double, Dictionary<ushort, bool>> x)
+		{
+			return x.Key;
+		}
+
+		private static int CountMigratableFragments(KeyValuePair<double, Dictionary<ushort, bool>> x)
+		{
+			int count = 0;
+			foreach (var y in x.Value) {
+				if (y.Value) {
+					count++;
+				}
+			}
+			return count;
+		}
+#endif
 
 #if NETFRAMEWORK
 		private static RegressionModel<decimal> FindFactorialApproximationCorrection(Converter<byte, decimal> estimateFactorial)
