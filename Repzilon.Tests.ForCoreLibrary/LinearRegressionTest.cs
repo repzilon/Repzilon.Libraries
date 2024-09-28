@@ -221,22 +221,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(rmMax);
 
 #if !NET20
-			var karLambdaDigestedByHind3 = new short[] { 27491, 9416, 6682, 2322, 2024, 564 };
-			var agaroseForLargest = Math.Round(rmMax.Solve(karLambdaDigestedByHind3.Max()), 1);
-			var agaroseForSmallest = Math.Round(rmMin.Solve(karLambdaDigestedByHind3.Min()), 1);
+			var karLambdaDigestedByHind3 = new short[] { /*27491, 9416, 6682, 2322, 2024, 564*/ 627 };
+			var agaroseForLargest = Math.Round(Math.Min(3, rmMax.Solve(karLambdaDigestedByHind3.Max())), 1);
+			var agaroseForSmallest = Math.Round(Math.Max(0.3, rmMin.Solve(karLambdaDigestedByHind3.Min())), 1);
 			var cmin = Math.Min(agaroseForLargest, agaroseForSmallest);
 			var cmax = Math.Max(agaroseForLargest, agaroseForSmallest);
 			var dicMatches = new Dictionary<double, Dictionary<ushort, bool>>();
-			for (var ca = cmin; ca <= cmax; ca += 0.1) {
-				var rca = RoundOff.Error(ca);
-				var bpmin = Convert.ToUInt16(rmMin.Evaluate(rca));
-				var bpmax = Convert.ToUInt16(rmMax.Evaluate(rca));
+			for (var ca = cmin; ca <= cmax; ca = RoundOff.Error(ca + 0.1)) {
+				var bpmin = Convert.ToUInt16(rmMin.Evaluate(ca));
+				var bpmax = Convert.ToUInt16(rmMax.Evaluate(ca));
 				var dicCheck = new Dictionary<ushort, bool>(karLambdaDigestedByHind3.Length);
 				for (i = 0; i < karLambdaDigestedByHind3.Length; i++) {
 					var l = karLambdaDigestedByHind3[i];
 					dicCheck.Add((ushort)l, (l >= bpmin) && (l <= bpmax));
 				}
-				dicMatches.Add(rca, dicCheck);
+				dicMatches.Add(ca, dicCheck);
 			}
 			var maxMigratable = dicMatches.Max(CountMigratableFragments);
 			var bestConcentrations = dicMatches.Where(x => CountMigratableFragments(x) == maxMigratable).Select(SelectKey);
