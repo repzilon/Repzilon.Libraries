@@ -312,5 +312,78 @@ namespace Repzilon.Libraries.Core
 			return multiplier;
 		}
 		#endregion
+
+		#region Logistic distribution
+		private static readonly double LogisticQ = Math.Sqrt(3) / Math.PI;
+
+		/// <summary>
+		/// Logistic distribution function
+		/// </summary>
+		/// <param name="x">Value on the X axis</param>
+		/// <param name="mean">Mean of the distribution</param>
+		/// <param name="scale">Scale factor of the distrbution</param>
+		/// <param name="cumulative">If true, returns the evaluation of the logistic function.
+		/// Otherwise, return its partial derivative</param>
+		/// <returns>The y value or the cumulative value of a logistic distribution</returns>
+		/// <remarks>It is easier to derivate than to integrate a function</remarks>
+		public static double Logistic(double x, double mean, double scale, bool cumulative)
+		{
+			var expr = Math.Exp((mean - x) / scale); // µ-x is the simplification of -(x-µ)
+			var exprp1 = 1 + expr;
+			return cumulative ? 1.0 / exprp1 : expr / (scale * exprp1 * exprp1);
+		}
+
+		/// <summary>
+		/// Standard logistic distribution function (that is of mean 0 and scale 1)
+		/// </summary>
+		public static double Logistic(double x, bool cumulative)
+		{
+			var expr = Math.Exp(-1 * x); // µ-x is the simplification of -(x-µ)
+			var exprp1 = 1 + expr;
+			return cumulative ? 1.0 / exprp1 : expr / (exprp1 * exprp1);
+		}
+
+		/// <summary>
+		/// The logit function, inverse of the logistic function
+		/// </summary>
+		/// <param name="p">Probability that is looked for</param>
+		/// <param name="mean">Mean of the distribution</param>
+		/// <param name="scale">Scale factor of the distrbution</param>
+		public static double InverseLogistic(double p, double mean, double scale)
+		{
+			return mean + scale * InverseLogistic(p); // Math.Log(x) is ln(x)
+		}
+
+		public static double InverseLogistic(double p)
+		{
+			return Math.Log(p / (1 - p));
+		}
+
+		public static double LogisticV(double x, double mean, double standardDeviation, bool cumulative)
+		{
+			return Logistic(x, mean, LogisticQ * standardDeviation, cumulative);
+		}
+
+		/// <summary>
+		/// Logistic distribution function of mean 0 and variance 1, to mimic a standard normal distribution
+		/// </summary>
+		public static double LogisticV(double x, bool cumulative)
+		{
+			var q = LogisticQ;
+			var expr = Math.Exp(-1 * x / q);
+			var exprp1 = 1 + expr;
+			return cumulative ? 1.0 / exprp1 : expr / (q * exprp1 * exprp1);
+		}
+
+		public static double InverseLogisticV(double p, double mean, double standardDeviation)
+		{
+			return mean + LogisticQ * standardDeviation * InverseLogistic(p);
+		}
+
+		public static double InverseLogisticV(double p)
+		{
+			return LogisticQ * InverseLogistic(p);
+		}
+		#endregion
 	}
 }
