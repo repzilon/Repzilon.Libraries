@@ -1,0 +1,115 @@
+﻿//
+//  AgaroseRetention.cs
+//
+//  Author:
+//       René Rhéaume <repzilon@users.noreply.github.com>
+//
+// Copyright (C) 2024 René Rhéaume
+//
+// This Source Code Form is subject to the terms of the 
+// Mozilla Public License, v. 2.0. If a copy of the MPL was 
+// not distributed with this file, You can obtain one at 
+// https://mozilla.org/MPL/2.0/.
+//
+using System;
+using System.Collections.Generic;
+using System.Globalization;
+using System.Text;
+
+namespace Repzilon.Libraries.Core
+{
+	public struct AgaroseRetention : IEquatable<AgaroseRetention>, IFormattable
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
+	, ICloneable
+#endif
+	{
+		public float MassVolumeConcentration;
+		public short[] FragmentLengths;
+
+		#region Equals and GetHashCode
+		public override bool Equals(object obj)
+		{
+			return obj is AgaroseRetention && Equals((AgaroseRetention)obj);
+		}
+
+		public bool Equals(AgaroseRetention other)
+		{
+			return MassVolumeConcentration == other.MassVolumeConcentration &&
+				   EqualityComparer<short[]>.Default.Equals(FragmentLengths, other.FragmentLengths);
+		}
+
+		public override int GetHashCode()
+		{
+			unchecked {
+				int hashCode = -20320107;
+				hashCode = hashCode * -1521134295 + MassVolumeConcentration.GetHashCode();
+				hashCode = hashCode * -1521134295 + EqualityComparer<short[]>.Default.GetHashCode(FragmentLengths);
+				return hashCode;
+			}
+		}
+
+		public static bool operator ==(AgaroseRetention left, AgaroseRetention right)
+		{
+			return left.Equals(right);
+		}
+
+		public static bool operator !=(AgaroseRetention left, AgaroseRetention right)
+		{
+			return !(left == right);
+		}
+		#endregion
+
+		#region ICloneable members
+		AgaroseRetention Clone()
+		{
+			var c = this.FragmentLengths.Length;
+			var shrarCopy = new short[c];
+			for (int i = 0; i < c; i++) {
+				shrarCopy[i] = this.FragmentLengths[i];
+			}
+			var clone = new AgaroseRetention();
+			clone.MassVolumeConcentration = this.MassVolumeConcentration;
+			clone.FragmentLengths = shrarCopy;
+			return clone;
+		}
+
+#if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
+		object ICloneable.Clone()
+		{
+			return this.Clone();
+		}
+#endif
+		#endregion
+
+		public override string ToString()
+		{
+			return this.ToString(null, null);
+		}
+
+		public string ToString(string format, IFormatProvider formatProvider)
+		{
+#if NET35 || NET20
+			if (RetroCompat.IsNullOrWhiteSpace(format)) {
+#else
+			if (String.IsNullOrWhiteSpace(format)) {
+#endif
+				format = "G";
+			}
+			if (formatProvider == null) {
+				formatProvider = CultureInfo.CurrentCulture;
+			}
+
+			var stbAgarose = new StringBuilder();
+			stbAgarose.Append(this.MassVolumeConcentration.ToString(format, formatProvider));
+			stbAgarose.Append(" % m/v agarose will migrate fragment lengths ");
+			var c = this.FragmentLengths.Length;
+			for (var i = 0; i < c; i++) {
+				if (i > 0) {
+					stbAgarose.Append(", ");
+				}
+				stbAgarose.Append(this.FragmentLengths[i].ToString(format, formatProvider));
+			}
+			return stbAgarose.ToString();
+		}
+	}
+}

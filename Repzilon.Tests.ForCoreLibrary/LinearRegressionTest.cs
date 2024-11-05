@@ -203,57 +203,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(rmdCC2Healing);
 
-			OutputHeading("Molecular biology lab. 3B");
-			var karAgarose = new float[7] { 0.3f, 0.6f, 0.7f, 0.9f, 1.2f, 1.5f, 2.0f };
-			var karMinSize = new short[7] { 5000, 1000, 800, 500, 400, 200, 100 };
-			var karMaxSize = new ushort[7] { 60000, 20000, 10000, 7000, 6000, 3000, 2000 };
-			byte i;
-			var lstMin = new List<PointD>(7);
-			var lstMax = new List<PointD>(7);
-			for (i = 0; i < 7; i++) {
-				var dblAgarose = Math.Round(karAgarose[i], 1);
-				lstMin.Add(new PointD(dblAgarose, karMinSize[i]));
-				lstMax.Add(new PointD(dblAgarose, karMaxSize[i]));
-			}
-			var rmMin = RegressionModel.Compute(lstMin);
-			var rmMax = RegressionModel.Compute(lstMax);
-			OutputRegressionModel(rmMin);
-			OutputRegressionModel(rmMax);
-
 #if !NET20
-			var karLambdaDigestedByHind3 = new short[] { /*27491, 9416, 6682, 2322, 2024, 564*/ 627 };
-			var agaroseForLargest = Math.Round(Math.Min(3, rmMax.Solve(karLambdaDigestedByHind3.Max())), 1);
-			var agaroseForSmallest = Math.Round(Math.Max(0.3, rmMin.Solve(karLambdaDigestedByHind3.Min())), 1);
-			var cmin = Math.Min(agaroseForLargest, agaroseForSmallest);
-			var cmax = Math.Max(agaroseForLargest, agaroseForSmallest);
-			var dicMatches = new Dictionary<double, Dictionary<ushort, bool>>();
-			for (var ca = cmin; ca <= cmax; ca = RoundOff.Error(ca + 0.1)) {
-				var bpmin = Convert.ToUInt16(rmMin.Evaluate(ca));
-				var bpmax = Convert.ToUInt16(rmMax.Evaluate(ca));
-				var dicCheck = new Dictionary<ushort, bool>(karLambdaDigestedByHind3.Length);
-				for (i = 0; i < karLambdaDigestedByHind3.Length; i++) {
-					var l = karLambdaDigestedByHind3[i];
-					dicCheck.Add((ushort)l, (l >= bpmin) && (l <= bpmax));
-				}
-				dicMatches.Add(ca, dicCheck);
-			}
-			var maxMigratable = dicMatches.Max(CountMigratableFragments);
-			var bestConcentrations = dicMatches.Where(x => CountMigratableFragments(x) == maxMigratable).Select(SelectKey);
-			foreach (var c in bestConcentrations) {
-				Console.Write(c);
-				Console.Write(" % m/v d'agarose migrera les fragments de longueurs ");
-				var m = 0;
-				foreach (var kvp in dicMatches[c]) {
-					if (kvp.Value) {
-						if (m > 0) {
-							Console.Write(", ");
-						}
-						Console.Write(kvp.Key);
-						m++;
-					}
-				}
-				Console.Write(Environment.NewLine);
-			}
+			OutputHeading("Molecular biology laboratories");
+			OutputAgaroseRetention("3B :", 27491, 9416, 6682, 2322, 2024, 564);
+			OutputAgaroseRetention("6A :", 247, 280, 393, 234);
+			OutputAgaroseRetention("7 :", 2997, 647);
 #endif
 
 			OutputHeading("Factorial (1 to 16)");
@@ -261,7 +215,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var lstA = new List<PointM>(16);
 			var lstB = new List<PointM>(16);
 
-			for (i = 1; i <= 16; i++) {
+			for (byte i = 1; i <= 16; i++) {
 				var pt = new PointM(i, ExtraMath.Factorial(i));
 				factorialSuite.Add(pt);
 				Console.WriteLine("{0}! is {1}", pt.X, pt.Y);
@@ -292,20 +246,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 #if !NET20
-		private static double SelectKey(KeyValuePair<double, Dictionary<ushort, bool>> x)
+		private static void OutputAgaroseRetention(string heading, params short[] fragmentLengths)
 		{
-			return x.Key;
-		}
-
-		private static int CountMigratableFragments(KeyValuePair<double, Dictionary<ushort, bool>> x)
-		{
-			int count = 0;
-			foreach (var y in x.Value) {
-				if (y.Value) {
-					count++;
-				}
+			Console.WriteLine(heading);
+			var agars = MolecularBiology.AgaroseConcentration(fragmentLengths);
+			for (int i = 0; i < agars.Length; i++) {
+				Console.WriteLine(agars[i]);
 			}
-			return count;
 		}
 #endif
 
