@@ -23,8 +23,16 @@ namespace Repzilon.Libraries.Core
 	, ICloneable
 #endif
 	{
-		public float MassVolumeConcentration;
+		public float LowerMassVolumeConcentration;
+		public float UpperMassVolumeConcentration;
 		public short[] FragmentLengths;
+
+		public AgaroseRetention(float minConcentration, params short[] fragmentLengths)
+		{
+			this.UpperMassVolumeConcentration = Single.NaN;
+			this.LowerMassVolumeConcentration = minConcentration;
+			this.FragmentLengths = fragmentLengths;
+		}
 
 		#region Equals and GetHashCode
 		public override bool Equals(object obj)
@@ -34,7 +42,8 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(AgaroseRetention other)
 		{
-			return MassVolumeConcentration == other.MassVolumeConcentration &&
+			return LowerMassVolumeConcentration == other.LowerMassVolumeConcentration &&
+				   UpperMassVolumeConcentration == other.UpperMassVolumeConcentration &&
 				   EqualityComparer<short[]>.Default.Equals(FragmentLengths, other.FragmentLengths);
 		}
 
@@ -42,7 +51,8 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 				int hashCode = -20320107;
-				hashCode = hashCode * -1521134295 + MassVolumeConcentration.GetHashCode();
+				hashCode = hashCode * -1521134295 + LowerMassVolumeConcentration.GetHashCode();
+				hashCode = hashCode * -1521134295 + UpperMassVolumeConcentration.GetHashCode();
 				hashCode = hashCode * -1521134295 + EqualityComparer<short[]>.Default.GetHashCode(FragmentLengths);
 				return hashCode;
 			}
@@ -68,7 +78,8 @@ namespace Repzilon.Libraries.Core
 				shrarCopy[i] = this.FragmentLengths[i];
 			}
 			var clone = new AgaroseRetention();
-			clone.MassVolumeConcentration = this.MassVolumeConcentration;
+			clone.LowerMassVolumeConcentration = this.LowerMassVolumeConcentration;
+			clone.UpperMassVolumeConcentration = this.UpperMassVolumeConcentration;
 			clone.FragmentLengths = shrarCopy;
 			return clone;
 		}
@@ -100,7 +111,10 @@ namespace Repzilon.Libraries.Core
 			}
 
 			var stbAgarose = new StringBuilder();
-			stbAgarose.Append(this.MassVolumeConcentration.ToString(format, formatProvider));
+			stbAgarose.Append(this.LowerMassVolumeConcentration.ToString(format, formatProvider));
+			if (!Double.IsNaN(this.UpperMassVolumeConcentration)) {
+				stbAgarose.Append(" to ").Append(this.UpperMassVolumeConcentration.ToString(format, formatProvider));
+			} 
 			stbAgarose.Append(" % m/v agarose will migrate fragment lengths ");
 			var c = this.FragmentLengths.Length;
 			for (var i = 0; i < c; i++) {

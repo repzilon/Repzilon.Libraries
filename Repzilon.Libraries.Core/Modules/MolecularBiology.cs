@@ -68,10 +68,28 @@ namespace Repzilon.Libraries.Core
 						lstBasePairs.Add((short)kvp.Key);
 					}
 				}
-				var agar = new AgaroseRetention();
-				agar.MassVolumeConcentration = (float)c;
-				agar.FragmentLengths = lstBasePairs.ToArray();
-				lstResults.Add(agar);
+				bool blnSame;
+				var agarLast = default(AgaroseRetention);
+				if (lstResults.Count >= 1) {
+					agarLast = lstResults[lstResults.Count - 1];
+					var f = agarLast.FragmentLengths.Length;
+					blnSame = lstBasePairs.Count == f;
+					if (blnSame) {
+						for (int i = 0; blnSame && i < f; i++) {
+							if (!lstBasePairs.Contains(agarLast.FragmentLengths[i])) {
+								blnSame = false;
+							}
+						}
+					}
+				} else {
+					blnSame = false;
+				}
+				if (blnSame) {
+					agarLast.UpperMassVolumeConcentration = (float)c;
+					lstResults[lstResults.Count - 1] = agarLast;
+				} else {
+					lstResults.Add(new AgaroseRetention((float)c, lstBasePairs.ToArray()));
+				}
 			}
 
 			return lstResults.ToArray();

@@ -207,7 +207,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputHeading("Molecular biology laboratories");
 			OutputAgaroseRetention("3B :", 27491, 9416, 6682, 2322, 2024, 564);
 			OutputAgaroseRetention("6A :", 247, 280, 393, 234);
-			OutputAgaroseRetention("7 :", 2997, 647);
+			OutputAgaroseRetention("6B :", 525);
+			OutputAgaroseRetention("8 :", 2997, 647);
+			OutputAgaroseRetention("9 :", 97);
 #endif
 
 			OutputHeading("Factorial (1 to 16)");
