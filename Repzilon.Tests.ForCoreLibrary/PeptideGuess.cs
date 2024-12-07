@@ -218,7 +218,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static bool HasPartRev10Sequence(List<AlphaAminoAcid> x)
 		{
-			// Important : do not replace x[x.Count - 1] with a fixed index like above,
+			// Important : do not replace x[x.Count - 1] with a fixed index,
 			// because it is used to test fragments, not the full sequence,
 			// which have different lengths.
 			if (x[x.Count - 1] == AlphaAminoAcid.Ala) {

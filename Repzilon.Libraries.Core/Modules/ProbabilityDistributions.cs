@@ -321,7 +321,7 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		/// <param name="x">Value on the X axis</param>
 		/// <param name="mean">Mean of the distribution</param>
-		/// <param name="scale">Scale factor of the distrbution</param>
+		/// <param name="scale">Scale factor of the distribution</param>
 		/// <param name="cumulative">If true, returns the evaluation of the logistic function.
 		/// Otherwise, return its partial derivative</param>
 		/// <returns>The y value or the cumulative value of a logistic distribution</returns>
@@ -348,7 +348,7 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		/// <param name="p">Probability that is looked for</param>
 		/// <param name="mean">Mean of the distribution</param>
-		/// <param name="scale">Scale factor of the distrbution</param>
+		/// <param name="scale">Scale factor of the distribution</param>
 		public static double InverseLogistic(double p, double mean, double scale)
 		{
 			return mean + scale * InverseLogistic(p); // Math.Log(x) is ln(x)

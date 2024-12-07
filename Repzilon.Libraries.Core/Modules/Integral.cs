@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -129,7 +129,7 @@ namespace Repzilon.Libraries.Core
 		/// <remarks>
 		/// Though part of the fundamental theorem of calculus, a Riemann sum is so inaccurate
 		/// you need a very large number of partitions (in the millions), which makes it slow
-		/// event for multi gigahertz CPUs. The worst of both world. Simply avoid it.
+		/// even for multi gigahertz CPUs. The worst of both worlds. Simply avoid it.
 		/// </remarks>
 		[Obsolete("Slow and inaccurate. Swap your method call with Simpson.")]
 #if NETFRAMEWORK
