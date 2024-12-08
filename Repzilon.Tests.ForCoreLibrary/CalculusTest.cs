@@ -131,6 +131,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Console.WriteLine("Détermination du point de cassure de la série de MacLaurin");
 			FindMacLaurinBreakpointForNormalLawIntegral(dcmFinalTargetDelta);
+
+			Console.WriteLine("Vérification de logit");
+			Console.WriteLine("α     P-value logit(P)    logit(P) * √(π/8) ≈Φ^-1");
+			var kSqrtEighthOfPi = Math.Sqrt(0.125 * Math.PI);
+			for (i = 950; i < 1000; i += 5) {
+				var p     = RoundOff.Error(i * 0.001);
+				var logit = ProbabilityDistributions.InverseLogistic(p);
+				Console.WriteLine("{0,5:f2} {1,7:f3} {2:f9} {3:f9} {4:f9}", RoundOff.Error(2 * (1 - p)), p,
+					logit, logit * kSqrtEighthOfPi, ProbabilityDistributions.InverseNormalEstimate(p));
+			}
 		}
 
 		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, double[] expected, double targetDelta)

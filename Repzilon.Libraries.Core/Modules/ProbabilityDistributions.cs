@@ -385,5 +385,26 @@ namespace Repzilon.Libraries.Core
 			return LogisticQ * InverseLogistic(p);
 		}
 		#endregion
+
+		public static double InverseNormalEstimate(double p)
+		{
+			if ((p <= 0) || (p >= 1)) {
+				throw new ArgumentOutOfRangeException("p", p, "Must be between 0 and 1, but neither exactly 0 nor 1.");
+			}
+			if (p == 0.5) {
+				return 0;
+			}
+
+			var karCoefficients = new double[] { -1604.807455978, 3034.534913550, -3199.836649003, 1784.362798192, -411.277107902 };
+			var ps              = (p > 0.5) ? p : 1 - p;
+			var ppowered        = ps;
+			var scaleFactor     = -51.182154067 + 448.687715882 * ps;
+			for (int i = 2; i <= 6; i++) {
+				ppowered    *= ps;
+				scaleFactor += karCoefficients[i - 2] * ppowered;
+			}
+
+			return InverseLogistic(p) * scaleFactor;
+		}
 	}
 }
