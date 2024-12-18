@@ -258,8 +258,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
-			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())),
-			 AngleUnit.Radian);
+			return Angle<double>.Radians(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())));
 		}
 #endif
 	}

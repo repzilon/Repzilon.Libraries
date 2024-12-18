@@ -155,10 +155,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		public Angle<double> Angle()
 		{
 #if NET20
-			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian);
+			return Angle<double>.Radians(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)));
 #else
-			return new Angle<double>(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)), AngleUnit.Radian)
-			 .Normalize();
+			return Angle<double>.Radians(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X))).Normalize();
 #endif
 		}
 
@@ -372,8 +371,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return new Angle<double>(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())),
-			 AngleUnit.Radian);
+			return Angle<double>.Radians(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())));
 		}
 #endif
 	}

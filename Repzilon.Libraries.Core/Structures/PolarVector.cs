@@ -267,6 +267,6 @@ namespace Repzilon.Libraries.Core.Vectors
 			return AngleBetween(u, v) == RightAngle;
 		}
 
-		private static readonly Angle<T> RightAngle = new Angle<T>(ExtraMath.ConvertTo<T>(90), AngleUnit.Degree);
+		private static readonly Angle<T> RightAngle = Angle<T>.Degrees(ExtraMath.ConvertTo<T>(90));
 	}
 }

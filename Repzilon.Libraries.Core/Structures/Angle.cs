@@ -66,6 +66,21 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return FromOtherType(Convert.ToDouble(valueInOtherDataType) * conversionFactor, unit);
 		}
+
+		public static Angle<T> Radians(T value)
+		{
+			return new Angle<T>(value, AngleUnit.Radian);
+		}
+
+		public static Angle<T> Degrees(T value)
+		{
+			return new Angle<T>(value, AngleUnit.Degree);
+		}
+
+		public static Angle<T> Gradians(T value)
+		{
+			return new Angle<T>(value, AngleUnit.Gradian);
+		}
 		#endregion
 
 		#region ICloneable members
@@ -168,6 +183,21 @@ namespace Repzilon.Libraries.Core.Vectors
 #else
 			return ConvertTo<TOut>(Unit, false);
 #endif
+		}
+
+		public Angle<T> ToRadians()
+		{
+			return this.ConvertTo(AngleUnit.Radian);
+		}
+
+		public Angle<T> ToDegrees()
+		{
+			return this.ConvertTo(AngleUnit.Degree);
+		}
+
+		public Angle<T> ToGradians()
+		{
+			return this.ConvertTo(AngleUnit.Gradian);
 		}
 		#endregion
 
