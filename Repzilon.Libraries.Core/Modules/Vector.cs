@@ -45,7 +45,7 @@ namespace Repzilon.Libraries.Core.Vectors
 	public static class Vector<T> where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 	{
 #if !NET20
-		private static readonly Angle<T> HalfCircle = new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree);
+		internal static readonly Angle<T> HalfCircle = new Angle<T>(180.ConvertTo<T>(), AngleUnit.Degree);
 
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{

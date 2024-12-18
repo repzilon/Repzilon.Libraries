@@ -197,16 +197,38 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Operators
-		// TODO : make addition and subtraction of polar vector return a polar vector
 #if !NET20
-		public static TwoDVector<T> operator +(PolarVector<T> u, PolarVector<T> v)
+		public static PolarVector<T> operator +(PolarVector<T> u, PolarVector<T> v)
 		{
-			return new TwoDVector<T>(u) + new TwoDVector<T>(v);
+			return AddSub(u, v, false);
 		}
 
-		public static TwoDVector<T> operator -(PolarVector<T> u, PolarVector<T> v)
+		public static PolarVector<T> operator -(PolarVector<T> u, PolarVector<T> v)
 		{
-			return new TwoDVector<T>(u) - new TwoDVector<T>(v);
+			return AddSub(u, v, true);
+		}
+
+		private static PolarVector<T> AddSub(PolarVector<T> u, PolarVector<T> v, bool subtract)
+		{
+			var un = Convert.ToDouble(u.Norm);
+			var vn = Convert.ToDouble(v.Norm);
+			var ua = u.Angle;
+			double us, vs;
+			var va = v.Angle;
+
+			us = ua.Sin() * un;
+			vs = va.Sin() * vn;
+			un = ua.Cos() * un;
+			vn = va.Cos() * vn;
+
+			ua = AngleBetween(u, v);
+			if (subtract) {
+				ua = (Angle<T>)(ua + Vector<T>.HalfCircle).Normalize();
+			}
+
+			return new PolarVector<T>(Vector<T>.Sum(u.Norm, v.Norm, ua),
+			 (subtract ? Math.Atan2(us - vs, un - vn) : Math.Atan2(us + vs, un + vn)).ConvertTo<T>(),
+			 AngleUnit.Radian);
 		}
 
 		public static TwoDVector<T> operator +(PolarVector<T> u, TwoDVector<T> v)
