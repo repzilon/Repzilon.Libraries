@@ -23,6 +23,7 @@ namespace Repzilon.Libraries.Core
 		private const float MacLaurinBreakpoint = 2.07f;
 		private static readonly decimal DecimalOneOfRootOfTwoPi = 1.0m / ExtraMath.Sqrt(2 * ExtraMath.Pi);
 		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
+		private static readonly double HalfSqrtOfPi = 0.5 * Math.Sqrt(Math.PI);
 
 		public static double Normal(double x, double mean, double standardDeviation, bool cumulative)
 		{
@@ -30,14 +31,8 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentOutOfRangeException("standardDeviation", standardDeviation,
 				 "A standard deviation cannot be neither zero nor a negative number.");
 			}
-			if (cumulative) {
-				// TODO: Implement Cumulative mode for normal distribution
-				throw new NotImplementedException("Cumulative mode for normal distribution is not yet implemented " +
-				 "(Integral calculus is not part of base libraries of any general purpose programming language).");
-			} else {
-				var z = (x - mean) / standardDeviation;
-				return DoubleOneOfRootOfTwoPi / standardDeviation * Math.Exp(-0.5 * z * z);
-			}
+			var z = (x - mean) / standardDeviation;
+			return cumulative ? Normal(z, true) : DoubleOneOfRootOfTwoPi / standardDeviation * Math.Exp(-0.5 * z * z);
 		}
 
 		public static double Normal(double z, bool cumulative)
@@ -102,10 +97,83 @@ namespace Repzilon.Libraries.Core
 				var b = odd * (1 << k) * ExtraMath.BigFactorial(k);
 				sum += (decimal)t / b;
 #else
-				sum += (decimal)(ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd)) / checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
+				sum += (decimal)(ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd)) /
+					   checked(odd * (1 << k) * ExtraMath.BigFactorial(k));
 #endif
 			}
 			return DecimalOneOfRootOfTwoPi * sum;
+		}
+
+		/// <summary>
+		/// Gauss error function
+		/// </summary>
+		public static double Erf(double z)
+		{
+			return 2 * Normal(z, true) - 1;
+		}
+
+		public static double InverseNormal(double p)
+		{
+			if ((p <= 0) || (p >= 1)) {
+				throw new ArgumentOutOfRangeException("p", p, "Must be between 0 and 1, but neither exactly 0 nor 1.");
+			}
+			if (p == 0.5) {
+				return 0;
+			}
+			return Math.Sqrt(2) * InverseErf(p + p - 1);
+		}
+
+		public static double InverseErf(double z)
+		{
+			// TODO : Replace 2000 with a regression-based heuristic, as it is awfully slow
+			return Integral.Summation(0, 2000,
+#if NETFRAMEWORK
+			 (Converter<int, double>)(k => InverseErfInner(z, k)));
+#else
+			 k => InverseErfInner(z, k));
+#endif
+		}
+
+		private static double InverseErfInner(double z, int k)
+		{
+			var denomExp = k + k + 1;
+			return (Cof(k) / denomExp) * Math.Pow(z * HalfSqrtOfPi, denomExp);
+		}
+
+		private static readonly Dictionary<int, double> CofCache = new Dictionary<int, double>();
+
+		private static double Cof(int k)
+		{
+			double y;
+			if (!CofCache.TryGetValue(k, out y)) {
+				y = k == 0 ? 1 : Integral.Summation(0, k - 1,
+#if NETFRAMEWORK
+				 (Converter<int, double>)(m => CofInner(k, m)));
+#else
+				 m => CofInner(k, m));
+#endif
+				CofCache.Add(k, y);
+#if DEBUG && !NETSTANDARD1_1
+                Console.Error.WriteLine("Cof({0}) => {1}", k, y);
+#endif
+			}
+			return y;
+		}
+
+		private static readonly Dictionary<KeyValuePair<int, int>, double> CofInnerCache =
+		 new Dictionary<KeyValuePair<int, int>, double>();
+
+		private static double CofInner(int k, int m)
+		{
+			double y;
+			if (!CofInnerCache.TryGetValue(new KeyValuePair<int, int>(k, m), out y)) {
+				y = (Cof(m) * Cof(k - 1 - m)) / ((m + 1) * (m + m + 1));
+				CofInnerCache.Add(new KeyValuePair<int, int>(k, m), y);
+#if DEBUG && !NETSTANDARD1_1
+				Console.Error.WriteLine("CofInner(k:{0}, m:{1}) => {2}", k, m, y);
+#endif
+			}
+			return y;
 		}
 		#endregion
 
@@ -173,10 +241,10 @@ namespace Repzilon.Libraries.Core
 		/// <remarks>https://en.wikipedia.org/wiki/Student%27s_t-distribution#Probability_density_function</remarks>
 		private static double FastGammaRatio(byte k)
 		{
-			List<int> numerators = new List<int>(k);
+			List<int> numerators   = new List<int>(k);
 			List<int> denominators = new List<int>(k);
 
-			int c = k % 2; // c means "oddity of k" here
+			int c          = k % 2; // c means "oddity of k" here
 			var multiplier = 1.0 / Math.Sqrt(k) * (c == 0 ? 0.5 : 1 / Math.PI);
 			AddGammaFactors(numerators, k - 1, 3 - c);
 			AddGammaFactors(denominators, k - 2, 2 + c);
@@ -252,7 +320,7 @@ namespace Repzilon.Libraries.Core
 		private static ulong Product(List<int> numbers)
 		{
 			ulong n = 1;
-			var c = numbers.Count;
+			var   c = numbers.Count;
 			for (var i = 0; i < c; i++) {
 #if DEBUG
 				checked {
@@ -304,7 +372,8 @@ namespace Repzilon.Libraries.Core
 			return v >= 0 && x <= 8421501 && (v > x) && (v > y); // The constant is Int32.MaxValue / 255
 		}
 
-		private static double MultiplyByFractions(List<int> numerators, List<int> denominators, double multiplier, int commonCount)
+		private static double MultiplyByFractions(List<int> numerators, List<int> denominators, double multiplier,
+		int commonCount)
 		{
 			for (int i = 0; i < commonCount; i++) {
 				multiplier *= 1.0 * numerators[i] / denominators[i];
@@ -328,7 +397,7 @@ namespace Repzilon.Libraries.Core
 		/// <remarks>It is easier to derivate than to integrate a function</remarks>
 		public static double Logistic(double x, double mean, double scale, bool cumulative)
 		{
-			var expr = Math.Exp((mean - x) / scale); // µ-x is the simplification of -(x-µ)
+			var expr   = Math.Exp((mean - x) / scale); // µ-x is the simplification of -(x-µ)
 			var exprp1 = 1 + expr;
 			return cumulative ? 1.0 / exprp1 : expr / (scale * exprp1 * exprp1);
 		}
@@ -338,7 +407,7 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		public static double Logistic(double x, bool cumulative)
 		{
-			var expr = Math.Exp(-1 * x); // µ-x is the simplification of -(x-µ)
+			var expr   = Math.Exp(-1 * x); // µ-x is the simplification of -(x-µ)
 			var exprp1 = 1 + expr;
 			return cumulative ? 1.0 / exprp1 : expr / (exprp1 * exprp1);
 		}
@@ -369,8 +438,8 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		public static double LogisticV(double x, bool cumulative)
 		{
-			var q = LogisticQ;
-			var expr = Math.Exp(-1 * x / q);
+			var q      = LogisticQ;
+			var expr   = Math.Exp(-1 * x / q);
 			var exprp1 = 1 + expr;
 			return cumulative ? 1.0 / exprp1 : expr / (q * exprp1 * exprp1);
 		}
@@ -395,10 +464,10 @@ namespace Repzilon.Libraries.Core
 				return 0;
 			}
 
-			var karCoefficients = new double[] { -1604.807455978, 3034.534913550, -3199.836649003, 1784.362798192, -411.277107902 };
-			var ps              = (p > 0.5) ? p : 1 - p;
-			var ppowered        = ps;
-			var scaleFactor     = -51.182154067 + 448.687715882 * ps;
+			var karCoefficients = new double[] { -1626.261180160, 3072.876646442, -3237.789795779, 1804.076604321, -415.470964447 };
+			var ps          = (p > 0.5) ? p : 1 - p;
+			var ppowered    = ps;
+			var scaleFactor = -51.944105110 + 454.995902432 * ps;
 			for (int i = 2; i <= 6; i++) {
 				ppowered    *= ps;
 				scaleFactor += karCoefficients[i - 2] * ppowered;
