@@ -181,8 +181,8 @@ namespace Repzilon.Libraries.Core.Vectors
 			 Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree));
 #else
-				Angle().ConvertTo<TOut>(
-					(tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
+		 Angle().ConvertTo<TOut>(
+			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
 #endif
 #endif
 		}
@@ -332,13 +332,21 @@ namespace Repzilon.Libraries.Core.Vectors
 			return Dot(u, v);
 		}
 
+		public static T operator *(TwoDVector<T> u, PolarVector<T> v)
+		{
+			return Dot(u, v.ToCartesian());
+		}
+
 		public static ThreeDVector<T> operator %(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			return Cross(u, v);
 		}
-#endif
 
-		// TODO : implement operators between TwoDVector and PolarVector
+		public static ThreeDVector<T> operator %(TwoDVector<T> u, PolarVector<T> v)
+		{
+			return Cross(u, v.ToCartesian());
+		}
+#endif
 		#endregion
 
 #if !NET20

@@ -213,7 +213,9 @@ namespace Repzilon.Libraries.Core.Vectors
 			var un = Convert.ToDouble(u.Norm);
 			var vn = Convert.ToDouble(v.Norm);
 			var ua = u.Angle;
+			// ReSharper disable JoinDeclarationAndInitializer
 			double us, vs;
+			// ReSharper restore JoinDeclarationAndInitializer
 			var va = v.Angle;
 
 			us = ua.Sin() * un;
@@ -241,9 +243,19 @@ namespace Repzilon.Libraries.Core.Vectors
 			return new TwoDVector<T>(u) - v;
 		}
 
+		public static PolarVector<T> operator *(T k, PolarVector<T> v)
+		{
+			return new PolarVector<T>(GenericArithmetic<T>.BuildMultiplier<T>()(v.Norm, k), v.Angle);
+		}
+
 		public static T operator *(PolarVector<T> u, PolarVector<T> v)
 		{
 			return Vector<T>.Dot(u.Norm, v.Norm, AngleBetween(u, v));
+		}
+
+		public static T operator *(PolarVector<T> u, TwoDVector<T> v)
+		{
+			return u.ToCartesian() * v;
 		}
 #endif
 		#endregion
