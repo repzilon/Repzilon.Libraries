@@ -44,6 +44,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 			dicTests.Add("Calculus", CalculusTest.Run);
 			dicTests.Add("Optics", OpticsTest.Run);
+			dicTests.Add("Normal law", NormalLawTest.Run);
+			dicTests.Add("Student distribution", StudentTest.Run);
 
 #if NET40 || NET35 || NET20
 			TriState enuWorkaroundCygwin = TriState.Unknown;
