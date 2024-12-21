@@ -143,7 +143,7 @@ namespace Repzilon.Libraries.Core
 		{
 			if (iterations < 100) {
 				throw new ArgumentOutOfRangeException("iterations", iterations,
-				 "A minimum of 100 iterations is required to get a reasonable evaluation.");
+				 "At least 100 iterations are needed for a reasonably accurate evaluation.");
 			}
 			//* Not clearing the CofInnerCache worsens performance, strange, but keep that block
 			if (iterations > LastProbitIterationCall) {
@@ -151,12 +151,11 @@ namespace Repzilon.Libraries.Core
 				LastProbitIterationCall = iterations;
 			}// */
 
-			return Integral.Summation(0, iterations,
-#if NETFRAMEWORK
-			 (Converter<int, double>)(k => InverseErfInner(z, k)));
-#else
-			 k => InverseErfInner(z, k));
-#endif
+			double sum = 0;
+			for (short k = 0; k <= iterations; k++) {
+				sum += InverseErfInner(z, k);
+			}
+			return sum;
 		}
 
 		private static double InverseErfInner(double z, int k)
@@ -169,12 +168,8 @@ namespace Repzilon.Libraries.Core
 		{
 			double y;
 			if (!CofCache.TryGetValue(k, out y)) {
-				y = k == 0 ? 1 : Integral.Summation(0, k - 1,
-#if NETFRAMEWORK
-				 (Converter<int, double>)(m => CofInner(k, m)));
-#else
-				 m => CofInner(k, m));
-#endif
+				// For some odd reason, inlining the loop overflows the stack (infinite recursion)
+				y = k == 0 ? 1 : CofSummation(k);
 				CofCache.Add(k, y);
 #if DEBUG && !NETSTANDARD1_1
                 Console.Error.WriteLine("Cof({0}) => {1}", k, y);
@@ -183,10 +178,19 @@ namespace Repzilon.Libraries.Core
 			return y;
 		}
 
+		private static double CofSummation(int k)
+		{
+			double sum = 0;
+			for (var m = 0; m < k; m++) {
+				sum += CofInner(k, m);
+			}
+			return sum;
+		}
+
 		private static double CofInner(int k, int m)
 		{
 			double y;
-			//var    key = new KeyValuePair<int, int>(k, m); // the old slow key
+			//var key = new KeyValuePair<int, int>(k, m); // the old slow key
 			var key = ((k & 0xffff) << 16) + (m & 0xffff); // faster fused key
 			if (!CofInnerCache.TryGetValue(key, out y)) {
 				y = (Cof(m) * Cof(k - 1 - m)) / ((m + 1) * (m + m + 1));
@@ -202,15 +206,12 @@ namespace Repzilon.Libraries.Core
 		{
 			// y = 7.11205958920323E-08 * 2.3728989222748465E+20^x when x = |p - 0,5| r=0.9558390020733
 			// y = 101.10969288831151 * 1.002920261461875^x when x is 1st iteration count estimate r=0.9976394358234
+			const double kLogFac = (-1.0 / 2.3) * 1362 / 866;
 			var x = Math.Abs(p - 0.5);
 			var y = 7.11205958920323E-08 * Math.Pow(2.3728989222748465E+20, x);
-			if (RoundOff.Error(x - 0.49) > 0) {
-				const double kLogFac = (-1.0 / 2.3) * 1362 / 866;
-				return Convert.ToInt16(y * Math.Log10(0.5 - x) * kLogFac);
-			} else {
-				var y2 = 101.10969288831151 * Math.Pow(1.002920261461875, y);
-				return Math.Max((short)100, Convert.ToInt16(Math.Max(y, y2)));
-			}
+			return RoundOff.Error(x - 0.49) > 0 ?
+			 Convert.ToInt16(y * Math.Log10(0.5 - x) * kLogFac) :
+			 Math.Max((short)100, Convert.ToInt16(Math.Max(y, 101.10969288831151 * Math.Pow(1.002920261461875, y))));
 		}
 		#endregion
 
@@ -492,6 +493,7 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
+		// TODO : better modeling for shaping logit(p) into almost probit(p)
 		public static double InverseNormalEstimate(double p)
 		{
 			if ((p <= 0) || (p >= 1)) {
