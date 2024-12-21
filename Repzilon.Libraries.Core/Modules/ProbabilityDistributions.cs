@@ -25,6 +25,11 @@ namespace Repzilon.Libraries.Core
 		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 		private static readonly double HalfSqrtOfPi = 0.5 * Math.Sqrt(Math.PI);
 
+		private static short LastProbitIterationCall = 0;
+		private static readonly Dictionary<int, double> CofCache = new Dictionary<int, double>();
+		// The Int32 key is 2 Int16 fused together
+		private static readonly Dictionary<int, double> CofInnerCache = new Dictionary<int, double>();
+
 		public static double Normal(double x, double mean, double standardDeviation, bool cumulative)
 		{
 			if (standardDeviation <= 0) {
@@ -114,19 +119,39 @@ namespace Repzilon.Libraries.Core
 
 		public static double InverseNormal(double p)
 		{
+			return InverseNormal(p, IterationsForInverse(p));
+		}
+
+		public static double InverseNormal(double p, short iterations)
+		{
 			if ((p <= 0) || (p >= 1)) {
-				throw new ArgumentOutOfRangeException("p", p, "Must be between 0 and 1, but neither exactly 0 nor 1.");
+				throw new ArgumentOutOfRangeException("p", p,
+				 "Must be between 0 and 1, but neither exactly 0 nor 1.");
 			}
 			if (p == 0.5) {
 				return 0;
 			}
-			return Math.Sqrt(2) * InverseErf(p + p - 1);
+			return Math.Sqrt(2) * InverseErf(p + p - 1, iterations);
 		}
 
-		public static double InverseErf(double z)
+		public static double InverseErf(double p)
 		{
-			// TODO : Replace 2000 with a regression-based heuristic, as it is awfully slow
-			return Integral.Summation(0, 2000,
+			return InverseErf(p, IterationsForInverse(p));
+		}
+
+		public static double InverseErf(double z, short iterations)
+		{
+			if (iterations < 100) {
+				throw new ArgumentOutOfRangeException("iterations", iterations,
+				 "A minimum of 100 iterations is required to get a reasonable evaluation.");
+			}
+			//* Not clearing the CofInnerCache worsens performance, strange, but keep that block
+			if (iterations > LastProbitIterationCall) {
+				CofInnerCache.Clear();
+				LastProbitIterationCall = iterations;
+			}// */
+
+			return Integral.Summation(0, iterations,
 #if NETFRAMEWORK
 			 (Converter<int, double>)(k => InverseErfInner(z, k)));
 #else
@@ -139,8 +164,6 @@ namespace Repzilon.Libraries.Core
 			var denomExp = k + k + 1;
 			return (Cof(k) / denomExp) * Math.Pow(z * HalfSqrtOfPi, denomExp);
 		}
-
-		private static readonly Dictionary<int, double> CofCache = new Dictionary<int, double>();
 
 		private static double Cof(int k)
 		{
@@ -160,20 +183,34 @@ namespace Repzilon.Libraries.Core
 			return y;
 		}
 
-		private static readonly Dictionary<KeyValuePair<int, int>, double> CofInnerCache =
-		 new Dictionary<KeyValuePair<int, int>, double>();
-
 		private static double CofInner(int k, int m)
 		{
 			double y;
-			if (!CofInnerCache.TryGetValue(new KeyValuePair<int, int>(k, m), out y)) {
+			//var    key = new KeyValuePair<int, int>(k, m); // the old slow key
+			var key = ((k & 0xffff) << 16) + (m & 0xffff); // faster fused key
+			if (!CofInnerCache.TryGetValue(key, out y)) {
 				y = (Cof(m) * Cof(k - 1 - m)) / ((m + 1) * (m + m + 1));
-				CofInnerCache.Add(new KeyValuePair<int, int>(k, m), y);
+				CofInnerCache.Add(key, y);
 #if DEBUG && !NETSTANDARD1_1
 				Console.Error.WriteLine("CofInner(k:{0}, m:{1}) => {2}", k, m, y);
 #endif
 			}
 			return y;
+		}
+
+		public static short IterationsForInverse(double p)
+		{
+			// y = 7.11205958920323E-08 * 2.3728989222748465E+20^x when x = |p - 0,5| r=0.9558390020733
+			// y = 101.10969288831151 * 1.002920261461875^x when x is 1st iteration count estimate r=0.9976394358234
+			var x = Math.Abs(p - 0.5);
+			var y = 7.11205958920323E-08 * Math.Pow(2.3728989222748465E+20, x);
+			if (RoundOff.Error(x - 0.49) > 0) {
+				const double kLogFac = (-1.0 / 2.3) * 1362 / 866;
+				return Convert.ToInt16(y * Math.Log10(0.5 - x) * kLogFac);
+			} else {
+				var y2 = 101.10969288831151 * Math.Pow(1.002920261461875, y);
+				return Math.Max((short)100, Convert.ToInt16(Math.Max(y, y2)));
+			}
 		}
 		#endregion
 
