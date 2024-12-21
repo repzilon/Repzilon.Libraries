@@ -22,10 +22,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			Console.WriteLine("Distributions de Student");
 			const int kStudentLoop = (300 - -300 + 1) * (255 - 1 + 1);
+			int k, x;
+			double z;
 			var dtmStart = DateTime.UtcNow;
-			for (var x = -300; x <= 300; x++) {
-				var z = RoundOff.Error(x * 0.01);
-				for (var k = 1; k <= 255; k++) {
+			for (x = -300; x <= 300; x++) {
+				z = RoundOff.Error(x * 0.01);
+				for (k = 1; k <= 255; k++) {
 					try {
 						var t = ProbabilityDistributions.Student(z, (byte)k, false);
 					} catch (OverflowException exO) {
@@ -42,25 +44,46 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Implémentation accélérée de GammaRatio : {0,6:n0} Hz", kStudentLoop / tsNew.TotalSeconds);
 
 			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
-			int i;
-			Console.Write("x    ");
-			for (i = 0; i < karLiberties.Length; i++) {
-				Console.Write(" k={0,-6}", karLiberties[i]);
-			}
-			Console.Write(Environment.NewLine);
-			for (var x = -30; x <= 30; x++) {
-				var z = RoundOff.Error(x * 0.1);
-				if (x >= 0) {
-					Console.Write(' ');
+			TenthTableHeader(" k={0,-6}", karLiberties);
+			for (x = -30; x <= 30; x++) {
+				z = TenthTableLineHeader(x);
+				for (k = 0; k < karLiberties.Length; k++) {
+					Console.Write(" {0:f6}",
+					 ProbabilityDistributions.Student(z, karLiberties[k], false));
 				}
-				Console.Write(z.ToString("f1"));
-				Console.Write(' ');
-				for (i = 0; i < karLiberties.Length; i++) {
-					Console.Write(" {0:f6}", ProbabilityDistributions.Student(z, karLiberties[i], false));
+				Console.Write(Environment.NewLine);
+			}
+
+			Console.WriteLine("Intégrales de Student de faibles degrés de liberté");
+			TenthTableHeader(" k={0} S      k={0} C     ", 1, 2, 3, 4, 5);
+			for (x = -30; x <= 30; x++) {
+				z = TenthTableLineHeader(x);
+				for (k = 1; k <= 5; k++) {
+					Console.Write(" {0:f8} {1:f8}", ProbabilityDistributions.Student(z, (byte)k, true),
+					 ProbabilityDistributions.CumulativeStudent(z, (byte)k));
 				}
 				Console.Write(Environment.NewLine);
 			}
 		}
+
+		private static void TenthTableHeader(string format, params byte[] liberties)
+		{
+			Console.Write("x    ");
+			for (int i = 0; i < liberties.Length; i++) {
+				Console.Write(format, liberties[i]);
+			}
+			Console.Write(Environment.NewLine);
+		}
+
+		private static double TenthTableLineHeader(int x)
+		{
+			var z = RoundOff.Error(x * 0.1);
+			if (x >= 0) {
+				Console.Write(' ');
+			}
+			Console.Write(z.ToString("f1"));
+			Console.Write(' ');
+			return z;
+		}
 	}
 }
-

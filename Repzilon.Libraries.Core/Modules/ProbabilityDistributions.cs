@@ -240,6 +240,36 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		public static double CumulativeStudent(double t, byte liberties)
+		{
+			/*const*/ double kHalf = 0.5;
+			/*const*/ double kOne = 1;
+			double dblOnePlusFractionOfTSquared, dblTOverSqrtNu;
+			/*const*/ double kOneOfPi = 1.0 / Math.PI; // not to be replaced by kOne, bigger and slower
+			if (liberties > 5) {
+				return t < 0 ? kHalf - SimpsonForStudent(-1 * t, liberties) : kHalf + SimpsonForStudent(t, liberties);
+			} else if (liberties == 1) {
+				return kHalf + kOneOfPi * Math.Atan(t);
+			} else if (liberties < 1) {
+				throw new ArgumentOutOfRangeException("liberties", liberties,
+				 "A Student distribution of 0 levels of liberty does not exist.");
+			} else {
+				dblOnePlusFractionOfTSquared = RoundOff.Error(kOne + (t * t / liberties));
+				dblTOverSqrtNu = t / Math.Sqrt(liberties);
+				if (liberties == 5) {
+					var dblReciprocal = kOne / dblOnePlusFractionOfTSquared;
+					/*const*/ double kTwoThirds = 2.0 / 3.0;
+					return kHalf + kOneOfPi * (dblTOverSqrtNu * dblReciprocal * (kOne + kTwoThirds * dblReciprocal) + Math.Atan(dblTOverSqrtNu));
+				} else if (liberties == 4) {
+					return kHalf + 0.375 * (t / Math.Sqrt(dblOnePlusFractionOfTSquared)) * (kOne - ((t * t) / (12 * dblOnePlusFractionOfTSquared)));
+				} else if (liberties == 3) {
+					return kHalf + kOneOfPi * (dblTOverSqrtNu / (kOne + (t * t / 3)) + Math.Atan(dblTOverSqrtNu));
+				} else { // liberties == 2
+					return kHalf + (t / (Math.Sqrt(8) * Math.Sqrt(dblOnePlusFractionOfTSquared)));
+				}
+			}
+		}
+
 		private static double SimpsonForStudent(double b, byte k)
 		{
 			const double kOneThird = 1.0 / 3;
