@@ -148,6 +148,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}// */
 			rm = RegressionModel.Compute(ptdarProbitIter2);
 			Console.WriteLine("{0} quand x est la 1re estimation d'itérations r={1}", rm, rm.R);
+
+			probit = ProbabilityDistributions.InverseNormal(RoundOff.Error(0.995)) /
+			 ProbabilityDistributions.InverseLogistic(RoundOff.Error(0.995));
+			p = (Math.Log10(probit / Math.Sqrt(0.125 * Math.PI)) / -2) / RoundOff.Error(0.495);
+			Console.WriteLine("Valeur candidate pour la pente de la puissance du facteur logit -> probit: m={0}", p);
 		}
 
 		private static double ExponentialSeries(double x)

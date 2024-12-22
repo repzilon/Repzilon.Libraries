@@ -524,23 +524,19 @@ namespace Repzilon.Libraries.Core
 		// TODO : better modeling for shaping logit(p) into almost probit(p)
 		public static double InverseNormalEstimate(double p)
 		{
-			if ((p <= 0) || (p >= 1)) {
+			/*const*/ double kZero = 0;
+			/*const*/ double kHalf = 0.5;
+			/*const*/ double kOne = 1;
+			if ((p <= kZero) || (p >= kOne)) {
 				throw new ArgumentOutOfRangeException("p", p, "Must be between 0 and 1, but neither exactly 0 nor 1.");
 			}
-			if (p == 0.5) {
-				return 0;
+			if (p == kHalf) {
+				return kZero;
 			}
 
-			var karCoefficients = new double[] { -1626.261180160, 3072.876646442, -3237.789795779, 1804.076604321, -415.470964447 };
-			var ps          = (p > 0.5) ? p : 1 - p;
-			var ppowered    = ps;
-			var scaleFactor = -51.944105110 + 454.995902432 * ps;
-			for (int i = 2; i <= 6; i++) {
-				ppowered    *= ps;
-				scaleFactor += karCoefficients[i - 2] * ppowered;
-			}
-
-			return InverseLogistic(p) * scaleFactor;
+			// =(($H3*2)^(0,11318402*(0,5-H3) -0,000074265587))*RACINE(0,125*PI())
+			var h = p > kHalf ? kOne - p : p;
+			return InverseLogistic(p) * Math.Pow(h * 2, 0.11318402 * (kHalf - h) - 0.000074265587) * Math.Sqrt(0.125 * Math.PI);
 		}
 	}
 }
