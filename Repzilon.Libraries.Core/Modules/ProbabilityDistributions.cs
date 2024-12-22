@@ -486,12 +486,12 @@ namespace Repzilon.Libraries.Core
 		/// <param name="scale">Scale factor of the distribution</param>
 		public static double InverseLogistic(double p, double mean, double scale)
 		{
-			return mean + scale * InverseLogistic(p); // Math.Log(x) is ln(x)
+			return mean + scale * InverseLogistic(p);
 		}
 
 		public static double InverseLogistic(double p)
 		{
-			return Math.Log(p / (1 - p));
+			return Math.Log(p / (1 - p)); // Math.Log(x) is ln(x)
 		}
 
 		public static double LogisticV(double x, double mean, double standardDeviation, bool cumulative)

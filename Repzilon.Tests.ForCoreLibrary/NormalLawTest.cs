@@ -1,5 +1,5 @@
 ﻿//
-//  DistributionTest.cs
+//  NormalLawTest.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -425,4 +425,3 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 	}
 }
-
