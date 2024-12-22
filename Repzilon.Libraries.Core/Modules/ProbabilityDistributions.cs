@@ -521,7 +521,6 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
-		// TODO : better modeling for shaping logit(p) into almost probit(p)
 		public static double InverseNormalEstimate(double p)
 		{
 			/*const*/ double kZero = 0;
@@ -534,9 +533,10 @@ namespace Repzilon.Libraries.Core
 				return kZero;
 			}
 
-			// =(($H3*2)^(0,11318402*(0,5-H3) -0,000074265587))*RACINE(0,125*PI())
+			// A regression based formula in Excel =(($H3*2)^(0,11318402*(0,5-H3) -0,000074265587))*RACINE(0,125*PI())
+			// was the basis, but the following is simpler and more accurate for estimating confidence intervals.
 			var h = p > kHalf ? kOne - p : p;
-			return InverseLogistic(p) * Math.Pow(h * 2, 0.11318402 * (kHalf - h) - 0.000074265587) * Math.Sqrt(0.125 * Math.PI);
+			return InverseLogistic(p) * Math.Pow(h * 2, 0.11094926023442243 * (kHalf - h)) * Math.Sqrt(0.125 * Math.PI);
 		}
 	}
 }
