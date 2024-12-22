@@ -225,10 +225,8 @@ namespace Repzilon.Libraries.Core
 					return 0;
 				} else if (Double.IsPositiveInfinity(x)) {
 					return 1;
-				} else if (x < 0) {
-					return 0.5 - SimpsonForStudent(-1 * x, liberties);
 				} else {
-					return 0.5 + SimpsonForStudent(x, liberties);
+					return CumulativeStudent(x, liberties);
 				}
 			} else {
 #if DEBUG
