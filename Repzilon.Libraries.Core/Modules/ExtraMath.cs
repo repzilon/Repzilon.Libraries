@@ -16,9 +16,17 @@ using System.Collections.Generic;
 
 namespace Repzilon.Libraries.Core
 {
+	public enum StirlingMode : byte
+	{
+		Raw,
+		Rounded,
+		Corrected
+	}
+
 	public static class ExtraMath
 	{
 		public const decimal Pi = 3.141592653589793238462643383327950m;
+		public const decimal E = 2.71828182845904523536028747135266249775724709369995957496696762772407663035m;
 
 		/// <summary>
 		/// Solves a quadratic equation axx + bx + c = 0 .
@@ -109,14 +117,23 @@ namespace Repzilon.Libraries.Core
 		}
 
 		[CLSCompliant(false)]
-		public static double Pow(byte b, sbyte e)
+		public static double Pow(byte radix, sbyte exponent)
 		{
-			var ae = Math.Abs(e);
+			var ae = Math.Abs(exponent);
 			long r = 1;
 			for (var i = 1; i <= ae; i++) {
-				r *= b;
+				r *= radix;
 			}
-			return (e > 0) ? r : 1.0 / r;
+			return (exponent > 0) ? r : 1.0 / r;
+		}
+
+		private static decimal Pow(decimal radix, byte exponent)
+		{
+			decimal power = 1;
+			for (byte i = 1; i <= exponent; i++) {
+				power *= radix;
+			}
+			return power;
 		}
 
 		/// <summary>
@@ -175,9 +192,47 @@ namespace Repzilon.Libraries.Core
 			return n > 20 ? BigFactorialCore(n) : Factorial(n);
 		}
 
-		public static double StirlingApproximateFactorial(byte n)
+		public static decimal StirlingApproximateFactorial(byte n, StirlingMode mode)
 		{
-			return Math.Round(Math.Sqrt(2 * Math.PI * n) * Math.Pow(n / Math.E, n));
+			if (n > 27) {
+				throw new ArgumentOutOfRangeException("n", n, "The factorial of 28 overflows a decimal.");
+			}
+			var value = Sqrt(2 * Pi * n) * Pow(n / E, n);
+			if (mode >= StirlingMode.Rounded) {
+				value = n > 1 ? RoundToMultiple(value, 2) : n;
+			}
+			if ((n > 4) && (mode >= StirlingMode.Corrected)) {
+				// The regression was built with rounding to unit applied instead of multiple of 2.
+				value = RoundToMultiple(value * 1.02640407335314m * (decimal)Math.Pow(n, -0.0073060504686907103980413362), 2);
+			}
+			return value;
+		}
+
+		public static double StirlingApproximateFactorial(double n, StirlingMode mode)
+		{
+			var value = Math.Sqrt(2 * Math.PI * n) * Math.Pow(n / Math.E, n);
+			var blnNisInteger = Math.Round(n) == n;
+			if (blnNisInteger && (mode >= StirlingMode.Rounded)) {
+				value = n > 1 ? RoundToMultiple(value, 2) : n;
+			}
+			if ((!blnNisInteger || (n > 4)) && (mode >= StirlingMode.Corrected)) {
+				// The regression was built with rounding to unit applied instead of multiple of 2.
+				value = value * 1.02640407335314 * Math.Pow(n, -0.0073060504686907103980413362);
+				if (blnNisInteger) {
+					value = RoundToMultiple(value, 2);
+				}
+			}
+			return value;
+		}
+
+		public static double RoundToMultiple(double value, int multiple)
+		{
+			return Math.Round(value / multiple, MidpointRounding.ToEven) * multiple;
+		}
+
+		public static decimal RoundToMultiple(decimal value, int multiple)
+		{
+			return Math.Round(value / multiple, MidpointRounding.ToEven) * multiple;
 		}
 
 		/// <summary>

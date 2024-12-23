@@ -19,15 +19,13 @@ using System.Linq;
 #endif
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Regression;
-using Coordinate = System.Double;
-using Measure = Repzilon.Libraries.Core.PointD;
 // ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class LinearRegressionTest
 	{
-		private const byte MaxFactorial = 20;
+		private const byte MaxFactorial = 27;
 
 		internal static void Run(string[] args)
 		{
@@ -217,38 +215,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 
 			OutputHeading("Factorial (1 to " + MaxFactorial + ")");
-			var factorialSuite = new List<Measure>(MaxFactorial);
-			var lstA = new List<Measure>(MaxFactorial);
-			var lstB = new List<Measure>(MaxFactorial);
-
+			var factorialSuite = new List<PointM>(MaxFactorial);
 			for (byte i = 1; i <= MaxFactorial; i++) {
-				var pt = new Measure(i, ExtraMath.Factorial(i));
-				factorialSuite.Add(pt);
-				Console.WriteLine("{0}! is {1}", pt.X, pt.Y);
-				if (i > 1) {
-					var rm = RegressionModel.Compute(factorialSuite);
-					OutputRegressionModel(rm);
-					if (rm.Model == MathematicalModel.Exponential) {
-						lstA.Add(new Measure(i, rm.A));
-						lstB.Add(new Measure(i, rm.B));
-					}
-					if (i == MaxFactorial) {
-						for (byte j = 1; j <= MaxFactorial; j++) {
-							OutputFactorialEstimate(j, rm.A * Math.Pow(rm.B, j));
-						}
-					}
+				var exact = ExtraMath.BigFactorial(i);
+				var approximative = ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Rounded);
+				if (approximative != exact) {
+					factorialSuite.Add(new PointM(i, exact / approximative));
 				}
+				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, exact, approximative);
 			}
-			var rmA = RegressionModel.Compute(lstA);
-			var rmB = RegressionModel.Compute(lstB);
-			OutputRegressionModel(rmA);
-			OutputRegressionModel(rmB);
-			Console.WriteLine("n! ≈ ({0} * {1}^n) * ({2} + {3}n)^n", rmA.A, rmA.B, rmB.A, rmB.B);
-			var rmC = FindFactorialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB));
-			OutputRegressionModel(rmC);
-			Console.WriteLine("n! ≈ ({0} * {1}^n) * ({2} + {3}n)^n * ({4} * {5}^n)",
-			 rmA.A, rmA.B, rmB.A, rmB.B, rmC.A, rmC.B);
-			OutputRegressionModel(FindFactorialApproximationCorrection(n => EstimateFactorial(n, rmA, rmB, rmC)));
+			OutputRegressionModel(RegressionModel.Compute(factorialSuite));
+			for (byte i = 1; i <= MaxFactorial; i++) {
+				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, ExtraMath.BigFactorial(i),
+				 ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Corrected));
+			}
+			Console.WriteLine("28! ≈ {0,39:n0}", ExtraMath.StirlingApproximateFactorial(28.0, StirlingMode.Corrected));
 		}
 
 #if !NET20
@@ -267,39 +248,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 #endif
-
-#if NETFRAMEWORK
-		private static RegressionModel<Coordinate> FindFactorialApproximationCorrection(Converter<byte, Coordinate> estimateFactorial)
-#else
-		private static RegressionModel<Coordinate> FindFactorialApproximationCorrection(Func<byte, Coordinate> estimateFactorial)
-#endif
-		{
-			var lstC = new List<Measure>(MaxFactorial);
-			for (byte i = 1; i <= MaxFactorial; i++) {
-				Coordinate nbang = estimateFactorial(i);
-				lstC.Add(new Measure(i, ExtraMath.Factorial(i) / nbang));
-				OutputFactorialEstimate(i, nbang);
-			}
-			return RegressionModel.Compute(lstC);
-		}
-
-		private static void OutputFactorialEstimate(byte n, Coordinate estimate)
-		{
-			Console.WriteLine("{0,2}! is {1,25:n0} ≈ {2,25:n0} ≈ {3,25:n0} ", n,
-			 ExtraMath.Factorial(n), Math.Round(estimate), ExtraMath.StirlingApproximateFactorial(n));
-		}
-
-		private static Coordinate EstimateFactorial(byte i, RegressionModel<Coordinate> rmA,
-		RegressionModel<Coordinate> rmB)
-		{
-			return rmA.A * Math.Pow(rmA.B, i) * Math.Pow(rmB.A + (rmB.B * i), i);
-		}
-
-		private static Coordinate EstimateFactorial(byte i, RegressionModel<Coordinate> rmA,
-		RegressionModel<Coordinate> rmB, RegressionModel<Coordinate> rmC)
-		{
-			return rmA.A * Math.Pow(rmA.B, i) * Math.Pow(rmB.A + (rmB.B * i), i) * rmC.A * Math.Pow(rmC.B, i);
-		}
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp, TStorage studentLawValue,
 		string numberFormat, bool checkBiases, TStorage? xForYExtrapolation, TStorage? yForXExtrapolation)
@@ -410,17 +358,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
 		}
-
-#if false
-		private static decimal Pow(decimal basis, byte exponent)
-		{
-			decimal power = 1;
-			for (byte i = 1; i <= exponent; i++) {
-				power *= basis;
-			}
-			return power;
-		}
-#endif
 
 		private static void OutputHeading(string text)
 		{
