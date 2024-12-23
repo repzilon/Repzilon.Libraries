@@ -175,6 +175,11 @@ namespace Repzilon.Libraries.Core
 			return n > 20 ? BigFactorialCore(n) : Factorial(n);
 		}
 
+		public static double StirlingApproximateFactorial(byte n)
+		{
+			return Math.Round(Math.Sqrt(2 * Math.PI * n) * Math.Pow(n / Math.E, n));
+		}
+
 		/// <summary>
 		/// Faster alternative to Math.Pow(-1, k) when k is an integer
 		/// </summary>

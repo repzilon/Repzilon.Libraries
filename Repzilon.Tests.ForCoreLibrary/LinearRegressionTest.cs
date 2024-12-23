@@ -19,12 +19,16 @@ using System.Linq;
 #endif
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Regression;
+using Coordinate = System.Double;
+using Measure = Repzilon.Libraries.Core.PointD;
 // ReSharper disable InconsistentNaming
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class LinearRegressionTest
 	{
+		private const byte MaxFactorial = 20;
+
 		internal static void Run(string[] args)
 		{
 			const double kTalpha0_025n4 = 2.77645;
@@ -212,25 +216,25 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputAgaroseRetention("9  :", 97);
 #endif
 
-			OutputHeading("Factorial (1 to 16)");
-			var factorialSuite = new List<PointM>(16);
-			var lstA = new List<PointM>(16);
-			var lstB = new List<PointM>(16);
+			OutputHeading("Factorial (1 to " + MaxFactorial + ")");
+			var factorialSuite = new List<Measure>(MaxFactorial);
+			var lstA = new List<Measure>(MaxFactorial);
+			var lstB = new List<Measure>(MaxFactorial);
 
-			for (byte i = 1; i <= 16; i++) {
-				var pt = new PointM(i, ExtraMath.Factorial(i));
+			for (byte i = 1; i <= MaxFactorial; i++) {
+				var pt = new Measure(i, ExtraMath.Factorial(i));
 				factorialSuite.Add(pt);
 				Console.WriteLine("{0}! is {1}", pt.X, pt.Y);
 				if (i > 1) {
 					var rm = RegressionModel.Compute(factorialSuite);
 					OutputRegressionModel(rm);
 					if (rm.Model == MathematicalModel.Exponential) {
-						lstA.Add(new PointM(i, rm.A));
-						lstB.Add(new PointM(i, rm.B));
+						lstA.Add(new Measure(i, rm.A));
+						lstB.Add(new Measure(i, rm.B));
 					}
-					if (i == 16) {
-						for (byte j = 1; j <= 16; j++) {
-							OutputFactorialEstimate(j, rm.A * Pow(rm.B, j));
+					if (i == MaxFactorial) {
+						for (byte j = 1; j <= MaxFactorial; j++) {
+							OutputFactorialEstimate(j, rm.A * Math.Pow(rm.B, j));
 						}
 					}
 				}
@@ -265,33 +269,36 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 
 #if NETFRAMEWORK
-		private static RegressionModel<decimal> FindFactorialApproximationCorrection(Converter<byte, decimal> estimateFactorial)
+		private static RegressionModel<Coordinate> FindFactorialApproximationCorrection(Converter<byte, Coordinate> estimateFactorial)
 #else
-		private static RegressionModel<decimal> FindFactorialApproximationCorrection(Func<byte, decimal> estimateFactorial)
+		private static RegressionModel<Coordinate> FindFactorialApproximationCorrection(Func<byte, Coordinate> estimateFactorial)
 #endif
 		{
-			var lstC = new List<PointM>(16);
-			for (byte i = 1; i <= 16; i++) {
-				decimal nbang = estimateFactorial(i);
-				lstC.Add(new PointM(i, ExtraMath.Factorial(i) / nbang));
+			var lstC = new List<Measure>(MaxFactorial);
+			for (byte i = 1; i <= MaxFactorial; i++) {
+				Coordinate nbang = estimateFactorial(i);
+				lstC.Add(new Measure(i, ExtraMath.Factorial(i) / nbang));
 				OutputFactorialEstimate(i, nbang);
 			}
 			return RegressionModel.Compute(lstC);
 		}
 
-		private static void OutputFactorialEstimate(byte n, decimal estimate)
+		private static void OutputFactorialEstimate(byte n, Coordinate estimate)
 		{
-			Console.WriteLine("{0,2}! is {1,18:n0} ≈ {2,34:n15}", n, ExtraMath.Factorial(n), estimate);
+			Console.WriteLine("{0,2}! is {1,25:n0} ≈ {2,25:n0} ≈ {3,25:n0} ", n,
+			 ExtraMath.Factorial(n), Math.Round(estimate), ExtraMath.StirlingApproximateFactorial(n));
 		}
 
-		private static decimal EstimateFactorial(byte i, RegressionModel<decimal> rmA, RegressionModel<decimal> rmB)
+		private static Coordinate EstimateFactorial(byte i, RegressionModel<Coordinate> rmA,
+		RegressionModel<Coordinate> rmB)
 		{
-			return rmA.A * Pow(rmA.B, i) * Pow(rmB.A + (rmB.B * i), i);
+			return rmA.A * Math.Pow(rmA.B, i) * Math.Pow(rmB.A + (rmB.B * i), i);
 		}
 
-		private static decimal EstimateFactorial(byte i, RegressionModel<decimal> rmA, RegressionModel<decimal> rmB, RegressionModel<decimal> rmC)
+		private static Coordinate EstimateFactorial(byte i, RegressionModel<Coordinate> rmA,
+		RegressionModel<Coordinate> rmB, RegressionModel<Coordinate> rmC)
 		{
-			return rmA.A * Pow(rmA.B, i) * Pow(rmB.A + (rmB.B * i), i) * rmC.A * Pow(rmC.B, i);
+			return rmA.A * Math.Pow(rmA.B, i) * Math.Pow(rmB.A + (rmB.B * i), i) * rmC.A * Math.Pow(rmC.B, i);
 		}
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp, TStorage studentLawValue,
@@ -404,6 +411,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
 		}
 
+#if false
 		private static decimal Pow(decimal basis, byte exponent)
 		{
 			decimal power = 1;
@@ -412,6 +420,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			return power;
 		}
+#endif
 
 		private static void OutputHeading(string text)
 		{
