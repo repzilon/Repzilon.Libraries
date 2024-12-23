@@ -27,7 +27,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
-			const double kTalpha0_025n4 = 2.7764;
+			const double kTalpha0_025n4 = 2.77645;
 
 			var lrp = LinearRegression.Compute(
 				new PointD(2.00, 2.1),
@@ -208,8 +208,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputAgaroseRetention("3B :", 27491, 9416, 6682, 2322, 2024, 564);
 			OutputAgaroseRetention("6A :", 247, 280, 393, 234);
 			OutputAgaroseRetention("6B :", 525);
-			OutputAgaroseRetention("8 :", 2997, 647);
-			OutputAgaroseRetention("9 :", 97);
+			OutputAgaroseRetention("8  :", 2997, 647);
+			OutputAgaroseRetention("9  :", 97);
 #endif
 
 			OutputHeading("Factorial (1 to 16)");
@@ -250,9 +250,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 #if !NET20
 		private static void OutputAgaroseRetention(string heading, params short[] fragmentLengths)
 		{
-			Console.WriteLine(heading);
 			var agars = MolecularBiology.AgaroseConcentration(fragmentLengths);
+			Console.Write(heading);
+			if (agars.Length != 1) {
+				Console.Write(Environment.NewLine);
+			}
 			for (int i = 0; i < agars.Length; i++) {
+				if (!String.IsNullOrEmpty(heading)) {
+					Console.Write('\t');
+				}
 				Console.WriteLine(agars[i]);
 			}
 		}
@@ -340,7 +346,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (yForXExtrapolation.HasValue) {
 				var yc = yForXExtrapolation.Value;
 				OutputXExtrapolation(lrp, studentLawValue, numberFormat, ciCu, yc, 5, b);
-
 			}
 #endif
 		}
