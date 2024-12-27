@@ -124,10 +124,7 @@ namespace Repzilon.Libraries.Core
 
 		public static double InverseNormal(double p, short iterations)
 		{
-			if ((p <= 0) || (p >= 1)) {
-				throw new ArgumentOutOfRangeException("p", p,
-				 "Must be between 0 and 1, but neither exactly 0 nor 1.");
-			}
+			InverseCheck(p);
 			if (p == 0.5) {
 				return 0;
 			}
@@ -249,8 +246,7 @@ namespace Repzilon.Libraries.Core
 			} else if (liberties == 1) {
 				return kHalf + kOneOfPi * Math.Atan(t);
 			} else if (liberties < 1) {
-				throw new ArgumentOutOfRangeException("liberties", liberties,
-				 "A Student distribution of 0 levels of liberty does not exist.");
+				throw NewZeroLibertyStudentException(liberties);
 			} else {
 				dblOnePlusFractionOfTSquared = RoundOff.Error(kOne + (t * t / liberties));
 				dblTOverSqrtNu = t / Math.Sqrt(liberties);
@@ -446,6 +442,36 @@ namespace Repzilon.Libraries.Core
 			}
 			return multiplier;
 		}
+
+		public static double InverseStudent(double p, byte liberties)
+		{
+			/*const*/ double kHalf = 0.5;
+			/*const*/ double kOne = 1;
+			InverseCheck(p);
+			if (p == kHalf) {
+				return 0;
+			}
+			double inter;
+			if (liberties < 1) {
+				throw NewZeroLibertyStudentException(liberties);
+			} else if (liberties == 1) {
+				return Math.Tan(Math.PI * (p - kHalf));
+			} else if (liberties == 2) {
+				inter = p + p - kOne;
+				return Math.Sign(p - kHalf) * Math.Sqrt((-1 * inter * inter) / (2 * p * (p - kOne)));
+			} else if (liberties == 4) {
+				inter = 2 * Math.Sqrt(p * (kOne - p));
+				return Math.Sign(p - kHalf) * 2 * Math.Sqrt((Math.Cos(1.0 / 3 * Math.Acos(inter)) / inter) - kOne);
+			} else {
+				throw new NotSupportedException("Inverse Student currently supports 1, 2 or 4 degrees of liberty only.");
+			}
+		}
+
+		private static ArgumentOutOfRangeException NewZeroLibertyStudentException(byte liberties)
+		{
+			return new ArgumentOutOfRangeException("liberties", liberties,
+			 "A Student distribution of 0 degrees of liberty does not exist.");
+		}
 		#endregion
 
 		#region Logistic distribution
@@ -523,20 +549,24 @@ namespace Repzilon.Libraries.Core
 
 		public static double InverseNormalEstimate(double p)
 		{
-			/*const*/ double kZero = 0;
 			/*const*/ double kHalf = 0.5;
-			/*const*/ double kOne = 1;
-			if ((p <= kZero) || (p >= kOne)) {
-				throw new ArgumentOutOfRangeException("p", p, "Must be between 0 and 1, but neither exactly 0 nor 1.");
-			}
+			InverseCheck(p);
 			if (p == kHalf) {
-				return kZero;
+				return 0;
 			}
 
 			// A regression based formula in Excel =(($H3*2)^(0,11318402*(0,5-H3) -0,000074265587))*RACINE(0,125*PI())
 			// was the basis, but the following is simpler and more accurate for estimating confidence intervals.
-			var h = p > kHalf ? kOne - p : p;
+			var h = p > kHalf ? 1 - p : p;
 			return InverseLogistic(p) * Math.Pow(h * 2, 0.11094926023442243 * (kHalf - h)) * Math.Sqrt(0.125 * Math.PI);
+		}
+
+		private static void InverseCheck(double p)
+		{
+			if ((p <= 0) || (p >= 1)) {
+				throw new ArgumentOutOfRangeException("p", p,
+				 "Must be between 0 and 1, but neither exactly 0 nor 1.");
+			}
 		}
 	}
 }

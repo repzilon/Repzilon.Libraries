@@ -64,13 +64,30 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				Console.Write(Environment.NewLine);
 			}
+
+			Console.WriteLine("Réciproques d'intégrales de distributions de Student");
+			var karAlphas = new float[] { 0.4f, 0.25f, 0.1f, 0.05f, 0.025f, 0.010f, 0.005f, 0.0025f, 0.001f, 0.0005f };
+			var karNus = new byte[] { 1, 2, 4 };
+			TableHeader("nu/p", " {0,9:f4}", karAlphas);
+			for (k = 0; k < karNus.Length; k++) {
+				Console.Write("{0,4}", karNus[k]);
+				for (x = 0; x < karAlphas.Length; x++) {
+					Console.Write(" {0,9:g6}", ProbabilityDistributions.InverseStudent(RoundOff.Error(karAlphas[x]), karNus[k]));
+				}
+				Console.Write(Environment.NewLine);
+			}	
 		}
 
 		private static void TenthTableHeader(string format, params byte[] liberties)
 		{
-			Console.Write("x    ");
-			for (int i = 0; i < liberties.Length; i++) {
-				Console.Write(format, liberties[i]);
+			TableHeader("x    ", format, liberties);
+		}
+
+		private static void TableHeader<T>(string corner, string format, params T[] columns)
+		{
+			Console.Write(corner);
+			for (int i = 0; i < columns.Length; i++) {
+				Console.Write(format, columns[i]);
 			}
 			Console.Write(Environment.NewLine);
 		}

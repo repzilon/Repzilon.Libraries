@@ -29,7 +29,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
-			const double kTalpha0_025n4 = 2.77645;
+			double dblTalpha0_025n4 = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), 6 - 2);
+			Console.WriteLine("t{0} = {1}", 6 - 2, dblTalpha0_025n4);
 
 			var lrp = LinearRegression.Compute(
 				new PointD(2.00, 2.1),
@@ -42,8 +43,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
-			OutputLinearRegression2(lrp, kTalpha0_025n4, "G",
-			 true, 8.25f, 3.4);
+			OutputLinearRegression2(lrp, dblTalpha0_025n4, "G", true, 8.25f, 3.4);
 			// x can also be 7 or 8, and y can also be 7.5
 
 			var dlrp = LinearRegression.Compute(
@@ -57,8 +57,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputHeading("Decimal data type");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
-			OutputLinearRegression2(dlrp, (decimal)kTalpha0_025n4,
-			 "G18", true, 7, 7.5m);
+			OutputLinearRegression2(dlrp, (decimal)dblTalpha0_025n4, "G18", true, 7, 7.5m);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 
 			OutputHeading("Revision");
@@ -69,8 +68,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointM(15, 3.58m),
 				new PointM(20, 4.61m)
 			);
-			OutputLinearRegression2(lrrRev5, 3.1824m,
-			 "G7", false, 12, 4.154m);
+			OutputLinearRegression2(lrrRev5, 3.18245m, "G7", false, 12, 4.154m);
 
 			OutputHeading("Math I Example 38");
 			var lrrM1Ex38 = LinearRegression.Compute(
