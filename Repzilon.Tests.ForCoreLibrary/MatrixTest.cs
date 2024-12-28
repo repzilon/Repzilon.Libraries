@@ -77,7 +77,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex83_plus = ex83_c | ex83_s;
 			ex83_plus.RunCommand(1, 1, -2);
 			Console.WriteLine(ex83_plus);
-			TrySolve("", ex83_c, ex83_s, "x", "y");
+			TrySolve("", ex83_c, ex83_s, 'x', 'y');
 
 			Console.WriteLine("Exemple 84 :");
 			var ex84_ac = new Matrix<short>(3, 3, 1, -1, 1, -1, 2, 2, 2, 1, 3);
@@ -101,9 +101,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex84_ca.RunCommand(2, 1, null, -2);
 			ex84_ca.RunCommand(2, null, 1, 1);
 			Console.WriteLine(ex84_ca);
-			TrySolve("a) ", ex84_ac, ex84_as, "x", "y", "z");
-			TrySolve("b) ", ex84_bc, ex84_bs, "x", "y", "z");
-			TrySolve("c) ", ex84_cc, ex84_cs, "x", "y", "z");
+			TrySolve("a) ", ex84_ac, ex84_as, 'x', 'y', 'z');
+			TrySolve("b) ", ex84_bc, ex84_bs, 'x', 'y', 'z');
+			TrySolve("c) ", ex84_cc, ex84_cs, 'x', 'y', 'z');
 
 			Console.WriteLine("Exemple 85 :");
 			var ex85_c = new Matrix<short>(3, 4, 4, 0, -1, 0, 10, 0, 0, -2, 0, 2, -2, -1);
@@ -112,7 +112,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex85_a.SwapLines(1, 2);
 			ex85_a.RunCommand(2, -10, null, 4);
 			Console.WriteLine(ex85_a);
-			TrySolve("", ex85_c, ex85_s, "x", "y", "z", "w");
+			TrySolve("", ex85_c, ex85_s, 'x', 'y', 'z', 'w');
 
 			Console.WriteLine("Exemple 86 :");
 			var ex86_s = new Matrix<double>(3, 1, 61.6, 68.4, 84.8);
@@ -124,7 +124,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex86_a.RunCommand(2, null, 29, 5);
 			ex86_a.RoundErrors();
 			Console.WriteLine(ex86_a);
-			TrySolve("", ex82_m.Cast<decimal>(), ex86_s.Cast<decimal>(), "x", "y", "z");
+			TrySolve("", ex82_m.Cast<decimal>(), ex86_s.Cast<decimal>(), 'x', 'y', 'z');
 
 			Console.WriteLine("Exemple 87 :");
 			var ex87_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
@@ -157,7 +157,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex88_m1 = ~ex88_a;
 			Console.WriteLine(ex88_m1);
 			Console.WriteLine(ex88_m1 * ex88_b);
-			TrySolve("", ex88_a, ex88_b, "x", "y", "z");
+			TrySolve("", ex88_a, ex88_b, 'x', 'y', 'z');
 #endif
 
 			Console.WriteLine("Exemple 89 :");
@@ -175,8 +175,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(Matrix<short>.Signature(3));
 
 			Console.WriteLine("Exemple 92 :");
-			OutputSolution("a) ", ex83_c.Solve(ex83_s, "x", "y"));
-			OutputSolution("b) ", ex88_a.Solve(ex88_b, "x", "y", "z"));
+			OutputSolution("a) ", ex83_c.Solve(ex83_s, 'x', 'y'));
+			OutputSolution("b) ", ex88_a.Solve(ex88_b, 'x', 'y', 'z'));
 
 			Console.WriteLine("Travail 2 #7 :");
 			var t2_7a_c = new Matrix<short>(3, 3, 3, -1, -2, 2, 6, -9, 1, -7, 7);
@@ -246,7 +246,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 #if !NET20
 		private static void TrySolve<T>(string prefix, Matrix<T> coefficients, Matrix<T> constants,
-		params string[] variables)
+		params char[] variables)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			try {
@@ -258,9 +258,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 #if NET40 || NET35 || NET20
-		private static void OutputSolution<T>(string prefix, IDictionary<string, T> solution)
+		private static void OutputSolution<T>(string prefix, IDictionary<char, T> solution)
 #else
-		private static void OutputSolution<T>(string prefix, IReadOnlyDictionary<string, T> solution)
+		private static void OutputSolution<T>(string prefix, IReadOnlyDictionary<char, T> solution)
 #endif
 		{
 			Console.Write(prefix);

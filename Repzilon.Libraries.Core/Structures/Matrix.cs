@@ -688,13 +688,13 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 #if NET40 || NET35
-		private IDictionary<string, T> SolveWithCramer(Matrix<T> constants, params string[] variables)
+		private IDictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
 #else
-		private IReadOnlyDictionary<string, T> SolveWithCramer(Matrix<T> constants, params string[] variables)
+		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
 #endif
 		{
 			byte a, b;
-			Dictionary<string, T> dicSolved;
+			Dictionary<char, AffineBinomial<T>> dicSolved;
 			Matrix<T> ma;
 			var det = this.Determinant();
 			if (det.Equals(default(T))) {
@@ -703,14 +703,14 @@ namespace Repzilon.Libraries.Core
 				if ((variables == null) || (variables.Length < 1)) {
 					throw new ArgumentNullException("variables");
 				}
-				dicSolved = new Dictionary<string, T>();
+				dicSolved = new Dictionary<char, AffineBinomial<T>>();
 				var idd = 1.0 / Convert.ToDouble(det);
 				for (a = 0; a < variables.Length; a++) {
 					ma = this.Clone();
 					for (b = 0; b < ma.Lines; b++) {
 						ma[b, a] = constants[b, 0];
 					}
-					dicSolved.Add(variables[a], (Convert.ToDouble(ma.Determinant()) * idd).ConvertTo<T>());
+					dicSolved.AddConstant(variables[a], Convert.ToDouble(ma.Determinant()) * idd);
 				}
 				return dicSolved;
 			}
@@ -718,9 +718,9 @@ namespace Repzilon.Libraries.Core
 
 #if false
 #if NET40 || NET35
-		private IDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
+		private IDictionary<char, AffineBinomial<T>> SolveByInversion(Matrix<T> constants, params char[] variables)
 #else
-		private IReadOnlyDictionary<string, T> SolveByInversion(Matrix<T> constants, params string[] variables)
+		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveByInversion(Matrix<T> constants, params char[] variables)
 #endif
 		{
 			var inverse = ~this;
@@ -729,7 +729,7 @@ namespace Repzilon.Libraries.Core
 					throw new ArgumentNullException("variables");
 				}
 				var nowKnowns = inverse.Value * constants;
-				var dicHere = new Dictionary<string, T>();
+				var dicHere = new Dictionary<char, AffineBinomial<T>>();
 				for (byte a = 0; a < variables.Length; a++) {
 					dicHere.Add(variables[a], nowKnowns[a, 0]);
 				}
@@ -741,9 +741,9 @@ namespace Repzilon.Libraries.Core
 #endif
 
 #if NET40 || NET35
-		private IDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
+		private IDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants, params char[] variables)
 #else
-		private IReadOnlyDictionary<string, T> SolveDiagonally(Matrix<T> constants, params string[] variables)
+		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants, params char[] variables)
 #endif
 		{
 			byte c;
@@ -770,7 +770,7 @@ namespace Repzilon.Libraries.Core
 					if ((variables == null) || (variables.Length < 1)) {
 						throw new ArgumentNullException("variables");
 					}
-					var dicSolved = new SortedDictionary<string, T>();
+					var dicSolved = new SortedDictionary<char, AffineBinomial<T>>();
 					// Compute solution in a loop, starting with the last algebraic variable.
 					for (l = 1; l <= m; l++) {
 						double newvar = Convert.ToDouble(augmented[(byte)(m - l), this.Columns]);
@@ -787,13 +787,13 @@ namespace Repzilon.Libraries.Core
 						double isolated = newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]);
 						dicSolved.Add(variables[variables.Length - l], isolated.ConvertTo<T>());
 						// */
-						dicSolved.Add(variables[variables.Length - l],
-						 (newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)])).ConvertTo<T>());
+						dicSolved.AddConstant(variables[variables.Length - l],
+						 newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]));
 					}
 #if NET40 || NET35
 					return dicSolved;
 #else
-					return new ReadOnlyDictionary<string, T>(dicSolved);
+					return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
 #endif
 				}
 			}
@@ -812,15 +812,15 @@ namespace Repzilon.Libraries.Core
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
 #if NET40 || NET35
-		public IDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
+		public IDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
 #else
-		public IReadOnlyDictionary<string, T> Solve(Matrix<T> constants, params string[] variables)
+		public IReadOnlyDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
 #endif
 		{
 #if NET40 || NET35
-			IDictionary<string, T> dicSolved = null;
+			IDictionary<char, AffineBinomial<T>> dicSolved = null;
 #else
-			IReadOnlyDictionary<string, T> dicSolved = null;
+			IReadOnlyDictionary<char, AffineBinomial<T>> dicSolved = null;
 #endif
 			if (this.IsSquare) {
 				dicSolved = SolveWithCramer(constants, variables);
