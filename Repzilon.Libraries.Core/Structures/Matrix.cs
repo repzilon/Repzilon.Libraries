@@ -314,7 +314,6 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Operators
-#if !NET20
 		public static Matrix<T> operator +(Matrix<T> a, Matrix<T> b)
 		{
 			var ac = a.Columns;
@@ -322,7 +321,11 @@ namespace Repzilon.Libraries.Core
 				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
+#if NET20
+						m[i, j] = GenericArithmetic<T>.AddScalars(a[i, j], b[i, j]);
+#else
 						m[i, j] = GenericArithmetic<T>.Adder(a[i, j], b[i, j]);
+#endif
 					}
 				}
 				return m;
@@ -340,7 +343,11 @@ namespace Repzilon.Libraries.Core
 				var m = new Matrix<T>(a.Lines, ac);
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
+#if NET20
+						m[i, j] = GenericArithmetic<T>.SubtractScalars(a[i, j], b[i, j]);
+#else
 						m[i, j] = GenericArithmetic<T>.Sub(a[i, j], b[i, j]);
+#endif
 					}
 				}
 				return m;
@@ -351,6 +358,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if !NET20
 		private static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct
 		{
 			return GenericArithmetic<T>.BuildMultiplier<TScalar>();
@@ -435,9 +443,9 @@ namespace Repzilon.Libraries.Core
 			// Cast to double as we do not divide directly, but multiply with the inverse
 			var matrixInDouble = augmented.Cast<double>();
 			for (l = 0; l < m; l++) {
-				var coeffs = new double?[m];
-				coeffs[l] = 1.0 / Convert.ToDouble(matrixInDouble[l, l]);
-				matrixInDouble.RunCommand(l, coeffs);
+				var coefficients = new double?[m];
+				coefficients[l] = 1.0 / Convert.ToDouble(matrixInDouble[l, l]);
+				matrixInDouble.RunCommand(l, coefficients);
 			}
 
 			if (matrixInDouble.Left().Equals(Matrix<double>.Identity(matrixInDouble.Lines))) {
@@ -480,10 +488,10 @@ namespace Repzilon.Libraries.Core
 
 		private static void AutoRun(Matrix<T> augmented, byte l, byte c, T minusOne, Func<T, T, T> mult)
 		{
-			var coeffs = new T?[augmented.Lines];
-			coeffs[c] = mult(augmented[l, c], minusOne);
-			coeffs[l] = augmented[c, c];
-			augmented.RunCommand(l, coeffs);
+			var coefficients = new T?[augmented.Lines];
+			coefficients[c] = mult(augmented[l, c], minusOne);
+			coefficients[l] = augmented[c, c];
+			augmented.RunCommand(l, coefficients);
 		}
 #endif
 		#endregion
@@ -683,7 +691,7 @@ namespace Repzilon.Libraries.Core
 		/// <param name="variables">Variables names, in order</param>
 		/// <returns>
 		/// When a solution exists, a set of key-value pairs with the variable name and the solved value for each.
-		/// When the Cramer technique cannot find a solution, returns null. It does not necessarily means the
+		/// When the Cramer technique cannot find a solution, returns null. It does not necessarily mean the
 		/// equation system is unsolvable, however.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
@@ -818,9 +826,9 @@ namespace Repzilon.Libraries.Core
 						double newvar = Convert.ToDouble(augmented[(byte)(m - l), k]);
 						for (c = 1; c < l; c++) {
 							/* Before code variable inlining
-							var coeff = augmented[(byte)(m - l), (byte)(this.Columns - c)];
+							var coefficient = augmented[(byte)(m - l), (byte)(this.Columns - c)];
 							var valueOfPreviousVar = dicSolved[variables[variables.Length - c]];
-							newvar -= Convert.ToDouble(coeff) * Convert.ToDouble(valueOfPreviousVar);
+							newvar -= Convert.ToDouble(coefficient) * Convert.ToDouble(valueOfPreviousVar);
 							// */
 							newvar -= Convert.ToDouble(augmented[(byte)(m - l), (byte)(k - c)]) *
 							 Convert.ToDouble(dicSolved[variables[variables.Length - c]]);
@@ -854,7 +862,7 @@ namespace Repzilon.Libraries.Core
 #endif
 			var abTofLine = new AffineBinomial<T>(zero, polymorph, zero);
 			T f;
-			byte tc = (byte)(augmented.Columns - 1);	
+			byte tc = (byte)(augmented.Columns - 1);
 			for (c = 0; c < tc; c++) {
 				f = augmented[(byte)line, c];
 				if (!f.Equals(zero)) {

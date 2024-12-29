@@ -86,11 +86,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		private static KeyValuePair<T, T> ToCartesian(double n, Angle<T> va)
 		{
-#if NET20
-			var theta = va.ConvertTo<double>(AngleUnit.Radian).Value;
-#else
 			var theta = va.ConvertTo<double>(AngleUnit.Radian, true).Value;
-#endif
 			return new KeyValuePair<T, T>(
 			 ExtraMath.ConvertTo<T>(n * Math.Cos(theta)),
 			 ExtraMath.ConvertTo<T>(n * Math.Sin(theta)));
@@ -154,11 +150,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		#region ToPolar
 		public Angle<double> Angle()
 		{
-#if NET20
-			return Angle<double>.Radians(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X)));
-#else
 			return Angle<double>.Radians(Math.Atan2(Convert.ToDouble(Y), Convert.ToDouble(X))).Normalize();
-#endif
 		}
 
 		public PolarVector<double> ToPolar()
@@ -177,13 +169,8 @@ namespace Repzilon.Libraries.Core.Vectors
 			var tc = ((IConvertible)this.X).GetTypeCode();
 			// Between Decimal and Single, we have Single, Double and Decimal, which are what we are looking for
 			return new PolarVector<TOut>(ExtraMath.ConvertTo<TOut>(this.Norm()),
-#if NET20
 			 Angle().ConvertTo<TOut>(
-			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree));
-#else
-		 Angle().ConvertTo<TOut>(
 			 (tc <= TypeCode.Decimal) && (tc >= TypeCode.Single) ? AngleUnit.Radian : AngleUnit.Degree, false));
-#endif
 #endif
 		}
 		#endregion
@@ -297,17 +284,26 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Operators
-#if !NET20
 		public static TwoDVector<T> operator +(TwoDVector<T> u, TwoDVector<T> v)
 		{
+#if NET20
+			return new TwoDVector<T>(GenericArithmetic<T>.AddScalars(u.X, v.X),
+			 GenericArithmetic<T>.AddScalars(u.Y, v.Y));
+#else
 			var addi = GenericArithmetic<T>.Adder;
 			return new TwoDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y));
+#endif
 		}
 
 		public static TwoDVector<T> operator -(TwoDVector<T> u, TwoDVector<T> v)
 		{
+#if NET20
+			return new TwoDVector<T>(GenericArithmetic<T>.SubtractScalars(u.X, v.X),
+			 GenericArithmetic<T>.SubtractScalars(u.Y, v.Y));
+#else
 			var sub = GenericArithmetic<T>.Sub;
 			return new TwoDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y));
+#endif
 		}
 
 		public static TwoDVector<T> operator +(TwoDVector<T> u, PolarVector<T> v)
@@ -320,6 +316,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			return u - new TwoDVector<T>(v);
 		}
 
+#if !NET20
 		// For product operators, see https://www.haroldserrano.com/blog/developing-a-math-engine-in-c-implementing-vectors
 
 		public static TwoDVector<T> operator *(T k, TwoDVector<T> v)

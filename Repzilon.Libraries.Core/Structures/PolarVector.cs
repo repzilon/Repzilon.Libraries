@@ -48,22 +48,14 @@ namespace Repzilon.Libraries.Core.Vectors
 		public PolarVector(T norm, Angle<T> angle)
 		{
 			Norm = norm;
-#if NET20
-			Angle = angle;
-#else
 			Angle = angle.Normalize();
-#endif
 		}
 
 		public PolarVector(T norm, T angle, AngleUnit unit) : this(norm, new Angle<T>(angle, unit))
 		{
 		}
 
-#if NET20
-		public PolarVector(T norm, Angle<T> angle, AngleUnit newUnit) : this(norm, angle.ConvertTo<T>(newUnit))
-#else
 		public PolarVector(T norm, Angle<T> angle, AngleUnit newUnit) : this(norm, angle.ConvertTo<T>(newUnit, true))
-#endif
 		{
 		}
 
@@ -229,7 +221,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			}
 
 			return new PolarVector<T>(Vector<T>.Sum(u.Norm, v.Norm, ua),
-			 (subtract ? Math.Atan2(us - vs, un - vn) : Math.Atan2(us + vs, un + vn)).ConvertTo<T>(),
+			 ExtraMath.ConvertTo<T>(subtract ? Math.Atan2(us - vs, un - vn) : Math.Atan2(us + vs, un + vn)),
 			 AngleUnit.Radian);
 		}
 
@@ -262,11 +254,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static Angle<T> AngleBetween(PolarVector<T> u, PolarVector<T> v)
 		{
-#if NET20
-			return (v.Angle - u.Angle).Cast<T>();
-#else
 			return (v.Angle.Normalize() - u.Angle.Normalize()).Normalize().Cast<T>();
-#endif
 		}
 
 		public static bool AreParallel(PolarVector<T> u, PolarVector<T> v)

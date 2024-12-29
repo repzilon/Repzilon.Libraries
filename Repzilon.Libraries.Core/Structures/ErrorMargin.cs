@@ -73,17 +73,23 @@ namespace Repzilon.Libraries.Core
 			 ExtraMath.ConvertTo<TOut>(this.Margin));
 		}
 
-#if !NET20
 		public T Min()
 		{
+#if NET20
+			return GenericArithmetic<T>.SubtractScalars(Middle, Margin);
+#else
 			return GenericArithmetic<T>.Sub(Middle, Margin);
+#endif
 		}
 
 		public T Max()
 		{
+#if NET20
+			return GenericArithmetic<T>.AddScalars(Middle, Margin);
+#else
 			return GenericArithmetic<T>.Adder(Middle, Margin);
-		}
 #endif
+		}
 
 		#region ToString
 		public override string ToString()
@@ -111,12 +117,10 @@ namespace Repzilon.Libraries.Core
 			if (format.StartsWith("G")) {
 				stbInterval.Append(" -> ");
 			}
-#if !NET20
 			if (!format.StartsWith("g")) {
 				stbInterval.Append('[').Append(this.Min().ToString(format, formatProvider)).Append("; ")
 				 .Append(this.Max().ToString(format, formatProvider)).Append(']');
 			}
-#endif
 			return stbInterval.ToString();
 		}
 		#endregion

@@ -254,15 +254,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var ciCu = CultureInfo.CurrentCulture;
 			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
-#if !NET20
 			TStorage b = lrp.Slope;
-#endif
 			TStorage sr = lrp.ResidualStdDev();
 
 			Console.Write("r = {0}\tr^2 = {1}", lrp.Correlation.ToString(numberFormat, ciCu), lrp.Determination().ToString(numberFormat, ciCu));
-#if NET20
 			Console.Write(Environment.NewLine);
-#else
 			if (checkBiases) {
 				// ReSharper disable once InvokeAsExtensionMethod
 				Console.WriteLine("\trelative bias: {0:p}",
@@ -270,24 +266,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 			} else {
 				Console.Write(Environment.NewLine);
 			}
-#endif
 			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, ciCu),
 			 lrp.ExplainedVariation().ToString(numberFormat, ciCu),
 			 lrp.UnexplainedVariation().ToString(numberFormat, ciCu));
 			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu),
 			 lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
-#if !NET20
 			Console.WriteLine("b = {0}", new ErrorMargin<TStorage>(b,
 			 GenericArithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
 			Console.WriteLine("a = {0}", new ErrorMargin<TStorage>(lrp.Intercept,
 			 GenericArithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
-#endif
 			if (xForYExtrapolation.HasValue) {
 				var x = xForYExtrapolation.Value;
-#if !NET20
 				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, true);
 				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, false);
-#endif
 				if (checkBiases) {
 					Console.WriteLine("x = {0}\t\ttotal error: {1}\trelative bias: {2}",
 					 x.ToString(numberFormat, ciCu),
@@ -295,15 +286,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 					 lrp.RelativeBias(x).ToString(numberFormat, ciCu));
 				}
 			}
-#if !NET20
 			if (yForXExtrapolation.HasValue) {
 				var yc = yForXExtrapolation.Value;
 				OutputXExtrapolation(lrp, studentLawValue, numberFormat, ciCu, yc, 5, b);
 			}
-#endif
 		}
 
-#if !NET20
 		private static void OutputYExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
 		string numberFormat, IFormatProvider culture, T x, T sr, bool repeated)
 		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
@@ -329,14 +317,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var tc = dividend.GetTypeCode();
 			if (tc == TypeCode.Double) {
-				return (dividend.ConvertTo<double>() / divisor.ConvertTo<double>()).ConvertTo<T>();
+				return ExtraMath.ConvertTo<T>(Convert.ToDouble(dividend) / Convert.ToDouble(divisor));
 			} else if (tc == TypeCode.Decimal) {
-				return Decimal.Divide(dividend.ConvertTo<decimal>(), divisor.ConvertTo<decimal>()).ConvertTo<T>();
+				return ExtraMath.ConvertTo<T>(Decimal.Divide(Convert.ToDecimal(dividend), Convert.ToDecimal(divisor)));
 			} else {
 				throw new NotSupportedException();
 			}
 		}
-#endif
 
 		internal static void OutputRegressionModel<T>(RegressionModel<T> mathModel)
 		where T : struct, IFormattable, IEquatable<T>

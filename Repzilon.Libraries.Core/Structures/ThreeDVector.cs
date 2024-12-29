@@ -184,19 +184,29 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Operators
-#if !NET20
 		public static ThreeDVector<T> operator +(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
+#if NET20
+			return new ThreeDVector<T>(GenericArithmetic<T>.AddScalars(u.X, v.X),
+			 GenericArithmetic<T>.AddScalars(u.Y, v.Y), GenericArithmetic<T>.AddScalars(u.Z, v.Z));
+#else
 			var addi = GenericArithmetic<T>.Adder;
 			return new ThreeDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y), addi(u.Z, v.Z));
+#endif
 		}
 
 		public static ThreeDVector<T> operator -(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
+#if NET20
+			return new ThreeDVector<T>(GenericArithmetic<T>.SubtractScalars(u.X, v.X),
+			 GenericArithmetic<T>.SubtractScalars(u.Y, v.Y), GenericArithmetic<T>.SubtractScalars(u.Z, v.Z));
+#else
 			var sub = GenericArithmetic<T>.Sub;
 			return new ThreeDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y), sub(u.Z, v.Z));
+#endif
 		}
 
+#if !NET20
 		public static ThreeDVector<T> operator *(T k, ThreeDVector<T> v)
 		{
 			return v.Multiply(k);

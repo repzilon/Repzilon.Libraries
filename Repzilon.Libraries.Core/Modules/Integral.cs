@@ -20,9 +20,12 @@ namespace Repzilon.Libraries.Core
 	/// </summary>
 	public static class Integral
 	{
-#if !NET20
 		[Obsolete("The non-generic overloads are faster.")]
+#if NET20
+		public static T Summation<T>(int m, int n, Converter<int, T> forEach)
+#else
 		public static T Summation<T>(int m, int n, Func<int, T> forEach)
+#endif
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			if (forEach == null) {
@@ -33,21 +36,34 @@ namespace Repzilon.Libraries.Core
 			for (var k = m; k <= n; k++) {
 #if DEBUG
 				T value = forEach(k);
-				sum = GenericArithmetic<T>.Adder(sum, value);
+#if NET20
+				sum = GenericArithmetic<T>.AddScalars(sum, value);
 #else
+				sum = GenericArithmetic<T>.Adder(sum, value);
+#endif
+#elif !NET20
 				sum = GenericArithmetic<T>.Adder(sum, forEach(k));
+#else
+				sum = GenericArithmetic<T>.AddScalars(sum, forEach(k));
 #endif
 			}
 			return sum;
 		}
 
 		[Obsolete("The non-generic overloads are faster.")]
+#if NET20
+		public static T DifferenceOfPrimitives<T>(T a, T b, Converter<T, T> expression)
+#else
 		public static T DifferenceOfPrimitives<T>(T a, T b, Func<T, T> expression)
+#endif
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
+#if NET20
+			return GenericArithmetic<T>.SubtractScalars(expression(b), expression(a));
+#else
 			return GenericArithmetic<T>.Sub(expression(b), expression(a));
-		}
 #endif
+		}
 
 #if NETFRAMEWORK
 		public static long Summation(int m, int n, Converter<int, long> forEach)

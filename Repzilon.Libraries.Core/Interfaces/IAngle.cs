@@ -30,9 +30,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		AngleUnit Unit { get; }
 		decimal DecimalValue { get; }
 		IAngle ConvertTo(AngleUnit unit);
-#if !NET20
 		IAngle Normalize();
-#endif
 		double Sin();
 		double Cos();
 

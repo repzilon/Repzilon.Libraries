@@ -16,6 +16,7 @@ using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Vectors;
 // ReSharper disable InvokeAsExtensionMethod
 // ReSharper disable InconsistentNaming
+// ReSharper disable MergeConditionalExpression
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -26,8 +27,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa55c_n = Math.Sqrt(25 + 12 * Math.Sqrt(2));
 			var exa55c_sr = Math.Asin(2 * Math.Sqrt(2) / exa55c_n);
 #if NET20
+			var exa55c_2d = new PolarVector<double>(4, 45, AngleUnit.Degree).ToCartesian() + new PolarVector<double>(3, 0, AngleUnit.Degree).ToCartesian();
 			Console.WriteLine("Exemple 55c : {0:g} rad ou {1:g} entre u et R par loi des sinus",
 			 exa55c_sr, Angle<double>.Radians(exa55c_sr).ToDegrees());
+			Console.WriteLine("              u+v={0} par la bibliothèque arguments convertis en rectangulaire", exa55c_2d);
+			Console.WriteLine("              u+v={0} par la bibliothèque arguments convertis et réponse reconvertie", exa55c_2d.ToPolar());
+
+			var exa57_u = new TwoDVector<short>(3, 2);
+			var exa57_v = new TwoDVector<short>(4, 5);
+			var exa57_a = exa57_u + exa57_v;
+			var exa57_b = exa57_u - exa57_v;
+			Console.WriteLine("Exemple 57  : u+v={0} u-v={1}", exa57_a, exa57_b);
 #else
 			var exa55b_i2 = Vector<short>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_f4 = Vector<float>.Sum(3, 4, 45, AngleUnit.Degree);
@@ -84,6 +94,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa65_v = Vector.New(-1, -2, 5);
 			Console.WriteLine("Exemple 65a : u//v is {0}", ThreeDVector<int>.AreParallel(exa65_u, exa65_v));
 			Console.WriteLine("Exemple 65b : 3u-v={0}", (3 * exa65_u) - exa65_v);
+#endif
 
 			var exa66_oa = Vector.New(1, 2, 3);
 			var exa66_ob = Vector.New(2, -3, 2);
@@ -92,7 +103,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ex66_abf = exa66_ab.Cast<float>();
 			var exa66_v = ex66_abf.ToUnitary();
 			Console.WriteLine("Exemple 66c : v={0}, (float)AB==AB is {1}", exa66_v, ex66_abf.Equals(exa66_ab));
-#endif
 
 			var exa67_theta = Angle<float>.Degrees(40.0f);
 			var exa67_A = 700 * exa67_theta.Cos() / exa67_theta.Sin();
@@ -105,6 +115,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa68_w = new PolarVector<float>(3, 180 + 50, AngleUnit.Degree);
 			var exa68_r = (exa68_u + exa68_v + exa68_w).ConvertTo(AngleUnit.Degree);
 			Console.WriteLine("Exemple 68  : R={0:g4}", exa68_r);
+#endif
 
 			decimal exa69_ref = ExtraMath.Sqrt(692.64m);
 			ShowcaseExample69(exa69_ref, Example69WithSingle);
@@ -113,6 +124,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithExp);
 			Console.Write(Environment.NewLine);
 
+#if !NET20
 			var exa70_u = Vector.New(2, 30, AngleUnit.Degree);
 			var exa70_v = Vector.New(4, 0, AngleUnit.Degree);
 			Console.WriteLine("Exemple 70  : u.v={0}", exa70_u * exa70_v);
@@ -142,7 +154,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		#region Example 69 implementations
-#if !NET20
 		private static float Example69WithSingle(bool consoleOutput, bool roundErrors)
 		{
 			const float exa69_q1 = 0.000003f;
@@ -242,20 +253,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, result);
 			return result;
 		}
-#endif
 		#endregion
 
 		#region Example 69 showcasing
-#if !NET20
 		private static void ShowcaseExample69<T>(decimal referenceResult, Func<bool, bool, T> implementation)
 		{
 			Console.Write(Environment.NewLine);
 			var ru = implementation(true, false);
 			var rr = implementation(true, true);
-			var tsUnrounded = BenchExample69(false, implementation);
+			var tsNotRounded = BenchExample69(false, implementation);
 			var tsRounded = BenchExample69(true, implementation);
 			Console.WriteLine("Exemple 69 {0,-7} : {1:f3}s non arrondi Δ {3:e}; {2:f3}s arrondi Δ {4:e}",
-			 typeof(T), tsUnrounded.TotalSeconds, tsRounded.TotalSeconds,
+			 typeof(T), tsNotRounded.TotalSeconds, tsRounded.TotalSeconds,
 			 InDecimal(ru) - referenceResult, InDecimal(rr) - referenceResult);
 		}
 
@@ -283,7 +292,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.WriteLine("Exemple 69c : F13={0} F23={1} ||R||={2}", exa69_v13, exa69_v23, exa69_r);
 			}
 		}
-#endif
 		#endregion
 	}
 }

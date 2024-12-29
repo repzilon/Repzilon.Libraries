@@ -45,32 +45,40 @@ namespace Repzilon.Tests.ForCoreLibrary
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex.Message);
 			}
+#endif
 
 			Console.WriteLine("Exemple 82 :");
 			var ex82_m = new Matrix<double>(3, 3, 1.4, 1.2, 4.1, 1.4, 2.2, 3.7, 1.8, 3.2, 3.9);
 			var ex82_a = new Matrix<double>(3, 3, 0.3, 0.3, 0.3, 0.7, 0.7, 0.7, -0.2, -0.2, -0.2);
 			var ex82_ma = ex82_m + ex82_a;
+			MatrixExtensionMethods.RoundErrors(ex82_ma);
+			Console.WriteLine(ex82_ma);
+#if !NET20
 			var ex82_3m = 3 * ex82_m;
-			ex82_ma.RoundErrors();
-			ex82_3m.RoundErrors();
+			MatrixExtensionMethods.RoundErrors(ex82_3m);
 			var ex82_l = new Matrix<short>(3, 1, 5, 15, 20).Cast<double>();
 			var ex82_mxl = ex82_m * ex82_l;
-			Console.WriteLine(ex82_ma);
 			Console.WriteLine(ex82_3m);
 			Console.WriteLine(ex82_mxl);
+#endif
 
 			Console.WriteLine("Exercices papier :");
 			var pap_m = new Matrix<short>(3, 3, 4, 3, 5, -3, -7, 1, 8, 0, 0);
 			var pap_n = new Matrix<short>(3, 3, 4, 5, 1, 0, 1, -4, 6, 2, -1);
 			var pap_a = pap_m + pap_n;
+#if !NET20
 			var pap_b = (2 * pap_n) - (5 * pap_m);
 			var pap_c = pap_m * pap_n;
 			var pap_d = pap_n * pap_m;
+#endif
 			Console.WriteLine(pap_a);
+#if !NET20
 			Console.WriteLine(pap_b);
 			Console.WriteLine(pap_c);
 			Console.WriteLine(pap_d);
+#endif
 
+#if !NET20
 			Console.WriteLine("Exemple 83 :");
 			var ex83_c = new Matrix<short>(2, 2, 4, 3, 2, -1);
 			var ex83_s = new Matrix<short>(2, 1, -7, 9);
