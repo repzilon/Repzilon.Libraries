@@ -6,18 +6,24 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+using System.Runtime.InteropServices;
 using System.Text;
 
 namespace Repzilon.Libraries.Core
 {
+#if DEBUG
+	[StructLayout(LayoutKind.Sequential)]
+#else
+	[StructLayout(LayoutKind.Auto)]
+#endif
 	public struct AgaroseRetention : IEquatable<AgaroseRetention>, IFormattable
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
@@ -114,7 +120,7 @@ namespace Repzilon.Libraries.Core
 			stbAgarose.Append(this.LowerMassVolumeConcentration.ToString(format, formatProvider));
 			if (!Double.IsNaN(this.UpperMassVolumeConcentration)) {
 				stbAgarose.Append(" to ").Append(this.UpperMassVolumeConcentration.ToString(format, formatProvider));
-			} 
+			}
 			stbAgarose.Append(" % m/v agarose will migrate fragment lengths ");
 			var c = this.FragmentLengths.Length;
 			for (var i = 0; i < c; i++) {
