@@ -749,89 +749,80 @@ namespace Repzilon.Libraries.Core
 		{
 			const char kDefaultPolymorph = 't';
 
+			if ((variables == null) || (variables.Length < 1)) {
+				throw new ArgumentNullException("variables");
+			}
+
+			int l;
 			byte c;
+			var dicSolved = new SortedDictionary<char, AffineBinomial<T>>();
 			var m = this.Lines;
-			var augmented = this.Augment(constants);
 			var zero = default(T);
+			var augmented = this.Augment(constants);
 			// Put zeros in the lower left corner
 			PutZeroesInLowerLeft(this, m, ref augmented, (-1).ConvertTo<T>(), zero, BuildMultiplier<T>());
 
 			// Check if we can continue.
 			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
-				if ((variables == null) || (variables.Length < 1)) {
-					throw new ArgumentNullException("variables");
-				}
 				// Find the letter of our linking solution variable
-				var dicSolved = new SortedDictionary<char, AffineBinomial<T>>();
 				char polymorph = kDefaultPolymorph;
-				for (int i = 0; i < variables.Length; i++) {
-					dicSolved.Add(variables[i], new AffineBinomial<T>());
+				for (l = 0; l < variables.Length; l++) {
+					dicSolved.Add(variables[l], new AffineBinomial<T>());
 				}
 				if (dicSolved.ContainsKey(kDefaultPolymorph)) {
-					for (char cc = 'a'; (cc <= 'z') && (polymorph == kDefaultPolymorph); cc++) {
-						if (!dicSolved.ContainsKey(cc)) {
-							polymorph = cc;
+					for (l = 'a'; (l <= 'z') && (polymorph == kDefaultPolymorph); l++) {
+						if (!dicSolved.ContainsKey((char)l)) {
+							polymorph = (char)l;
 						}
 					}
 				}
 				dicSolved.Clear();
 				dicSolved.Add(variables[variables.Length - 1], new AffineBinomial<T>(1.ConvertTo<T>(), polymorph, zero));
 
-				
-				for (int l = m - 1; l >= 0; l--) {
-					SolveLinkedLine(variables, augmented, l, dicSolved, polymorph, zero);
+				for (l = m - 1; l >= 0; l--) {
+					SolveLinkedLine(zero, variables, dicSolved, l, augmented, polymorph);
 				}
 
 				while (dicSolved.Count < variables.Length) {
 					// Find a missing variable
-					short indexOfMissing = -1;
-					for (c = 0; (c < variables.Length) && (indexOfMissing < 0); c++) {
+					l = -1;
+					for (c = 0; (c < variables.Length) && (l < 0); c++) {
 						if (!dicSolved.ContainsKey(variables[c])) {
-							indexOfMissing = c;
+							l = c;
 						}
 					}
 
 					// Find in the original matrix a line which has a non-zero coefficient for that variable
-					short indexOfLine = -1;
-					for (c = 0; (c < m) && (indexOfLine < 0); c++) {
-						if (!this[c, (byte)indexOfMissing].Equals(zero)) {
-							indexOfLine = c;
+					for (c = 0; c < m; c++) {
+						if (!this[c, (byte)l].Equals(zero)) {
+							// When found, do the substitution with an affine binomial like above
+							SolveLinkedLine(zero, variables, dicSolved, c, this.Augment(constants), polymorph);
+							// Early loop exit without an extra variable, an extra condition neither a confusing keyword
+							c = m;
 						}
 					}
-
-					// Do the substitution with an affine binomial like above
-					SolveLinkedLine(variables, this.Augment(constants), indexOfLine, dicSolved, polymorph, zero);
 				}
-
-#if NET40 || NET35
-				return dicSolved;
-#else
-				return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
-#endif
 			} else {
-				int l = 0;
-				for (c = 0; c < this.Columns; c++) {
+				l = 0;
+				var k = this.Columns;
+				for (c = 0; c < k; c++) {
 					if (augmented[(byte)(m - 1), c].Equals(zero)) {
 						l++;
 					}
 				}
-				if (l == this.Columns) {
+				if (l == k) {
 					return null; // No solution exists
 				} else { // Single solution
-					if ((variables == null) || (variables.Length < 1)) {
-						throw new ArgumentNullException("variables");
-					}
-					var dicSolved = new SortedDictionary<char, AffineBinomial<T>>();
 					// Compute solution in a loop, starting with the last algebraic variable.
 					for (l = 1; l <= m; l++) {
-						double newvar = Convert.ToDouble(augmented[(byte)(m - l), this.Columns]);
+						double newvar = Convert.ToDouble(augmented[(byte)(m - l), k]);
 						for (c = 1; c < l; c++) {
 							/* Before code variable inlining
 							var coeff = augmented[(byte)(m - l), (byte)(this.Columns - c)];
 							var valueOfPreviousVar = dicSolved[variables[variables.Length - c]];
 							newvar -= Convert.ToDouble(coeff) * Convert.ToDouble(valueOfPreviousVar);
 							// */
-							newvar -= Convert.ToDouble(augmented[(byte)(m - l), (byte)(Columns - c)]) *
+							newvar -= Convert.ToDouble(augmented[(byte)(m - l), (byte)(k - c)]) *
 							 Convert.ToDouble(dicSolved[variables[variables.Length - c]]);
 						}
 						/* Before code variable inlining
@@ -841,23 +832,31 @@ namespace Repzilon.Libraries.Core
 						dicSolved.AddConstant(variables[variables.Length - l],
 						 newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]));
 					}
-#if NET40 || NET35
-					return dicSolved;
-#else
-					return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
-#endif
+
 				}
 			}
+
+#if NET40 || NET35
+			return dicSolved;
+#else
+			return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
+#endif
 		}
 
-		private static void SolveLinkedLine(char[] variables, Matrix<T> augmented, int l,
-		SortedDictionary<char, AffineBinomial<T>> wipSolution, char polymorph, T zero)
+		private static void SolveLinkedLine(T zero, char[] variables,
+		SortedDictionary<char, AffineBinomial<T>> wipSolution, int line, Matrix<T> augmented, char polymorph)
 		{
+			byte c;
+#if NETSTANDARD1_1
 			var dicCoefficients = new SortedDictionary<char, T>();
+#else
+			var dicCoefficients = new SortedList<char, T>();
+#endif
 			var abTofLine = new AffineBinomial<T>(zero, polymorph, zero);
-			byte tc = (byte)(augmented.Columns - 1);
-			for (byte c = 0; c < tc; c++) {
-				var f = augmented[(byte)l, c];
+			T f;
+			byte tc = (byte)(augmented.Columns - 1);	
+			for (c = 0; c < tc; c++) {
+				f = augmented[(byte)line, c];
 				if (!f.Equals(zero)) {
 					AffineBinomial<T> abFromSolved;
 					if (wipSolution.TryGetValue(variables[c], out abFromSolved)) {
@@ -867,13 +866,20 @@ namespace Repzilon.Libraries.Core
 					}
 				}
 			}
-			if (dicCoefficients.Count == 1) {
-				abTofLine = abTofLine * (-1).ConvertTo<T>() + augmented[(byte)l, tc];
+			c = (byte)dicCoefficients.Count;
+			if (c == 1) {
+				abTofLine = abTofLine * (-1).ConvertTo<T>() + augmented[(byte)line, tc];
+#if NETSTANDARD1_1
 				foreach (var kvp in dicCoefficients) {
-					wipSolution.Add(kvp.Key,
-					 kvp.Value.Equals(1.ConvertTo<T>()) ? abTofLine : (abTofLine / kvp.Value).Cast<T>());
+					f = kvp.Value;
+					wipSolution.Add(kvp.Key, f.Equals(1.ConvertTo<T>()) ? abTofLine : (abTofLine / f).Cast<T>());
 				}
-			} else if (dicCoefficients.Count >= 2) {
+#else
+				f = dicCoefficients.Values[0];
+				wipSolution.Add(dicCoefficients.Keys[0],
+				 f.Equals(1.ConvertTo<T>()) ? abTofLine : (abTofLine / f).Cast<T>());
+#endif
+			} else if (c >= 2) {
 #if NETFRAMEWORK || NETSTANDARD2_0
 				throw new System.Data.ConstraintException();
 #else
