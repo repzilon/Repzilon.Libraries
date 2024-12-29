@@ -12,10 +12,10 @@
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <WarningsAsErrors>NU1605</WarningsAsErrors>
-    <NoWarn>NETSDK1138;NU1902;NU1903</NoWarn>
+    <NoWarn>NETSDK1138;NU1902;NU1903;1701</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <NoWarn>NETSDK1138;NU1902;NU1903</NoWarn>
+    <NoWarn>NETSDK1138;NU1902;NU1903;1701</NoWarn>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Repzilon.Libraries.Core\Repzilon.Libraries.Core.csproj" />
