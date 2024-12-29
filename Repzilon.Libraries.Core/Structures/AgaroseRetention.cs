@@ -29,13 +29,20 @@ namespace Repzilon.Libraries.Core
 	, ICloneable
 #endif
 	{
-		public float LowerMassVolumeConcentration;
+		public readonly float LowerMassVolumeConcentration;
 		public float UpperMassVolumeConcentration;
-		public short[] FragmentLengths;
+		public readonly short[] FragmentLengths;
 
 		public AgaroseRetention(float minConcentration, params short[] fragmentLengths)
 		{
 			this.UpperMassVolumeConcentration = Single.NaN;
+			this.LowerMassVolumeConcentration = minConcentration;
+			this.FragmentLengths = fragmentLengths;
+		}
+
+		public AgaroseRetention(float minConcentration, float maxConcentration, params short[] fragmentLengths)
+		{
+			this.UpperMassVolumeConcentration = maxConcentration;
 			this.LowerMassVolumeConcentration = minConcentration;
 			this.FragmentLengths = fragmentLengths;
 		}
@@ -48,19 +55,17 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(AgaroseRetention other)
 		{
-			return LowerMassVolumeConcentration == other.LowerMassVolumeConcentration &&
-				   UpperMassVolumeConcentration == other.UpperMassVolumeConcentration &&
+			return RoundOff.Equals(LowerMassVolumeConcentration, other.LowerMassVolumeConcentration) &&
+				   RoundOff.Equals(UpperMassVolumeConcentration, other.UpperMassVolumeConcentration) &&
 				   EqualityComparer<short[]>.Default.Equals(FragmentLengths, other.FragmentLengths);
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = -20320107;
-				hashCode = hashCode * -1521134295 + LowerMassVolumeConcentration.GetHashCode();
-				hashCode = hashCode * -1521134295 + UpperMassVolumeConcentration.GetHashCode();
-				hashCode = hashCode * -1521134295 + EqualityComparer<short[]>.Default.GetHashCode(FragmentLengths);
-				return hashCode;
+				var hashCode = (-20320107 * -1521134295) + LowerMassVolumeConcentration.GetHashCode();
+				hashCode = (hashCode * -1521134295) + UpperMassVolumeConcentration.GetHashCode();
+				return (hashCode * -1521134295) + EqualityComparer<short[]>.Default.GetHashCode(FragmentLengths);
 			}
 		}
 
@@ -76,18 +81,14 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region ICloneable members
-		AgaroseRetention Clone()
+		public AgaroseRetention Clone()
 		{
 			var c = this.FragmentLengths.Length;
 			var shrarCopy = new short[c];
 			for (int i = 0; i < c; i++) {
 				shrarCopy[i] = this.FragmentLengths[i];
 			}
-			var clone = new AgaroseRetention();
-			clone.LowerMassVolumeConcentration = this.LowerMassVolumeConcentration;
-			clone.UpperMassVolumeConcentration = this.UpperMassVolumeConcentration;
-			clone.FragmentLengths = shrarCopy;
-			return clone;
+			return new AgaroseRetention(this.LowerMassVolumeConcentration, this.UpperMassVolumeConcentration, shrarCopy);
 		}
 
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6

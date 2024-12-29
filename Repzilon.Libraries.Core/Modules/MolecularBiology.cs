@@ -6,12 +6,12 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
-#if (!NET20)
+#if !NET20
 using System;
 using System.Linq;
 using System.Collections.Generic;
@@ -24,6 +24,7 @@ namespace Repzilon.Libraries.Core
 		private static readonly RegressionModel<double> LowerBound;
 		private static readonly RegressionModel<double> UpperBound;
 
+#pragma warning disable S3963 // "static" fields should be initialized inline
 		static MolecularBiology()
 		{
 			var karAgarose = new float[7] { 0.3f, 0.6f, 0.7f, 0.9f, 1.2f, 1.5f, 2.0f };
@@ -39,17 +40,20 @@ namespace Repzilon.Libraries.Core
 			LowerBound = RegressionModel.Compute(lstMin);
 			UpperBound = RegressionModel.Compute(lstMax);
 		}
+#pragma warning restore S3963 // "static" fields should be initialized inline
 
 		public static AgaroseRetention[] AgaroseConcentration(params short[] forFragmentLengths)
 		{
-			var agaroseForLargest = Math.Round(Math.Min(3, UpperBound.Solve(forFragmentLengths.Max())), 1);
-			var agaroseForSmallest = Math.Round(Math.Max(0.3, LowerBound.Solve(forFragmentLengths.Min())), 1);
+			var rmdUpper = UpperBound;
+			var rmdLower = LowerBound;
+			var agaroseForLargest = Math.Round(Math.Min(3, rmdUpper.Solve(forFragmentLengths.Max())), 1);
+			var agaroseForSmallest = Math.Round(Math.Max(0.3, rmdLower.Solve(forFragmentLengths.Min())), 1);
 			var cmin = Math.Min(agaroseForLargest, agaroseForSmallest);
 			var cmax = Math.Max(agaroseForLargest, agaroseForSmallest);
-			var dicMatches = new Dictionary<double, Dictionary<ushort, bool>>();
+			var dicMatches = new Dictionary<double, Dictionary<ushort, bool>>(checked((byte)(10 * (cmax - cmin))));
 			for (var ca = cmin; ca <= cmax; ca = RoundOff.Error(ca + 0.1)) {
-				var bpmin = Convert.ToUInt16(LowerBound.Evaluate(ca));
-				var bpmax = Convert.ToUInt16(UpperBound.Evaluate(ca));
+				var bpmin = Convert.ToUInt16(rmdLower.Evaluate(ca));
+				var bpmax = Convert.ToUInt16(rmdUpper.Evaluate(ca));
 				var dicCheck = new Dictionary<ushort, bool>(forFragmentLengths.Length);
 				for (int i = 0; i < forFragmentLengths.Length; i++) {
 					var l = forFragmentLengths[i];
@@ -62,7 +66,7 @@ namespace Repzilon.Libraries.Core
 
 			var lstResults = new List<AgaroseRetention>();
 			foreach (var c in bestConcentrations) {
-				var lstBasePairs = new List<short>();
+				var lstBasePairs = new List<short>(dicMatches.Count);
 				foreach (var kvp in dicMatches[c]) {
 					if (kvp.Value) {
 						lstBasePairs.Add((short)kvp.Key);
@@ -76,9 +80,7 @@ namespace Repzilon.Libraries.Core
 					blnSame = lstBasePairs.Count == f;
 					if (blnSame) {
 						for (int i = 0; blnSame && i < f; i++) {
-							if (!lstBasePairs.Contains(agarLast.FragmentLengths[i])) {
-								blnSame = false;
-							}
+							blnSame &= lstBasePairs.Contains(agarLast.FragmentLengths[i]);
 						}
 					}
 				} else {
