@@ -11,14 +11,17 @@
 // not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
-#if !NET20
 using System;
+#if !NET20
 using System.Linq.Expressions;
+#endif
 
 namespace Repzilon.Libraries.Core
 {
-	public static class GenericArithmetic<T> where T : struct
+	public static class GenericArithmetic<T>
+	where T : struct, IFormattable, IEquatable<T>
 	{
+#if !NET20
 		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>()
 		where TScalar : struct
 		{
@@ -57,27 +60,43 @@ namespace Repzilon.Libraries.Core
 			// Add the parameters together and compile it
 			return Expression.Lambda<Func<T, T, T>>(Expression.Subtract(paramA, paramB), paramA, paramB).Compile();
 		}
+#endif
 
 		public static T AddScalars(T a, T b)
 		{
+#if NET20
+			return ExtraMath.ConvertTo<T>(Convert.ToDouble(a) + Convert.ToDouble(b));
+#else
 			return Adder(a, b);
+#endif
 		}
 
 		public static T SubtractScalars(T a, T b)
 		{
+#if NET20
+			return ExtraMath.ConvertTo<T>(Convert.ToDouble(a) - Convert.ToDouble(b));
+#else
 			return Sub(a, b);
+#endif
 		}
 
 		public static T MultiplyScalars(T a, T b)
 		{
+#if NET20
+			return ExtraMath.ConvertTo<T>(Convert.ToDouble(a) * Convert.ToDouble(b));
+#else
 			return BuildMultiplier<T>()(a, b);
+#endif
 		}
 
 		public static T MultiplyScalars(T a, T b, T c)
 		{
+#if NET20
+			return ExtraMath.ConvertTo<T>(Convert.ToDouble(a) * Convert.ToDouble(b) * Convert.ToDouble(c));
+#else
 			var mult = BuildMultiplier<T>();
 			return mult(mult(a, b), c);
+#endif
 		}
 	}
 }
-#endif

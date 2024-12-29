@@ -106,8 +106,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			TrySolve("c) ", ex84_cc, ex84_cs, 'x', 'y', 'z');
 
 			Console.WriteLine("Exemple 85 :");
-			var ex85_c = new Matrix<short>(3, 4, 4, 0, -1, 0, 10, 0, 0, -2, 0, 2, -2, -1);
-			var ex85_s = new Matrix<short>(3, 1, 0, 0, 0);
+			var ex85_c = new Matrix<float>(3, 4, 4, 0, -1, 0, 10, 0, 0, -2, 0, 2, -2, -1);
+			var ex85_s = new Matrix<float>(3, 1, 0, 0, 0);
 			var ex85_a = ex85_c | ex85_s;
 			ex85_a.SwapLines(1, 2);
 			ex85_a.RunCommand(2, -10, null, 4);

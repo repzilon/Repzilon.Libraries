@@ -743,9 +743,12 @@ namespace Repzilon.Libraries.Core
 #if NET40 || NET35
 		private IDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants, params char[] variables)
 #else
-		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants, params char[] variables)
+		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants,
+		params char[] variables)
 #endif
 		{
+			const char kDefaultPolymorph = 't';
+
 			byte c;
 			var m = this.Lines;
 			var augmented = this.Augment(constants);
@@ -755,8 +758,56 @@ namespace Repzilon.Libraries.Core
 
 			// Check if we can continue.
 			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
-				// TODO : Implement linked solutions
-				throw new NotSupportedException("An infinity of linked solutions exists.");
+				if ((variables == null) || (variables.Length < 1)) {
+					throw new ArgumentNullException("variables");
+				}
+				// Find the letter of our linking solution variable
+				var dicSolved = new SortedDictionary<char, AffineBinomial<T>>();
+				char polymorph = kDefaultPolymorph;
+				for (int i = 0; i < variables.Length; i++) {
+					dicSolved.Add(variables[i], new AffineBinomial<T>());
+				}
+				if (dicSolved.ContainsKey(kDefaultPolymorph)) {
+					for (char cc = 'a'; (cc <= 'z') && (polymorph == kDefaultPolymorph); cc++) {
+						if (!dicSolved.ContainsKey(cc)) {
+							polymorph = cc;
+						}
+					}
+				}
+				dicSolved.Clear();
+				dicSolved.Add(variables[variables.Length - 1], new AffineBinomial<T>(1.ConvertTo<T>(), polymorph, zero));
+
+				
+				for (int l = m - 1; l >= 0; l--) {
+					SolveLinkedLine(variables, augmented, l, dicSolved, polymorph, zero);
+				}
+
+				while (dicSolved.Count < variables.Length) {
+					// Find a missing variable
+					short indexOfMissing = -1;
+					for (c = 0; (c < variables.Length) && (indexOfMissing < 0); c++) {
+						if (!dicSolved.ContainsKey(variables[c])) {
+							indexOfMissing = c;
+						}
+					}
+
+					// Find in the original matrix a line which has a non-zero coefficient for that variable
+					short indexOfLine = -1;
+					for (c = 0; (c < m) && (indexOfLine < 0); c++) {
+						if (!this[c, (byte)indexOfMissing].Equals(zero)) {
+							indexOfLine = c;
+						}
+					}
+
+					// Do the substitution with an affine binomial like above
+					SolveLinkedLine(variables, this.Augment(constants), indexOfLine, dicSolved, polymorph, zero);
+				}
+
+#if NET40 || NET35
+				return dicSolved;
+#else
+				return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
+#endif
 			} else {
 				int l = 0;
 				for (c = 0; c < this.Columns; c++) {
@@ -796,6 +847,38 @@ namespace Repzilon.Libraries.Core
 					return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
 #endif
 				}
+			}
+		}
+
+		private static void SolveLinkedLine(char[] variables, Matrix<T> augmented, int l,
+		SortedDictionary<char, AffineBinomial<T>> wipSolution, char polymorph, T zero)
+		{
+			var dicCoefficients = new SortedDictionary<char, T>();
+			var abTofLine = new AffineBinomial<T>(zero, polymorph, zero);
+			byte tc = (byte)(augmented.Columns - 1);
+			for (byte c = 0; c < tc; c++) {
+				var f = augmented[(byte)l, c];
+				if (!f.Equals(zero)) {
+					AffineBinomial<T> abFromSolved;
+					if (wipSolution.TryGetValue(variables[c], out abFromSolved)) {
+						abTofLine += abFromSolved * f;
+					} else {
+						dicCoefficients.Add(variables[c], f);
+					}
+				}
+			}
+			if (dicCoefficients.Count == 1) {
+				abTofLine = abTofLine * (-1).ConvertTo<T>() + augmented[(byte)l, tc];
+				foreach (var kvp in dicCoefficients) {
+					wipSolution.Add(kvp.Key,
+					 kvp.Value.Equals(1.ConvertTo<T>()) ? abTofLine : (abTofLine / kvp.Value).Cast<T>());
+				}
+			} else if (dicCoefficients.Count >= 2) {
+#if NETFRAMEWORK || NETSTANDARD2_0
+				throw new System.Data.ConstraintException();
+#else
+				throw new InvalidOperationException();
+#endif
 			}
 		}
 
