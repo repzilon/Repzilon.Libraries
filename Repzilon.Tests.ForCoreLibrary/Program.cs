@@ -146,9 +146,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", strOfT), Marshal.SizeOf(newT));
 #endif
+#pragma warning disable CC0004 // Catch block cannot be empty
 			} catch (ArgumentException) {
 				// do nothing
 			}
+#pragma warning restore CC0004 // Catch block cannot be empty
 		}
 	}
 }
