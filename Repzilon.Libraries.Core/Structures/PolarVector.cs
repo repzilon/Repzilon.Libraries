@@ -189,7 +189,6 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Operators
-#if !NET20
 		public static PolarVector<T> operator +(PolarVector<T> u, PolarVector<T> v)
 		{
 			return AddSub(u, v, false);
@@ -237,7 +236,11 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static PolarVector<T> operator *(T k, PolarVector<T> v)
 		{
+#if NET20
+			return new PolarVector<T>(GenericArithmetic<T>.MultiplyScalars(v.Norm, k), v.Angle);
+#else
 			return new PolarVector<T>(GenericArithmetic<T>.BuildMultiplier<T>()(v.Norm, k), v.Angle);
+#endif
 		}
 
 		public static T operator *(PolarVector<T> u, PolarVector<T> v)
@@ -245,6 +248,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			return Vector<T>.Dot(u.Norm, v.Norm, AngleBetween(u, v));
 		}
 
+#if !NET20
 		public static T operator *(PolarVector<T> u, TwoDVector<T> v)
 		{
 			return u.ToCartesian() * v;

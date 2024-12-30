@@ -26,19 +26,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var exa55c_n = Math.Sqrt(25 + 12 * Math.Sqrt(2));
 			var exa55c_sr = Math.Asin(2 * Math.Sqrt(2) / exa55c_n);
-#if NET20
-			var exa55c_2d = new PolarVector<double>(4, 45, AngleUnit.Degree).ToCartesian() + new PolarVector<double>(3, 0, AngleUnit.Degree).ToCartesian();
-			Console.WriteLine("Exemple 55c : {0:g} rad ou {1:g} entre u et R par loi des sinus",
-			 exa55c_sr, Angle<double>.Radians(exa55c_sr).ToDegrees());
-			Console.WriteLine("              u+v={0} par la bibliothèque arguments convertis en rectangulaire", exa55c_2d);
-			Console.WriteLine("              u+v={0} par la bibliothèque arguments convertis et réponse reconvertie", exa55c_2d.ToPolar());
-
-			var exa57_u = new TwoDVector<short>(3, 2);
-			var exa57_v = new TwoDVector<short>(4, 5);
-			var exa57_a = exa57_u + exa57_v;
-			var exa57_b = exa57_u - exa57_v;
-			Console.WriteLine("Exemple 57  : u+v={0} u-v={1}", exa57_a, exa57_b);
-#else
 			var exa55b_i2 = Vector<short>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_f4 = Vector<float>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_f8 = Vector<double>.Sum(3, 4, 45, AngleUnit.Degree);
@@ -59,6 +46,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa57_v = new TwoDVector<short>(4, 5);
 			var exa57_a = exa57_u + exa57_v;
 			var exa57_b = exa57_u - exa57_v;
+#if NET20
+			Console.WriteLine("Exemple 57  : u+v={0} u-v={1}", exa57_a, exa57_b);
+#else
 			var exa57_c = 2 * exa57_u;
 			Console.WriteLine("Exemple 57  : u+v={0} u-v={1} 2u={2}", exa57_a, exa57_b, exa57_c);
 
@@ -77,14 +67,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa62 = new PolarVector<float>(3, 210, AngleUnit.Degree).ToCartesian();
 			Console.WriteLine("Exemple 62  : v={0}", exa62);
 
-#if !NET20
 			var exa63_u = new PolarVector<float>(2, 45, AngleUnit.Degree);
 			var exa63_v = new PolarVector<float>(4, -30, AngleUnit.Degree);
 			var exa63_a = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
 			var exa63_ng = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
 			var exa63_s = exa63_u + exa63_v;
 			Console.WriteLine("Exemple 63  : ||R||={0} u+v={1} ||u+v||={2}", exa63_ng, exa63_s, exa63_s.Norm);
-#endif
 
 			var exa64_u = Vector.New(1.0f, 3.0f, 4.0f);
 			Console.WriteLine("Exemple 64  : ||u||={0:f3}", exa64_u.Norm());
@@ -109,13 +97,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa67_T = 700 / exa67_theta.Sin();
 			Console.WriteLine("Exemple 67  : ||A||={0:f2} ||T||={1:f2}", exa67_A, exa67_T);
 
-#if !NET20
 			var exa68_u = new PolarVector<float>(9, 35, AngleUnit.Degree);
 			var exa68_v = new PolarVector<float>(5, 90 + 20, AngleUnit.Degree);
 			var exa68_w = new PolarVector<float>(3, 180 + 50, AngleUnit.Degree);
 			var exa68_r = (exa68_u + exa68_v + exa68_w).ConvertTo(AngleUnit.Degree);
 			Console.WriteLine("Exemple 68  : R={0:g4}", exa68_r);
-#endif
 
 			var exa69_ref = ExtraMath.Sqrt(692.64m);
 			ShowcaseExample69(exa69_ref, Example69WithSingle);
@@ -124,7 +110,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithExp);
 			Console.Write(Environment.NewLine);
 
-#if !NET20
 			var exa70_u = Vector.New(2, 30, AngleUnit.Degree);
 			var exa70_v = Vector.New(4, 0, AngleUnit.Degree);
 			Console.WriteLine("Exemple 70  : u.v={0}", exa70_u * exa70_v);
@@ -148,7 +133,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_v = Vector.New(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
 			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());
-#endif
 
 			Program.OutputSizeOf<Exp>();
 		}

@@ -77,12 +77,14 @@ namespace Repzilon.Libraries.Core.Regression
 #endif
 		#endregion
 
-#if !NET20
 		public T Determination()
 		{
+#if NET20
+			return GenericArithmetic<T>.MultiplyScalars(R, R);
+#else
 			return GenericArithmetic<T>.BuildMultiplier<T>()(R, R);
-		}
 #endif
+		}
 
 		#region Equals
 		public override bool Equals(object obj)
@@ -206,31 +208,58 @@ namespace Repzilon.Libraries.Core.Regression
 			return Convert.ToDouble(B) - 1;
 		}
 
-#if !NET20
 		public T Evaluate(T x)
 		{
 			var model = this.Model;
 			var b = this.B;
+#if !NET20
 			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+#endif
 			var dblX = Convert.ToDouble(x);
+#if !NET20
 			var add = GenericArithmetic<T>.Adder;
+#endif
 			if (model == MathematicalModel.Affine) {
+#if NET20
+				return GenericArithmetic<T>.AddScalars(A, GenericArithmetic<T>.MultiplyScalars(b, x));
+#else
 				return add(A, mul(b, x));
+#endif
 			} else if (model == MathematicalModel.Exponential) {
+#if NET20
+				return RisingConcaveUpwards(Convert.ToDouble(b), dblX);
+#else
 				return RisingConcaveUpwards(mul, Convert.ToDouble(b), dblX);
+#endif
 			} else if (model == MathematicalModel.Logarithmic) {
-				return add(mul(A, Math.Log10(dblX).ConvertTo<T>()), b);
+#if NET20
+				return GenericArithmetic<T>.AddScalars(
+				 GenericArithmetic<T>.MultiplyScalars(A, ExtraMath.ConvertTo<T>(Math.Log10(dblX))), b);
+#else
+				return add(mul(A, ExtraMath.ConvertTo<T>(Math.Log10(dblX))), b);
+#endif
 			} else if (model == MathematicalModel.Power) {
+#if NET20
+				return RisingConcaveUpwards(dblX, Convert.ToDouble(b));
+#else
 				return RisingConcaveUpwards(mul, dblX, Convert.ToDouble(b));
+#endif
 			} else {
 				throw new NotSupportedException();
 			}
 		}
 
+#if NET20
+		private T RisingConcaveUpwards(double radix, double exponent)
+		{
+			return GenericArithmetic<T>.MultiplyScalars(A, ExtraMath.ConvertTo<T>(Math.Pow(radix, exponent)));
+		}
+#else
 		private T RisingConcaveUpwards(Func<T, T, T> mul, double radix, double exponent)
 		{
-			return mul(A, Math.Pow(radix, exponent).ConvertTo<T>());
+			return mul(A, ExtraMath.ConvertTo<T>(Math.Pow(radix, exponent)));
 		}
+#endif
 
 		public T Solve(T y)
 		{
@@ -239,18 +268,25 @@ namespace Repzilon.Libraries.Core.Regression
 			var dblB = Convert.ToDouble(B);
 			double dblSolution;
 			if (model == MathematicalModel.Affine) {
+#if NET20
+				dblSolution = (Convert.ToDouble(GenericArithmetic<T>.SubtractScalars(y, A)) / dblB);
+#else
 				dblSolution = (Convert.ToDouble(GenericArithmetic<T>.Sub(y, A)) / dblB);
+#endif
 			} else if (model == MathematicalModel.Exponential) {
 				dblSolution = Math.Log(yDivA, dblB);
 			} else if (model == MathematicalModel.Logarithmic) {
+#if NET20
+				dblSolution = Math.Pow(10, Convert.ToDouble(GenericArithmetic<T>.SubtractScalars(y, B)) / Convert.ToDouble(A));
+#else
 				dblSolution = Math.Pow(10, Convert.ToDouble(GenericArithmetic<T>.Sub(y, B)) / Convert.ToDouble(A));
+#endif
 			} else if (model == MathematicalModel.Power) {
 				dblSolution = Math.Pow(yDivA, 1.0 / dblB);
 			} else {
 				throw new NotSupportedException();
 			}
-			return dblSolution.ConvertTo<T>();
+			return ExtraMath.ConvertTo<T>(dblSolution);
 		}
-#endif
 	}
 }

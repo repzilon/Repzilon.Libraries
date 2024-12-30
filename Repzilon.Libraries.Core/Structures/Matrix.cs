@@ -368,6 +368,7 @@ namespace Repzilon.Libraries.Core
 		{
 			return m.Multiply(k);
 		}
+#endif
 
 		/// <summary>
 		/// Returns the scalar product of two matrices. Watch out, this operation is not commutative.
@@ -379,13 +380,20 @@ namespace Repzilon.Libraries.Core
 		public static Matrix<T> operator *(Matrix<T> a, Matrix<T> b)
 		{
 			if (a.Columns == b.Lines) {
+#if !NET20
 				var mult = BuildMultiplier<T>();
+#endif
 				var c = new Matrix<T>(a.Lines, b.Columns);
 				for (byte i = 0; i < c.Lines; i++) {
 					for (byte j = 0; j < c.Columns; j++) {
 						var sumOfCell = default(T);
 						for (byte x = 0; x < b.Lines; x++) {
+#if NET20
+							sumOfCell = GenericArithmetic<T>.AddScalars(sumOfCell,
+							 GenericArithmetic<T>.MultiplyScalars(a[i, x], b[x, j]));
+#else
 							sumOfCell = GenericArithmetic<T>.Adder(sumOfCell, mult(a[i, x], b[x, j]));
+#endif
 						}
 						c[i, j] = sumOfCell;
 					}
@@ -397,14 +405,12 @@ namespace Repzilon.Libraries.Core
 				 a.Lines, a.Columns, b.Lines, b.Columns));
 			}
 		}
-#endif
 
 		public static Matrix<T> operator |(Matrix<T> coefficients, Matrix<T> values)
 		{
 			return MatrixExtensionMethods.Augment(coefficients, values);
 		}
 
-#if !NET20
 		/// <summary>
 		/// Inverts the matrix using the Gauss-Jordan technique.
 		/// </summary>
@@ -420,12 +426,18 @@ namespace Repzilon.Libraries.Core
 			}
 			byte l, c;
 			var m = self.Lines;
-			var augmented = self.AugmentWithIdentity();
-			var minusOne = (-1).ConvertTo<T>();
+			var augmented = MatrixExtensionMethods.AugmentWithIdentity(self);
+			var minusOne = ExtraMath.ConvertTo<T>(-1);
 			var zero = default(T);
+#if !NET20
 			var mult = BuildMultiplier<T>();
+#endif
 			// Put zeros in the lower left corner
+#if NET20
+			PutZeroesInLowerLeft(self, m, ref augmented, minusOne, zero);
+#else
 			PutZeroesInLowerLeft(self, m, ref augmented, minusOne, zero, mult);
+#endif
 			// Check if we can continue. If not return null
 			if (augmented[(byte)(m - 1), (byte)(m - 1)].Equals(zero)) {
 				return null;
@@ -435,7 +447,11 @@ namespace Repzilon.Libraries.Core
 			for (c = (byte)(self.Columns - 1); c >= 1; c--) {
 				for (l = 0; l <= c - 1; l++) {
 					if (!augmented[l, c].Equals(zero)) {
+#if NET20
+						AutoRun(augmented, l, c, minusOne);
+#else
 						AutoRun(augmented, l, c, minusOne, mult);
+#endif
 					}
 				}
 			}
@@ -456,12 +472,21 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		private static void PutZeroesInLowerLeft(Matrix<T> self, byte m, ref Matrix<T> augmented, T minusOne, T zero, Func<T, T, T> mult)
+#if NET20
+		private static void PutZeroesInLowerLeft(Matrix<T> self, byte m, ref Matrix<T> augmented, T minusOne, T zero)
+#else
+		private static void PutZeroesInLowerLeft(Matrix<T> self, byte m, ref Matrix<T> augmented, T minusOne, T zero,
+		Func<T, T, T> mult)
+#endif
 		{
 			for (byte c = 0; c < self.Columns - 1; c++) {
 				for (byte l = (byte)(c + 1); l < m; l++) {
 					if (!augmented[l, c].Equals(zero)) {
+#if NET20
+						AutoRun(augmented, l, c, minusOne);
+#else
 						AutoRun(augmented, l, c, minusOne, mult);
+#endif
 
 #if DEBUG
 						// Reduce the number of negative signs by multiplying by -1
@@ -486,17 +511,23 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+#if NET20
+		private static void AutoRun(Matrix<T> augmented, byte l, byte c, T minusOne)
+#else
 		private static void AutoRun(Matrix<T> augmented, byte l, byte c, T minusOne, Func<T, T, T> mult)
+#endif
 		{
 			var coefficients = new T?[augmented.Lines];
+#if NET20
+			coefficients[c] = GenericArithmetic<T>.MultiplyScalars(augmented[l, c], minusOne);
+#else
 			coefficients[c] = mult(augmented[l, c], minusOne);
+#endif
 			coefficients[l] = augmented[c, c];
 			augmented.RunCommand(l, coefficients);
 		}
-#endif
 		#endregion
 
-#if !NET20
 		/// <summary>
 		/// Runs a line command on an augmented matrix. This method mutates the matrix.
 		/// </summary>
@@ -521,12 +552,20 @@ namespace Repzilon.Libraries.Core
 				 "command, pass null as its value.", this.Lines));
 			} else {
 				var accumulator = new T[this.Columns];
+#if !NET20
 				var mult = BuildMultiplier<T>();
+#endif
 				byte j;
 				for (byte i = 0; i < coefficients.Length; i++) {
 					if (coefficients[i].HasValue) {
 						for (j = 0; j < this.Columns; j++) {
-							accumulator[j] = GenericArithmetic<T>.Adder(accumulator[j], mult(coefficients[i].Value, this[i, j]));
+#if NET20
+							accumulator[j] = GenericArithmetic<T>.AddScalars(accumulator[j],
+							 GenericArithmetic<T>.MultiplyScalars(coefficients[i].Value, this[i, j]));
+#else
+							accumulator[j] = GenericArithmetic<T>.Adder(accumulator[j],
+							 mult(coefficients[i].Value, this[i, j]));
+#endif
 						}
 					}
 				}
@@ -535,7 +574,6 @@ namespace Repzilon.Libraries.Core
 				}
 			}
 		}
-#endif
 
 		/// <summary>
 		/// Swap two lines of matrix, generally an augmented one. This method mutates the matrix.
@@ -562,27 +600,37 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-#if !NET20
 		public T Determinant()
 		{
 			if (!this.IsSquare) {
 				throw new ArrayTypeMismatchException("A determinant is possible for square matrices only.");
 			} else {
 				var l = this.Lines;
+#if !NET20
 				Func<T, T, T> mult;
+#endif
 				if (l == 0) {
 					throw new InvalidOperationException("This zero-sized matrix should not exist.");
 				} else if (l == 1) {
 					return m_values[0, 0];
 				} else if (l == 2) { // we already know it is a square matrix
+#if NET20
+					return GenericArithmetic<T>.SubtractScalars(
+					 GenericArithmetic<T>.MultiplyScalars(m_values[0, 0], m_values[1, 1]),
+					 GenericArithmetic<T>.MultiplyScalars(m_values[0, 1], m_values[1, 0]));
+#else
 					mult = BuildMultiplier<T>();
-					return GenericArithmetic<T>.Sub(mult(m_values[0, 0], m_values[1, 1]), mult(m_values[0, 1], m_values[1, 0]));
+					return GenericArithmetic<T>.Sub(mult(m_values[0, 0], m_values[1, 1]),
+					 mult(m_values[0, 1], m_values[1, 0]));
+#endif
 				} else {
 					var c = this.Columns;
-					var plusOne = 1.ConvertTo<T>();
-					var minusOne = (-1).ConvertTo<T>();
+					var plusOne = ExtraMath.ConvertTo<T>(1);
+					var minusOne = ExtraMath.ConvertTo<T>(-1);
 					var det = default(T);
+#if !NET20
 					mult = BuildMultiplier<T>();
+#endif
 					for (byte j = 0; j < c; j++) {
 						// Build sub-matrix
 						var subSize = checked((byte)(l - 1));
@@ -600,13 +648,18 @@ namespace Repzilon.Libraries.Core
 
 						// Accumulate determinant value at column
 						// det += m_values[0, j] * (-1)^(i+j) * det(subMatrix)
-						det = GenericArithmetic<T>.Adder(det, mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
+#if NET20
+						det = GenericArithmetic<T>.AddScalars(det, GenericArithmetic<T>.MultiplyScalars(
+						 m_values[0, j], j % 2 == 0 ? plusOne : minusOne, subMatrix.Determinant()));
+#else
+						det = GenericArithmetic<T>.Adder(det,
+						 mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
+#endif
 					}
 					return det;
 				}
 			}
 		}
-#endif
 
 		public Matrix<T> Left()
 		{
@@ -682,7 +735,6 @@ namespace Repzilon.Libraries.Core
 			return null;
 		}
 
-#if !NET20
 		/// <summary>
 		/// Tries to solve an equation system using the Cramer technique, using this matrix containing the
 		/// coefficients of the variable part of the equation system.
@@ -695,7 +747,7 @@ namespace Repzilon.Libraries.Core
 		/// equation system is unsolvable, however.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 		private IDictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
 #else
 		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
@@ -718,14 +770,14 @@ namespace Repzilon.Libraries.Core
 					for (b = 0; b < ma.Lines; b++) {
 						ma[b, a] = constants[b, 0];
 					}
-					dicSolved.AddConstant(variables[a], Convert.ToDouble(ma.Determinant()) * idd);
+					AffineBinomialExtensions.AddConstant(dicSolved, variables[a], Convert.ToDouble(ma.Determinant()) * idd);
 				}
 				return dicSolved;
 			}
 		}
 
 #if false
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 		private IDictionary<char, AffineBinomial<T>> SolveByInversion(Matrix<T> constants, params char[] variables)
 #else
 		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveByInversion(Matrix<T> constants, params char[] variables)
@@ -739,7 +791,7 @@ namespace Repzilon.Libraries.Core
 				var nowKnowns = inverse.Value * constants;
 				var dicHere = new Dictionary<char, AffineBinomial<T>>();
 				for (byte a = 0; a < variables.Length; a++) {
-					dicHere.Add(variables[a], nowKnowns[a, 0]);
+					dicHere.Add(variables[a], new AffineBinomial<T>(nowKnowns[a, 0]));
 				}
 				return dicHere;
 			} else {
@@ -748,7 +800,7 @@ namespace Repzilon.Libraries.Core
 		}
 #endif
 
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 		private IDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants, params char[] variables)
 #else
 		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants,
@@ -766,9 +818,13 @@ namespace Repzilon.Libraries.Core
 			var dicSolved = new SortedDictionary<char, AffineBinomial<T>>();
 			var m = this.Lines;
 			var zero = default(T);
-			var augmented = this.Augment(constants);
+			var augmented = MatrixExtensionMethods.Augment(this, constants);
 			// Put zeros in the lower left corner
+#if NET20
+			PutZeroesInLowerLeft(this, m, ref augmented, ExtraMath.ConvertTo<T>(-1), zero);
+#else
 			PutZeroesInLowerLeft(this, m, ref augmented, (-1).ConvertTo<T>(), zero, BuildMultiplier<T>());
+#endif
 
 			// Check if we can continue.
 			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
@@ -785,7 +841,8 @@ namespace Repzilon.Libraries.Core
 					}
 				}
 				dicSolved.Clear();
-				dicSolved.Add(variables[variables.Length - 1], new AffineBinomial<T>(1.ConvertTo<T>(), polymorph, zero));
+				dicSolved.Add(variables[variables.Length - 1],
+				 new AffineBinomial<T>(ExtraMath.ConvertTo<T>(1), polymorph, zero));
 
 				for (l = m - 1; l >= 0; l--) {
 					SolveLinkedLine(zero, variables, dicSolved, l, augmented, polymorph);
@@ -804,7 +861,7 @@ namespace Repzilon.Libraries.Core
 					for (c = 0; c < m; c++) {
 						if (!this[c, (byte)l].Equals(zero)) {
 							// When found, do the substitution with an affine binomial like above
-							SolveLinkedLine(zero, variables, dicSolved, c, this.Augment(constants), polymorph);
+							SolveLinkedLine(zero, variables, dicSolved, c, MatrixExtensionMethods.Augment(this, constants), polymorph);
 							// Early loop exit without an extra variable, an extra condition neither a confusing keyword
 							c = m;
 						}
@@ -837,14 +894,14 @@ namespace Repzilon.Libraries.Core
 						double isolated = newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]);
 						dicSolved.Add(variables[variables.Length - l], isolated.ConvertTo<T>());
 						// */
-						dicSolved.AddConstant(variables[variables.Length - l],
+						AffineBinomialExtensions.AddConstant(dicSolved, variables[variables.Length - l],
 						 newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]));
 					}
 
 				}
 			}
 
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 			return dicSolved;
 #else
 			return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
@@ -876,7 +933,7 @@ namespace Repzilon.Libraries.Core
 			}
 			c = (byte)dicCoefficients.Count;
 			if (c == 1) {
-				abTofLine = abTofLine * (-1).ConvertTo<T>() + augmented[(byte)line, tc];
+				abTofLine = abTofLine * ExtraMath.ConvertTo<T>(-1) + augmented[(byte)line, tc];
 #if NETSTANDARD1_1
 				foreach (var kvp in dicCoefficients) {
 					f = kvp.Value;
@@ -885,7 +942,7 @@ namespace Repzilon.Libraries.Core
 #else
 				f = dicCoefficients.Values[0];
 				wipSolution.Add(dicCoefficients.Keys[0],
-				 f.Equals(1.ConvertTo<T>()) ? abTofLine : (abTofLine / f).Cast<T>());
+				 f.Equals(ExtraMath.ConvertTo<T>(1)) ? abTofLine : (abTofLine / f).Cast<T>());
 #endif
 			} else if (c >= 2) {
 #if NETFRAMEWORK || NETSTANDARD2_0
@@ -908,13 +965,13 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
 		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 		public IDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
 #else
 		public IReadOnlyDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
 #endif
 		{
-#if NET40 || NET35
+#if NET40 || NET35 || NET20
 			IDictionary<char, AffineBinomial<T>> dicSolved = null;
 #else
 			IReadOnlyDictionary<char, AffineBinomial<T>> dicSolved = null;
@@ -927,7 +984,6 @@ namespace Repzilon.Libraries.Core
 			}
 			return dicSolved;
 		}
-#endif
 	}
 
 	public static class MatrixExtensionMethods

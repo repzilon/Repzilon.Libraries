@@ -217,14 +217,16 @@ namespace Repzilon.Libraries.Core
 		}
 	}
 
-#if !NET20
 	internal static class AffineBinomialExtensions
 	{
+#if NET20
+		internal static void AddConstant<K, T>(IDictionary<K, AffineBinomial<T>> dictionary, K key, double value)
+#else
 		internal static void AddConstant<K, T>(this IDictionary<K, AffineBinomial<T>> dictionary, K key, double value)
+#endif
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
-			dictionary.Add(key, new AffineBinomial<T>(value.ConvertTo<T>()));
+			dictionary.Add(key, new AffineBinomial<T>(ExtraMath.ConvertTo<T>(value)));
 		}
 	}
-#endif
 }

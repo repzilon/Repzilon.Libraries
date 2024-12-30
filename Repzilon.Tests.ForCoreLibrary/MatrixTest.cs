@@ -12,9 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-#if !NET20
 using System.Collections.Generic;
-#endif
 using Repzilon.Libraries.Core;
 // ReSharper disable InvokeAsExtensionMethod
 // ReSharper disable InconsistentNaming
@@ -33,6 +31,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex80_a);
 			Console.WriteLine(ex80_b);
 			Console.WriteLine(ex80_result);
+#endif
 
 			Console.WriteLine("Exemple 81 :");
 			var ex81_a = new Matrix<short>(2, 2, 1, 3, -2, 1);
@@ -45,7 +44,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex.Message);
 			}
-#endif
 
 			Console.WriteLine("Exemple 82 :");
 			var ex82_m = new Matrix<double>(3, 3, 1.4, 1.2, 4.1, 1.4, 2.2, 3.7, 1.8, 3.2, 3.9);
@@ -68,17 +66,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var pap_a = pap_m + pap_n;
 #if !NET20
 			var pap_b = (2 * pap_n) - (5 * pap_m);
+#endif
 			var pap_c = pap_m * pap_n;
 			var pap_d = pap_n * pap_m;
-#endif
 			Console.WriteLine(pap_a);
 #if !NET20
 			Console.WriteLine(pap_b);
+#endif
 			Console.WriteLine(pap_c);
 			Console.WriteLine(pap_d);
-#endif
 
-#if !NET20
 			Console.WriteLine("Exemple 83 :");
 			var ex83_c = new Matrix<short>(2, 2, 4, 3, 2, -1);
 			var ex83_s = new Matrix<short>(2, 1, -7, 9);
@@ -130,7 +127,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ex86_a.RunCommand(1, null, 0.5f, null);
 			ex86_a.RunCommand(2, null, null, 0.25f);
 			ex86_a.RunCommand(2, null, 29, 5);
-			ex86_a.RoundErrors();
+			MatrixExtensionMethods.RoundErrors(ex86_a);
 			Console.WriteLine(ex86_a);
 			TrySolve("", ex82_m.Cast<decimal>(), ex86_s.Cast<decimal>(), 'x', 'y', 'z');
 
@@ -166,14 +163,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex88_m1);
 			Console.WriteLine(ex88_m1 * ex88_b);
 			TrySolve("", ex88_a, ex88_b, 'x', 'y', 'z');
-#endif
 
 			Console.WriteLine("Exemple 89 :");
 			var ex89_a = new Matrix<short>(3, 3, 2, 1, -4, 3, 1, 5, -2, 8, 7);
 			OutputExample89(ex89_a, (short)2);
 			OutputExample89(ex89_a, (short)5);
 
-#if !NET20
 			Console.WriteLine("Exemple 90 :");
 			var ex_89 = new Matrix<short>(2, 2, 3, 7, 2, 4);
 			Console.WriteLine("{0} det(M) = {1}", ex_89, ex_89.Determinant());
@@ -237,7 +232,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			//t2_8ref.RoundErrors();
 			Console.WriteLine(t2_8ref);
 			var t2_8rf = t2_8ref.Right() * t2_8D.Cast<float>();
-			t2_8rf.RoundErrors();
+			MatrixExtensionMethods.RoundErrors(t2_8rf);
 			Console.WriteLine(t2_8rf);
 
 			Console.WriteLine("Physicochimie labo 10 :");
@@ -250,10 +245,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			fql10_a.RunCommand(2, null, -7, 3);
 			Console.WriteLine(fql10_a);
 			TrySolve("", fql10_coef, fql10_k, 'b', 'o', 'c', 'h');
-#endif
 		}
 
-#if !NET20
 		private static void TrySolve<T>(string prefix, Matrix<T> coefficients, Matrix<T> constants,
 		params char[] variables)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
@@ -282,7 +275,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			Console.Write(Environment.NewLine);
 		}
-#endif
 
 		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable

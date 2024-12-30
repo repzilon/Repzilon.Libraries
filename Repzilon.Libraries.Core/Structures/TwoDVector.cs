@@ -346,18 +346,21 @@ namespace Repzilon.Libraries.Core.Vectors
 #endif
 		#endregion
 
-#if !NET20
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
+#if NET20
+			return GenericArithmetic<T>.AddScalars(
+			 GenericArithmetic<T>.MultiplyScalars(u.X, v.X), GenericArithmetic<T>.MultiplyScalars(u.Y, v.Y));
+#else
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			return GenericArithmetic<T>.Adder(mult(u.X, v.X), mult(u.Y, v.Y));
+#endif
 		}
 
 		public static bool ArePerpendicular(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			return Dot(u, v).Equals(default(T));
 		}
-#endif
 
 		public static bool AreParallel(TwoDVector<T> u, TwoDVector<T> v)
 		{
@@ -366,19 +369,23 @@ namespace Repzilon.Libraries.Core.Vectors
 			return bu == bv; // identical slope
 		}
 
-#if !NET20
 		public static ThreeDVector<T> Cross(TwoDVector<T> u, TwoDVector<T> v)
 		{
+#if NET20
+			return new ThreeDVector<T>(default(T), default(T),
+			 GenericArithmetic<T>.SubtractScalars(
+			 GenericArithmetic<T>.MultiplyScalars(u.X, v.Y), GenericArithmetic<T>.MultiplyScalars(u.Y, v.X)));
+#else
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			return new ThreeDVector<T>(default(T), default(T),
 			 GenericArithmetic<T>.Sub(mult(u.X, v.Y), mult(u.Y, v.X)));
+#endif
 		}
 
 		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)
 		{
 			return Angle<double>.Radians(Math.Acos(Convert.ToDouble(Dot(u, v)) / (u.Norm() * v.Norm())));
 		}
-#endif
 	}
 
 	public static class TwoDVectorExtensions

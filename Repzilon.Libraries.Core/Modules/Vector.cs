@@ -44,23 +44,30 @@ namespace Repzilon.Libraries.Core.Vectors
 
 	public static class Vector<T> where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 	{
-#if !NET20
-		internal static readonly Angle<T> HalfCircle = Angle<T>.Degrees(180.ConvertTo<T>());
+		internal static readonly Angle<T> HalfCircle = Angle<T>.Degrees(ExtraMath.ConvertTo<T>(180));
 
 		public static T Sum(T norm1, T norm2, Angle<T> between)
 		{
+#if NET20
+			var squaredResult = GenericArithmetic<T>.AddScalars(GenericArithmetic<T>.AddScalars(
+			 GenericArithmetic<T>.MultiplyScalars(norm1, norm1), GenericArithmetic<T>.MultiplyScalars(norm2, norm2)),
+			 GenericArithmetic<T>.MultiplyScalars(GenericArithmetic<T>.MultiplyScalars(
+			 GenericArithmetic<T>.MultiplyScalars(norm1, norm2),
+			 ExtraMath.ConvertTo<T>((HalfCircle - between).Cos())), ExtraMath.ConvertTo<T>(-2)));
+#else
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			var addi = GenericArithmetic<T>.Adder;
 			var squaredResult = addi(addi(mult(norm1, norm1), mult(norm2, norm2)),
 			 mult(mult(mult(norm1, norm2), (HalfCircle - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
+#endif
 #if NETSTANDARD1_1
 			if (squaredResult is decimal) {
 #else
 			if (((IConvertible)squaredResult).GetTypeCode() == TypeCode.Decimal) {
 #endif
-				return ExtraMath.Sqrt(Convert.ToDecimal(squaredResult)).ConvertTo<T>();
+				return ExtraMath.ConvertTo<T>(ExtraMath.Sqrt(Convert.ToDecimal(squaredResult)));
 			} else {
-				return Math.Sqrt(Convert.ToDouble(squaredResult)).ConvertTo<T>();
+				return ExtraMath.ConvertTo<T>(Math.Sqrt(Convert.ToDouble(squaredResult)));
 			}
 		}
 
@@ -71,15 +78,19 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static T Dot(T norm1, T norm2, Angle<T> between)
 		{
+#if NET20
+			return GenericArithmetic<T>.MultiplyScalars(GenericArithmetic<T>.MultiplyScalars(norm1, norm2),
+			 ExtraMath.ConvertTo<T>(between.Cos()));
+#else
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			return mult(mult(norm1, norm2), between.Cos().ConvertTo<T>());
+#endif
 		}
 
 		public static T Dot(T norm1, T norm2, T angleBetween, AngleUnit unit)
 		{
 			return Dot(norm1, norm2, new Angle<T>(angleBetween, unit));
 		}
-#endif
 	}
 }
 

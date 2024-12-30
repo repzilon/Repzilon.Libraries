@@ -211,6 +211,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return v.Multiply(k);
 		}
+#endif
 
 		public static T operator *(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
@@ -224,29 +225,41 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static T Dot(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
+#if NET20
+			return GenericArithmetic<T>.AddScalars(GenericArithmetic<T>.AddScalars(
+			 GenericArithmetic<T>.MultiplyScalars(u.X, v.X), GenericArithmetic<T>.MultiplyScalars(u.Y, v.Y)),
+			 GenericArithmetic<T>.MultiplyScalars(u.Z, v.Z));
+#else
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			var addi = GenericArithmetic<T>.Adder;
 			return addi(addi(mult(u.X, v.X), mult(u.Y, v.Y)), mult(u.Z, v.Z));
+#endif
 		}
 
 		public static ThreeDVector<T> Cross(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
+#if NET20
+			return new ThreeDVector<T>(
+			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.Y, v.Z), GenericArithmetic<T>.MultiplyScalars(u.Z, v.Y)),
+			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.Z, v.X), GenericArithmetic<T>.MultiplyScalars(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
+			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.X, v.Y), GenericArithmetic<T>.MultiplyScalars(u.Y, v.X)));
+#else
 			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
 			var sub  = GenericArithmetic<T>.Sub;
 			return new ThreeDVector<T>(
 			 sub(mult(u.Y, v.Z), mult(u.Z, v.Y)),
 			 sub(mult(u.Z, v.X), mult(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
 			 sub(mult(u.X, v.Y), mult(u.Y, v.X)));
-		}
 #endif
+		}
 		#endregion
 
-#if !NET20
 		public static bool ArePerpendicular(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			return Dot(u, v).Equals(default(T));
 		}
 
+#if !NET20
 		public static bool AreParallel(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			var ux = Convert.ToDecimal(u.X);
@@ -260,12 +273,12 @@ namespace Repzilon.Libraries.Core.Vectors
 				return k * u.Cast<decimal>() == v.Cast<decimal>();
 			}
 		}
+#endif
 
 		public static Angle<double> AngleBetween(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 			return Angle<double>.Radians(Math.Acos(Convert.ToDouble(Dot(u, v)) / (u.Norm() * v.Norm())));
 		}
-#endif
 	}
 
 	public static class ThreeDVectorExtensions
