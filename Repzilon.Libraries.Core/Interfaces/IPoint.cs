@@ -15,7 +15,7 @@ using System;
 
 namespace Repzilon.Libraries.Core
 {
-	public interface IPoint<T> : IFormattable
+	public interface IPoint<out T> : IFormattable
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
 #endif

@@ -51,8 +51,8 @@ namespace Repzilon.Libraries.Core
 	}
 
 #if NET20
-	public delegate TResult Func<T1, T2, TResult>(T1 arg1, T2 arg2);
+	public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
 
-	public delegate TResult Func<TResult>();
+	public delegate TResult Func<out TResult>();
 #endif
 }
