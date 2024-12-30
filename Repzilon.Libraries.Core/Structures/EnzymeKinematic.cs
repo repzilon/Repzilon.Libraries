@@ -1,4 +1,4 @@
-//
+﻿//
 //  EnzymeKinematic.cs
 //
 //  Author:
@@ -102,6 +102,12 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public EnzymeKinematic(T vmaxValue, string vmaxUnit, T kmValue, string kmUnit, T correlation,
 		EnzymeSpeedRepresentation representation) : this()
 		{
+			if (String.IsNullOrEmpty(vmaxUnit)) {
+				throw new ArgumentNullException("vmaxUnit");
+			}
+			if (String.IsNullOrEmpty(kmUnit)) {
+				throw new ArgumentNullException("kmUnit");
+			}
 			Vmax = new KeyValuePair<T, string>(vmaxValue, vmaxUnit);
 			Km = new KeyValuePair<T, string>(kmValue, kmUnit);
 			Correlation = correlation;
