@@ -44,5 +44,11 @@ namespace Repzilon.Libraries.Core
 		{
 			return new Exp(9, 10, 9) * ExtraMath.Abs(qi * qj) / (rij * rij);
 		}
+
+		[CLSCompliant(false)]
+		public static Exp18 CoulombLab(Exp18 qi, Exp18 qj, Exp18 rij)
+		{
+			return new Exp18(9, 10, 9) * ExtraMath.Abs(qi * qj) / (rij * rij);
+		}
 	}
 }

@@ -117,6 +117,12 @@ namespace Repzilon.Libraries.Core
 		}
 
 		[CLSCompliant(false)]
+		public static Exp18 Abs(Exp18 number)
+		{
+			return new Exp18(Math.Abs(number.Mantissa), number.Base, number.Exponent);
+		}
+
+		[CLSCompliant(false)]
 		public static double Pow(byte radix, sbyte exponent)
 		{
 			var ae = Math.Abs(exponent);

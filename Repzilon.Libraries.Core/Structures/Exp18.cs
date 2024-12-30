@@ -1,10 +1,10 @@
 ﻿//
-//  Exp.cs
+//  Exp18.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2024 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -26,7 +26,7 @@ namespace Repzilon.Libraries.Core
 	[StructLayout(LayoutKind.Auto)]
 #endif
 	[CLSCompliant(false)]
-	public struct Exp : IComparable, IFormattable, IEquatable<Exp>, IComparable<Exp>,
+	public struct Exp18 : IComparable, IFormattable, IEquatable<Exp18>, IComparable<Exp18>,
 	IEquatable<double>, IEquatable<decimal>,
 	IComparable<double>, IComparable<decimal>
 #if !NETSTANDARD1_1
@@ -36,46 +36,75 @@ namespace Repzilon.Libraries.Core
 	, ICloneable
 #endif
 	{
-		private readonly short mantissaThousandths;
-		public readonly byte Base;
-		public readonly SByte Exponent;
+		/// <summary>
+		/// Layout : Highest 8 bits for exponent (thus the Int32 sign bit is the sign bit of the exponent), acts like SByte,
+		/// middle 6 bits for an unsigned windowed radix ([2; 65] stored as [0; 63])
+		/// and lower 18 bits for mantissa (top bit is sign bit, stores mantissa as non-complemented 1/100000ths,
+		/// whereas old Exp stores mantissa as 1/1000ths in two's complement Int16)
+		/// </summary>
+		/// <remarks>
+		/// Little endianness is assumed (all x86, x86_64, most ARM and AArch64). Would probably do not so funny stuff
+		/// with old big endian PowerPC Macs on Mono (and Xbox 360 on Compact Framework or Mono?).
+		/// </remarks>
+		private readonly Int32 data;
+
+		public int MantissaTenThousandths
+		{
+			get {
+				var mut = data & 0x1ffff;
+				return ((data & 0x20000) != 0) ? mut * -1 : mut;
+			}
+		}
+
+		public byte Base
+		{
+			get { return (byte)(((data & 0xfc0000) >> 18) + 2); }
+		}
+
+		public SByte Exponent
+		{
+			get { return (SByte)((data & 0xff000000) >> 24); }
+		}
 
 		public float Mantissa
 		{
-			get { return (float)(mantissaThousandths * 0.001); }
+			get { return MantissaTenThousandths * 0.0001f; }
 		}
 
-		public Exp(float mantissa, byte numericBase, SByte exponent)
+		public Exp18(float mantissa, byte numericBase, SByte exponent)
 		{
-			CheckForInit(mantissa, numericBase);
-			mantissaThousandths = Convert.ToInt16(mantissa * 1000);
-			Base = numericBase;
-			Exponent = exponent;
-		}
-
-		internal static void CheckForInit(float mantissa, byte numericBase)
-		{
-			if ((mantissa <= -10) || (mantissa >= 10)) {
-				throw new ArgumentOutOfRangeException("mantissa", mantissa, "Absolute value of the mantissa must be under 10.");
+			Exp.CheckForInit(mantissa, numericBase);
+			if (numericBase > 65) {
+				throw new ArgumentOutOfRangeException("numericBase", numericBase,
+				 "A base bigger than 65 cannot be used with Exp18.");
 			}
-			if (numericBase < 2) {
-				throw new ArgumentOutOfRangeException("numericBase", numericBase, "A numeric base of 0 or 1 does not make sense.");
-			}
+			data = Pack(Convert.ToInt32(mantissa * 10000), numericBase, exponent);
 		}
 
-		private Exp(short mantissa, byte numericBase, SByte exponent)
+		private Exp18(int mantissa, byte numericBase, SByte exponent)
 		{
-			mantissaThousandths = mantissa;
-			Base = numericBase;
-			Exponent = exponent;
+			data = Pack(mantissa, numericBase, exponent);
+		}
+
+		private static int Pack(int mantissa, byte numericBase, SByte exponent)
+		{
+#if DEBUG
+			int newData = (exponent << 24);
+			newData |= ((numericBase - 2) << 18);
+			newData |= (Math.Abs(mantissa) & 0x1ffff);
+			newData |= (mantissa < 0 ? 0x20000 : 0);
+			return newData;
+#else
+			return (exponent << 24) | ((numericBase - 2) << 18) | (Math.Abs(mantissa) & 0x1ffff) | (mantissa < 0 ? 0x20000 : 0);
+#endif
 		}
 
 		#region ICloneable members
-		public Exp(Exp source) : this(source.mantissaThousandths, source.Base, source.Exponent) { }
+		public Exp18(Exp18 source) : this(source.MantissaTenThousandths, source.Base, source.Exponent) { }
 
-		public Exp Clone()
+		public Exp18 Clone()
 		{
-			return new Exp(this);
+			return new Exp18(this);
 		}
 
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
@@ -84,7 +113,7 @@ namespace Repzilon.Libraries.Core
 			return Clone();
 		}
 #endif
-		#endregion
+#endregion
 
 		#region ToString
 		public override string ToString()
@@ -119,8 +148,8 @@ namespace Repzilon.Libraries.Core
 		#region Equals
 		public override bool Equals(object obj)
 		{
-			if (obj is Exp) {
-				return Equals((Exp)obj);
+			if (obj is Exp18) {
+				return Equals((Exp18)obj);
 			} else if (obj is double) {
 				return Equals((double)obj);
 			} else if (obj is decimal) {
@@ -134,10 +163,9 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public bool Equals(Exp other)
+		public bool Equals(Exp18 other)
 		{
-			return (mantissaThousandths == other.mantissaThousandths) &&
-			 (Base == other.Base) && (Exponent == other.Exponent);
+			return (data == other.data);
 		}
 
 		public bool Equals(double other)
@@ -159,19 +187,15 @@ namespace Repzilon.Libraries.Core
 
 		public override int GetHashCode()
 		{
-			unchecked {
-				var hashCode = (1362180524 * -1521134295) + mantissaThousandths;
-				hashCode = (hashCode * -1521134295) + Base;
-				return (hashCode * -1521134295) + Exponent;
-			}
+			return data;
 		}
 
-		public static bool operator ==(Exp left, Exp right)
+		public static bool operator ==(Exp18 left, Exp18 right)
 		{
 			return left.Equals(right);
 		}
 
-		public static bool operator !=(Exp left, Exp right)
+		public static bool operator !=(Exp18 left, Exp18 right)
 		{
 			return !(left == right);
 		}
@@ -179,15 +203,15 @@ namespace Repzilon.Libraries.Core
 
 		public double ToDouble()
 		{
-			return 0.001 * mantissaThousandths * ExtraMath.Pow(this.Base, this.Exponent);
+			return 0.0001 * MantissaTenThousandths * ExtraMath.Pow(this.Base, this.Exponent);
 		}
 
 		public decimal ToDecimal()
 		{
-			return 0.001m * mantissaThousandths * (decimal)ExtraMath.Pow(this.Base, this.Exponent);
+			return 0.0001m * MantissaTenThousandths * (decimal)ExtraMath.Pow(this.Base, this.Exponent);
 		}
 
-		public static Exp operator +(Exp x, Exp y)
+		public static Exp18 operator +(Exp18 x, Exp18 y)
 		{
 			var b = x.Base;
 			var p = x.Exponent;
@@ -198,7 +222,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public static Exp operator -(Exp x, Exp y)
+		public static Exp18 operator -(Exp18 x, Exp18 y)
 		{
 			var b = x.Base;
 			var p = x.Exponent;
@@ -209,7 +233,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public static Exp operator *(Exp x, Exp y)
+		public static Exp18 operator *(Exp18 x, Exp18 y)
 		{
 			var b = x.Base;
 			if (y.Base != b) {
@@ -219,7 +243,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public static Exp operator /(Exp x, Exp y)
+		public static Exp18 operator /(Exp18 x, Exp18 y)
 		{
 			var b = x.Base;
 			if (y.Base != b) {
@@ -229,21 +253,21 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		private static Exp AdjustMantissaExponent(float m2, byte b, int e2)
+		private static Exp18 AdjustMantissaExponent(float m2, byte b, int e2)
 		{
 			if ((m2 <= -b) || (m2 >= b) || ((m2 > -1) && (m2 < 1))) {
 				var magnitude = (int)Math.Floor(Math.Log(Math.Abs(m2), b));
 				e2 += magnitude;
 				m2 = (float)(m2 * ExtraMath.Pow(b, (SByte)(-magnitude)));
 			}
-			return new Exp(m2, b, (SByte)e2);
+			return new Exp18(m2, b, (SByte)e2);
 		}
 
 		#region IComparable members
 		public int CompareTo(object obj)
 		{
-			if (obj is Exp) {
-				return CompareTo((Exp)obj);
+			if (obj is Exp18) {
+				return CompareTo((Exp18)obj);
 			} else if (obj is double) {
 				return CompareTo((double)obj);
 			} else if (obj is decimal) {
@@ -257,7 +281,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public int CompareTo(Exp other)
+		public int CompareTo(Exp18 other)
 		{
 			return this.ToDouble().CompareTo(other.ToDouble());
 		}
@@ -279,87 +303,87 @@ namespace Repzilon.Libraries.Core
 		}
 #endif
 
-		public static bool operator <(Exp left, Exp right)
+		public static bool operator <(Exp18 left, Exp18 right)
 		{
 			return left.CompareTo(right) < 0;
 		}
 
-		public static bool operator <=(Exp left, Exp right)
+		public static bool operator <=(Exp18 left, Exp18 right)
 		{
 			return left.CompareTo(right) <= 0;
 		}
 
-		public static bool operator >(Exp left, Exp right)
+		public static bool operator >(Exp18 left, Exp18 right)
 		{
 			return left.CompareTo(right) > 0;
 		}
 
-		public static bool operator >=(Exp left, Exp right)
+		public static bool operator >=(Exp18 left, Exp18 right)
 		{
 			return left.CompareTo(right) >= 0;
 		}
 
-		public static bool operator <(Exp left, double right)
+		public static bool operator <(Exp18 left, double right)
 		{
 			return left.CompareTo(right) < 0;
 		}
 
-		public static bool operator <=(Exp left, double right)
+		public static bool operator <=(Exp18 left, double right)
 		{
 			return left.CompareTo(right) <= 0;
 		}
 
-		public static bool operator >(Exp left, double right)
+		public static bool operator >(Exp18 left, double right)
 		{
 			return left.CompareTo(right) > 0;
 		}
 
-		public static bool operator >=(Exp left, double right)
+		public static bool operator >=(Exp18 left, double right)
 		{
 			return left.CompareTo(right) >= 0;
 		}
 
-		public static bool operator <(Exp left, decimal right)
+		public static bool operator <(Exp18 left, decimal right)
 		{
 			return left.CompareTo(right) < 0;
 		}
 
-		public static bool operator <=(Exp left, decimal right)
+		public static bool operator <=(Exp18 left, decimal right)
 		{
 			return left.CompareTo(right) <= 0;
 		}
 
-		public static bool operator >(Exp left, decimal right)
+		public static bool operator >(Exp18 left, decimal right)
 		{
 			return left.CompareTo(right) > 0;
 		}
 
-		public static bool operator >=(Exp left, decimal right)
+		public static bool operator >=(Exp18 left, decimal right)
 		{
 			return left.CompareTo(right) >= 0;
 		}
 
 #if !NETSTANDARD1_1
-		public static bool operator <(Exp left, IConvertible right)
+		public static bool operator <(Exp18 left, IConvertible right)
 		{
 			return left.CompareTo(right) < 0;
 		}
 
-		public static bool operator <=(Exp left, IConvertible right)
+		public static bool operator <=(Exp18 left, IConvertible right)
 		{
 			return left.CompareTo(right) <= 0;
 		}
 
-		public static bool operator >(Exp left, IConvertible right)
+		public static bool operator >(Exp18 left, IConvertible right)
 		{
 			return left.CompareTo(right) > 0;
 		}
 
-		public static bool operator >=(Exp left, IConvertible right)
+		public static bool operator >=(Exp18 left, IConvertible right)
 		{
 			return left.CompareTo(right) >= 0;
 		}
 #endif
-		#endregion
+#endregion
 	}
 }

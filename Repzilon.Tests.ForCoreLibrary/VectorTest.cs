@@ -108,6 +108,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
 			ShowcaseExample69(exa69_ref, Example69WithExp);
+			ShowcaseExample69(exa69_ref, Example69WithExp18);
 			Console.Write(Environment.NewLine);
 
 			var exa70_u = Vector.New(2, 30, AngleUnit.Degree);
@@ -237,6 +238,28 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, result);
 			return result;
 		}
+
+		private static Exp18 Example69WithExp18(bool consoleOutput, bool roundErrors)
+		{
+			var exa69_q1 = new Exp18(3, 10, -6);
+			var exa69_q2 = new Exp18(-2, 10, -6);
+			var exa69_q3 = new Exp18(1, 10, -6);
+			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, new Exp18(3, 10, -2));
+			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, new Exp18(5, 10, -2));
+			TwoDVector<double> exa69_v13, exa69_v23;
+			double exa69_r;
+			// FIXME : Stop using a conversion to double
+			Example69PartCWithDouble(roundErrors,
+			 roundErrors ? RoundOff.Error(exa69_f13.ToDouble()) : exa69_f13.ToDouble(),
+			 roundErrors ? RoundOff.Error(exa69_f23.ToDouble()) : exa69_f23.ToDouble(),
+			 out exa69_v13, out exa69_v23, out exa69_r);
+
+			var exponent = Convert.ToSByte(Math.Floor(Math.Log10(exa69_r)));
+			var mantissa = (float)(exa69_r * ExtraMath.Pow(10, (sbyte)(-1 * exponent)));
+			var result = new Exp18(mantissa, 10, exponent);
+			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, result);
+			return result;
+		}
 		#endregion
 
 		#region Example 69 showcasing
@@ -254,7 +277,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static decimal InDecimal(object value)
 		{
-			return (value is Exp) ? ((Exp)value).ToDecimal() : Convert.ToDecimal(value);
+			if (value is Exp18) {
+				return ((Exp18)value).ToDecimal();
+			} else {
+				return (value is Exp) ? ((Exp)value).ToDecimal() : Convert.ToDecimal(value);
+			}
 		}
 
 		private static TimeSpan BenchExample69<T>(bool rounding, Func<bool, bool, T> implementation)
