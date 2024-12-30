@@ -50,11 +50,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 #else
 				if (String.IsNullOrWhiteSpace(name)) {
 #endif
+#pragma warning disable CC0021 // Use nameof
+#pragma warning disable RECS0163 // Suggest the usage of the nameof operator
 					throw new ArgumentNullException("name");
 				}
 				if (meltingPointInCelsius < -273.15) {
 					throw new ArgumentOutOfRangeException("meltingPointInCelsius");
 				}
+#pragma warning restore RECS0163 // Suggest the usage of the nameof operator
+#pragma warning restore CC0021 // Use nameof
 
 				var fat = new FattyAcid {
 					Name = name.Trim(),

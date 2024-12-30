@@ -450,7 +450,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		AlphaAminoAcid dualAminoAcid)
 		{
 			if (quadSlotted.Length != 4) {
+#pragma warning disable CC0021 // Use nameof
 				throw new ArgumentException("quadSlotted");
+#pragma warning restore CC0021 // Use nameof
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
@@ -478,7 +480,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		AlphaAminoAcid dualAminoAcid)
 		{
 			if (doubleSlotted.Length != 2) {
+#pragma warning disable CC0021 // Use nameof
 				throw new ArgumentException("doubleSlotted");
+#pragma warning restore CC0021 // Use nameof
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
