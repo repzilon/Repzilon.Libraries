@@ -265,7 +265,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			if ((pH < 1) || (pH > 14)) {
 				throw new ArgumentOutOfRangeException("pH");
 			}
-			bool dicat = this.DicationWhenVeryAcid;
+			var dicat = this.DicationWhenVeryAcid;
 			var ar = this.pKaR;
 			var pkI = this.Isoelectric();
 			float am;

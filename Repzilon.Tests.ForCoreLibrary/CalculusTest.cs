@@ -31,7 +31,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("20! vaut {0}", ExtraMath.Factorial(20));
 			for (int i = 21; i <= 27; i++) {
 				Console.WriteLine("{0}! vaut {1}", i, ExtraMath.BigFactorial((byte)i));
-			}	
+			}
 		}
 
 #if NETFRAMEWORK
@@ -46,7 +46,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Integral.Summation(1, summationUpper, forEach);
 			}
 			var tsDuration = DateTime.UtcNow - dtmStart;
-			long result = Integral.Summation(1, summationUpper, forEach);
+			var result = Integral.Summation(1, summationUpper, forEach);
 			Console.WriteLine("={0}\t{2,-16} {1,7:n0} Hz", result, benchLoops / tsDuration.TotalSeconds, legend);
 		}
 

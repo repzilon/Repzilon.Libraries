@@ -40,10 +40,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 					}
 				}
 			}
-			TimeSpan tsNew = DateTime.UtcNow - dtmStart;
+			var tsNew = DateTime.UtcNow - dtmStart;
 			Console.WriteLine("Implémentation accélérée de GammaRatio : {0,6:n0} Hz", kStudentLoop / tsNew.TotalSeconds);
 
-			byte[] karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
+			var karLiberties = new byte[] { 1, 2, 3, 5, 8, 13, 21, 34, 55, 89, 144, 233 };
 			TenthTableHeader(" k={0,-6}", karLiberties);
 			for (x = -30; x <= 30; x++) {
 				z = TenthTableLineHeader(x);

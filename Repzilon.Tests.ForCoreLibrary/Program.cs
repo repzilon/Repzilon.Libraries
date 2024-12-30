@@ -48,25 +48,25 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Student distribution", StudentTest.Run);
 
 #if NET40 || NET35 || NET20
-			TriState enuWorkaroundCygwin = TriState.Unknown;
+			var enuWorkaroundCygwin = TriState.Unknown;
 #else
-			TriState enuWorkaroundCygwin = Console.IsInputRedirected ? TriState.True : TriState.Unknown;
+			var enuWorkaroundCygwin = Console.IsInputRedirected ? TriState.True : TriState.Unknown;
 #endif
 			DisplayMenu(enuWorkaroundCygwin, dicTests);
-			char chrPressed = MyReadKey(ref enuWorkaroundCygwin);
+			var chrPressed = MyReadKey(ref enuWorkaroundCygwin);
 			while (char.ToUpperInvariant(chrPressed) != 'Q') {
 #if NETCOREAPP1_0
 				if (Char.IsDigit(chrPressed)) {
-					int intPressed = Int32.Parse(chrPressed.ToString());
+					var intPressed = Int32.Parse(chrPressed.ToString());
 #else
 				if (Uri.IsHexDigit(chrPressed)) {
-					int intPressed = Int32.Parse(chrPressed.ToString(), NumberStyles.HexNumber);
+					var intPressed = Int32.Parse(chrPressed.ToString(), NumberStyles.HexNumber);
 #endif
 					if ((intPressed >= 1) && (intPressed <= dicTests.Count)) {
 						Console.Write(Environment.NewLine);
-						DateTime dtmStart = DateTime.UtcNow;
+						var dtmStart = DateTime.UtcNow;
 						dicTests.Values[intPressed - 1](args);
-						TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
+						var tsElapsed = DateTime.UtcNow - dtmStart;
 						Console.WriteLine("{0} Test took {1:n3}s", dicTests.Keys[intPressed - 1], tsElapsed.TotalSeconds);
 						DisplayMenu(enuWorkaroundCygwin, dicTests);
 					}
@@ -135,7 +135,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			try {
 #if NET40 || NET35 || NET20
-				Type typT = typeof(T);
+				var typT = typeof(T);
 				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", "<T>"), Marshal.SizeOf(typT));
 #else
 				var newT = new T();

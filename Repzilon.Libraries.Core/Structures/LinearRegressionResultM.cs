@@ -314,13 +314,14 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
 #pragma warning disable CC0019   // Use 'switch'
-			decimal na = a, nb = b;
+			var na = a;
+			var nb = b;
 			if ((newModel == MathematicalModel.Power) || (newModel == MathematicalModel.Exponential)) {
 				na = (decimal)Math.Pow(10, (double)a);
 			}
 			if (newModel == MathematicalModel.Exponential) {
 				nb = (decimal)Math.Pow(10, (double)b);
-			} else if (newModel == MathematicalModel.Logarithmic) { // this is wierd
+			} else if (newModel == MathematicalModel.Logarithmic) { // this is weird
 				na = b;
 				nb = a;
 			} else if ((newModel != MathematicalModel.Affine) && (newModel != MathematicalModel.Power)) {

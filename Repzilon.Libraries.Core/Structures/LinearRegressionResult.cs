@@ -313,7 +313,8 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
 #pragma warning disable CC0019   // Use 'switch'
-			double na = a, nb = b;
+			var na = a;
+			var nb = b;
 			if ((newModel == MathematicalModel.Power) || (newModel == MathematicalModel.Exponential)) {
 				na = Math.Pow(10, a);
 			}

@@ -773,7 +773,7 @@ namespace Repzilon.Libraries.Core
 			// Check if we can continue.
 			if (augmented[(byte)(m - 1), this.Columns].Equals(zero)) {
 				// Find the letter of our linking solution variable
-				char polymorph = kDefaultPolymorph;
+				var polymorph = kDefaultPolymorph;
 				for (l = 0; l < variables.Length; l++) {
 					dicSolved.Add(variables[l], new AffineBinomial<T>());
 				}
@@ -823,7 +823,7 @@ namespace Repzilon.Libraries.Core
 				} else { // Single solution
 					// Compute solution in a loop, starting with the last algebraic variable.
 					for (l = 1; l <= m; l++) {
-						double newvar = Convert.ToDouble(augmented[(byte)(m - l), k]);
+						var newvar = Convert.ToDouble(augmented[(byte)(m - l), k]);
 						for (c = 1; c < l; c++) {
 							/* Before code variable inlining
 							var coefficient = augmented[(byte)(m - l), (byte)(this.Columns - c)];
@@ -862,7 +862,7 @@ namespace Repzilon.Libraries.Core
 #endif
 			var abTofLine = new AffineBinomial<T>(zero, polymorph, zero);
 			T f;
-			byte tc = (byte)(augmented.Columns - 1);
+			var tc = (byte)(augmented.Columns - 1);
 			for (c = 0; c < tc; c++) {
 				f = augmented[(byte)line, c];
 				if (!f.Equals(zero)) {

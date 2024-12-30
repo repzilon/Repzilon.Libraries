@@ -106,7 +106,7 @@ namespace Repzilon.Libraries.Core
 
 		private static int CountMigratableFragments(KeyValuePair<double, Dictionary<ushort, bool>> x)
 		{
-			int count = 0;
+			var count = 0;
 			foreach (var y in x.Value) {
 				if (y.Value) {
 					count++;

@@ -81,7 +81,7 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = 725852250;
+				var hashCode = 725852250;
 				hashCode = hashCode * -1521134295 + Slope.GetHashCode();
 				hashCode = hashCode * -1521134295 + Variable.GetHashCode();
 				hashCode = hashCode * -1521134295 + Constant.GetHashCode();

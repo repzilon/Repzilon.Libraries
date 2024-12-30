@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2024 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -78,9 +78,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 DecimalOneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
 
 #if true
-			decimal dcmFinalTargetDelta = (decimal)Math.Abs(dblTargetDelta);
+			var dcmFinalTargetDelta = (decimal)Math.Abs(dblTargetDelta);
 #else
-			decimal dcmFinalTargetDelta = Math.Abs(dcmTargetDelta);
+			var dcmFinalTargetDelta = Math.Abs(dcmTargetDelta);
 #endif
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
 			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, dcmFinalTargetDelta);
@@ -281,11 +281,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		double targetDelta)
 		{
 			int i;
-			int c = allZ.Length;
+			var c = allZ.Length;
 			var intarIterations = new int[c];
 			for (i = 0; i < c; i++) {
 				var z = Math.Round(allZ[i], 2);
-				bool blnFound = false;
+				var blnFound = false;
 				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r0 = 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal);
@@ -323,11 +323,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		decimal targetDelta)
 		{
 			int i;
-			int c = allZ.Length;
+			var c = allZ.Length;
 			var intarIterations = new int[c];
 			for (i = 0; i < c; i++) {
-				decimal z = (decimal)Math.Round(allZ[i], 2);
-				bool blnFound = false;
+				var z = (decimal)Math.Round(allZ[i], 2);
+				var blnFound = false;
 				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r0 = 0.5m + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5m + Integral.Simpson(0, z, n, NonCumulativeNormal);
@@ -341,10 +341,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 					}
 				}
 				blnFound = false;
-				int overflowAt = 0;
+				var overflowAt = 0;
 				for (int n = 16; (overflowAt < 1) && (n <= 23); n++) {
 					try {
-						decimal ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)n);
+						var ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)n);
 						if (MoreExact(ml, expected[i], targetDelta)) {
 							blnFound = true;
 							OutputNormalIntegral(z, expected[i], ml, "Série de MacLaurin corrigée", n, n - 1);
@@ -354,7 +354,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					}
 				}
 				if ((!blnFound) && (overflowAt > 0)) {
-					decimal ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)(overflowAt - 1));
+					var ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)(overflowAt - 1));
 					OutputNormalIntegral(z, expected[i], ml, "Série de MacLaurin corrigée°", overflowAt - 1,
 					 overflowAt - 2);
 				}
@@ -391,7 +391,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void FindMacLaurinBreakpointForNormalLawIntegral(decimal targetDelta)
 		{
-			bool blnBroken = false;
+			var blnBroken = false;
 			var dcmarDeltas = new decimal[22 - 16 + 1];
 			for (int i = 200; (!blnBroken) && (i <= 300); i++) {
 				var z = i * 0.01m;

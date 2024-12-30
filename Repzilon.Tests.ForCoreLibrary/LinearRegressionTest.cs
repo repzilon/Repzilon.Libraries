@@ -29,7 +29,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
-			double dblTalpha0_025n4 = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), 6 - 2);
+			var dblTalpha0_025n4 = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), 6 - 2);
 			Console.WriteLine("t{0} = {1}", 6 - 2, dblTalpha0_025n4);
 
 			var lrp = LinearRegression.Compute(
@@ -254,8 +254,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var ciCu = CultureInfo.CurrentCulture;
 			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
-			TStorage b = lrp.Slope;
-			TStorage sr = lrp.ResidualStdDev();
+			var b = lrp.Slope;
+			var sr = lrp.ResidualStdDev();
 
 			Console.Write("r = {0}\tr^2 = {1}", lrp.Correlation.ToString(numberFormat, ciCu), lrp.Determination().ToString(numberFormat, ciCu));
 			Console.Write(Environment.NewLine);

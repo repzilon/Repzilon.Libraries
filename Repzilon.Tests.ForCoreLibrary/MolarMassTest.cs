@@ -169,7 +169,7 @@ STQTALA";
 		private static float PolypeptideMass(char[] peptideSequenceLetters)
 		{
 			float mass = 0;
-			int n = 0;
+			var n = 0;
 			var aal = AminoAcid.AlphaLookup;
 			for (int i = 0; i < peptideSequenceLetters.Length; i++) {
 				var l = peptideSequenceLetters[i];

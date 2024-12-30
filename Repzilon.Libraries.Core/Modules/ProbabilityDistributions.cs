@@ -237,10 +237,12 @@ namespace Repzilon.Libraries.Core
 
 		public static double CumulativeStudent(double t, byte liberties)
 		{
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			/*const*/ double kHalf = 0.5;
 			/*const*/ double kOne = 1;
 			double dblOnePlusFractionOfTSquared, dblTOverSqrtNu;
 			/*const*/ double kOneOfPi = 1.0 / Math.PI; // not to be replaced by kOne, bigger and slower
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 			if (liberties > 5) {
 				return t < 0 ? kHalf - SimpsonForStudent(-1 * t, liberties) : kHalf + SimpsonForStudent(t, liberties);
 			} else if (liberties == 1) {
@@ -252,7 +254,7 @@ namespace Repzilon.Libraries.Core
 				dblTOverSqrtNu = t / Math.Sqrt(liberties);
 				if (liberties == 5) {
 					var dblReciprocal = kOne / dblOnePlusFractionOfTSquared;
-					/*const*/ double kTwoThirds = 2.0 / 3.0;
+					const double kTwoThirds = 2.0 / 3.0;
 					return kHalf + kOneOfPi * (dblTOverSqrtNu * dblReciprocal * (kOne + kTwoThirds * dblReciprocal) + Math.Atan(dblTOverSqrtNu));
 				} else if (liberties == 4) {
 					return kHalf + 0.375 * (t / Math.Sqrt(dblOnePlusFractionOfTSquared)) * (kOne - ((t * t) / (12 * dblOnePlusFractionOfTSquared)));
@@ -303,10 +305,10 @@ namespace Repzilon.Libraries.Core
 		/// <remarks>https://en.wikipedia.org/wiki/Student%27s_t-distribution#Probability_density_function</remarks>
 		private static double FastGammaRatio(byte k)
 		{
-			List<int> numerators   = new List<int>(k);
-			List<int> denominators = new List<int>(k);
+			var numerators   = new List<int>(k);
+			var denominators = new List<int>(k);
 
-			int c          = k % 2; // c means "oddity of k" here
+			var c          = k % 2; // c means "oddity of k" here
 			var multiplier = 1.0 / Math.Sqrt(k) * (c == 0 ? 0.5 : 1 / Math.PI);
 			AddGammaFactors(numerators, k - 1, 3 - c);
 			AddGammaFactors(denominators, k - 2, 2 + c);
@@ -322,7 +324,7 @@ namespace Repzilon.Libraries.Core
 				RemoveDividableFactors(3, numerators, denominators);
 			}
 			if (k >= 45) {
-				byte q = (byte)(k / 4);
+				var q = (byte)(k / 4);
 				for (byte p = 11; p <= q; p += 2) {
 					RemoveDividableFactors(p, numerators, denominators);
 				}
@@ -353,8 +355,8 @@ namespace Repzilon.Libraries.Core
 
 		private static void SplitDividableBy(byte by, List<int> numbers)
 		{
-			int c = numbers.Count;
-			for (int i = 0; i < c; i++) {
+			var c = numbers.Count;
+			for (var i = 0; i < c; i++) {
 				var v = numbers[i];
 				if ((v > by) && (v % by == 0)) {
 					numbers[i] = v / by;
@@ -365,10 +367,10 @@ namespace Repzilon.Libraries.Core
 
 		private static void RemoveIdenticalFactors<T>(List<T> numerators, List<T> denominators, int startAt)
 		{
-			int c = denominators.Count;
-			int i = startAt;
+			var c = denominators.Count;
+			var i = startAt;
 			while (i < c) {
-				int posInNumerator = numerators.IndexOf(denominators[i]);
+				var posInNumerator = numerators.IndexOf(denominators[i]);
 				if (posInNumerator >= 0) {
 					numerators.RemoveAt(posInNumerator);
 					denominators.RemoveAt(i);
@@ -404,8 +406,8 @@ namespace Repzilon.Libraries.Core
 
 		private static void Regroup(List<int> factors)
 		{
-			int i = 0;
-			int c = factors.Count - 1;
+			var i = 0;
+			var c = factors.Count - 1;
 			while (i < c) {
 				int v;
 				if (TryMultiply(factors[i], factors[i + 1], out v)) {
@@ -445,8 +447,10 @@ namespace Repzilon.Libraries.Core
 
 		public static double InverseStudent(double p, byte liberties)
 		{
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			/*const*/ double kHalf = 0.5;
 			/*const*/ double kOne = 1;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);
 			if (p == kHalf) {
 				return 0;
@@ -549,7 +553,9 @@ namespace Repzilon.Libraries.Core
 
 		public static double InverseNormalEstimate(double p)
 		{
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			/*const*/ double kHalf = 0.5;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);
 			if (p == kHalf) {
 				return 0;

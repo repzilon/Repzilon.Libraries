@@ -168,7 +168,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public override int GetHashCode()
 		{
 			unchecked {
-				int hashCode = 667060969;
+				var hashCode = 667060969;
 				hashCode = (hashCode * -1521134295) + Vmax.Key.GetHashCode();
 				hashCode = (hashCode * -1521134295) + Vmax.Value.GetHashCode();
 				hashCode = (hashCode * -1521134295) + Km.Key.GetHashCode();

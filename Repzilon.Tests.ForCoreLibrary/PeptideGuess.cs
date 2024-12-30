@@ -69,8 +69,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (obj == null) {
 				return 0;
 			}
-			int magic = -1521134295;
-			int hashCode = -918342670;
+			var magic = -1521134295;
+			var hashCode = -918342670;
 			unchecked {
 				for (int i = 0; i < obj.Count; i++) {
 					hashCode = (hashCode * magic) + (int)obj[i];
@@ -373,11 +373,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void BenchmarkResolution(int iterations, string title, Func<List<List<AlphaAminoAcid>>> solver)
 		{
 			List<List<AlphaAminoAcid>> lstResults = null;
-			DateTime dtmStart = DateTime.UtcNow;
+			var dtmStart = DateTime.UtcNow;
 			for (int i = 0; i < iterations; i++) {
 				lstResults = solver();
 			}
-			TimeSpan tsEnum = DateTime.UtcNow - dtmStart;
+			var tsEnum = DateTime.UtcNow - dtmStart;
 
 			OutputArrangements(title, lstResults);
 			Console.WriteLine("{0} itérations en {1:f0}ms, {2:f0}Hz",

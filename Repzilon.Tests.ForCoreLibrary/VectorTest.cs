@@ -117,7 +117,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 68  : R={0:g4}", exa68_r);
 #endif
 
-			decimal exa69_ref = ExtraMath.Sqrt(692.64m);
+			var exa69_ref = ExtraMath.Sqrt(692.64m);
 			ShowcaseExample69(exa69_ref, Example69WithSingle);
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
@@ -275,7 +275,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static TimeSpan BenchExample69<T>(bool rounding, Func<bool, bool, T> implementation)
 		{
-			DateTime dtmStart = DateTime.UtcNow;
+			var dtmStart = DateTime.UtcNow;
 			for (int i = 0; i < 1000000; i++) {
 				implementation(false, rounding);
 			}

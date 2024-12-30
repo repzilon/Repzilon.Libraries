@@ -93,7 +93,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		T[] values, byte[] expectedCounts, Action<string> messageWriter) where T : IConvertible
 		{
 			if ((values != null) && (expectedCounts != null)) {
-				int c = values.Length;
+				var c = values.Length;
 				if (expectedCounts.Length != c) {
 					throw new ArgumentException("The count of elements in each of the passed arrays must be identical.");
 				}

@@ -32,7 +32,7 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("forEach");
 			}
 
-			T sum = default(T);
+			var sum = default(T);
 			for (var k = m; k <= n; k++) {
 #if DEBUG
 				T value = forEach(k);

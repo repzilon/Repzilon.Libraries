@@ -151,7 +151,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		params PointD[] michaelisMentenDataPoints)
 		{
 			int i;
-			int k = 0;
+			var k = 0;
 			var c = michaelisMentenDataPoints.Length;
 			var ptdarIntersections = new PointD[checked(c * (c - 1) / 2)];
 			// 1. Find the parameter space equations
