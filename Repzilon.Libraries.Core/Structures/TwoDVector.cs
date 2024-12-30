@@ -361,8 +361,8 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static bool AreParallel(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			var bu = ExtraMath.ConvertTo<decimal>(u.Y) / ExtraMath.ConvertTo<decimal>(u.X);
-			var bv = ExtraMath.ConvertTo<decimal>(v.Y) / ExtraMath.ConvertTo<decimal>(v.X);
+			var bu = Convert.ToDecimal(u.Y) / Convert.ToDecimal(u.X);
+			var bv = Convert.ToDecimal(v.Y) / Convert.ToDecimal(v.X);
 			return bu == bv; // identical slope
 		}
 
@@ -376,7 +376,7 @@ namespace Repzilon.Libraries.Core.Vectors
 
 		public static Angle<double> AngleBetween(TwoDVector<T> u, TwoDVector<T> v)
 		{
-			return Angle<double>.Radians(Math.Acos(Dot(u, v).ConvertTo<double>() / (u.Norm() * v.Norm())));
+			return Angle<double>.Radians(Math.Acos(Convert.ToDouble(Dot(u, v)) / (u.Norm() * v.Norm())));
 		}
 #endif
 	}
