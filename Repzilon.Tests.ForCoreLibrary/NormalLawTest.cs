@@ -104,7 +104,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(
 			 "α     P-value logit(P)           logit(P) * √(π/8)  ≈Φ^-1              Φ^-1               Δ               n");
 			const int kBigProbitIter = 1500;
-			const decimal kTargetDelta = 1E-16m;
 			int j;
 			var ptdarProbitIter = new PointD[karExpectedProbits.Length];
 			double p, probit;
@@ -114,7 +113,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				decimal delta = 1;
 				short withNewDelta = 0;
 				var repetitions = 0;
-				for (short m = checked((short)(3 * i - 2740)); m <= kBigProbitIter && (Math.Abs(delta) > kTargetDelta) && (repetitions < 45); m++) {
+				for (short m = checked((short)(3 * i - 2740)); m <= kBigProbitIter && (Math.Abs(delta) > dcmFinalTargetDelta) && (repetitions < 45); m++) {
 					var previousDelta = delta;
 					probit = ProbabilityDistributions.InverseNormal(p, m);
 					delta = (decimal)probit - karExpectedProbits[j];
@@ -311,11 +310,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= c - 1;
 			stddev = Math.Sqrt(stddev);
-			const float kT99Percent4Degrees = 4.60409f;
-			var ideal = average + (kT99Percent4Degrees * stddev);
+			var dblT99Percent4Degrees = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
+			var ideal = average + (dblT99Percent4Degrees * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
 			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c,
-			 kT99Percent4Degrees, ideal);
+			 dblT99Percent4Degrees, ideal);
 			return Convert.ToInt32(ideal);
 		}
 
@@ -371,11 +370,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= c - 1;
 			stddev = ExtraMath.Sqrt(stddev);
-			const decimal kT99Percent4Degrees = 4.60409m;
-			var ideal = average + (kT99Percent4Degrees * stddev);
+			var dcmT99Percent4Degrees = (decimal)ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
+			var ideal = average + (dcmT99Percent4Degrees * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
 			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c,
-			 kT99Percent4Degrees, ideal);
+			 dcmT99Percent4Degrees, ideal);
 
 			var ptmarIter = new PointM[c];
 			for (i = 0; i < c; i++) {
