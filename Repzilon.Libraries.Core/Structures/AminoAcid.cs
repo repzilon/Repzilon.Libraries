@@ -155,10 +155,10 @@ namespace Repzilon.Libraries.Core.Biochemistry
 
 		public bool Equals(AminoAcid other)
 		{
-			return RoundOff.Equals(MolarMass, other.MolarMass) &&
-				   RoundOff.Equals(pKa1, other.pKa1) &&
-				   RoundOff.Equals(pKa2, other.pKa2) &&
-				   RoundOff.Equals(pKaR, other.pKaR) &&
+			return RoundOff.AreEqual(MolarMass, other.MolarMass) &&
+				   RoundOff.AreEqual(pKa1, other.pKa1) &&
+				   RoundOff.AreEqual(pKa2, other.pKa2) &&
+				   RoundOff.AreEqual(pKaR, other.pKaR) &&
 				   Letter == other.Letter &&
 				   DicationWhenVeryAcid == other.DicationWhenVeryAcid &&
 				   Symbol == other.Symbol &&
@@ -269,12 +269,12 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			var ar = this.pKaR;
 			var pkI = this.Isoelectric();
 			float am;
-			if (RoundOff.Equals(pH, pkI)) {
+			if (RoundOff.AreEqual(pH, pkI)) {
 				return 0;
-			} else if (RoundOff.Equals(pH, this.pKa1)) {
+			} else if (RoundOff.AreEqual(pH, this.pKa1)) {
 				return dicat ? 1.5f : 0.5f;
 			} else if (Single.IsNaN(ar)) { // without lateral chain
-				if (RoundOff.Equals(pH, this.pKa2)) {
+				if (RoundOff.AreEqual(pH, this.pKa2)) {
 					return -0.5f;
 				} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f)) {
 					if (pH < pkI) {
@@ -287,11 +287,11 @@ namespace Repzilon.Libraries.Core.Biochemistry
 				}
 			} else { // with lateral chain
 				var a2Ltar = this.pKa2 < ar;
-				if (RoundOff.Equals(pH, this.pKa2)) {
+				if (RoundOff.AreEqual(pH, this.pKa2)) {
 					return ChargeOfLateral(false, a2Ltar, dicat);
-				} else if (RoundOff.Equals(pH, ar)) {
+				} else if (RoundOff.AreEqual(pH, ar)) {
 					return ChargeOfLateral(true, a2Ltar, dicat);
-				} else if (RoundOff.Equals(pH, (dicat ? a2Ltar ? this.pKa1 + this.pKa2 : this.pKa1 + ar : this.pKa2 + ar) * 0.5f)) {
+				} else if (RoundOff.AreEqual(pH, (dicat ? a2Ltar ? this.pKa1 + this.pKa2 : this.pKa1 + ar : this.pKa2 + ar) * 0.5f)) {
 					return dicat ? 1 : -1;
 				} else if ((Math.Abs(pH - this.pKa1) <= 1.0f) || (Math.Abs(pH - this.pKa2) <= 1.0f) || (Math.Abs(pH - this.pKaR) <= 1.0f)) {
 					am = Math.Min(this.pKa2, ar);

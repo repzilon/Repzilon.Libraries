@@ -73,11 +73,11 @@ namespace Repzilon.Libraries.Core.Vectors
 			var mnt = ExtraMath.ConvertTo<T>(-1 * n);
 			if (vav == 0) {
 				return new KeyValuePair<T, T>(nt, zt);
-			} else if (RoundOff.Equals(vav, quarterTurn)) {
+			} else if (RoundOff.AreEqual(vav, quarterTurn)) {
 				return new KeyValuePair<T, T>(zt, nt);
-			} else if (RoundOff.Equals(vav, 2 * quarterTurn)) {
+			} else if (RoundOff.AreEqual(vav, 2 * quarterTurn)) {
 				return new KeyValuePair<T, T>(mnt, zt);
-			} else if (RoundOff.Equals(vav, 3 * quarterTurn)) {
+			} else if (RoundOff.AreEqual(vav, 3 * quarterTurn)) {
 				return new KeyValuePair<T, T>(zt, mnt);
 			} else {
 				return ToCartesian(n, va);

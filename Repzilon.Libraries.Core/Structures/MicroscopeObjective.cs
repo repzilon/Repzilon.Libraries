@@ -62,8 +62,8 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(MicroscopeObjective other)
 		{
-			return RoundOff.Equals(FocalLengthInMeters, other.FocalLengthInMeters) &&
-				   RoundOff.Equals(FocalNumber, other.FocalNumber);
+			return RoundOff.AreEqual(FocalLengthInMeters, other.FocalLengthInMeters) &&
+				   RoundOff.AreEqual(FocalNumber, other.FocalNumber);
 		}
 
 		public override int GetHashCode()

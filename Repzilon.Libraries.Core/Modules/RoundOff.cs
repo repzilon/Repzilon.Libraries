@@ -55,19 +55,19 @@ namespace Repzilon.Libraries.Core
 			 value.Base, value.Exponent);
 		}
 
-		public static bool Equals(float value, int k)
+		public static bool AreEqual(float value, int k)
 		{
 			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			return Error(value) == k;
 		}
 
-		public static bool Equals(double value, int k)
+		public static bool AreEqual(double value, int k)
 		{
 			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			return Error(value) == k;
 		}
 
-		public static bool Equals(float a, float b)
+		public static bool AreEqual(float a, float b)
 		{
 			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			return Error(a) == Error(b);

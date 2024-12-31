@@ -49,7 +49,7 @@ namespace Repzilon.Libraries.Core
 		public bool Equals(Solution other)
 		{
 			return this.Concentration.Key == other.Concentration.Key &&
-				   RoundOff.Equals(this.Concentration.Value, other.Concentration.Value) &&
+				   RoundOff.AreEqual(this.Concentration.Value, other.Concentration.Value) &&
 				   EqualityComparer<Measure?>.Default.Equals(SolutionVolume, other.SolutionVolume) &&
 				   MatrixExtensionMethods.Equals(SolventVolume, other.SolventVolume) &&
 				   MatrixExtensionMethods.Equals(SoluteVolume, other.SoluteVolume);

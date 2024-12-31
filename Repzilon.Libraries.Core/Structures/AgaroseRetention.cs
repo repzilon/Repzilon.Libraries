@@ -55,8 +55,8 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(AgaroseRetention other)
 		{
-			return RoundOff.Equals(LowerMassVolumeConcentration, other.LowerMassVolumeConcentration) &&
-				   RoundOff.Equals(UpperMassVolumeConcentration, other.UpperMassVolumeConcentration) &&
+			return RoundOff.AreEqual(LowerMassVolumeConcentration, other.LowerMassVolumeConcentration) &&
+				   RoundOff.AreEqual(UpperMassVolumeConcentration, other.UpperMassVolumeConcentration) &&
 				   EqualityComparer<short[]>.Default.Equals(FragmentLengths, other.FragmentLengths);
 		}
 

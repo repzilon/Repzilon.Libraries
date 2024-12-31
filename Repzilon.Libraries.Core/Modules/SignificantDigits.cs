@@ -63,7 +63,7 @@ namespace Repzilon.Libraries.Core
 			while ((value % 10) == 0) {
 				value *= 0.1f;
 			}
-			var bytDigits = IntegerPartDigits(value, blnLessThanOne, RoundOff.Equals(sngAbsolute , 1), sngDigitalPart);
+			var bytDigits = IntegerPartDigits(value, blnLessThanOne, RoundOff.AreEqual(sngAbsolute , 1), sngDigitalPart);
 			bytDigits += DecimalDigits(blnLessThanOne, sngDigitalPart, "R", false);
 			return bytDigits;
 		}
@@ -263,12 +263,12 @@ namespace Repzilon.Libraries.Core
 		private static byte IntegerPartDigits(double value, double absolute, double digitalPart)
 		{
 			if (absolute > 1) {
-				while (RoundOff.Equals(value % 10, 0)) {
+				while (RoundOff.AreEqual(value % 10, 0)) {
 					value *= 0.1;
 				}
 				return Magnitude(value);
 			} else {
-				return (RoundOff.Equals(absolute, 1) || RoundOff.Equals(digitalPart, 0)) ? (byte)1 : (byte)0;
+				return (RoundOff.AreEqual(absolute, 1) || RoundOff.AreEqual(digitalPart, 0)) ? (byte)1 : (byte)0;
 			}
 		}
 
