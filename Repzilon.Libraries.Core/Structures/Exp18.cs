@@ -30,7 +30,7 @@ namespace Repzilon.Libraries.Core
 	IEquatable<double>, IEquatable<decimal>,
 	IComparable<double>, IComparable<decimal>
 #if !NETSTANDARD1_1
-	, IEquatable<IConvertible>, IComparable<IConvertible>
+	, IEquatable<IConvertible>, IComparable<IConvertible>, IConvertible
 #endif
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
@@ -68,7 +68,12 @@ namespace Repzilon.Libraries.Core
 
 		public float Mantissa
 		{
-			get { return MantissaTenThousandths * 0.0001f; }
+			get { return RoundOff.Error(MantissaTenThousandths * 0.0001f); }
+		}
+
+		private bool IsZero()
+		{
+			return MantissaTenThousandths == 0;
 		}
 
 		public Exp18(float mantissa, byte numericBase, SByte exponent)
@@ -79,6 +84,13 @@ namespace Repzilon.Libraries.Core
 				 "A base bigger than 65 cannot be used with Exp18.");
 			}
 			data = Pack(Convert.ToInt32(mantissa * 10000), numericBase, exponent);
+		}
+
+		public Exp18(double floatingNumber)
+		{
+			var exponent = Convert.ToSByte(Math.Floor(Math.Log10(Math.Abs(floatingNumber))));
+			var mantissa = floatingNumber * Math.Pow(10, -1 * exponent);
+			data = Pack(Convert.ToInt32(mantissa * 10000), 10, exponent);
 		}
 
 		private Exp18(int mantissa, byte numericBase, SByte exponent)
@@ -95,7 +107,8 @@ namespace Repzilon.Libraries.Core
 			newData |= (mantissa < 0 ? 0x20000 : 0);
 			return newData;
 #else
-			return (exponent << 24) | ((numericBase - 2) << 18) | (Math.Abs(mantissa) & 0x1ffff) | (mantissa < 0 ? 0x20000 : 0);
+			return (exponent << 24) | ((numericBase - 2) << 18) | (Math.Abs(mantissa) & 0x1ffff) |
+				   (mantissa < 0 ? 0x20000 : 0);
 #endif
 		}
 
@@ -113,7 +126,7 @@ namespace Repzilon.Libraries.Core
 			return Clone();
 		}
 #endif
-#endregion
+		#endregion
 
 		#region ToString
 		public override string ToString()
@@ -213,43 +226,73 @@ namespace Repzilon.Libraries.Core
 
 		public static Exp18 operator +(Exp18 x, Exp18 y)
 		{
-			var b = x.Base;
-			var p = x.Exponent;
-			if ((y.Base != b) || (y.Exponent != p)) {
-				throw new ArgumentException("Base and exponent must be identical");
+			if (x.IsZero()) {
+				return y;
+			} else if (y.IsZero()) {
+				return x;
 			} else {
-				return AdjustMantissaExponent(x.Mantissa + y.Mantissa, b, p);
+				var b = x.Base;
+				var p = x.Exponent;
+				if ((y.Base == b) && (y.Exponent == p)) {
+					return AdjustMantissaExponent(x.Mantissa + y.Mantissa, b, p);
+				} else if (y.Base == b) {
+					if (p > y.Exponent) {
+						return AdjustMantissaExponent(x.Mantissa * (float)Math.Pow(b, p - y.Exponent) + y.Mantissa, b, y.Exponent);
+					} else {
+						return AdjustMantissaExponent(x.Mantissa + y.Mantissa * (float)Math.Pow(b, y.Exponent - p), b, p);
+					}
+				} else {
+					throw new ArgumentException("Base and exponent must be identical");
+				}
 			}
 		}
 
 		public static Exp18 operator -(Exp18 x, Exp18 y)
 		{
-			var b = x.Base;
-			var p = x.Exponent;
-			if ((y.Base != b) || (y.Exponent != p)) {
-				throw new ArgumentException("Base and exponent must be identical");
+			if (x.IsZero()) {
+				throw new NotSupportedException();
+			} else if (y.IsZero()) {
+				return x;
 			} else {
-				return AdjustMantissaExponent(x.Mantissa - y.Mantissa, b, p);
+				var b = x.Base;
+				var p = x.Exponent;
+				if ((y.Base != b) || (y.Exponent != p)) {
+					throw new ArgumentException("Base and exponent must be identical");
+				} else {
+					return AdjustMantissaExponent(x.Mantissa - y.Mantissa, b, p);
+				}
 			}
 		}
 
 		public static Exp18 operator *(Exp18 x, Exp18 y)
 		{
-			var b = x.Base;
-			if (y.Base != b) {
-				throw new ArgumentException("Base must be identical");
+			if (x.IsZero()) {
+				return x;
+			} else if (y.IsZero()) {
+				return y;
 			} else {
-				return AdjustMantissaExponent(x.Mantissa * y.Mantissa, b, x.Exponent + y.Exponent);
+				var b = x.Base;
+				if (y.Base != b) {
+					throw new ArgumentException("Base must be identical");
+				} else {
+					return AdjustMantissaExponent(x.Mantissa * y.Mantissa, b, x.Exponent + y.Exponent);
+				}
 			}
 		}
 
 		public static Exp18 operator /(Exp18 x, Exp18 y)
 		{
-			var b = x.Base;
-			if (y.Base != b) {
-				throw new ArgumentException("Base must be identical");
+			if (y.IsZero()) {
+				throw new DivideByZeroException();
+			} else if (x.IsZero()) {
+				return x;
 			} else {
-				return AdjustMantissaExponent(x.Mantissa / y.Mantissa, b, x.Exponent - y.Exponent);
+				var b = x.Base;
+				if (y.Base != b) {
+					throw new ArgumentException("Base must be identical");
+				} else {
+					return AdjustMantissaExponent(x.Mantissa / y.Mantissa, b, x.Exponent - y.Exponent);
+				}
 			}
 		}
 
@@ -384,6 +427,95 @@ namespace Repzilon.Libraries.Core
 			return left.CompareTo(right) >= 0;
 		}
 #endif
-#endregion
+		#endregion
+
+		#region IConvertible members
+#if !NETSTANDARD1_1
+		TypeCode IConvertible.GetTypeCode()
+		{
+			return TypeCode.Object;
+		}
+
+		bool IConvertible.ToBoolean(IFormatProvider provider)
+		{
+			return Convert.ToBoolean(this.ToDecimal());
+		}
+
+		byte IConvertible.ToByte(IFormatProvider provider)
+		{
+			return Convert.ToByte(this.ToDecimal());
+		}
+
+		char IConvertible.ToChar(IFormatProvider provider)
+		{
+			return Convert.ToChar(this.ToDecimal());
+		}
+
+		DateTime IConvertible.ToDateTime(IFormatProvider provider)
+		{
+			return Convert.ToDateTime(this.ToDecimal());
+		}
+
+		decimal IConvertible.ToDecimal(IFormatProvider provider)
+		{
+			return this.ToDecimal();
+		}
+
+		double IConvertible.ToDouble(IFormatProvider provider)
+		{
+			return this.ToDouble();
+		}
+
+		short IConvertible.ToInt16(IFormatProvider provider)
+		{
+			return Convert.ToInt16(this.ToDecimal());
+		}
+
+		int IConvertible.ToInt32(IFormatProvider provider)
+		{
+			return Convert.ToInt32(this.ToDecimal());
+		}
+
+		long IConvertible.ToInt64(IFormatProvider provider)
+		{
+			return Convert.ToInt64(this.ToDecimal());
+		}
+
+		sbyte IConvertible.ToSByte(IFormatProvider provider)
+		{
+			return Convert.ToSByte(this.ToDecimal());
+		}
+
+		float IConvertible.ToSingle(IFormatProvider provider)
+		{
+			return (float)this.ToDouble();
+		}
+
+		string IConvertible.ToString(IFormatProvider provider)
+		{
+			return this.ToString("g", provider);
+		}
+
+		object IConvertible.ToType(Type conversionType, IFormatProvider provider)
+		{
+			throw new NotImplementedException();
+		}
+
+		ushort IConvertible.ToUInt16(IFormatProvider provider)
+		{
+			return Convert.ToUInt16(this.ToDecimal());
+		}
+
+		uint IConvertible.ToUInt32(IFormatProvider provider)
+		{
+			return Convert.ToUInt32(this.ToDecimal());
+		}
+
+		ulong IConvertible.ToUInt64(IFormatProvider provider)
+		{
+			return Convert.ToUInt64(this.ToDecimal());
+		}
+#endif
+		#endregion
 	}
 }

@@ -224,19 +224,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa69_q3 = new Exp(1, 10, -6);
 			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, new Exp(3, 10, -2));
 			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, new Exp(5, 10, -2));
-			TwoDVector<double> exa69_v13, exa69_v23;
-			double exa69_r;
-			// FIXME : Stop using a conversion to double
-			Example69PartCWithDouble(roundErrors,
-			 roundErrors ? RoundOff.Error(exa69_f13.ToDouble()) : exa69_f13.ToDouble(),
-			 roundErrors ? RoundOff.Error(exa69_f23.ToDouble()) : exa69_f23.ToDouble(),
-			 out exa69_v13, out exa69_v23, out exa69_r);
 
-			var exponent = Convert.ToSByte(Math.Floor(Math.Log10(exa69_r)));
-			var mantissa = (float)(exa69_r * ExtraMath.Pow(10, (sbyte)(-1 * exponent)));
-			var result = new Exp(mantissa, 10, exponent);
-			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, result);
-			return result;
+			var exa69_v13 = new PolarVector<Exp>(exa69_f13, new Exp(9,10,1), AngleUnit.Degree).ToCartesian();
+			var angle = Angle<Exp>.Degrees(new Exp(2.7f, 10, 2)) +
+						Angle<Exp>.Radians(new Exp(Math.Atan2(4, 3)));
+			var exa69_v23 = new PolarVector<Exp>(exa69_f23, angle.Cast<Exp>()).ToCartesian();
+			if (roundErrors) {
+				exa69_v13 = TwoDVectorExtensions.RoundError(exa69_v13);
+				exa69_v23 = TwoDVectorExtensions.RoundError(exa69_v23);
+			}
+			var exa69_r = new Exp((exa69_v13 + exa69_v23).Norm());
+			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, exa69_r);
+			return exa69_r;
 		}
 
 		private static Exp18 Example69WithExp18(bool consoleOutput, bool roundErrors)
@@ -246,19 +245,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa69_q3 = new Exp18(1, 10, -6);
 			var exa69_f13 = Electricity.CoulombLab(exa69_q1, exa69_q3, new Exp18(3, 10, -2));
 			var exa69_f23 = Electricity.CoulombLab(exa69_q2, exa69_q3, new Exp18(5, 10, -2));
-			TwoDVector<double> exa69_v13, exa69_v23;
-			double exa69_r;
-			// FIXME : Stop using a conversion to double
-			Example69PartCWithDouble(roundErrors,
-			 roundErrors ? RoundOff.Error(exa69_f13.ToDouble()) : exa69_f13.ToDouble(),
-			 roundErrors ? RoundOff.Error(exa69_f23.ToDouble()) : exa69_f23.ToDouble(),
-			 out exa69_v13, out exa69_v23, out exa69_r);
 
-			var exponent = Convert.ToSByte(Math.Floor(Math.Log10(exa69_r)));
-			var mantissa = (float)(exa69_r * ExtraMath.Pow(10, (sbyte)(-1 * exponent)));
-			var result = new Exp18(mantissa, 10, exponent);
-			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, result);
-			return result;
+			var exa69_v13 = new PolarVector<Exp18>(exa69_f13, new Exp18(9,10,1), AngleUnit.Degree).ToCartesian();
+			var angle = Angle<Exp18>.Degrees(new Exp18(2.7f, 10, 2)) +
+						Angle<Exp18>.Radians(new Exp18(Math.Atan2(4, 3)));
+			var exa69_v23 = new PolarVector<Exp18>(exa69_f23, angle.Cast<Exp18>()).ToCartesian();
+			if (roundErrors) {
+				exa69_v13 = TwoDVectorExtensions.RoundError(exa69_v13);
+				exa69_v23 = TwoDVectorExtensions.RoundError(exa69_v23);
+			}
+			var exa69_r = new Exp18((exa69_v13 + exa69_v23).Norm());
+			Example69Console(consoleOutput, exa69_f13, exa69_f23, exa69_v13, exa69_v23, exa69_r);
+			return exa69_r;
 		}
 		#endregion
 
@@ -293,9 +291,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return DateTime.UtcNow - dtmStart;
 		}
 
-		private static void Example69Console<TC, TV>(bool consoleOutput, TC exa69_f13, TC exa69_f23,
-		TwoDVector<TV> exa69_v13, TwoDVector<TV> exa69_v23, TC exa69_r)
-		where TV : struct, IConvertible, IFormattable, IEquatable<TV>, IComparable<TV>, IComparable
+		private static void Example69Console<T>(bool consoleOutput, T exa69_f13, T exa69_f23,
+		TwoDVector<T> exa69_v13, TwoDVector<T> exa69_v23, T exa69_r)
+		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		{
 			if (consoleOutput) {
 				Console.WriteLine("Exemple 69a : ||F13||={0}", exa69_f13);

@@ -257,7 +257,14 @@ namespace Repzilon.Libraries.Core
 		public static TOut ConvertTo<TOut>(this ValueType value) where TOut : struct
 #endif
 		{
-			return (TOut)Convert.ChangeType(value, typeof(TOut));
+			var typOut = typeof(TOut);
+			if (typOut == typeof(Exp)) {
+				return (TOut)(object)(new Exp(Convert.ToDouble(value)));
+			} else if (typOut == typeof(Exp18)) {
+				return (TOut)(object)(new Exp18(Convert.ToDouble(value)));
+			} else {
+				return (TOut)Convert.ChangeType(value, typOut);
+			}
 		}
 	}
 }

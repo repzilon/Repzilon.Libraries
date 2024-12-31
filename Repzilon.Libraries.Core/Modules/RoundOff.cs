@@ -40,6 +40,21 @@ namespace Repzilon.Libraries.Core
 #endif
 		}
 
+		[CLSCompliant(false)]
+		public static Exp Error(Exp value)
+		{
+			var b = value.Base;
+			return new Exp((float)Math.Round(value.Mantissa, 3 - 1, MidpointRounding.ToEven),
+			 b == 0 ? (byte)10 : b, value.Exponent);
+		}
+
+		[CLSCompliant(false)]
+		public static Exp18 Error(Exp18 value)
+		{
+			return new Exp18((float)Math.Round(value.Mantissa, 4 - 1, MidpointRounding.ToEven),
+			 value.Base, value.Exponent);
+		}
+
 		public static bool Equals(float value, int k)
 		{
 			// ReSharper disable once CompareOfFloatsByEqualityOperator

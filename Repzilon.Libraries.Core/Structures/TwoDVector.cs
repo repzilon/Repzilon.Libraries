@@ -426,5 +426,25 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			return new TwoDVector<decimal>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
 		}
+
+		[CLSCompliant(false)]
+#if NET20
+		public static TwoDVector<Exp> RoundError(TwoDVector<Exp> v)
+#else
+		public static TwoDVector<Exp> RoundError(this TwoDVector<Exp> v)
+#endif
+		{
+			return new TwoDVector<Exp>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
+		}
+
+		[CLSCompliant(false)]
+#if NET20
+		public static TwoDVector<Exp18> RoundError(TwoDVector<Exp18> v)
+#else
+		public static TwoDVector<Exp18> RoundError(this TwoDVector<Exp18> v)
+#endif
+		{
+			return new TwoDVector<Exp18>(RoundOff.Error(v.X), RoundOff.Error(v.Y));
+		}
 	}
 }
