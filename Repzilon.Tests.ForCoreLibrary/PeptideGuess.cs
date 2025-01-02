@@ -372,6 +372,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 		#region Common code
 		private static void BenchmarkResolution(int iterations, string title, Func<List<List<AlphaAminoAcid>>> solver)
 		{
+			if (solver == null) {
+#pragma warning disable CC0021 // Use nameof
+#pragma warning disable RECS0163 // Suggest the usage of the nameof operator
+				throw new ArgumentNullException("solver");
+#pragma warning restore RECS0163 // Suggest the usage of the nameof operator
+#pragma warning restore CC0021 // Use nameof
+			}
 			List<List<AlphaAminoAcid>> lstResults = null;
 			var dtmStart = DateTime.UtcNow;
 			for (int i = 0; i < iterations; i++) {

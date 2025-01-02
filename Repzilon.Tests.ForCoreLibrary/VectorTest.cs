@@ -263,6 +263,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 		#region Example 69 showcasing
 		private static void ShowcaseExample69<T>(decimal referenceResult, Func<bool, bool, T> implementation)
 		{
+			if (implementation == null) {
+#pragma warning disable CC0021 // Use nameof
+#pragma warning disable RECS0163 // Suggest the usage of the nameof operator
+				throw new ArgumentNullException("implementation");
+#pragma warning restore RECS0163 // Suggest the usage of the nameof operator
+#pragma warning restore CC0021 // Use nameof
+			}
 			Console.Write(Environment.NewLine);
 			var ru = implementation(true, false);
 			var rr = implementation(true, true);
