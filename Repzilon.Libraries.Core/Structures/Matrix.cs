@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2024 René Rhéaume
+// Copyright (C) 2022-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -460,7 +460,7 @@ namespace Repzilon.Libraries.Core
 			var matrixInDouble = augmented.Cast<double>();
 			for (l = 0; l < m; l++) {
 				var coefficients = new double?[m];
-				coefficients[l] = 1.0 / Convert.ToDouble(matrixInDouble[l, l]);
+				coefficients[l] = 1.0 / matrixInDouble[l, l];
 				matrixInDouble.RunCommand(l, coefficients);
 			}
 
