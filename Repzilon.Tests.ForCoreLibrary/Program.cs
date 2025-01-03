@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -131,26 +131,37 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 "Press the number corresponding to the test, or Q to quit: ");
 		}
 
-		internal static void OutputSizeOf<T>() where T : struct
+		internal static unsafe void OutputSizeOf<T>() where T : struct
 		{
 			try {
-#if NET40 || NET35 || NET20
+#if NETCOREAPP3_1 || NET5_0 || NET6_0
+				var strOfT = "<T>";
 				var typT = typeof(T);
-				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", "<T>"), Marshal.SizeOf(typT));
+				if (typT.GenericTypeArguments.Length == 1) {
+					strOfT = "<" + typT.GenericTypeArguments[0].Name + ">";
+				}
+				int intSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
+#elif NET40 || NET35 || NET20
+				const string strOfT = "<T>";
+				var typT = typeof(T);
+				int intSize = Marshal.SizeOf(typT);
 #else
-				var newT = new T();
-				var typT = newT.GetType();
+				//var newT = new T();
+				//var typT = newT.GetType();
+				var typT = typeof(T);
 				var strOfT = "<T>";
 				if (typT.GenericTypeArguments.Length == 1) {
 					strOfT = "<" + typT.GenericTypeArguments[0].Name + ">";
 				}
-				Console.WriteLine("Size of struct {0} is {1} bytes", typT.Name.Replace("`1", strOfT), Marshal.SizeOf(newT));
+				//int intSize = Marshal.SizeOf(newT);
+				int intSize = sizeof(T); /*Marshal.SizeOf(typT);*/
 #endif
-#pragma warning disable CC0004 // Catch block cannot be empty
-			} catch (ArgumentException) {
-				// do nothing
+				Console.WriteLine("Size of struct {0,-30} is {1,3} bytes",
+				 typT.Name.Replace("`1", strOfT), intSize);
+			} catch (ArgumentException excArg) {
+				Console.Error.WriteLine("Size of struct {0} is unknown because {1}",
+				 typeof(T).Name, excArg.Message);
 			}
-#pragma warning restore CC0004 // Catch block cannot be empty
 		}
 	}
 }

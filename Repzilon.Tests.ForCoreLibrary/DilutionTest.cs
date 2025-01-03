@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -21,6 +21,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
+			Program.OutputSizeOf<Solution>();
 			PerformDirectDilution("Exemple 17 :", Solution.Init(20, "%", 50, "mL"), true,
 			 Solution.InitMany(200, "mL", "%", 2, 1));
 

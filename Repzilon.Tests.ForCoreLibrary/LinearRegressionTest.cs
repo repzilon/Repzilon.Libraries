@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -43,6 +43,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
+			Program.OutputSizeOf<ErrorMargin<double>>();
 			OutputLinearRegression2(lrp, dblTalpha0_025n4, "G", true, 8.25f, 3.4);
 			// x can also be 7 or 8, and y can also be 7.5
 
@@ -57,6 +58,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputHeading("Decimal data type");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
+			Program.OutputSizeOf<ErrorMargin<decimal>>();
 			OutputLinearRegression2(dlrp, (decimal)dblTalpha0_025n4, "G18", true, 7, 7.5m);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 
@@ -80,6 +82,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				PointD.LogLog(550.0, 0.560)
 			);
 			var rmdMEx38 = lrrM1Ex38.ChangeModel(MathematicalModel.LogLog);
+			Program.OutputSizeOf<RegressionModel<double>>();
 			OutputRegressionModel(rmdMEx38);
 
 			OutputHeading("Math I Exercise");
@@ -205,6 +208,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 #if !NET20
 			OutputHeading("Molecular biology laboratories");
+			Program.OutputSizeOf<AgaroseRetention>();
 			OutputAgaroseRetention("3B :", 27491, 9416, 6682, 2322, 2024, 564);
 			OutputAgaroseRetention("6A :", 247, 280, 393, 234);
 			OutputAgaroseRetention("6B :", 525);
@@ -222,7 +226,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, exact, approximative);
 			}
-			OutputRegressionModel(RegressionModel.Compute(factorialSuite));
+			var rmmFactorial = RegressionModel.Compute(factorialSuite);
+			Program.OutputSizeOf<RegressionModel<decimal>>();
+			OutputRegressionModel(rmmFactorial);
 			for (byte i = 1; i <= MaxFactorial; i++) {
 				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, ExtraMath.BigFactorial(i),
 				 ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Corrected));

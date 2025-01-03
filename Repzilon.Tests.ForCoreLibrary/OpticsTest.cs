@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -29,6 +29,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new MicroscopeObjective(10 / 100.0f, 3.2f),
 				new MicroscopeObjective(6.0f / 100.0f, 1.5f)
 			};
+			Program.OutputSizeOf<MicroscopeObjective>();
 			OutputBestObjective("luminosity", MicroscopeObjectiveComparer.ByLuminosity, moarExample3Mutable, moarExample3Orig);
 			OutputBestObjective("field of view", MicroscopeObjectiveComparer.ByFieldOfView, moarExample3Mutable, moarExample3Orig);
 			OutputBestObjective("resolution", MicroscopeObjectiveComparer.ByResolution, moarExample3Mutable, moarExample3Orig);

@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -57,7 +57,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa58_n = ((2 * exa58_u) + exa58_v).Norm();
 			Console.WriteLine("Exemple 58  : ||2u+v||={0}", exa58_n);
 #endif
-
+			Program.OutputSizeOf<TwoDVector<short>>();
 			var exa60_b = new TwoDVector<short>(-3 - 1, 7 - 1).ToPolar().ConvertTo(AngleUnit.Degree);
 			Console.WriteLine("Exemple 60  : DC={0:g}", exa60_b);
 
@@ -78,12 +78,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 64  : ||u||={0:f3}", exa64_u.Norm());
 
 #if !NET20
+			Program.OutputSizeOf<ThreeDVector<int>>();
 			var exa65_u = Vector.New(2, 4, 1);
 			var exa65_v = Vector.New(-1, -2, 5);
 			Console.WriteLine("Exemple 65a : u//v is {0}", ThreeDVector<int>.AreParallel(exa65_u, exa65_v));
 			Console.WriteLine("Exemple 65b : 3u-v={0}", (3 * exa65_u) - exa65_v);
 #endif
 
+			Program.OutputSizeOf<ThreeDVector<float>>();
 			var exa66_oa = Vector.New(1, 2, 3);
 			var exa66_ob = Vector.New(2, -3, 2);
 			var exa66_ab = exa66_ob - exa66_oa;
@@ -103,6 +105,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa68_r = (exa68_u + exa68_v + exa68_w).ConvertTo(AngleUnit.Degree);
 			Console.WriteLine("Exemple 68  : R={0:g4}", exa68_r);
 
+			Program.OutputSizeOf<Exp>();
+			Program.OutputSizeOf<Exp18>();
 			var exa69_ref = ExtraMath.Sqrt(692.64m);
 			ShowcaseExample69(exa69_ref, Example69WithSingle);
 			ShowcaseExample69(exa69_ref, Example69WithDouble);
@@ -111,6 +115,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithExp18);
 			Console.Write(Environment.NewLine);
 
+			Program.OutputSizeOf<PolarVector<int>>();
 			var exa70_u = Vector.New(2, 30, AngleUnit.Degree);
 			var exa70_v = Vector.New(4, 0, AngleUnit.Degree);
 			Console.WriteLine("Exemple 70  : u.v={0}", exa70_u * exa70_v);
@@ -133,9 +138,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_u = Vector.New(-2, 3, 1);
 			var exa78_v = Vector.New(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
-			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());
-
-			Program.OutputSizeOf<Exp>();
+			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());			
 		}
 
 		#region Example 69 implementations
@@ -262,6 +265,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		#region Example 69 showcasing
 		private static void ShowcaseExample69<T>(decimal referenceResult, Func<bool, bool, T> implementation)
+		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		{
 			if (implementation == null) {
 #pragma warning disable CC0021 // Use nameof
@@ -271,6 +275,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 #pragma warning restore CC0021 // Use nameof
 			}
 			Console.Write(Environment.NewLine);
+			Program.OutputSizeOf<Angle<T>>();
+			Program.OutputSizeOf<PolarVector<T>>();
+			Program.OutputSizeOf<TwoDVector<T>>();
 			var ru = implementation(true, false);
 			var rr = implementation(true, true);
 			var tsNotRounded = BenchExample69(false, implementation);
