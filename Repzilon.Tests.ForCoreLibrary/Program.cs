@@ -16,7 +16,11 @@ using System.Collections.Generic;
 #if !NETCOREAPP1_0
 using System.Globalization;
 #endif
+#if NETCOREAPP3_1 || NET5_0 || NET6_0
+using System.Runtime.CompilerServices
+#else
 using System.Runtime.InteropServices;
+#endif
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -131,37 +135,46 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 "Press the number corresponding to the test, or Q to quit: ");
 		}
 
-		internal static unsafe void OutputSizeOf<T>() where T : struct
+		internal static void OutputSizeOf<T>() where T : struct
 		{
-			try {
-#if NETCOREAPP3_1 || NET5_0 || NET6_0
-				var strOfT = "<T>";
-				var typT = typeof(T);
-				if (typT.GenericTypeArguments.Length == 1) {
-					strOfT = "<" + typT.GenericTypeArguments[0].Name + ">";
-				}
-				int intSize = System.Runtime.CompilerServices.Unsafe.SizeOf<T>();
-#elif NET40 || NET35 || NET20
-				const string strOfT = "<T>";
-				var typT = typeof(T);
-				int intSize = Marshal.SizeOf(typT);
-#else
-				//var newT = new T();
-				//var typT = newT.GetType();
-				var typT = typeof(T);
-				var strOfT = "<T>";
-				if (typT.GenericTypeArguments.Length == 1) {
-					strOfT = "<" + typT.GenericTypeArguments[0].Name + ">";
-				}
-				//int intSize = Marshal.SizeOf(newT);
-				int intSize = sizeof(T); /*Marshal.SizeOf(typT);*/
+			var typT = typeof(T);
+#if DEBUG
+			var strOfT = TypeNameWithGeneric(typT);
 #endif
-				Console.WriteLine("Size of struct {0,-30} is {1,3} bytes",
-				 typT.Name.Replace("`1", strOfT), intSize);
+
+			try {
+#if DEBUG
+				Console.WriteLine("Size of struct {0,-30} is {1,3} bytes", strOfT,
+#else
+				Console.WriteLine("Size of struct {0,-30} is {1,3} bytes", TypeNameWithGeneric(typT),
+#endif
+#if NETCOREAPP3_1 || NET5_0 || NET6_0
+				 Unsafe.SizeOf<T>());
+#elif NETCOREAPP1_0
+				 Marshal.SizeOf<T>());
+#else
+				 Marshal.SizeOf(typT));
+#endif
+#pragma warning disable CC0004 // Catch block cannot be empty
+#if DEBUG
 			} catch (ArgumentException excArg) {
-				Console.Error.WriteLine("Size of struct {0} is unknown because {1}",
-				 typeof(T).Name, excArg.Message);
+				Console.Error.WriteLine("Size of struct {0} is unknown because {1}", strOfT, excArg.Message);
+#else
+			} catch (ArgumentException) {
+				// do nothing
+#endif
 			}
+#pragma warning restore CC0004 // Catch block cannot be empty
+		}
+
+		private static string TypeNameWithGeneric(Type dotnetType)
+		{
+#if !NETCOREAPP1_0
+			var typarGTA = dotnetType.GetGenericArguments();
+#else
+			var typarGTA = dotnetType.GenericTypeArguments;
+#endif
+			return dotnetType.Name.Replace("`1", (typarGTA.Length == 1) ? "<" + typarGTA[0].Name + ">" : "<T>");
 		}
 	}
 }

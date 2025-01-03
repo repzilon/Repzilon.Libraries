@@ -138,7 +138,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_u = Vector.New(-2, 3, 1);
 			var exa78_v = Vector.New(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
-			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());			
+			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());
 		}
 
 		#region Example 69 implementations
