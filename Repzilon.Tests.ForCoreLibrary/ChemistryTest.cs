@@ -1,10 +1,10 @@
 ﻿//
-//  MolarMassTest.cs
+//  ChemistryTest.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -22,7 +22,7 @@ using Repzilon.Libraries.Core.Regression;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
-	internal static class MolarMassTest
+	internal static class ChemistryTest
 	{
 #if DEBUG
 		[StructLayout(LayoutKind.Sequential)]
@@ -90,7 +90,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				"CH<sub>3</sub>COOH", "(CH<sub>2</sub>COOH)<sub>2</sub>",
 				"(CH<sub>3</sub>)<sub>2</sub>CO", "CHCl<sub>3</sub>",
 				"HOOC-COOH•2 H<sub>2</sub>O",
-				"C<sub>10</sub>H<sub>14</sub>N<sub>2</sub>Na<sub>2</sub>O<sub>8</sub>.2 H<sub>2</sub>O"
+				"C<sub>10</sub>H<sub>14</sub>N<sub>2</sub>Na<sub>2</sub>O<sub>8</sub>.2 H<sub>2</sub>O",
+				"NO<sub>3</sub>", "NaNO<sub>3</sub>", "PO<sub>4</sub>",
+				"Na<sub>3</sub>PO<sub>4</sub>•12 H<sub>2</sub>O", "SO<sub>4</sub>", "Na<sub>2</sub>SO<sub>4</sub>"
 			};
 			for (var i = 0; i < karFormulas.Length; i++) {
 				Console.WriteLine("{0,9:n3} {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
@@ -222,7 +224,7 @@ STQTALA";
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, ptdarHW_raw);
 
-			OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM));
+			//OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM));
 			OutputRoundedEnzymeKinematic(Enzyme.DirectLinearPlot("mmol/L", A240By30s, ptdarMM));
 		}
 

@@ -41,7 +41,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Pascal Triangle", PascalTriangleTest.Run);
 			dicTests.Add("Vectors", VectorTest.Run);
 			dicTests.Add("Linear Regression", LinearRegressionTest.Run);
-			dicTests.Add("Chemistry", MolarMassTest.Run);
+			dicTests.Add("Chemistry", ChemistryTest.Run);
 			dicTests.Add("Dilution", DilutionTest.Run);
 #if !NET20
 			dicTests.Add("Peptides", PeptideGuess.Run);
