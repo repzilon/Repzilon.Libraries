@@ -22,7 +22,7 @@ namespace Repzilon.Libraries.Core
 		public static readonly IComparer<MicroscopeObjective> ByFieldOfView = new FieldOfViewComparer();
 		public static readonly IComparer<MicroscopeObjective> ByResolution = new ResolutionComparer();
 
-		class LuminosityComparer : IComparer<MicroscopeObjective>
+		sealed class LuminosityComparer : IComparer<MicroscopeObjective>
 		{
 			public int Compare(MicroscopeObjective x, MicroscopeObjective y)
 			{
@@ -30,7 +30,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		class FieldOfViewComparer : IComparer<MicroscopeObjective>
+		sealed class FieldOfViewComparer : IComparer<MicroscopeObjective>
 		{
 			public int Compare(MicroscopeObjective x, MicroscopeObjective y)
 			{
@@ -43,7 +43,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		class ResolutionComparer : IComparer<MicroscopeObjective>
+		sealed class ResolutionComparer : IComparer<MicroscopeObjective>
 		{
 			public int Compare(MicroscopeObjective x, MicroscopeObjective y)
 			{
