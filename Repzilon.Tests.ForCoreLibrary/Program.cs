@@ -17,7 +17,7 @@ using System.Collections.Generic;
 using System.Globalization;
 #endif
 #if NETCOREAPP3_1 || NET5_0 || NET6_0
-using System.Runtime.CompilerServices
+using System.Runtime.CompilerServices;
 #else
 using System.Runtime.InteropServices;
 #endif

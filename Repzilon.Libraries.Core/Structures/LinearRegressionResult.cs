@@ -320,7 +320,7 @@ namespace Repzilon.Libraries.Core.Regression
 			}
 			if (newModel == MathematicalModel.Exponential) {
 				nb = Math.Pow(10, b);
-			} else if (newModel == MathematicalModel.Logarithmic) { // this is wierd
+			} else if (newModel == MathematicalModel.Logarithmic) { // this is weird
 				na = b;
 				nb = a;
 			} else if ((newModel != MathematicalModel.Affine) && (newModel != MathematicalModel.Power)) {
