@@ -199,11 +199,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public static readonly IReadOnlyList<AminoAcid> AlphaList = MakeAlphaList();
 #endif
 
-#if NET40 || NET35 || NET20
 		private static ReadOnlyCollection<AminoAcid> MakeAlphaList()
-#else
-		private static IReadOnlyList<AminoAcid> MakeAlphaList()
-#endif
 		{
 			var lstAminoAcids = new List<AminoAcid>(20)
 			{
@@ -238,9 +234,9 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #endif
 
 #if NET40 || NET35 || NET20 || NETSTANDARD1_1
-		private static IDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
+		private static SortedDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
 #else
-		private static IReadOnlyDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
+		private static ReadOnlyDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
 #endif
 		{
 			var lstAminoAcids = AminoAcid.AlphaList;
@@ -253,10 +249,10 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #endif
 				dicAminoAcids.Add(enuSymbol, lstAminoAcids[i]);
 			}
-#if NET46 || NETCOREAPP || NETSTANDARD
-			return new ReadOnlyDictionary<AlphaAminoAcid, AminoAcid>(dicAminoAcids);
-#else
+#if NET40 || NET35 || NET20 || NETSTANDARD1_1
 			return dicAminoAcids;
+#else
+			return new ReadOnlyDictionary<AlphaAminoAcid, AminoAcid>(dicAminoAcids);
 #endif
 		}
 

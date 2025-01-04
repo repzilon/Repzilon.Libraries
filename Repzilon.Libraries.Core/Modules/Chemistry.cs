@@ -29,9 +29,9 @@ namespace Repzilon.Libraries.Core
 #endif
 
 #if NET40 || NET35 || NET20
-		private static IDictionary<string, float> InitElementMasses()
+		private static Dictionary<string, float> InitElementMasses()
 #else
-		private static IReadOnlyDictionary<string, float> InitElementMasses()
+		private static ReadOnlyDictionary<string, float> InitElementMasses()
 #endif
 		{
 			const int k = 19;

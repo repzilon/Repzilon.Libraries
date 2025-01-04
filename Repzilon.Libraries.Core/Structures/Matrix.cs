@@ -747,11 +747,7 @@ namespace Repzilon.Libraries.Core
 		/// equation system is unsolvable, however.
 		/// </returns>
 		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
-#if NET40 || NET35 || NET20
-		private IDictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
-#else
-		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
-#endif
+		private Dictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
 		{
 			byte a, b;
 			Dictionary<char, AffineBinomial<T>> dicSolved;
@@ -777,11 +773,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if false
-#if NET40 || NET35 || NET20
-		private IDictionary<char, AffineBinomial<T>> SolveByInversion(Matrix<T> constants, params char[] variables)
-#else
-		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveByInversion(Matrix<T> constants, params char[] variables)
-#endif
+		private Dictionary<char, AffineBinomial<T>> SolveByInversion(Matrix<T> constants, params char[] variables
 		{
 			var inverse = ~this;
 			if (inverse.HasValue) {
@@ -800,12 +792,7 @@ namespace Repzilon.Libraries.Core
 		}
 #endif
 
-#if NET40 || NET35 || NET20
-		private IDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants, params char[] variables)
-#else
-		private IReadOnlyDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants,
-		params char[] variables)
-#endif
+		private SortedDictionary<char, AffineBinomial<T>> SolveDiagonally(Matrix<T> constants, params char[] variables)
 		{
 			const char kDefaultPolymorph = 't';
 
@@ -900,12 +887,7 @@ namespace Repzilon.Libraries.Core
 
 				}
 			}
-
-#if NET40 || NET35 || NET20
 			return dicSolved;
-#else
-			return new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved);
-#endif
 		}
 
 		private static void SolveLinkedLine(T zero, char[] variables,
@@ -971,18 +953,18 @@ namespace Repzilon.Libraries.Core
 		public IReadOnlyDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
 #endif
 		{
-#if NET40 || NET35 || NET20
 			IDictionary<char, AffineBinomial<T>> dicSolved = null;
-#else
-			IReadOnlyDictionary<char, AffineBinomial<T>> dicSolved = null;
-#endif
 			if (this.IsSquare) {
 				dicSolved = SolveWithCramer(constants, variables);
 			}
 			if (dicSolved == null) {
 				dicSolved = SolveDiagonally(constants, variables);
 			}
+#if NET40 || NET35 || NET20
 			return dicSolved;
+#else
+			return dicSolved != null ? new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved) : null;
+#endif
 		}
 	}
 
