@@ -112,6 +112,7 @@ namespace Repzilon.Libraries.Core
 		/// <summary>
 		/// Gauss error function
 		/// </summary>
+		/// <param name="z">Distance from mean divided by standard deviation</param>
 		public static double Erf(double z)
 		{
 			return 2 * Normal(z, true) - 1;
@@ -315,6 +316,7 @@ namespace Repzilon.Libraries.Core
 		/// of the developments of gamma for positive integers and halves AND leaving
 		/// irrational numbers outside the developments
 		/// </summary>
+		/// <param name="k">Degrees of freedom</param>
 		/// <remarks>https://en.wikipedia.org/wiki/Student%27s_t-distribution#Probability_density_function</remarks>
 		private static double FastGammaRatio(byte k)
 		{
@@ -514,6 +516,9 @@ namespace Repzilon.Libraries.Core
 		/// <summary>
 		/// Standard logistic distribution function (that is of mean 0 and scale 1)
 		/// </summary>
+		/// <param name="x">Value on the X axis</param>
+		/// <param name="cumulative">If true, returns the evaluation of the logistic function.
+		/// Otherwise, return its partial derivative</param>
 		public static double Logistic(double x, bool cumulative)
 		{
 			var expr   = Math.Exp(-1 * x); // µ-x is the simplification of -(x-µ)
@@ -545,6 +550,9 @@ namespace Repzilon.Libraries.Core
 		/// <summary>
 		/// Logistic distribution function of mean 0 and variance 1, to mimic a standard normal distribution
 		/// </summary>
+		/// <param name="x">Value on the X axis</param>
+		/// <param name="cumulative">If true, returns the evaluation of the logistic function.
+		/// Otherwise, return its partial derivative</param>
 		public static double LogisticV(double x, bool cumulative)
 		{
 			var q      = LogisticQ;
