@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -55,12 +55,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Console.WriteLine("Intégrales de Student de faibles degrés de liberté");
-			TenthTableHeader(" k={0} S      k={0} C     ", 1, 2, 3, 4, 5);
+			TenthTableHeader(" k={0} e   k={0} X  ", 1, 2, 3, 4, 5, 6, 7);
 			for (x = -30; x <= 30; x++) {
 				z = TenthTableLineHeader(x);
-				for (k = 1; k <= 5; k++) {
-					Console.Write(" {0:f8} {1:f8}", ProbabilityDistributions.Student(z, (byte)k, true),
-					 ProbabilityDistributions.CumulativeStudent(z, (byte)k));
+				for (k = 1; k <= 7; k++) {
+					Console.Write(" {0:f5} {1:f5}", ProbabilityDistributions.CumulativeStudentEstimate(z, (byte)k),
+					 ProbabilityDistributions.Student(z, (byte)k, true));
 				}
 				Console.Write(Environment.NewLine);
 			}

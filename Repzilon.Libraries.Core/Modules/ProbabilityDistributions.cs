@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -235,7 +235,7 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public static double CumulativeStudent(double t, byte liberties)
+		private static double CumulativeStudent(double t, byte liberties)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
 			/*const*/ double kHalf = 0.5;
@@ -243,8 +243,10 @@ namespace Repzilon.Libraries.Core
 			double dblOnePlusFractionOfTSquared, dblTOverSqrtNu;
 			/*const*/ double kOneOfPi = 1.0 / Math.PI; // not to be replaced by kOne, bigger and slower
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
-			if (liberties > 5) {
-				return t < 0 ? kHalf - SimpsonForStudent(-1 * t, liberties) : kHalf + SimpsonForStudent(t, liberties);
+			if (liberties == 6) {
+				return kHalf + ((t * (2 * t * t * t * t + 30 * t * t + 135)) / (4 * Math.Pow(t * t + liberties, 2.5)));
+			} else if (liberties > 7) {
+				return CumulativeStudentEstimate(t, liberties);
 			} else if (liberties == 1) {
 				return kHalf + kOneOfPi * Math.Atan(t);
 			} else if (liberties < 1) {
@@ -252,7 +254,10 @@ namespace Repzilon.Libraries.Core
 			} else {
 				dblOnePlusFractionOfTSquared = RoundOff.Error(kOne + (t * t / liberties));
 				dblTOverSqrtNu = t / Math.Sqrt(liberties);
-				if (liberties == 5) {
+				if (liberties == 7) {
+					return kHalf + (kOneOfPi * Math.Atan(dblTOverSqrtNu)) +
+					 ((Math.Sqrt(liberties) * t * (15 * t * t * t * t + 280 * t * t + 1617)) / (15 * Math.PI * Math.Pow(t * t + liberties, 3)));
+				} else if (liberties == 5) {
 					var dblReciprocal = kOne / dblOnePlusFractionOfTSquared;
 					const double kTwoThirds = 2.0 / 3.0;
 					return kHalf + kOneOfPi * (dblTOverSqrtNu * dblReciprocal * (kOne + kTwoThirds * dblReciprocal) + Math.Atan(dblTOverSqrtNu));
@@ -264,6 +269,14 @@ namespace Repzilon.Libraries.Core
 					return kHalf + (t / (Math.Sqrt(8) * Math.Sqrt(dblOnePlusFractionOfTSquared)));
 				}
 			}
+		}
+
+		public static double CumulativeStudentEstimate(double t, byte liberties)
+		{
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
+			/*const*/ double kHalf = 0.5;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
+			return t < 0 ? kHalf - SimpsonForStudent(-1 * t, liberties) : kHalf + SimpsonForStudent(t, liberties);
 		}
 
 		private static double SimpsonForStudent(double b, byte k)
