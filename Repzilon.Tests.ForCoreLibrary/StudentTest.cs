@@ -55,15 +55,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Console.WriteLine("Intégrales de Student de faibles degrés de liberté");
-			TenthTableHeader(" k={0} e   k={0} X  ", 1, 2, 3, 4, 5, 6, 7);
+			TenthTableHeader(" k={0} e-X        ", 1, 2, 3, 4, 5, 6, 7);
+			decimal totalDiff = 0;
 			for (x = -30; x <= 30; x++) {
 				z = TenthTableLineHeader(x);
 				for (k = 1; k <= 7; k++) {
-					Console.Write(" {0:f5} {1:f5}", ProbabilityDistributions.CumulativeStudentEstimate(z, (byte)k),
-					 ProbabilityDistributions.Student(z, (byte)k, true));
+					var delta = ProbabilityDistributions.CumulativeStudentEstimate(z, (byte)k) -
+					 ProbabilityDistributions.Student(z, (byte)k, true);
+					totalDiff += (decimal)Math.Abs(delta);
+					Console.Write(" {1}{0,12:e7}", delta, delta < 0 ? "" : " ");
 				}
 				Console.Write(Environment.NewLine);
 			}
+			totalDiff /= (61 * 7);
+			decimal dcmTarget = NormalLawTest.FinalTargetDelta();
+			Console.WriteLine("Moyenne des différences : {0:e} i.e. {2} fois la cible de {1:e}",
+			 totalDiff, dcmTarget, totalDiff / dcmTarget);
 
 			Console.WriteLine("Réciproques d'intégrales de distributions de Student");
 			var karAlphas = new float[] { 0.4f, 0.25f, 0.1f, 0.05f, 0.025f, 0.010f, 0.005f, 0.0025f, 0.001f, 0.0005f };
