@@ -300,7 +300,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var dtmStart = DateTime.UtcNow;
 			for (int i = 0; i < 1000000; i++) {
+#pragma warning disable CC0031 // Check for null before calling a delegate (checking done in caller)
 				implementation(false, rounding);
+#pragma warning restore CC0031 // Check for null before calling a delegate
 			}
 			return DateTime.UtcNow - dtmStart;
 		}

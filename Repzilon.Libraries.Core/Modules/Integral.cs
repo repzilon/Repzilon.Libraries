@@ -58,6 +58,9 @@ namespace Repzilon.Libraries.Core
 #endif
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
+			if (expression == null) {
+				throw new ArgumentNullException("expression");
+			}
 #if NET20
 			return GenericArithmetic<T>.SubtractScalars(expression(b), expression(a));
 #else

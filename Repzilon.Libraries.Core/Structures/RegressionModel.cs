@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -257,6 +257,9 @@ namespace Repzilon.Libraries.Core.Regression
 #else
 		private T RisingConcaveUpwards(Func<T, T, T> mul, double radix, double exponent)
 		{
+			if (mul == null) {
+				throw new ArgumentNullException("mul");
+			}
 			return mul(A, ExtraMath.ConvertTo<T>(Math.Pow(radix, exponent)));
 		}
 #endif
@@ -269,9 +272,9 @@ namespace Repzilon.Libraries.Core.Regression
 			double dblSolution;
 			if (model == MathematicalModel.Affine) {
 #if NET20
-				dblSolution = (Convert.ToDouble(GenericArithmetic<T>.SubtractScalars(y, A)) / dblB);
+				dblSolution = Convert.ToDouble(GenericArithmetic<T>.SubtractScalars(y, A)) / dblB;
 #else
-				dblSolution = (Convert.ToDouble(GenericArithmetic<T>.Sub(y, A)) / dblB);
+				dblSolution = Convert.ToDouble(GenericArithmetic<T>.Sub(y, A)) / dblB;
 #endif
 			} else if (model == MathematicalModel.Exponential) {
 				dblSolution = Math.Log(yDivA, dblB);

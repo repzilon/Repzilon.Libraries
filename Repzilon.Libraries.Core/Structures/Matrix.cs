@@ -521,6 +521,9 @@ namespace Repzilon.Libraries.Core
 #if NET20
 			coefficients[c] = GenericArithmetic<T>.MultiplyScalars(augmented[l, c], minusOne);
 #else
+			if (mult == null) {
+				throw new ArgumentNullException("mult");
+			}
 			coefficients[c] = mult(augmented[l, c], minusOne);
 #endif
 			coefficients[l] = augmented[c, c];
