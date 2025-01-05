@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -23,6 +23,39 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 		private static readonly double SqrtEighthOfPi = Math.Sqrt(0.125 * Math.PI);
 
+		#region Target delta
+		internal static decimal FinalTargetDelta()
+		{
+#if true
+			return (decimal)Math.Abs(DoubleTargetDelta());
+#else
+			return Math.Abs(DecimalTargetDelta());
+#endif
+		}
+
+		private static double IntegralInDouble()
+		{
+			return 1 + ExponentialSeries(1.0) - ExponentialSeries(0.0);
+		}
+
+		private static double DoubleTargetDelta()
+		{
+			const double kExpected = 0.8413447460685429485852325456320379224779129667266043909873944502429914419872048295008849184056393275;
+			return (DoubleOneOfRootOfTwoPi * IntegralInDouble()) - kExpected + 0.5;
+		}
+
+		private static decimal IntegralInDecimal()
+		{
+			return 1 + ExponentialSeries(1.0m) - ExponentialSeries(0.0m);
+		}
+
+		private static decimal DecimalTargetDelta()
+		{
+			const decimal kExpected = 0.8413447460685429485852325456320379224779129667266043909873944502429914419872048295008849184056393275m;
+			return (DecimalOneOfRootOfTwoPi * IntegralInDecimal()) - kExpected + 0.5m;
+		}
+		#endregion
+
 		internal static void Run(string[] args)
 		{
 			Console.WriteLine("Intégrale d'une loi normale centrée réduite");
@@ -34,8 +67,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9772498680518207927997173628334665625282237762983215660163339998695237096472242516517308479242103851,
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829
 			};
-			var dblIntegral = 1 + ExponentialSeries(1.0) - ExponentialSeries(0.0);
-			var dblTargetDelta = (DoubleOneOfRootOfTwoPi * dblIntegral) - karExpected[0] + 0.5;
+			var dblIntegral = IntegralInDouble();
+			var dblTargetDelta = DoubleTargetDelta();
 			Console.WriteLine(
 			 "∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}   Δ =  {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)",
 			 DoubleOneOfRootOfTwoPi * dblIntegral, dblTargetDelta);
@@ -71,17 +104,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9772498680518207927997173628334665625282237762983215660163339998695237096472242516517308479242103851m,
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829m
 			};
-			var dcmIntegral = 1 + ExponentialSeries(1.0m) - ExponentialSeries(0.0m);
-			var dcmTargetDelta = (DecimalOneOfRootOfTwoPi * dcmIntegral) - karExpectedDecimal[0] + 0.5m;
+			var dcmIntegral = IntegralInDecimal();
+			var dcmTargetDelta = DecimalTargetDelta();
 			Console.Write(Environment.NewLine);
 			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",
 			 DecimalOneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
 
-#if true
-			var dcmFinalTargetDelta = (decimal)Math.Abs(dblTargetDelta);
-#else
-			var dcmFinalTargetDelta = Math.Abs(dcmTargetDelta);
-#endif
+			var dcmFinalTargetDelta = FinalTargetDelta();
 			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
 			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, dcmFinalTargetDelta);
 
