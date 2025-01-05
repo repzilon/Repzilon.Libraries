@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -101,7 +101,7 @@ namespace Repzilon.Libraries.Core
 		private static int Pack(int mantissa, byte numericBase, SByte exponent)
 		{
 #if DEBUG
-			int newData = (exponent << 24);
+			var newData = (exponent << 24);
 			newData |= ((numericBase - 2) << 18);
 			newData |= (Math.Abs(mantissa) & 0x1ffff);
 			newData |= (mantissa < 0 ? 0x20000 : 0);

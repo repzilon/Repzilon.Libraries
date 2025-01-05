@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2024-2025 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -68,7 +68,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(Environment.NewLine);
 			}
 			totalDiff /= (61 * 7);
-			decimal dcmTarget = NormalLawTest.FinalTargetDelta();
+			var dcmTarget = NormalLawTest.FinalTargetDelta();
 			Console.WriteLine("Moyenne des différences : {0:e} i.e. {2} fois la cible de {1:e}",
 			 totalDiff, dcmTarget, totalDiff / dcmTarget);
 
@@ -82,7 +82,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					Console.Write(" {0,9:g6}", ProbabilityDistributions.InverseStudent(RoundOff.Error(karAlphas[x]), karNus[k]));
 				}
 				Console.Write(Environment.NewLine);
-			}	
+			}
 		}
 
 		private static void TenthTableHeader(string format, params byte[] liberties)

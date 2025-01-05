@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -35,7 +35,7 @@ namespace Repzilon.Libraries.Core
 			var sum = default(T);
 			for (var k = m; k <= n; k++) {
 #if DEBUG
-				T value = forEach(k);
+				var value = forEach(k);
 #if NET20
 				sum = GenericArithmetic<T>.AddScalars(sum, value);
 #else
