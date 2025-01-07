@@ -49,14 +49,14 @@ exports.AminoAcid = (function () {
 	};
 	AminoAcid.prototype.setPkasR = function (pKa1NewValue, pKa2NewValue, pKaRnewValue, isDicationWhenVeryAcid) {
 		if (isNaN(pKa1NewValue) || (pKa1NewValue < 1.5) || (pKa1NewValue >= 14)) {
-			throw new Error("pKa1NewValue");
+			throw new Error("Argument pKa1NewValue is not between 1.5 and 14.");
 		}
 		if (isNaN(pKa2NewValue) || (pKa2NewValue < 8) || (pKa2NewValue >= 14)) {
-			throw new Error("pKa2NewValue");
+			throw new Error("Argument pKa2NewValue is not between 8 and 14.");
 		}
 		if (!isNaN(pKaRnewValue)) {
 			if ((pKaRnewValue < 3) || (pKaRnewValue >= 14)) {
-				throw new Error("pKaRnewValue");
+				throw new Error("Argument pKaRnewValue is not between 3 and 14.");
 			}
 		}
 		else if (isDicationWhenVeryAcid) {
@@ -76,8 +76,7 @@ exports.AminoAcid = (function () {
 		var ar = this.pKaR;
 		var a1 = this.pKa1;
 		var a2 = this.pKa2;
-		return isNaN(ar) ?
-		 AminoAcid.isoelectric(a1, a2) :
+		return isNaN(ar) ? AminoAcid.isoelectric(a1, a2) :
 		 AminoAcid.isoelectricLateral(a1, a2, this.dicationWhenVeryAcid ? 2 : 1, ar);
 	};
 	AminoAcid.prototype.weightedCharge = function (pH) {
@@ -96,11 +95,8 @@ exports.AminoAcid = (function () {
 			if (exports.RoundOff.areEqual(pH, this.pKa2)) {
 				return -0.5;
 			} else if ((Math.abs(pH - this.pKa1) <= 1.0) || (Math.abs(pH - this.pKa2) <= 1.0)) {
-				if (pH < pkI) {
-					return AminoAcid.protonationRatio(pH, this.pKa1);
-				} else {
-					return AminoAcid.chargeOfLateral(pH, this.pKa2, false, 0 + 1);
-				}
+				return (pH < pkI) ? AminoAcid.protonationRatio(pH, this.pKa1) :
+				 AminoAcid.chargeOfLateral(pH, this.pKa2, false, 0 + 1);
 			} else {
 				return -1 + AminoAcid.protonationRatio(pH, this.pKa1) +
 				 AminoAcid.protonationRatio(pH, this.pKa2);
@@ -125,8 +121,7 @@ exports.AminoAcid = (function () {
 				}
 			} else {
 				return (dicat ? -1 : -2) + AminoAcid.protonationRatio(pH, this.pKa1) +
-				 AminoAcid.protonationRatio(pH, this.pKa2) +
-				 AminoAcid.protonationRatio(pH, ar);
+				 AminoAcid.protonationRatio(pH, this.pKa2) + AminoAcid.protonationRatio(pH, ar);
 			}
 		}
 	};
@@ -187,6 +182,13 @@ exports.AminoAcid = (function () {
 }());
 exports.AminoLateralCharge = (function () {
 	function AminoLateralCharge() { }
+	function addDataPoint(newDataSet, f, a) {
+		var pH = exports.RoundOff.error(f * 0.01);
+		var q = exports.AminoAcid.alphaList[a].weightedCharge(pH);
+		if (!isNaN(q)) {
+			newDataSet.data.push({ x: pH, y: q });
+		}
+	}
 	AminoLateralCharge.demo = function () {
 		var colors = ["#36A2EB", "#FF6384", "#4BC0C0", "#FF9F40", "#9966FF", "#FFCD56", "#C9CBCF"];
 		Chart.defaults.backgroundColor = '#fff';
@@ -197,12 +199,18 @@ exports.AminoLateralCharge = (function () {
 		for (var a = 0; a < exports.AminoAcid.alphaList.length; a++) {
 			if (!isNaN(exports.AminoAcid.alphaList[a].pKaR)) {
 				var newDataSet = { label: exports.AminoAcid.alphaList[a].symbol, backgroundColor: colors[r], data: [] };
-				for (var f = 100; f <= 1400; f += 5) {
-					var pH = exports.RoundOff.error(f * 0.01);
-					var q = exports.AminoAcid.alphaList[a].weightedCharge(pH);
-					if (!isNaN(q)) {
-						newDataSet.data.push({ x: pH, y: q });
-					}
+				var f, pki;
+				for (f = 100; f <= 1400; f += 5) {
+					addDataPoint(newDataSet, f, a);
+				}
+				if ((newDataSet.label == "Asp") || (newDataSet.label == "Glu") || (newDataSet.label == "Lys")) {
+					pki = Math.round(exports.AminoAcid.alphaList[a].isoelectric() * 100);
+					addDataPoint(newDataSet, pki - 1, a);
+					addDataPoint(newDataSet, pki + 1, a);
+				} else if (newDataSet.label == "Tyr") {
+					pki = Math.round((exports.AminoAcid.alphaList[a].pKa2 + exports.AminoAcid.alphaList[a].pKaR) * 50);
+					addDataPoint(newDataSet, pki - 1, a);
+					addDataPoint(newDataSet, pki + 1, a);
 				}
 				dataSets.push(newDataSet);
 				r++;

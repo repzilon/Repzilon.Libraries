@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -106,24 +106,27 @@ namespace Repzilon.Tests.ForCoreLibrary
 				if (a > 0) {
 					Console.Write(',');
 				}
+				var strLabel = saaarLateral[a].Symbol;
 #pragma warning disable UD0011 // The composite format string is not valid
 				Console.WriteLine('{');
 #pragma warning restore UD0011 // The composite format string is not valid
 				Console.Write("\tlabel: '");
-				Console.Write(saaarLateral[a].Symbol);
+				Console.Write(strLabel);
 				Console.WriteLine("',");
 				Console.Write("\tdata: [");
 				var n = 0;
 				for (var f = 100; f <= 1400; f += 5) {
-					var pH = RoundOff.Error(f * 0.01f);
-					var q = saaarLateral[a].WeightedCharge(pH);
-					if (!float.IsNaN(q)) {
-						if (n > 0) {
-							Console.Write(',');
-						}
-						Console.Write("{{x: {0:f2}, y: {1:f3}}}", pH, q);
-						n++;
-					}
+					AddDataPoint(saaarLateral, f, a, ref n);
+				}
+				int pki;
+				if ((strLabel == "Asp") || (strLabel == "Glu") || (strLabel == "Lys")) {
+					pki = Convert.ToInt32(saaarLateral[a].Isoelectric() * 100);
+					AddDataPoint(saaarLateral, pki - 1, a, ref n);
+					AddDataPoint(saaarLateral, pki + 1, a, ref n);
+				} else if (strLabel == "Tyr") {
+					pki = Convert.ToInt32((saaarLateral[a].pKa2 + saaarLateral[a].pKaR) * 50);
+					AddDataPoint(saaarLateral, pki - 1, a, ref n);
+					AddDataPoint(saaarLateral, pki + 1, a, ref n);
 				}
 				Console.Write("]}");
 			}
@@ -132,6 +135,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 			const int kIterations = 440;
 			BenchmarkResolution(kIterations, "Révision #10 (avec enums) :", SolveRevision10WithEnum);
 			BenchmarkResolution(kIterations, "Révision #11", SolveRevision11);
+		}
+
+		private static void AddDataPoint(AminoAcid[] sideChargedAminoAcids, int f, int a, ref int n)
+		{
+			var pH = RoundOff.Error(f * 0.01f);
+			var q = sideChargedAminoAcids[a].WeightedCharge(pH);
+			if (!float.IsNaN(q)) {
+				if (n > 0) {
+					Console.Write(',');
+				}
+				Console.Write("{{x: {0:f2}, y: {1:f3}}}", pH, q);
+				n++;
+			}
 		}
 
 		#region Revision exercise number 10
