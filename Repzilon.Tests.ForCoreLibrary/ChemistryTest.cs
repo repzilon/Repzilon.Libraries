@@ -217,15 +217,16 @@ STQTALA";
 
 			Program.OutputSizeOf<RegressionModel<double>>();
 			Program.OutputSizeOf<EnzymeKinematic<double>>();
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, true, ptdarMM);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_raw);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, ptdarLB_table);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_raw);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, ptdarEH_table);
-			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, ptdarHW_raw);
+			var rmdMM = RegressionModel.Compute(ptdarMM);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, true, rmdMM, ptdarMM);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, rmdMM, ptdarLB_raw);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, rmdMM, ptdarLB_table);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, rmdMM, ptdarEH_raw);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, rmdMM, ptdarEH_table);
+			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, rmdMM, ptdarHW_raw);
 
-			//OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM));
-			OutputRoundedEnzymeKinematic(Enzyme.DirectLinearPlot("mmol/L", A240By30s, ptdarMM));
+			//OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM), rmdMM);
+			OutputRoundedEnzymeKinematic(Enzyme.DirectLinearPlot("mmol/L", A240By30s, ptdarMM), rmdMM);
 		}
 
 		private static void EnzymeSpeedDecimal()
@@ -272,20 +273,22 @@ STQTALA";
 			 "!Num" : value.ToString(format);
 		}
 
-		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic, params PointD[] dataPoints)
+		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic,
+		RegressionModel<double> experimental, params PointD[] dataPoints)
 		{
 			if (withKinematic) {
-				OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints));
+				OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints), experimental);
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
 		}
 
-		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic, params PointM[] dataPoints)
+		private static void OutputEnzymeKinematic(EnzymeSpeedRepresentation representation, bool withKinematic,
+		PointM[] dataPoints)
 		{
 			if (withKinematic) {
-				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(Enzyme.Speed(
-				 "mmol/L", A240By30s, representation, dataPoints), 4));
+				var kinematic = Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints);
+				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4));
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
@@ -301,9 +304,74 @@ STQTALA";
 			Console.WriteLine(strKinematic);
 		}
 
-		private static void OutputRoundedEnzymeKinematic(EnzymeKinematic<double> kinematic)
+		private static void OutputRoundedEnzymeKinematic(EnzymeKinematic<double> kinematic,
+		RegressionModel<double> michaelisMenten)
 		{
 			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4));
+			//*
+			var z1 = FindCrossingInInterval(12.5, 1.07 * kinematic.Km.Key, michaelisMenten, kinematic);
+			var x1 = FindNewtonCrossing(kinematic, michaelisMenten, kinematic.Km.Key);
+			Console.WriteLine("Croisement autour de Km à\t{0,18:f15} {1} avec Newton, {2,18:f15} avec les quarts", x1, kinematic.Km.Value, z1);
+
+			var z0 = FindCrossingInInterval(0, 12.5, michaelisMenten, kinematic);
+			var x0 = FindNewtonCrossing(kinematic, michaelisMenten, 12.5 * 0.5);
+			Console.WriteLine("Croisement bas à\t\t{0,18:f15} {1} avec Newton, {2,18:f15} avec les quarts", x0, kinematic.Km.Value, z0);
+
+			var z2 = FindCrossingInInterval(1.07 * kinematic.Km.Key, 100, michaelisMenten, kinematic);
+			var x2 = FindNewtonCrossing(kinematic, michaelisMenten, (kinematic.Km.Key + 100) * 0.5);
+			Console.WriteLine("Croisement haut à\t\t{0,18:f15} {1} avec Newton, {2,18:f15} avec les quarts", x2, kinematic.Km.Value, z2);
+			// */
+		}
+
+		private static double FindNewtonCrossing(EnzymeKinematic<double> kinematic,
+		RegressionModel<double> michaelisMenten, double candidate)
+		{
+			double fx = Double.NaN, dx;
+			int k = 1;
+			var dcmTargetDelta = NormalLawTest.FinalTargetDelta();
+			do {
+				fx = ExperimentalMinusTheorical(michaelisMenten, kinematic, candidate);
+				dx = ExperimentalMinusTheoricalDerivative(michaelisMenten, kinematic, candidate);
+				candidate -= fx / dx;
+				k++;
+			} while ((decimal)Math.Abs(fx) > dcmTargetDelta);
+			Console.WriteLine("Newton: différence de {0} après {1} itérations", fx, k);
+			return candidate;
+		}
+
+		private static double FindCrossingInInterval(double min, double max,
+		RegressionModel<double> experimental, EnzymeKinematic<double> theorical)
+		{
+			var dcmTargetDelta = NormalLawTest.FinalTargetDelta();
+			while (!RoundOff.AreEqual(max - min, 0)) {
+				var x1of4 = (3 * min + max) * 0.25;
+				var x3of4 = (min + 3 * max) * 0.25;
+				var y1of4 = ExperimentalMinusTheorical(experimental, theorical, x1of4);
+				var y3of4 = ExperimentalMinusTheorical(experimental, theorical, x3of4);
+				if ((decimal)Math.Abs(y1of4) < dcmTargetDelta) {
+					return x1of4;
+				} else if ((decimal)Math.Abs(y3of4) < dcmTargetDelta) { // RoundOff.AreEqual(y3of4, 0)
+					return x3of4;
+				} else if (Math.Abs(y1of4) < Math.Abs(y3of4)) {
+					max = (min + max) * 0.5;
+				} else {
+					min = (min + max) * 0.5;
+				}
+			}
+			return Double.NaN;
+		}
+
+		private static double ExperimentalMinusTheorical(RegressionModel<double> experimental,
+		EnzymeKinematic<double> theorical, double x)
+		{
+			return experimental.Evaluate(x) - (theorical.Vmax.Key * x / (x + theorical.Km.Key));
+		}
+
+		private static double ExperimentalMinusTheoricalDerivative(RegressionModel<double> experimental,
+		EnzymeKinematic<double> theorical, double x)
+		{
+			var km = theorical.Km.Key;
+			return (experimental.A / (Math.Log(10) * x)) - (theorical.Vmax.Key * km / ((x + km) * (x + km)));
 		}
 	}
 }
