@@ -308,63 +308,121 @@ STQTALA";
 		RegressionModel<double> michaelisMenten)
 		{
 			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4));
-			//*
-			var z1 = FindCrossingInInterval(12.5, 1.07 * kinematic.Km.Key, michaelisMenten, kinematic);
-			var x1 = FindNewtonCrossing(kinematic, michaelisMenten, kinematic.Km.Key);
-			Console.WriteLine("Croisement autour de Km à\t{0,18:f15} {1} avec Newton, {2,18:f15} avec les quarts", x1, kinematic.Km.Value, z1);
 
-			var z0 = FindCrossingInInterval(0, 12.5, michaelisMenten, kinematic);
-			var x0 = FindNewtonCrossing(kinematic, michaelisMenten, 12.5 * 0.5);
-			Console.WriteLine("Croisement bas à\t\t{0,18:f15} {1} avec Newton, {2,18:f15} avec les quarts", x0, kinematic.Km.Value, z0);
+			bool proleptic = false;
+			var dblLower = proleptic ? 0 : 12.5;
+			var dblUpper = 100.0;
+			var dblarCrossings = FindKinematicCrossings(kinematic, michaelisMenten, dblLower, dblUpper);
+			if (proleptic) {
+				dblLower = michaelisMenten.Solve(0);
+			}
+			var dblTotalArea = AreaBetween(kinematic, michaelisMenten, dblLower, dblUpper, dblarCrossings);
 
-			var z2 = FindCrossingInInterval(1.07 * kinematic.Km.Key, 100, michaelisMenten, kinematic);
-			var x2 = FindNewtonCrossing(kinematic, michaelisMenten, (kinematic.Km.Key + 100) * 0.5);
-			Console.WriteLine("Croisement haut à\t\t{0,18:f15} {1} avec Newton, {2,18:f15} avec les quarts", x2, kinematic.Km.Value, z2);
-			// */
+			Console.Write(dblarCrossings.Length);
+			Console.Write(" intersections :");
+			for (int i = 0; i < dblarCrossings.Length; i++) {
+				Console.Write(' ');
+				Console.Write(dblarCrossings[i]);
+			}
+			Console.Write(Environment.NewLine);
+			Console.WriteLine("Aire entre les courbes : {0}", dblTotalArea);
+		}
+
+		private static double AreaBetween(EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
+		double globalLower, double globalUpper, double[] intersections)
+		{
+			double dblTotalArea = 0;
+			if (intersections.Length < 1) { // no crossing, should be pretty rare but I cannot exclude it
+				dblTotalArea += AreaBetween(kinematic, michaelisMenten, globalLower, globalUpper);
+			} else {
+				dblTotalArea += AreaBetween(kinematic, michaelisMenten, globalLower, intersections[0]);
+				for (var i = 0; i < intersections.Length - 1; i++) {
+					dblTotalArea += AreaBetween(kinematic, michaelisMenten, intersections[i], intersections[i + 1]);
+				}
+				dblTotalArea += AreaBetween(kinematic, michaelisMenten, intersections[intersections.Length - 1], globalUpper);
+			}
+			return dblTotalArea;
+		}
+
+		private static double AreaBetween(EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
+		double localLower, double localUpper)
+		{
+#if NETFRAMEWORK
+			var dblAreaExp = Integral.DifferenceOfPrimitives(localLower, localUpper,
+			 (Converter<double, double>)(x => { return ExperimentalPrimitive(michaelisMenten, x); }));
+			var dblAreaMdl = Integral.DifferenceOfPrimitives(localLower, localUpper,
+			 (Converter<double, double>)(x => { return TheoricalPrimitive(kinematic, x); }));
+#else
+			var dblAreaExp = Integral.DifferenceOfPrimitives(localLower, localUpper,
+			 x => { return ExperimentalPrimitive(michaelisMenten, x); });
+			var dblAreaMdl = Integral.DifferenceOfPrimitives(localLower, localUpper,
+			 x => { return TheoricalPrimitive(kinematic, x); });
+#endif
+			return Math.Abs(dblAreaExp - dblAreaMdl);
+		}
+
+		private static double[] FindKinematicCrossings(EnzymeKinematic<double> kinematic,
+		RegressionModel<double> michaelisMenten, double lowerBound, double upperBound)
+		{
+			if (lowerBound < 0) {
+				throw new ArgumentOutOfRangeException("lowerBound", lowerBound,
+				 "A substrate concentration cannot be negative.");
+			} else if (lowerBound >= upperBound) {
+				throw new ArgumentException("Make sure the lower concentration bound is lower than the upper one.");
+			}
+
+			var lstCrossings = new List<double>(3);
+			var km = kinematic.Km.Key;
+			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, km, lowerBound, 1.07 * km, lowerBound, upperBound);
+			var m2 = (lowerBound == 0) ? km : lowerBound;
+			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, m2 * 0.5, 0, m2, lowerBound, upperBound);
+			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, (km + upperBound) * 0.5, 1.07 * km, upperBound, lowerBound, upperBound);
+			lstCrossings.Sort();
+			return lstCrossings.ToArray();
+		}
+
+		private static void AddKinematicCrossing(List<double> destination,
+		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
+		double candidate, double localMin, double localMax, double globalMin, double globalMax)
+		{
+			var x = FindNewtonCrossing(kinematic, michaelisMenten, candidate, localMin, localMax);
+			if ((!Double.IsNaN(x)) && (x >= globalMin) && (x <= globalMax)) {
+				destination.Add(x);
+			}
 		}
 
 		private static double FindNewtonCrossing(EnzymeKinematic<double> kinematic,
-		RegressionModel<double> michaelisMenten, double candidate)
+		RegressionModel<double> michaelisMenten, double candidate, double min, double max)
 		{
 			double fx = Double.NaN, dx;
+#if DEBUG
 			int k = 1;
+#endif
 			var dcmTargetDelta = NormalLawTest.FinalTargetDelta();
 			do {
 				fx = ExperimentalMinusTheorical(michaelisMenten, kinematic, candidate);
 				dx = ExperimentalMinusTheoricalDerivative(michaelisMenten, kinematic, candidate);
 				candidate -= fx / dx;
+#if DEBUG
 				k++;
-			} while ((decimal)Math.Abs(fx) > dcmTargetDelta);
-			Console.WriteLine("Newton: différence de {0} après {1} itérations", fx, k);
-			return candidate;
-		}
-
-		private static double FindCrossingInInterval(double min, double max,
-		RegressionModel<double> experimental, EnzymeKinematic<double> theorical)
-		{
-			var dcmTargetDelta = NormalLawTest.FinalTargetDelta();
-			while (!RoundOff.AreEqual(max - min, 0)) {
-				var x1of4 = (3 * min + max) * 0.25;
-				var x3of4 = (min + 3 * max) * 0.25;
-				var y1of4 = ExperimentalMinusTheorical(experimental, theorical, x1of4);
-				var y3of4 = ExperimentalMinusTheorical(experimental, theorical, x3of4);
-				if ((decimal)Math.Abs(y1of4) < dcmTargetDelta) {
-					return x1of4;
-				} else if ((decimal)Math.Abs(y3of4) < dcmTargetDelta) { // RoundOff.AreEqual(y3of4, 0)
-					return x3of4;
-				} else if (Math.Abs(y1of4) < Math.Abs(y3of4)) {
-					max = (min + max) * 0.5;
-				} else {
-					min = (min + max) * 0.5;
-				}
-			}
-			return Double.NaN;
+#endif
+			} while ((candidate > 0) && ((decimal)Math.Abs(fx) > dcmTargetDelta));
+			//        ^ candidate is a concentration in practise, and can only be positive
+#if DEBUG
+			//Console.WriteLine("Newton: différence de {0} après {1} itérations", fx, k);
+#endif
+			return (candidate >= min && candidate <= max) ? candidate : Double.NaN;
 		}
 
 		private static double ExperimentalMinusTheorical(RegressionModel<double> experimental,
 		EnzymeKinematic<double> theorical, double x)
 		{
-			return experimental.Evaluate(x) - (theorical.Vmax.Key * x / (x + theorical.Km.Key));
+			return experimental.Evaluate(x) - Theorical(theorical, x);
+		}
+
+		private static double Theorical(EnzymeKinematic<double> theorical, double x)
+		{
+			return theorical.Vmax.Key * x / (x + theorical.Km.Key);
 		}
 
 		private static double ExperimentalMinusTheoricalDerivative(RegressionModel<double> experimental,
@@ -372,6 +430,18 @@ STQTALA";
 		{
 			var km = theorical.Km.Key;
 			return (experimental.A / (Math.Log(10) * x)) - (theorical.Vmax.Key * km / ((x + km) * (x + km)));
+		}
+
+		private static double ExperimentalPrimitive(RegressionModel<double> experimental, double x)
+		{
+			var coeff = experimental.A / Math.Log(10);
+			return x * (coeff * Math.Log(x) - coeff + experimental.B);
+		}
+
+		private static double TheoricalPrimitive(EnzymeKinematic<double> theorical, double x)
+		{
+			var km = theorical.Km.Key;
+			return theorical.Vmax.Key * (x - km * Math.Log(Math.Abs(x + km)));
 		}
 	}
 }
