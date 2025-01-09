@@ -23,9 +23,9 @@ namespace Repzilon.Libraries.Core
 		Corrected
 	}
 
-	public static class ExtraMath
+	public static partial class ExtraMath
 	{
-		public const decimal Pi = 3.141592653589793238462643383327950m;
+		public const decimal Pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286209m;
 		public const decimal E = 2.71828182845904523536028747135266249775724709369995957496696762772407663035m;
 
 		/// <summary>
