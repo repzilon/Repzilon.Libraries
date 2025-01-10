@@ -1,0 +1,62 @@
+<!DOCTYPE kmpdoc>
+<kmpdoc version="4">
+    <axes color="#282828" tic-legth="0.5" tic-width="0.29999999999999999" width="0.20000000000000001">
+        <show-axes>1</show-axes>
+        <show-arrows>1</show-arrows>
+        <show-label>1</show-label>
+        <xmin>-8</xmin>
+        <xmax>8</xmax>
+        <ymin>-8</ymin>
+        <ymax>8</ymax>
+    </axes>
+    <grid color="#aeaeae" width="0.10000000000000001">
+        <mode>1</mode>
+    </grid>
+    <scale>
+        <tic-x-mode>0</tic-x-mode>
+        <tic-y-mode>0</tic-y-mode>
+        <tic-x>1</tic-x>
+        <tic-y>1</tic-y>
+    </scale>
+    <function f0-color="#191970" f0-gradient="0;#000000,1;#ffffff," f0-show-extrema="0" f0-show-plot-name="0" f0-show-tangent-field="0" f0-style="SolidLine" f0-use-gradient="0" f0-visible="1" f0-width="0.29999999999999999" f1-color="#400cdb" f1-gradient="0;#000000,1;#ffffff," f1-show-extrema="0" f1-show-plot-name="0" f1-show-tangent-field="0" f1-style="SolidLine" f1-use-gradient="0" f1-visible="0" f1-width="0.29999999999999999" f2-color="#c9de14" f2-gradient="0;#000000,1;#ffffff," f2-show-extrema="0" f2-show-plot-name="0" f2-show-tangent-field="0" f2-style="SolidLine" f2-use-gradient="0" f2-visible="0" f2-width="0.29999999999999999" integral-color="#eb1f00" integral-gradient="0;#000000,1;#ffffff," integral-show-extrema="0" integral-show-plot-name="0" integral-show-tangent-field="0" integral-style="SolidLine" integral-use-gradient="0" integral-visible="0" integral-width="0.29999999999999999" parameter-slider="0" type="cartesian" use-parameter-list="0" use-parameter-slider="0">
+        <equation-0 step="0.05">f(x) = tan(x)<differential x="0" y="1"/>
+        </equation-0>
+        <arg-min use="0">0</arg-min>
+        <arg-max use="0">2π</arg-max>
+    </function>
+    <function f0-color="#ff4500" f0-gradient="0;#000000,1;#ffffff," f0-show-extrema="0" f0-show-plot-name="0" f0-show-tangent-field="0" f0-style="SolidLine" f0-use-gradient="0" f0-visible="1" f0-width="0.29999999999999999" f1-color="#43ab0d" f1-gradient="0;#000000,1;#ffffff," f1-show-extrema="0" f1-show-plot-name="0" f1-show-tangent-field="0" f1-style="SolidLine" f1-use-gradient="0" f1-visible="0" f1-width="0.29999999999999999" f2-color="#e905ae" f2-gradient="0;#000000,1;#ffffff," f2-show-extrema="0" f2-show-plot-name="0" f2-show-tangent-field="0" f2-style="SolidLine" f2-use-gradient="0" f2-visible="0" f2-width="0.29999999999999999" integral-color="#c0e007" integral-gradient="0;#000000,1;#ffffff," integral-show-extrema="0" integral-show-plot-name="0" integral-show-tangent-field="0" integral-style="SolidLine" integral-use-gradient="0" integral-visible="0" integral-width="0.29999999999999999" parameter-slider="0" type="cartesian" use-parameter-list="0" use-parameter-slider="0">
+        <equation-0 step="0.05">g(x) = ln((2x+π)/(π−2x))<differential x="0" y="1"/>
+        </equation-0>
+        <arg-min use="0">0</arg-min>
+        <arg-max use="0">2π</arg-max>
+    </function>
+    <function f0-color="#808000" f0-gradient="0;#000000,1;#ffffff," f0-show-extrema="0" f0-show-plot-name="0" f0-show-tangent-field="0" f0-style="SolidLine" f0-use-gradient="0" f0-visible="0" f0-width="0.29999999999999999" f1-color="#451309" f1-gradient="0;#000000,1;#ffffff," f1-show-extrema="0" f1-show-plot-name="0" f1-show-tangent-field="0" f1-style="SolidLine" f1-use-gradient="0" f1-visible="0" f1-width="0.29999999999999999" f2-color="#4dd7e3" f2-gradient="0;#000000,1;#ffffff," f2-show-extrema="0" f2-show-plot-name="0" f2-show-tangent-field="0" f2-style="SolidLine" f2-use-gradient="0" f2-visible="0" f2-width="0.29999999999999999" integral-color="#2c8b4a" integral-gradient="0;#000000,1;#ffffff," integral-show-extrema="0" integral-show-plot-name="0" integral-show-tangent-field="0" integral-style="SolidLine" integral-use-gradient="0" integral-visible="0" integral-width="0.29999999999999999" parameter-slider="0" type="cartesian" use-parameter-list="0" use-parameter-slider="0">
+        <equation-0 step="0.05">h(x) = ln((2x+π)/(π−2x)) /tan(x)<differential x="0" y="1"/>
+        </equation-0>
+        <arg-min use="0">0</arg-min>
+        <arg-max use="0">2π</arg-max>
+    </function>
+    <function f0-color="#ff40ff" f0-gradient="0;#000000,1;#ffffff," f0-show-extrema="0" f0-show-plot-name="0" f0-show-tangent-field="0" f0-style="SolidLine" f0-use-gradient="0" f0-visible="0" f0-width="0.29999999999999999" f1-color="#f5e970" f1-gradient="0;#000000,1;#ffffff," f1-show-extrema="0" f1-show-plot-name="0" f1-show-tangent-field="0" f1-style="SolidLine" f1-use-gradient="0" f1-visible="0" f1-width="0.29999999999999999" f2-color="#65bd69" f2-gradient="0;#000000,1;#ffffff," f2-show-extrema="0" f2-show-plot-name="0" f2-show-tangent-field="0" f2-style="SolidLine" f2-use-gradient="0" f2-visible="0" f2-width="0.29999999999999999" integral-color="#437fd9" integral-gradient="0;#000000,1;#ffffff," integral-show-extrema="0" integral-show-plot-name="0" integral-show-tangent-field="0" integral-style="SolidLine" integral-use-gradient="0" integral-visible="0" integral-width="0.29999999999999999" parameter-slider="0" type="cartesian" use-parameter-list="0" use-parameter-slider="0">
+        <equation-0 step="0.05">i(x) = ln((2x+π)/(π−2x)) ∙ (0.45243166352711073 ∙ 3.760769977224381^abs(x))<differential x="0" y="1"/>
+        </equation-0>
+        <arg-min use="0">0</arg-min>
+        <arg-max use="0">2π</arg-max>
+    </function>
+    <function f0-color="#ff9300" f0-gradient="0;#000000,1;#ffffff," f0-show-extrema="0" f0-show-plot-name="0" f0-show-tangent-field="0" f0-style="SolidLine" f0-use-gradient="0" f0-visible="0" f0-width="0.29999999999999999" f1-color="#c20fd1" f1-gradient="0;#000000,1;#ffffff," f1-show-extrema="0" f1-show-plot-name="0" f1-show-tangent-field="0" f1-style="SolidLine" f1-use-gradient="0" f1-visible="0" f1-width="0.29999999999999999" f2-color="#e8e093" f2-gradient="0;#000000,1;#ffffff," f2-show-extrema="0" f2-show-plot-name="0" f2-show-tangent-field="0" f2-style="SolidLine" f2-use-gradient="0" f2-visible="0" f2-width="0.29999999999999999" integral-color="#89db57" integral-gradient="0;#000000,1;#ffffff," integral-show-extrema="0" integral-show-plot-name="0" integral-show-tangent-field="0" integral-style="SolidLine" integral-use-gradient="0" integral-visible="0" integral-width="0.29999999999999999" parameter-slider="0" type="cartesian" use-parameter-list="0" use-parameter-slider="0">
+        <equation-0 step="0.05">j(x) =  ln((2x+e)/(e−2x))<differential x="0" y="1"/>
+        </equation-0>
+        <arg-min use="0">0</arg-min>
+        <arg-max use="0">2π</arg-max>
+    </function>
+    <function f0-color="#00f900" f0-gradient="0;#000000,1;#ffffff," f0-show-extrema="0" f0-show-plot-name="0" f0-show-tangent-field="0" f0-style="SolidLine" f0-use-gradient="0" f0-visible="1" f0-width="0.29999999999999999" f1-color="#dfd514" f1-gradient="0;#000000,1;#ffffff," f1-show-extrema="0" f1-show-plot-name="0" f1-show-tangent-field="0" f1-style="SolidLine" f1-use-gradient="0" f1-visible="0" f1-width="0.29999999999999999" f2-color="#c40fd2" f2-gradient="0;#000000,1;#ffffff," f2-show-extrema="0" f2-show-plot-name="0" f2-show-tangent-field="0" f2-style="SolidLine" f2-use-gradient="0" f2-visible="0" f2-width="0.29999999999999999" integral-color="#4b6bf0" integral-gradient="0;#000000,1;#ffffff," integral-show-extrema="0" integral-show-plot-name="0" integral-show-tangent-field="0" integral-style="SolidLine" integral-use-gradient="0" integral-visible="0" integral-width="0.29999999999999999" parameter-slider="0" type="cartesian" use-parameter-list="0" use-parameter-slider="0">
+        <equation-0 step="0.05">k(x) = ln((2x+π)/(π−2x))∙(1/(1.4901714487408 −0.668062142763∙abs(x)))<differential x="0" y="1"/>
+        </equation-0>
+        <arg-min use="0">0</arg-min>
+        <arg-max use="0">2π</arg-max>
+    </function>
+    <fonts>
+        <axes-font>.AppleSystemUIFont</axes-font>
+        <label-font>.AppleSystemUIFont</label-font>
+        <header-table-font>.AppleSystemUIFont</header-table-font>
+    </fonts>
+</kmpdoc>
