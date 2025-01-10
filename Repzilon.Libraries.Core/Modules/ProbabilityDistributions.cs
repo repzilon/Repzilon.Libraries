@@ -94,6 +94,9 @@ namespace Repzilon.Libraries.Core
 
 		private static decimal MacLaurinPositiveNormalIntegral(decimal x)
 		{
+			if (x == 0) {
+				return 0;
+			}
 			var sum = x;
 			for (byte k = 1; k <= MacLaurinIterations - 1; k++) {
 				var odd = (2 * k) + 1;

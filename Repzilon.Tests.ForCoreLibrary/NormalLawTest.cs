@@ -203,6 +203,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static double ExponentialSuite(double x, int k)
 		{
+			if (x == 0) {
+				return 0;
+			}
+
 			var odd = (2 * k) + 1;
 #if DEBUG
 			var t = ExtraMath.Minus1Pow(k) * Math.Pow(x, odd);
@@ -217,6 +221,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static decimal ExponentialSuite(decimal x, int k)
 		{
+			if (x == 0) {
+				return 0;
+			}
+
 			var odd = (2 * k) + 1;
 			return (decimal)(ExtraMath.Minus1Pow(k) * Math.Pow((double)x, odd) /
 			 (odd * (1 << k) * ExtraMath.Factorial((byte)k)));
