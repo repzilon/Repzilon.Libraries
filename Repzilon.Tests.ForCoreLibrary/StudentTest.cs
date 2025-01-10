@@ -13,7 +13,6 @@
 //
 using System;
 using Repzilon.Libraries.Core;
-using Repzilon.Libraries.Core.Regression;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -84,39 +83,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				Console.Write(Environment.NewLine);
 			}
-
-			Console.WriteLine("Estimation de arctan/tan avec modèle logistique (pour approximation de Student inverse avec k impair)");
-			var ptdarRatio = new PointD[27];
-			ptdarRatio[0] = new PointD(Math.Log10(1e-15), Math.Log10(LogisticToArctanCorrectionRatio(1e-15)));
-			for (k = 1; k <= 26; k++) {
-				z = k * Math.PI / 12;
-				ptdarRatio[k] = new PointD(Math.Log10(z), Math.Log10(LogisticToArctanCorrectionRatio(z)));
-			}
-			Console.Write("Tentative de formule de correction pour arctan : ");
-			Console.WriteLine(LinearRegression.Compute(ptdarRatio).ChangeModel(MathematicalModel.LogLog));
-			ptdarRatio[0] = new PointD(1e-15, LogitToTanRatio(1e-15));
-			for (k = 1; k < 26; k++) {
-				z = k * (1.0 / 26 * Math.PI / 2);
-				ptdarRatio[k] = new PointD(z, LogitToTanRatio(z));
-			}
-			ptdarRatio[26] = new PointD(1.57, LogitToTanRatio(1.57));
-			Console.Write("Tentative de formule de correction pour 1/tan : ");
-			Console.WriteLine(RegressionModel.Compute(ptdarRatio));
-		}
-
-		private static double LogisticToArctanCorrectionRatio(double x)
-		{
-			return Math.Atan(x) / ((Math.PI / (1 + Math.Exp(-x))) - (Math.PI / 2));
-		}
-
-		private static double LogitToTanCorrectionRatio(double x)
-		{
-			return Math.Tan(x) / Math.Log((2 * x + Math.PI) / (Math.PI - 2 * x));
-		}
-
-		private static double LogitToTanRatio(double x)
-		{
-			return Math.Log((2 * x + Math.PI) / (Math.PI - 2 * x)) / Math.Tan(x);
 		}
 
 		private static void TenthTableHeader(string format, params byte[] liberties)
