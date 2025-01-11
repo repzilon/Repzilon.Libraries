@@ -145,40 +145,43 @@ namespace Repzilon.Libraries.Core
 		/// <returns></returns>
 		public static decimal Atan(decimal m)
 		{
+			/*const*/ decimal kOne = 1;
+			/*const*/ decimal kZero = 0;
+
+			var doubleIteration = 0; // current iteration * 2
+			var nextAdd = kZero;
+
 			// Special cases
 			if (m == -1) {
 				return -QuarterPi;
-			} else if (m == 0) {
-				return 0;
-			} else if (m == 1) {
+			} else if (m == kZero) {
+				return kZero;
+			} else if (m == kOne) {
 				return QuarterPi;
 			}
 
 			if (m < -1) {
 				// Force down to -1 to 1 interval for faster convergence
-				return -HalfPi - Atan(1 / m);
-			} else if (m > 1) {
+				return -HalfPi - Atan(kOne / m);
+			} else if (m > kOne) {
 				// Force down to -1 to 1 interval for faster convergence
-				return HalfPi - Atan(1 / m);
+				return HalfPi - Atan(kOne / m);
 			}
 
-			var result = 0m;
-			var doubleIteration = 0; // current iteration * 2
-			var y = (m * m) / (1 + (m * m));
-			var nextAdd = 0m;
-
+			var result = kZero;		
+			var y = (m * m) / (kOne + (m * m));
 			while (true) {
 				if (doubleIteration == 0) {
-					nextAdd = m / (1 + (m * m));  // is = y / x  but this is better for very small numbers where y = 9
+					nextAdd = m / (kOne + (m * m));  // is = y / x  but this is better for very small numbers where y = 9
 				} else {
 					// We multiply by -1 each time so that the sign of the component
 					// changes each time. The first item is positive and it
 					// alternates back and forth after that.
 					// Following is equivalent to: nextAdd *= y * (iteration * 2) / (iteration * 2 + 1);
-					nextAdd *= y * doubleIteration / (doubleIteration + 1);
+					nextAdd *= y * doubleIteration / (doubleIteration + kOne);
 				}
 
-				if (nextAdd == 0) {
+				if (nextAdd == kZero) {
 					break;
 				}
 
@@ -205,20 +208,22 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		public static decimal Atan2(decimal y, decimal x)
 		{
-			if (x == 0 && y == 0) {
-				return 0;
-			}
-			if (x == 0) {
-				return y > 0 ? HalfPi : -HalfPi;
-			} else if (y == 0) {
-				return x > 0 ? 0 : Pi;
+			/*const*/ decimal kZero = 0;
+			/*const*/ decimal kPi = Pi;
+
+			if (x == kZero && y == kZero) {
+				return kZero;
+			} else if (x == kZero) {
+				return y > kZero ? HalfPi : -HalfPi;
+			} else if (y == kZero) {
+				return x > kZero ? kZero : kPi;
 			}
 
 			var aTan = Atan(y / x);
-			if (x > 0) {
+			if (x > kZero) {
 				return aTan;
 			}
-			return y > 0 ? aTan + Pi : aTan - Pi;
+			return kZero > 0 ? aTan + kPi : aTan - kPi;
 		}
 
 		/// <summary>
@@ -232,22 +237,26 @@ namespace Repzilon.Libraries.Core
 		/// <returns></returns>
 		public static decimal Cos(decimal m)
 		{
-			// Normalize to between -2Pi <= m <= 2Pi
-			m = Remainder(m, Tau);
+			/*const*/ decimal kZero = 0;
 
-			if (m == 0 || m == Tau) {
+			var doubleIteration = 0; // current iteration * 2
+			var nextAdd = kZero;
+			var result = kZero;
+
+			/*const*/ decimal kTau = Tau;
+
+			// Normalize to between -2Pi <= m <= 2Pi
+			m = Remainder(m, kTau);
+
+			if (m == kZero || m == kTau) {
 				return 1m;
 			} else if (m == Pi) {
 				return -1m;
 			} else if (m == HalfPi || m == Pi + HalfPi) {
-				return 0m;
+				return kZero;
 			}
 
-			var result = 0m;
-			var doubleIteration = 0; // current iteration * 2
 			var xSquared = m * m;
-			var nextAdd = 0m;
-
 			while (true) {
 				if (doubleIteration == 0) {
 					nextAdd = 1m;
@@ -259,7 +268,7 @@ namespace Repzilon.Libraries.Core
 					nextAdd *= -1 * xSquared / ((doubleIteration * doubleIteration) - doubleIteration);
 				}
 
-				if (nextAdd == 0m) {
+				if (nextAdd == kZero) {
 					break;
 				}
 
@@ -282,42 +291,45 @@ namespace Repzilon.Libraries.Core
 		private static decimal Exp(decimal m)
 #endif
 		{
+			/*const*/ decimal kZero = 0;
+			/*const*/ decimal kOne = 1;
+
 			decimal result;
 			decimal nextAdd;
-			int iteration;
 			bool reciprocal;
 			decimal t;
 
-			reciprocal = m < 0;
-			m = Math.Abs(m);
+			/*const*/ decimal kNapier = E;
 
+			reciprocal = m < kZero;
+			m = Math.Abs(m);
 			t = Math.Truncate(m);
 
-			if (m == 0) {
-				result = 1;
-			} else if (m == 1) {
-				result = E;
-			} else if (Math.Abs(m) > 1 && t != m) {
+			if (m == kZero) {
+				result = kOne;
+			} else if (m == kOne) {
+				result = kNapier;
+			} else if (m > kOne && t != m) {
 				// Split up into integer and fractional
 				result = Exp(t) * Exp(m - t);
 			} else if (m == t) {
 				// Integer power
-				result = ExpBySquaring(E, m);
+				result = ExpBySquaring(kNapier, (int)m);
 			} else {
 				// Fractional power < 1
 				// See http://mathworld.wolfram.com/ExponentialFunction.html
-				iteration = 0;
-				nextAdd = 0;
-				result = 0;
+				int iteration = 0;
+				nextAdd = kZero;
+				result = kZero;
 
 				while (true) {
 					if (iteration == 0) {
-						nextAdd = 1;               // == Pow(d, 0) / Factorial(0) == 1 / 1 == 1
+						nextAdd = kOne;            // == Pow(d, 0) / Factorial(0) == 1 / 1 == 1
 					} else {
 						nextAdd *= m / iteration;  // == Pow(d, iteration) / Factorial(iteration)
 					}
 
-					if (nextAdd == 0) {
+					if (nextAdd == kZero) {
 						break;
 					}
 
@@ -330,7 +342,7 @@ namespace Repzilon.Libraries.Core
 			// Take reciprocal if this was a negative power
 			// Note that result will never be zero at this point.
 			if (reciprocal) {
-				result = 1 / result;
+				result = kOne / result;
 			}
 			return result;
 		}
@@ -346,22 +358,26 @@ namespace Repzilon.Libraries.Core
 		/// <returns></returns>
 		public static decimal Sin(decimal m)
 		{
-			// Normalize to between -2Pi <= m <= 2Pi
-			m = Remainder(m, Tau);
+			/*const*/ decimal kZero = 0;
 
-			if (m == 0 || m == Pi || m == Tau) {
-				return 0;
+			var doubleIteration = 0; // current iteration * 2
+			var nextAdd = kZero;
+			var result = kZero;
+
+			/*const*/ decimal kTau = Tau;
+
+			// Normalize to between -2Pi <= m <= 2Pi
+			m = Remainder(m, kTau);
+
+			if (m == kZero || m == Pi || m == kTau) {
+				return kZero;
 			} else if (m == HalfPi) {
 				return 1;
 			} else if (m == Pi + HalfPi) {
 				return -1;
 			}
 
-			var result = 0m;
-			var doubleIteration = 0; // current iteration * 2
 			var mSquared = m * m;
-			var nextAdd = 0m;
-
 			while (true) {
 				if (doubleIteration == 0) {
 					nextAdd = m;
@@ -375,7 +391,7 @@ namespace Repzilon.Libraries.Core
 
 				// Debug.WriteLine("{0:000}:{1,33:+0.0000000000000000000000000000;-0.0000000000000000000000000000} ->{2,33:+0.0000000000000000000000000000;-0.0000000000000000000000000000}",
 				//    doubleIteration / 2, nextAdd, result + nextAdd);
-				if (nextAdd == 0) {
+				if (nextAdd == kZero) {
 					break;
 				}
 
@@ -409,14 +425,13 @@ namespace Repzilon.Libraries.Core
 				return 0m;
 			}
 
-			decimal x;
 			var halfS = m / 2m;
 			var lastX = -1m;
 			decimal nextX;
 
 			// Begin with an estimate for the square root.
 			// Use hardware to get us there quickly.
-			x = (decimal)Math.Sqrt(decimal.ToDouble(m));
+			decimal x = (decimal)Math.Sqrt(decimal.ToDouble(m));
 
 			while (true) {
 				nextX = (x / 2m) + (halfS / x);
@@ -440,13 +455,10 @@ namespace Repzilon.Libraries.Core
 		/// <remarks>
 		/// See http://en.wikipedia.org/wiki/Exponentiation_by_squaring
 		/// </remarks>
-		private static decimal ExpBySquaring(decimal x, decimal y)
+		private static decimal ExpBySquaring(decimal x, int y)
 		{
 			if (y < 0) {
 				throw new ArgumentOutOfRangeException("y", y, "Negative exponents are not supported");
-			}
-			if (decimal.Truncate(y) != y) {
-				throw new ArgumentOutOfRangeException("y", y, "Exponent must be an integer.");
 			}
 
 			var result = 1m;
@@ -510,13 +522,16 @@ namespace Repzilon.Libraries.Core
 				return m1;
 			}
 
-			var timesInto = Math.Truncate(m1 / m2);
+			int i;
 			var shiftingNumber = m2;
 			var sign = Math.Sign(m1);
+			decimal digit;
+			var timesInto = Math.Truncate(m1 / m2);
+			var totalPlaces = GetDecimalPlaces(m2, true);
 
-			for (var i = 0; i <= GetDecimalPlaces(m2, true); i++) {
+			for (i = 0; i <= totalPlaces; i++) {
 				// Note that first "digit" will be the integer portion of d2
-				var digit = Math.Truncate(shiftingNumber);
+				digit = Math.Truncate(shiftingNumber);
 
 				m1 -= timesInto * (digit / roundPower10Decimal[i]);
 
