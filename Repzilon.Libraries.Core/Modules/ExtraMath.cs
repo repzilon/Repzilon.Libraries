@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -25,10 +25,7 @@ namespace Repzilon.Libraries.Core
 
 	public static partial class ExtraMath
 	{
-		public const decimal Pi = 3.141592653589793238462643383279502884197169399375105820974944592307816406286209m;
-		public const decimal E = 2.71828182845904523536028747135266249775724709369995957496696762772407663035m;
-
-		/// <summary>
+ 		/// <summary>
 		/// Solves a quadratic equation axx + bx + c = 0 .
 		/// </summary>
 		/// <param name="a">Coefficient for x squared</param>

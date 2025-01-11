@@ -46,15 +46,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Console.WriteLine("Test de méthodes mathématiques avec Decimal");
 			TestMathAnalog("Sqrt", MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
-#if false
-			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
-			TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Log);
-			TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
+#if true
+			//TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
+			//TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Log);
+			//TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
 			TestMathAnalog("Sin", MathFunction.Trigonometric, Math.Sin, ExtraMath.Sin);
 			TestMathAnalog("Cos", MathFunction.Trigonometric, Math.Cos, ExtraMath.Cos);
-			TestMathAnalog("Tan", MathFunction.Trigonometric, Math.Tan, ExtraMath.Tan);
-			TestMathAnalog("Asin", MathFunction.InverseTrigo, Math.Asin, ExtraMath.Asin);
-			TestMathAnalog("Acos", MathFunction.InverseTrigo, Math.Acos, ExtraMath.Acos);
+			//TestMathAnalog("Tan", MathFunction.Trigonometric, Math.Tan, ExtraMath.Tan);
+			//TestMathAnalog("Asin", MathFunction.InverseTrigo, Math.Asin, ExtraMath.Asin);
+			//TestMathAnalog("Acos", MathFunction.InverseTrigo, Math.Acos, ExtraMath.Acos);
 			TestMathAnalog("Atan", MathFunction.InverseTrigo, Math.Atan, ExtraMath.Atan);
 #endif
 			TestMathAnalog("Sinh", MathFunction.Hyperbolic, Math.Sinh, ExtraMath.Sinh);
