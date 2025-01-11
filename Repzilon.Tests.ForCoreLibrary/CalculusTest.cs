@@ -50,17 +50,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 			TestMathAnalog((double)kVerySmallSquare, Math.Sqrt, ExtraMath.Sqrt);
 
 			TestMathAnalog("Sqrt", MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
-#if true
-			//TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
-			//TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Log);
-			//TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
+#if false
+			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
+			TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Log);
+			TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
+#endif
 			TestMathAnalog("Sin", MathFunction.Trigonometric, Math.Sin, ExtraMath.Sin);
 			TestMathAnalog("Cos", MathFunction.Trigonometric, Math.Cos, ExtraMath.Cos);
-			//TestMathAnalog("Tan", MathFunction.Trigonometric, Math.Tan, ExtraMath.Tan);
-			//TestMathAnalog("Asin", MathFunction.InverseTrigo, Math.Asin, ExtraMath.Asin);
-			//TestMathAnalog("Acos", MathFunction.InverseTrigo, Math.Acos, ExtraMath.Acos);
-			TestMathAnalog("Atan", MathFunction.InverseTrigo, Math.Atan, ExtraMath.Atan);
+#if false
+			TestMathAnalog("Tan", MathFunction.Trigonometric, Math.Tan, ExtraMath.Tan);
+			TestMathAnalog("Asin", MathFunction.InverseTrigo, Math.Asin, ExtraMath.Asin);
+			TestMathAnalog("Acos", MathFunction.InverseTrigo, Math.Acos, ExtraMath.Acos);
 #endif
+			TestMathAnalog("Atan", MathFunction.InverseTrigo, Math.Atan, ExtraMath.Atan);
 			TestMathAnalog("Sinh", MathFunction.Hyperbolic, Math.Sinh, ExtraMath.Sinh);
 			TestMathAnalog("Cosh", MathFunction.Hyperbolic, Math.Cosh, ExtraMath.Cosh);
 			TestMathAnalog("Tanh", MathFunction.Hyperbolic, Math.Tanh, ExtraMath.Tanh);
