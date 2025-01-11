@@ -45,6 +45,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Console.WriteLine("Test de méthodes mathématiques avec Decimal");
+			// Force conversion from a stored decimal on disk to a double in memory by making it a variable
+			/*const*/ decimal kVerySmallSquare = 6.681844869362281E-18m;
+			TestMathAnalog((double)kVerySmallSquare, Math.Sqrt, ExtraMath.Sqrt);
+
 			TestMathAnalog("Sqrt", MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
 #if true
 			//TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
@@ -142,22 +146,32 @@ namespace Repzilon.Tests.ForCoreLibrary
 					} else {
 						x = Math.Exp(Random.NextDouble()) * Math.Pow(Random.NextDouble(), Math.E);
 					}
-					double fr8 = math(x);
-					decimal fD = extraMath((decimal)x);
-
-					double der8 = (double)fD - fr8;
-					decimal deD = fD - (decimal)fr8;
-					if (!RoundOff.AreEqual(der8, 0)) {
-						throw new ArithmeticException(String.Format(
-						 "Too big difference: x={1}{0}\tf(x[r8])={2,-29} Δ[r8]={4:e16}{0}\t f(x[D])={3} Δ[D]={5:e25}",
-						 Environment.NewLine, x, fr8, fD, der8, deD));
-					}
+					TestMathAnalog(x, math, extraMath);
 				}
 				var hertz = testCount / (DateTime.UtcNow - dtmStart).TotalSeconds;
 				Console.WriteLine("success at {0:n0} Hz", hertz);
 			} catch (Exception exc) {
 				Console.WriteLine("FAIL");
 				Console.Error.WriteLine(exc.Message);
+			}
+		}
+
+		private static void TestMathAnalog(double x,
+#if NET20
+		Converter<double, double> math, Converter<decimal, decimal> extraMath)
+#else
+		Func<double, double> math, Func<decimal, decimal> extraMath)
+#endif
+		{
+			double fr8 = math(x);
+			decimal fD = extraMath((decimal)x);
+
+			double der8 = (double)fD - fr8;
+			decimal deD = fD - (decimal)fr8;
+			if (!RoundOff.AreEqual(der8, 0)) {
+				throw new ArithmeticException(String.Format(
+				 "Too big difference: x={1}{0}\tf(x[r8])={2,-29} Δ[r8]={4:e16}{0}\t f(x[D])={3} Δ[D]={5:e25}",
+				 Environment.NewLine, x, fr8, fD, der8, deD));
 			}
 		}
 

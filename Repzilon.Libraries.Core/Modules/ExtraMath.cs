@@ -55,20 +55,6 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		// https://www.csharp-console-examples.com/general/math-sqrt-decimal-in-c/
-		public static decimal Sqrt(decimal square)
-		{
-			if (square < 0) {
-				throw new ArgumentOutOfRangeException("square", square, "Cannot extract the square root of a negative number.");
-			}
-
-			var root = square / 3;
-			for (int i = 0; i < 32; i++) {
-				root = (root + (square / root)) * 0.5m;
-			}
-			return root;
-		}
-
 		/// <summary>
 		/// Computes a rough estimate to say some text.
 		/// </summary>

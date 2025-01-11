@@ -458,8 +458,7 @@ namespace Repzilon.Libraries.Core
 		// This version here is a modification as part of a larger work and I am allowed to relicense the modified
 		// version under the MPL version 2.
 
-		// This code provides a satisfying implementation of Sin, Cos and Atan and possibly a better Sqrt
-		// for very small numbers such as 6.681844869362281E-18 (needs testing)
+		// This code provides a satisfying implementation of Sin, Cos, Atan and Sqrt (better than the one I had).
 
 		/// <summary>
 		/// Represents the natural logarithmic base, specified by the constant, e.
@@ -493,6 +492,7 @@ namespace Repzilon.Libraries.Core
 		/// </remarks>
 		public const decimal Tau = 6.2831853071795864769252867666m;
 
+#if false
 		/// <summary>
 		/// The value of the natural logarithm of 10.
 		/// </summary>
@@ -502,6 +502,15 @@ namespace Repzilon.Libraries.Core
 		/// 2.30258509299404568401799145468436420760110148862877297603332790096757260967735248023599.
 		/// </remarks>
 		private const decimal Ln10 = 2.3025850929940456840179914547m;
+#endif
+
+		/// <summary>
+		/// Smallest non-zero decimal value.
+		/// </summary>
+		/// <remarks>
+		/// <code>new decimal(1, 0, 0, false, 28);</code> or 1e-28m.
+		/// </remarks>
+		private const decimal SmallestNonZeroDec = 0.0000000000000000000000000001m;
 
 		// This table is required for the Round function which can specify the number of digits to round to
 		private static readonly decimal[] roundPower10Decimal = new decimal[]
@@ -985,7 +994,7 @@ namespace Repzilon.Libraries.Core
 			return result;
 		}
 
-#if false
+#if true
 		/// <summary>
 		/// Returns the square root of a given number.
 		/// </summary>
@@ -997,8 +1006,8 @@ namespace Repzilon.Libraries.Core
 		/// <returns></returns>
 		public static decimal Sqrt(decimal m)
 		{
-			if (m < 0m) {
-				throw new ArgumentException("Square root not defined for Decimal data type when less than zero!", "m");
+			if (m < 0) {
+				throw new ArgumentOutOfRangeException("m", m, "Cannot extract the square root of a negative number.");
 			}
 
 			// Prevent divide-by-zero errors below. Dividing either
