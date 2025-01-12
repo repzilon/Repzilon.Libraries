@@ -14,7 +14,9 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
+#if !NETFRAMEWORK
 using System.Runtime.InteropServices;
+#endif
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Biochemistry;
 using Repzilon.Libraries.Core.Regression;
@@ -24,51 +26,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class ChemistryTest
 	{
-#if DEBUG
-		[StructLayout(LayoutKind.Sequential)]
-#else
-		[StructLayout(LayoutKind.Auto)]
-#endif
-		private struct FattyAcid
-		{
-			public string Name;
-			public string Formula;
-			public float MolarMass;
-			public float MeltingPoint;
-
-			public FattyAcid SetFormula(string formula)
-			{
-				this.MolarMass = Chemistry.MolarMass(formula);
-				this.Formula = formula;
-				return this;
-			}
-
-			public static FattyAcid Create(string name, float meltingPointInCelsius, string formula)
-			{
-#if NET35 || NET20
-				if (RetroCompat.IsNullOrWhiteSpace(name)) {
-#else
-				if (String.IsNullOrWhiteSpace(name)) {
-#endif
-#pragma warning disable CC0021 // Use nameof
-#pragma warning disable RECS0163 // Suggest the usage of the nameof operator
-					throw new ArgumentNullException("name");
-				}
-				if (meltingPointInCelsius < -273.15) {
-					throw new ArgumentOutOfRangeException("meltingPointInCelsius");
-				}
-#pragma warning restore RECS0163 // Suggest the usage of the nameof operator
-#pragma warning restore CC0021 // Use nameof
-
-				var fat = new FattyAcid {
-					Name = name.Trim(),
-					MeltingPoint = meltingPointInCelsius
-				};
-				fat.SetFormula(formula);
-				return fat;
-			}
-		}
-
 		private static readonly string A240By30s = IsMacOsX() ? "A₂₄₀/30 s" : "A<sub>240</sub>/30 s";
 
 		private static bool IsMacOsX()
@@ -128,29 +85,29 @@ STQTALA";
 			Program.OutputSizeOf<FattyAcid>();
 			var lstFats = new List<FattyAcid>
 			{
-				FattyAcid.Create("Acide butyrique", -7.9f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>2</sub>COOH"),
-				FattyAcid.Create("Acide caproïque", -3.5f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>4</sub>COOH"),
-				FattyAcid.Create("Acide caprique", 31.6f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>8</sub>COOH"),
-				FattyAcid.Create("Acide laurique", 44.2f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>10</sub>COOH"),
-				FattyAcid.Create("Acide myristique", 53.9f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>12</sub>COOH"),
-				FattyAcid.Create("Acide palmitique", 63.1f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>14</sub>COOH"),
-				FattyAcid.Create("Acide stéarique", 69.6f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>16</sub>COOH"),
-				FattyAcid.Create("Acide arachidique", 76.5f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>18</sub>COOH"),
-				FattyAcid.Create("Acide béhénique", 80.0f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>20</sub>COOH"),
-				FattyAcid.Create("Acide lignocérique", 86.0f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>22</sub>COOH"),
-				FattyAcid.Create("Acide palmitoléique", -0.5f,
+				new FattyAcid("Acide butyrique", -7.9f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>2</sub>COOH"),
+				new FattyAcid("Acide caproïque", -3.5f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>4</sub>COOH"),
+				new FattyAcid("Acide caprique", 31.6f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>8</sub>COOH"),
+				new FattyAcid("Acide laurique", 44.2f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>10</sub>COOH"),
+				new FattyAcid("Acide myristique", 53.9f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>12</sub>COOH"),
+				new FattyAcid("Acide palmitique", 63.1f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>14</sub>COOH"),
+				new FattyAcid("Acide stéarique", 69.6f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>16</sub>COOH"),
+				new FattyAcid("Acide arachidique", 76.5f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>18</sub>COOH"),
+				new FattyAcid("Acide béhénique", 80.0f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>20</sub>COOH"),
+				new FattyAcid("Acide lignocérique", 86.0f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>22</sub>COOH"),
+				new FattyAcid("Acide palmitoléique", -0.5f,
 				 "CH<sub>3</sub>(CH<sub>2</sub>)<sub>5</sub>CH=CH(CH<sub>2</sub>)<sub>7</sub>COOH"),
-				FattyAcid.Create("Acide oléique", 13.4f,
+				new FattyAcid("Acide oléique", 13.4f,
 				 "CH<sub>3</sub>(CH<sub>2</sub>)<sub>7</sub>CH=CH(CH<sub>2</sub>)<sub>7</sub>COOH"),
-				FattyAcid.Create("Acide linoléique", -5.0f,
+				new FattyAcid("Acide linoléique", -5.0f,
 				 "CH<sub>3</sub>(CH<sub>2</sub>)<sub>4</sub>(CH=CH-CH<sub>2</sub>)<sub>2</sub>(CH<sub>2</sub>)<sub>6</sub>COOH"),
-				FattyAcid.Create("Acide α-linolénique", -11.0f,
+				new FattyAcid("Acide α-linolénique", -11.0f,
 				 "CH<sub>3</sub>CH<sub>2</sub>(CH=CH-CH<sub>2</sub>)<sub>3</sub>(CH<sub>2</sub>)<sub>6</sub>COOH"),
-				FattyAcid.Create("Acide arachidonique", -49.5f,
+				new FattyAcid("Acide arachidonique", -49.5f,
 				 "CH<sub>3</sub>(CH<sub>2</sub>)<sub>4</sub>(CH=CH-CH<sub>2</sub>)<sub>4</sub>(CH<sub>2</sub>)<sub>2</sub>COOH"),
-				FattyAcid.Create("Acide eicosapentaénoïque", -53.5f,
+				new FattyAcid("Acide eicosapentaénoïque", -53.5f,
 				 "CH<sub>3</sub>CH<sub>2</sub>(CH=CH-CH<sub>2</sub>)<sub>5</sub>(CH<sub>2</sub>)<sub>2</sub>COOH"),
-				FattyAcid.Create("Acide docosahexaénoïque", -44.6f,
+				new FattyAcid("Acide docosahexaénoïque", -44.6f,
 				 "CH<sub>3</sub>CH<sub>2</sub>(CH=CH-CH<sub>2</sub>)<sub>6</sub>CH<sub>2</sub>COOH")
 			};
 			var MH = Chemistry.ElementMasses["H"];
