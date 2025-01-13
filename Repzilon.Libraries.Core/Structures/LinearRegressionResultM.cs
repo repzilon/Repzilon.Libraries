@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -307,10 +307,11 @@ namespace Repzilon.Libraries.Core.Regression
 
 		public RegressionModel<decimal> ChangeModel(MathematicalModel newModel)
 		{
-			return ChangeModel(this.Intercept, this.Slope, this.Correlation, newModel);
+			return ChangeModel(this.Intercept, this.Slope, this.Correlation, newModel, this.MinX, this.MaxX);
 		}
 
-		private static RegressionModel<decimal> ChangeModel(decimal a, decimal b, decimal r, MathematicalModel newModel)
+		private static RegressionModel<decimal> ChangeModel(
+		decimal a, decimal b, decimal r, MathematicalModel newModel, decimal minX, decimal maxX)
 		{
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
 #pragma warning disable CC0019   // Use 'switch'
@@ -327,7 +328,11 @@ namespace Repzilon.Libraries.Core.Regression
 			} else if ((newModel != MathematicalModel.Affine) && (newModel != MathematicalModel.Power)) {
 				throw new ArgumentOutOfRangeException("newModel");
 			}
-			return new RegressionModel<decimal>(na, nb, r, newModel);
+			if ((newModel == MathematicalModel.Logarithmic) || (newModel == MathematicalModel.Power)) {
+				minX = (decimal)RoundOff.Error(Math.Pow(10, (double)minX));
+				maxX = (decimal)RoundOff.Error(Math.Pow(10, (double)maxX));
+			}
+			return new RegressionModel<decimal>(na, nb, r, newModel, minX, maxX);
 #pragma warning restore CC0019   // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}

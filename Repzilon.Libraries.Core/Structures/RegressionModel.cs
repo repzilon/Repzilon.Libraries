@@ -51,18 +51,25 @@ namespace Repzilon.Libraries.Core.Regression
 		/// <summary>Coefficient of correlation</summary>
 		public readonly T R;
 
+		public readonly T MinX;
+
+		public readonly T MaxX;
+
 		public readonly MathematicalModel Model;
 
-		public RegressionModel(T a, T b, T r, MathematicalModel model)
+		public RegressionModel(T a, T b, T r, MathematicalModel model, T minX, T maxX)
 		{
 			A = a;
 			B = b;
 			R = r;
 			Model = model;
+			MinX = minX;
+			MaxX = maxX;
 		}
 
 		#region Clone
-		public RegressionModel(RegressionModel<T> other) : this(other.A, other.B, other.R, other.Model) { }
+		public RegressionModel(RegressionModel<T> source) :
+		this(source.A, source.B, source.R, source.Model, source.MinX, source.MaxX) { }
 
 		public RegressionModel<T> Clone()
 		{
@@ -94,16 +101,20 @@ namespace Repzilon.Libraries.Core.Regression
 
 		public bool Equals(RegressionModel<T> other)
 		{
-			return A.Equals(other.A) && B.Equals(other.B) && R.Equals(other.R) && (Model == other.Model);
+			return A.Equals(other.A) && B.Equals(other.B) && R.Equals(other.R) && (Model == other.Model) &&
+			 MinX.Equals(other.MinX) && MaxX.Equals(other.MaxX);
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked {
+				var magic = -1521134295;
 				var hashCode = (-1053832008 * -1521134295) + A.GetHashCode();
-				hashCode = (hashCode * -1521134295) + B.GetHashCode();
-				hashCode = (hashCode * -1521134295) + R.GetHashCode();
-				return (hashCode * -1521134295) + (int)Model;
+				hashCode = (hashCode * magic) + B.GetHashCode();
+				hashCode = (hashCode * magic) + R.GetHashCode();
+				hashCode = (hashCode * magic) + MinX.GetHashCode();
+				hashCode = (hashCode * magic) + MaxX.GetHashCode();
+				return (hashCode * magic) + (int)Model;
 			}
 		}
 
@@ -290,6 +301,85 @@ namespace Repzilon.Libraries.Core.Regression
 				throw new NotSupportedException();
 			}
 			return ExtraMath.ConvertTo<T>(dblSolution);
+		}
+
+		public T EvaluateDerivative(T x)
+		{
+			var model = this.Model;
+#if !NET20
+			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+#endif
+			var dblB = Convert.ToDouble(B);
+			var dblX = Convert.ToDouble(x);
+
+			if (model == MathematicalModel.Affine) {
+				return this.B;
+			} else if (model == MathematicalModel.Exponential) {
+#if NET20
+				return GenericArithmetic<T>.MultiplyScalars(this.A,
+				 ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) * Math.Log(dblB)));
+#else
+				return mul(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) * Math.Log(dblB)));
+#endif
+			} else if (model == MathematicalModel.Logarithmic) {
+				return ExtraMath.ConvertTo<T>(Convert.ToDouble(A) / (Math.Log(10) * dblX));
+			} else if (model == MathematicalModel.Power) {
+#if NET20
+				return GenericArithmetic<T>.MultiplyScalars(GenericArithmetic<T>.MultiplyScalars(this.A, this.B),
+				 ExtraMath.ConvertTo<T>(Math.Pow(dblX, dblB - 1)));
+#else
+				return mul(mul(this.A, this.B), ExtraMath.ConvertTo<T>(Math.Pow(dblX, dblB - 1)));
+#endif
+			} else {
+				throw new NotSupportedException();
+			}
+		}
+
+		public T EvaluatePrimitive(T x)
+		{
+			var model = this.Model;
+#if !NET20
+			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+#endif
+			double coeff;
+			var dblX = Convert.ToDouble(x);
+			var dblB = Convert.ToDouble(B);
+#if !NET20
+			var add = GenericArithmetic<T>.Adder;
+#endif
+			if (model == MathematicalModel.Affine) {
+#if NET20
+				return GenericArithmetic<T>.MultiplyScalars(x, GenericArithmetic<T>.AddScalars(A,
+				 GenericArithmetic<T>.MultiplyScalars(ExtraMath.ConvertTo<T>(0.5), B, x)));
+#else
+				return mul(x, add(A, mul(mul(ExtraMath.ConvertTo<T>(0.5), B), x)));
+#endif
+			} else if (model == MathematicalModel.Exponential) {
+#if NET20
+				return GenericArithmetic<T>.MultiplyScalars(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) / Math.Log(10)));
+#else
+				return mul(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) / Math.Log(10)));
+#endif
+			} else if (model == MathematicalModel.Logarithmic) {
+				coeff = Convert.ToDouble(this.A) / Math.Log(10);
+#if NET20
+				return GenericArithmetic<T>.MultiplyScalars(x,
+				 ExtraMath.ConvertTo<T>(coeff * Math.Log(dblX) - coeff + dblB));
+#else
+				return mul(x, ExtraMath.ConvertTo<T>(coeff * Math.Log(dblX) - coeff + dblB));
+#endif
+			} else if (model == MathematicalModel.Power) {
+#if NET20
+				coeff = Convert.ToDouble(GenericArithmetic<T>.AddScalars(B, ExtraMath.ConvertTo<T>(1)));
+				return GenericArithmetic<T>.MultiplyScalars(this.A,
+				 ExtraMath.ConvertTo<T>(Math.Pow(dblX, coeff) / coeff));
+#else
+				coeff = Convert.ToDouble(add(B, ExtraMath.ConvertTo<T>(1)));
+				return mul(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblX, coeff) / coeff));
+#endif
+			} else {
+				throw new NotSupportedException();
+			}
 		}
 	}
 }

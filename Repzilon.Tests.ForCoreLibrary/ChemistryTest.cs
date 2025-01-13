@@ -39,6 +39,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
+			Program.OutputHeading("Molar mass of molecules");
 			var karFormulas = new string[]
 			{
 				"Ca(OH)<sub>2</sub>",
@@ -52,21 +53,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				"Na<sub>3</sub>PO<sub>4</sub>•12 H<sub>2</sub>O", "SO<sub>4</sub>", "Na<sub>2</sub>SO<sub>4</sub>"
 			};
 			for (var i = 0; i < karFormulas.Length; i++) {
-				Console.WriteLine("{0,9:n3} {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
-			}
-
-			Program.OutputSizeOf<AminoAcid>();
-			var lstAminoAcids = AminoAcid.AlphaList;
-
-			var dicAminoAcids = new SortedDictionary<string, AminoAcid>();
-			for (var i = 0; i < lstAminoAcids.Count; i++) {
-				dicAminoAcids.Add(lstAminoAcids[i].Name, lstAminoAcids[i]);
-			}
-
-			foreach (var aa in dicAminoAcids.Values) {
-				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
-				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR, aa.Isoelectric(),
-				 Nanable(aa.MolarMass, "f3"), aa.Formula);
+				Console.WriteLine("{0,8:n3} g/mol {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
 			}
 
 			const string kBovineSerumAlbuminPeptides = /*"MKWVTFISLLLLFSSAYSRGVFRR" +*/ @"DTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
@@ -82,6 +69,22 @@ DTEKQIKKQTALVELLKHKPKATEEQLKTVMENFVAFVDKCCAADDKEACFAVEGPKLVV
 STQTALA";
 			Console.WriteLine("Molar mass of BSA (Bovine Serum Albumin) is {0:n3} g/mol", PolypeptideMass(kBovineSerumAlbuminPeptides.ToCharArray()));
 
+			Program.OutputHeading("Amino acids");
+			Program.OutputSizeOf<AminoAcid>();
+			var lstAminoAcids = AminoAcid.AlphaList;
+
+			var dicAminoAcids = new SortedDictionary<string, AminoAcid>();
+			for (var i = 0; i < lstAminoAcids.Count; i++) {
+				dicAminoAcids.Add(lstAminoAcids[i].Name, lstAminoAcids[i]);
+			}
+
+			foreach (var aa in dicAminoAcids.Values) {
+				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
+				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR, aa.Isoelectric(),
+				 Nanable(aa.MolarMass, "f3"), aa.Formula);
+			}
+
+			Program.OutputHeading("Fatty acids");
 			Program.OutputSizeOf<FattyAcid>();
 			var lstFats = new List<FattyAcid>
 			{
@@ -125,7 +128,11 @@ STQTALA";
 				 100.0 * (nH - nC) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)));
 			}
 
+
+			Program.OutputHeading("Biochemistry II ch. 1 pp. 15-16");
+			Console.WriteLine("Double data type");
 			EnzymeSpeedFloat();
+			Console.WriteLine("Decimal data type");
 			EnzymeSpeedDecimal();
 		}
 
@@ -182,8 +189,8 @@ STQTALA";
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, rmdMM, ptdarEH_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, rmdMM, ptdarHW_raw);
 
-			//OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM), rmdMM);
 			OutputRoundedEnzymeKinematic(Enzyme.DirectLinearPlot("mmol/L", A240By30s, ptdarMM), rmdMM);
+			OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM), rmdMM);
 		}
 
 		private static void EnzymeSpeedDecimal()
@@ -245,173 +252,31 @@ STQTALA";
 		{
 			if (withKinematic) {
 				var kinematic = Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints);
-				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4));
+				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4), true);
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
 		}
 
-		private static void OutputEnzymeKinematic<T>(EnzymeKinematic<T> kinematic)
+		private static void OutputEnzymeKinematic<T>(EnzymeKinematic<T> kinematic, bool withNewLine)
 		where T : struct, IComparable, IComparable<T>, IEquatable<T>, IFormattable
 		{
 			var strKinematic = kinematic.ToString("g", CultureInfo.CurrentCulture);
 			if (IsMacOsX()) {
 				strKinematic = strKinematic.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
 			}
-			Console.WriteLine(strKinematic);
+			Console.Write(strKinematic);
+			if (withNewLine) {
+				Console.Write(Environment.NewLine);
+			}
 		}
 
 		private static void OutputRoundedEnzymeKinematic(EnzymeKinematic<double> kinematic,
 		RegressionModel<double> michaelisMenten)
 		{
-			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4));
-
-			bool proleptic = false;
-			var dblLower = proleptic ? 0 : 12.5;
-			var dblUpper = 100.0;
-			var dblarCrossings = FindKinematicCrossings(kinematic, michaelisMenten, dblLower, dblUpper);
-			if (proleptic) {
-				dblLower = michaelisMenten.Solve(0);
-			}
-			var dblTotalArea = AreaBetween(kinematic, michaelisMenten, dblLower, dblUpper, dblarCrossings);
-
-			Console.Write(dblarCrossings.Length);
-			Console.Write(" intersections :");
-			for (int i = 0; i < dblarCrossings.Length; i++) {
-				Console.Write(' ');
-				Console.Write(dblarCrossings[i]);
-			}
-			Console.Write(Environment.NewLine);
-			Console.WriteLine("Aire entre les courbes : {0}", dblTotalArea);
-		}
-
-		private static double AreaBetween(EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
-		double globalLower, double globalUpper, double[] intersections)
-		{
-			if (intersections.Length < 1) { // no crossing, should be pretty rare, but I cannot exclude it
-				return AreaBetween(kinematic, michaelisMenten, globalLower, globalUpper);
-			} else {
-				var cm1 = intersections.Length - 1;
-				var dblTotalArea = AreaBetween(kinematic, michaelisMenten, globalLower, intersections[0]) +
-				 AreaBetween(kinematic, michaelisMenten, intersections[cm1], globalUpper);
-				for (var i = 0; i < cm1; i++) {
-					dblTotalArea += AreaBetween(kinematic, michaelisMenten, intersections[i], intersections[i + 1]);
-				}
-				return dblTotalArea;
-			}
-		}
-
-		private static double AreaBetween(EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
-		double localLower, double localUpper)
-		{
-#if NETFRAMEWORK
-			var dblAreaExp = Integral.DifferenceOfPrimitives(localLower, localUpper,
-			 (Converter<double, double>)(x => { return ExperimentalPrimitive(michaelisMenten, x); }));
-			var dblAreaMdl = Integral.DifferenceOfPrimitives(localLower, localUpper,
-			 (Converter<double, double>)(x => { return TheoricalPrimitive(kinematic, x); }));
-#else
-			var dblAreaExp = Integral.DifferenceOfPrimitives(localLower, localUpper,
-			 x => ExperimentalPrimitive(michaelisMenten, x));
-			var dblAreaMdl = Integral.DifferenceOfPrimitives(localLower, localUpper,
-			 x => TheoricalPrimitive(kinematic, x));
-#endif
-			return Math.Abs(dblAreaExp - dblAreaMdl);
-		}
-
-		private static double[] FindKinematicCrossings(EnzymeKinematic<double> kinematic,
-		RegressionModel<double> michaelisMenten, double lowerBound, double upperBound)
-		{
-			/*const*/ double kZero = 0;
-			/*const*/ double kHalf = 0.5;
-
-			if (lowerBound < kZero) {
-				throw new ArgumentOutOfRangeException("lowerBound", lowerBound,
-				 "A substrate concentration cannot be negative.");
-			} else if (lowerBound >= upperBound) {
-				throw new ArgumentException("Make sure the lower concentration bound is lower than the upper one.");
-			}
-
-			var lstCrossings = new List<double>(3);
-			var km = kinematic.Km.Key;
-			var kmo7 = 1.07 * km;
-			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, km, lowerBound, kmo7, lowerBound, upperBound);
-			var m2 = RoundOff.AreEqual(lowerBound, 0) ? km : lowerBound;
-			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, m2 * kHalf, kZero, m2, lowerBound, upperBound);
-			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, (km + upperBound) * kHalf, kmo7, upperBound, lowerBound, upperBound);
-			lstCrossings.Sort();
-			return lstCrossings.ToArray();
-		}
-
-		private static void AddKinematicCrossing(List<double> destination,
-		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
-		double candidate, double localMin, double localMax, double globalMin, double globalMax)
-		{
-			var x = FindNewtonCrossing(kinematic, michaelisMenten, candidate, localMin, localMax);
-			if ((!Double.IsNaN(x)) && (x >= globalMin) && (x <= globalMax)) {
-				destination.Add(x);
-			}
-		}
-
-		private static double FindNewtonCrossing(EnzymeKinematic<double> kinematic,
-		RegressionModel<double> michaelisMenten, double candidate, double min, double max)
-		{
-			/*const*/ double kNaN = Double.NaN;
-			double fx = kNaN;
-#if DEBUG
-			double dx;
-			int k = 1;
-#endif
-			var dcmTargetDelta = NormalLawTest.FinalTargetDelta();
-			do {
-				fx = ExperimentalMinusTheorical(michaelisMenten, kinematic, candidate);
-#if DEBUG
-				dx = ExperimentalMinusTheoricalDerivative(michaelisMenten, kinematic, candidate);
-				candidate -= fx / dx;
-				k++;
-#else
-				candidate -= fx / ExperimentalMinusTheoricalDerivative(michaelisMenten, kinematic, candidate);
-#endif
-			} while ((candidate > 0) && ((decimal)Math.Abs(fx) > dcmTargetDelta));
-			//        ^ candidate is a concentration in practise, and can only be positive
-#if DEBUG
-			Console.WriteLine("Newton: différence de {0} après {1} itérations", fx, k);
-#endif
-			return (candidate >= min && candidate <= max) ? candidate : kNaN;
-		}
-
-		private static double ExperimentalMinusTheorical(RegressionModel<double> experimental,
-		EnzymeKinematic<double> theorical, double x)
-		{
-			return experimental.Evaluate(x) - Theorical(theorical, x);
-		}
-
-		private static double Theorical(EnzymeKinematic<double> theorical, double x)
-		{
-			return theorical.Vmax.Key * x / (x + theorical.Km.Key);
-		}
-
-		// IMPORTANT : when using the double data type, do not replace the expression with a value literal,
-		// because the compiler converts the literal to a value slightly different from the computed result,
-		// which adversly affects the outcome of Newton method for searching zeroes.
-		private static readonly double OneOfLn10 = 1.0 / Math.Log(10);
-
-		private static double ExperimentalMinusTheoricalDerivative(RegressionModel<double> experimental,
-		EnzymeKinematic<double> theorical, double x)
-		{
-			var km = theorical.Km.Key;
-			return (experimental.A * OneOfLn10 / x) - (theorical.Vmax.Key * km / ((x + km) * (x + km)));
-		}
-
-		private static double ExperimentalPrimitive(RegressionModel<double> experimental, double x)
-		{
-			var coeff = experimental.A * OneOfLn10;
-			return x * (coeff * Math.Log(x) - coeff + experimental.B);
-		}
-
-		private static double TheoricalPrimitive(EnzymeKinematic<double> theorical, double x)
-		{
-			var km = theorical.Km.Key;
-			return theorical.Vmax.Key * (x - km * Math.Log(Math.Abs(x + km)));
-		}
+			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4), false);
+			Console.WriteLine("\t[Δ²={0}]",
+			 EnzymeKinematicExtension.AreaBetween(kinematic, michaelisMenten, false));
+		}		
 	}
 }

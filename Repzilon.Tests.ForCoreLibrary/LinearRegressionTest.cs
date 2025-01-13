@@ -40,7 +40,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(10.00, 10.8),
 				new PointD(12.00, 12.9)
 			);
-			OutputHeading("Double data type");
+			Program.OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<double>>();
@@ -55,14 +55,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointM(10.00m, 10.8m),
 				new PointM(12.00m, 12.9m)
 			);
-			OutputHeading("Decimal data type");
+			Program.OutputHeading("Decimal data type");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<decimal>>();
 			OutputLinearRegression2(dlrp, (decimal)dblTalpha0_025n4, "G18", true, 7, 7.5m);
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 
-			OutputHeading("Revision");
+			Program.OutputHeading("Revision");
 			var lrrRev5 = LinearRegression.Compute(
 				new PointM(0, 0.06m),
 				new PointM(5, 1.25m),
@@ -72,7 +72,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputLinearRegression2(lrrRev5, 3.18245m, "G7", false, 12, 4.154m);
 
-			OutputHeading("Math I Example 38");
+			Program.OutputHeading("Math I Example 38");
 			var lrrM1Ex38 = LinearRegression.Compute(
 				PointD.LogLog(100.0, 0.240),
 				PointD.LogLog(150.0, 0.295),
@@ -85,7 +85,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<RegressionModel<double>>();
 			OutputRegressionModel(rmdMEx38);
 
-			OutputHeading("Math I Exercise");
+			Program.OutputHeading("Math I Exercise");
 			var lrrM1Exer = LinearRegression.Compute(
 				PointD.SemiLogY(8.0, 9858),
 				PointD.SemiLogY(14.0, 9416),
@@ -98,7 +98,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var rmdM1Exer = lrrM1Exer.ChangeModel(MathematicalModel.Exponential);
 			OutputRegressionModel(rmdM1Exer);
 
-			OutputHeading("Biochemistry II ch. 1 pp. 15-16");
+			Program.OutputHeading("Biochemistry II ch. 1 pp. 15-16");
 			var lrrBC2Ch1p15 = LinearRegression.Compute(
 				PointD.LogLog(12.5, 0.037),
 				PointD.LogLog(20, 0.050),
@@ -118,7 +118,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(rmdBC2Ch1p16);
 
-			OutputHeading("Biochemistry II ch. 1 pp. 22-23");
+			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			var rmdBC2Ch1p22V0 = RegressionModel.Compute(
 				new PointD(1.0, 31.25),
 				new PointD(0.4, 18.18),
@@ -141,7 +141,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			);
 			OutputRegressionModel(rmdBC2Ch1p22VIp);
 
-			OutputHeading("Biochemistry II ch. 1 exercise 3");
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 3");
 			var lrrBC2Ch1Ex3 = LinearRegression.Compute(
 				new PointD(1e6, SignificantDigits.Round(1.0 / 1.16, 3, RoundingMode.ToEven)),
 				new PointD(1e5, SignificantDigits.Round(1.0 / 8.46, 3, RoundingMode.ToEven)),
@@ -154,7 +154,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var Km0 = lrrBC2Ch1Ex3.Slope * vmax0;
 			Console.WriteLine("Vmax = {0:g4} nmol/min\tKm = {1:g4} mol/L", vmax0 / 60, Km0);
 
-			OutputHeading("Biochemistry II ch. 1 exercise 4");
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
 			var lrrBC2Ch1Ex4_0 = LinearRegression.Compute(
 				new PointD(100, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
 				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 20, 3, RoundingMode.ToEven)),
@@ -182,7 +182,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ki = 0.02 / ((Km1 / Km0) - 1);
 			Console.WriteLine("Ki = {0:g3} mol/L", ki);
 
-			OutputHeading("Biochemistry II ch. 1 exercise 5");
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 5");
 			var lrrBC2Ch1Ex5_0 = LinearRegression.Compute(
 				new PointD(RoundedInverse("0,010"), RoundedInverse("0,27")),
 				new PointD(RoundedInverse("0,022"), RoundedInverse("0,50")),
@@ -198,7 +198,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(lrrBC2Ch1Ex5_0.ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(lrrBC2Ch1Ex5_1.ChangeModel(MathematicalModel.Affine));
 
-			OutputHeading("Cellular culture II Wound healing");
+			Program.OutputHeading("Cellular culture II Wound healing");
 			var rmdCC2Healing = RegressionModel.Compute(
 				new PointD(0, -0.2779),
 				new PointD(1, 0.2434),
@@ -207,7 +207,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(rmdCC2Healing);
 
 #if !NET20
-			OutputHeading("Molecular biology laboratories");
+			Program.OutputHeading("Molecular biology laboratories");
 			Program.OutputSizeOf<AgaroseRetention>();
 			OutputAgaroseRetention("3B :", 27491, 9416, 6682, 2322, 2024, 564);
 			OutputAgaroseRetention("6A :", 247, 280, 393, 234);
@@ -216,7 +216,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputAgaroseRetention("9  :", 97);
 #endif
 
-			OutputHeading("Factorial (1 to " + MaxFactorial + ")");
+			Program.OutputHeading("Factorial (1 to " + MaxFactorial + ")");
 			var factorialSuite = new List<PointM>(MaxFactorial);
 			for (byte i = 1; i <= MaxFactorial; i++) {
 				var exact = ExtraMath.BigFactorial(i);
@@ -234,6 +234,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Corrected));
 			}
 			Console.WriteLine("28! ≈ {0,39:n0}", ExtraMath.StirlingApproximateFactorial(28.0, StirlingMode.Corrected));
+
+			Program.OutputHeading("German imperialists are out of luck");
+			var rm = RegressionModel.Compute(new PointD(1, 1006), new PointD(2, 47), new PointD(3, 12));
+			Console.WriteLine(rm);
+			Console.WriteLine("The fourth reich would only last {0} years.", rm.Evaluate(4));
 		}
 
 #if !NET20
@@ -348,13 +353,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ciFrCa = new CultureInfo("fr-CA");
 			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
-		}
-
-		private static void OutputHeading(string text)
-		{
-			Console.Write(Environment.NewLine);
-			Console.WriteLine(text);
-			Console.WriteLine(new String('-', text.Length));
 		}
 	}
 }

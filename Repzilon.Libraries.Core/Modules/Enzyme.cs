@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -61,6 +61,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 					throw RetroCompat.NewUndefinedEnumException("representation", representation);
 				}
 			}
+
 			return new EnzymeKinematic<double>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);
 		}
 
@@ -127,24 +128,26 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			}
 
 			// Meaning for s, c and v0 change here
-			s = 0;  // best absolute correlation
+			s = Double.MaxValue;  // smallest area between curves
 			c = -1; // index of regression model having the best correlation
+			EnzymeKinematic<double> ek;
+			EnzymeKinematic<double> ekBest = new EnzymeKinematic<double>(); // empty one
 			for (i = 0; i < 4; i++) {
 				var model = rmdarAll[i].Model;
-				if ((model == MathematicalModel.Affine) || ((i == 0) && (model == MathematicalModel.Logarithmic))) {
-					v0 = Math.Abs(rmdarAll[i].R); // absolute correlation at current index
-					if (v0 > s) {
+				if (((i != 0) && (model == MathematicalModel.Affine)) || ((i == 0) && (model == MathematicalModel.Logarithmic))) {
+					ek = Speed(concentrationUnit, speedUnit, (EnzymeSpeedRepresentation)i, rmdarAll[i]);
+					v0 = EnzymeKinematicExtension.AreaBetween(ek, rmdarAll[0], false);
+					if (v0 < s) {
 						s = v0;
 						c = i;
+						ekBest = ek;
 					}
 				}
 			}
 
-			if (c >= 0) {
-				return Speed(concentrationUnit, speedUnit, (EnzymeSpeedRepresentation)c, rmdarAll[c]);
-			} else {
-				throw new Exception("Unable to transform to a linearized model for computing enzyme kinematics.");
-			}
+			ek = DirectLinearPlot(concentrationUnit, speedUnit, michaelisMentenDataPoints);
+			v0 = EnzymeKinematicExtension.AreaBetween(ek, rmdarAll[0], false);
+			return (c >= 0) && (v0 >= 0) ? ekBest : ek;
 		}
 
 		public static EnzymeKinematic<double> DirectLinearPlot(string concentrationUnit, string speedUnit,
@@ -181,6 +184,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			s  = k % 2 == 1 ? pt.X : 0.5 * (ptdarIntersections[(k / 2) - 1].X + pt.X);
 			Array.Sort(ptdarIntersections, OrderByY);
 			pt = ptdarIntersections[k / 2];
+
 			// 5. Return value
 			return new EnzymeKinematic<double>(k % 2 == 1 ? pt.Y : 0.5 * (ptdarIntersections[(k / 2) - 1].Y + pt.Y),
 			 speedUnit, s /* cannot inline because of the 2nd sorting side effect */, concentrationUnit,

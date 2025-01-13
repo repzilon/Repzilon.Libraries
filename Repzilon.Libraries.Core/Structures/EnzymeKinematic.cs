@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -15,6 +15,7 @@ using System;
 using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
+using Repzilon.Libraries.Core.Regression;
 
 namespace Repzilon.Libraries.Core.Biochemistry
 {
@@ -43,6 +44,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public readonly KeyValuePair<T, string> Km;
 		public readonly T Correlation;
 
+		#region Properties
 		public EnzymeSpeedRepresentation Representation { get; private set; }
 
 		IComparable IComparableEnzymeKinematic.VmaxNumber
@@ -89,6 +91,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			get { return Correlation; }
 		}
+		#endregion
 
 		public EnzymeKinematic(KeyValuePair<T, string> vmax, KeyValuePair<T, string> km, T correlation,
 		EnzymeSpeedRepresentation representation) : this()
@@ -114,6 +117,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			Representation = representation;
 		}
 
+		#region ICloneable members
 		public EnzymeKinematic(EnzymeKinematic<T> source) : this(source.Vmax, source.Km, source.Correlation,
 		source.Representation)
 		{
@@ -130,7 +134,9 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			return this.Clone();
 		}
 #endif
+		#endregion
 
+		#region Equals
 		public bool Equals(EnzymeKinematic<T> other)
 		{
 			var kvpVmax = this.Vmax;
@@ -168,14 +174,15 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public override int GetHashCode()
 		{
 			unchecked {
-				var hashCode = 667060969;
-				hashCode = (hashCode * -1521134295) + Vmax.Key.GetHashCode();
-				hashCode = (hashCode * -1521134295) + Vmax.Value.GetHashCode();
-				hashCode = (hashCode * -1521134295) + Km.Key.GetHashCode();
-				hashCode = (hashCode * -1521134295) + Km.Value.GetHashCode();
-				hashCode = (hashCode * -1521134295) + Correlation.GetHashCode();
-				hashCode = (hashCode * -1521134295) + (int)Representation;
-				return hashCode;
+				var magic = -1521134295;
+				var measure = Vmax;
+				var hashCode = (667060969 * -1521134295) + measure.Key.GetHashCode();
+				hashCode = (hashCode * magic) + measure.Value.GetHashCode();
+				measure = Km;
+				hashCode = (hashCode * magic) + measure.Key.GetHashCode();
+				hashCode = (hashCode * magic) + measure.Value.GetHashCode();
+				hashCode = (hashCode * magic) + Correlation.GetHashCode();
+				return (hashCode * magic) + (int)Representation;
 			}
 		}
 
@@ -188,6 +195,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			return !left.Equals(right);
 		}
+		#endregion
 
 		public override string ToString()
 		{
@@ -215,6 +223,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 
 	public static class EnzymeKinematicExtension
 	{
+		#region Round to precision
 #if NET20
 		public static EnzymeKinematic<float> RoundedToPrecision(EnzymeKinematic<float> self, byte significantDigits)
 #else
@@ -283,7 +292,9 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation,
 			 self.Representation);
 		}
+		#endregion
 
+		#region Round to decimals
 #if NET20
 		public static EnzymeKinematic<float> RoundedToDecimals(EnzymeKinematic<float> self, byte decimals)
 #else
@@ -352,5 +363,134 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			 Math.Round(kvpKm.Key, forConcentration, MidpointRounding.ToEven), kvpKm.Value, self.Correlation,
 			 self.Representation);
 		}
+		#endregion
+
+		#region Area between curves
+		private const double TargetDelta = 1.4e-17;
+
+#if NET20
+		public static double AreaBetween(EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten, bool proleptic)
+#else
+		public static double AreaBetween(this EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten, bool proleptic)
+#endif
+		{
+			var dblLower = proleptic ? 0 : michaelisMenten.MinX;
+			var dblUpper = michaelisMenten.MaxX;
+			var dblarCrossings = FindKinematicCrossings(kinematic, michaelisMenten, dblLower, dblUpper);
+			if (proleptic) {
+				dblLower = michaelisMenten.Solve(0);
+			}
+			return AreaBetween(kinematic, michaelisMenten, dblLower, dblUpper, dblarCrossings);
+		}
+
+		private static double AreaBetween(EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
+		double globalLower, double globalUpper, double[] intersections)
+		{
+			if (intersections.Length < 1) { // no crossing, should be pretty rare, but I cannot exclude it
+				return AreaBetween(kinematic, michaelisMenten, globalLower, globalUpper);
+			} else {
+				var cm1 = intersections.Length - 1;
+				var dblTotalArea = AreaBetween(kinematic, michaelisMenten, globalLower, intersections[0]) +
+				 AreaBetween(kinematic, michaelisMenten, intersections[cm1], globalUpper);
+				for (var i = 0; i < cm1; i++) {
+					dblTotalArea += AreaBetween(kinematic, michaelisMenten, intersections[i], intersections[i + 1]);
+				}
+				return dblTotalArea;
+			}
+		}
+
+		private static double AreaBetween(EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
+		double localLower, double localUpper)
+		{
+			var dblAreaExp = michaelisMenten.EvaluatePrimitive(localUpper) - michaelisMenten.EvaluatePrimitive(localLower);
+			var dblAreaMdl = TheoricalPrimitive(kinematic, localUpper) - TheoricalPrimitive(kinematic, localLower);
+			return Math.Abs(dblAreaExp - dblAreaMdl);
+		}
+
+		private static double[] FindKinematicCrossings(EnzymeKinematic<double> kinematic,
+		RegressionModel<double> michaelisMenten, double lowerBound, double upperBound)
+		{
+			/*const*/ double kZero = 0;
+			/*const*/ double kHalf = 0.5;
+
+			if (lowerBound < kZero) {
+				throw new ArgumentOutOfRangeException("lowerBound", lowerBound,
+				 "A substrate concentration cannot be negative.");
+			} else if (lowerBound >= upperBound) {
+				throw new ArgumentException("Make sure the lower concentration bound is lower than the upper one.");
+			}
+
+			var lstCrossings = new List<double>(3);
+			var km = kinematic.Km.Key;
+			var kmo7 = 1.07 * km;
+			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, km, lowerBound, kmo7, lowerBound, upperBound);
+			var m2 = RoundOff.AreEqual(lowerBound, 0) ? km : lowerBound;
+			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, m2 * kHalf, kZero, m2, lowerBound, upperBound);
+			AddKinematicCrossing(lstCrossings, kinematic, michaelisMenten, (km + upperBound) * kHalf, kmo7, upperBound, lowerBound, upperBound);
+			lstCrossings.Sort();
+			return lstCrossings.ToArray();
+		}
+
+		private static void AddKinematicCrossing(List<double> destination,
+		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten,
+		double candidate, double localMin, double localMax, double globalMin, double globalMax)
+		{
+			var x = FindNewtonCrossing(kinematic, michaelisMenten, candidate, localMin, localMax);
+			if ((!Double.IsNaN(x)) && (x >= globalMin) && (x <= globalMax)) {
+				destination.Add(x);
+			}
+		}
+
+		private static double FindNewtonCrossing(EnzymeKinematic<double> kinematic,
+		RegressionModel<double> michaelisMenten, double candidate, double min, double max)
+		{
+			/*const*/ double kNaN = Double.NaN;
+			double fx = kNaN;
+			int k = 1;
+#if DEBUG
+			double dx;
+#endif
+			var dblTargetDelta = TargetDelta;
+			do {
+				fx = ExperimentalMinusTheorical(michaelisMenten, kinematic, candidate);
+#if DEBUG
+				dx = ExperimentalMinusTheoricalDerivative(michaelisMenten, kinematic, candidate);
+				candidate -= fx / dx;
+#else
+				candidate -= fx / ExperimentalMinusTheoricalDerivative(michaelisMenten, kinematic, candidate);
+#endif
+				k++;
+			} while ((k <= 100) && (candidate > 0) && (Math.Abs(fx) > dblTargetDelta));
+			//        ^ candidate is a concentration in practise, and can only be positive
+#if DEBUG && !NETSTANDARD1_1
+			Console.WriteLine("Newton: différence de {0} après {1} itérations", fx, k);
+#endif
+			return (candidate >= min && candidate <= max) ? candidate : kNaN;
+		}
+
+		private static double ExperimentalMinusTheorical(RegressionModel<double> experimental,
+		EnzymeKinematic<double> theorical, double x)
+		{
+			return experimental.Evaluate(x) - Theorical(theorical, x);
+		}
+
+		private static double Theorical(EnzymeKinematic<double> theorical, double x)
+		{
+			return theorical.Vmax.Key * x / (x + theorical.Km.Key);
+		}
+
+		private static double ExperimentalMinusTheoricalDerivative(RegressionModel<double> experimental,
+		EnzymeKinematic<double> theorical, double x)
+		{
+			var km = theorical.Km.Key;
+			return experimental.EvaluateDerivative(x) - (theorical.Vmax.Key * km / ((x + km) * (x + km)));
+		}
+
+		private static double TheoricalPrimitive(EnzymeKinematic<double> theorical, double x)
+		{
+			var km = theorical.Km.Key;
+			return theorical.Vmax.Key * (x - km * Math.Log(Math.Abs(x + km)));
+		}
+		#endregion
 	}
 }

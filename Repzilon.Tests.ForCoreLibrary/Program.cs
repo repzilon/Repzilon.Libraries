@@ -176,5 +176,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 			return dotnetType.Name.Replace("`1", (typarGTA.Length == 1) ? "<" + typarGTA[0].Name + ">" : "<T>");
 		}
+
+		internal static void OutputHeading(string text)
+		{
+			Console.Write(Environment.NewLine);
+			Console.WriteLine(text);
+			Console.WriteLine(new String('-', text.Length));
+		}
 	}
 }
