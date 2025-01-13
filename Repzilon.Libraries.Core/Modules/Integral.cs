@@ -37,14 +37,14 @@ namespace Repzilon.Libraries.Core
 #if DEBUG
 				var value = forEach(k);
 #if NET20
-				sum = GenericArithmetic<T>.AddScalars(sum, value);
+				sum = Arithmetic<T>.AddScalars(sum, value);
 #else
-				sum = GenericArithmetic<T>.Adder(sum, value);
+				sum = Arithmetic<T>.Adder(sum, value);
 #endif
 #elif !NET20
-				sum = GenericArithmetic<T>.Adder(sum, forEach(k));
+				sum = Arithmetic<T>.Adder(sum, forEach(k));
 #else
-				sum = GenericArithmetic<T>.AddScalars(sum, forEach(k));
+				sum = Arithmetic<T>.AddScalars(sum, forEach(k));
 #endif
 			}
 			return sum;
@@ -62,9 +62,9 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("expression");
 			}
 #if NET20
-			return GenericArithmetic<T>.SubtractScalars(expression(b), expression(a));
+			return Arithmetic<T>.SubtractScalars(expression(b), expression(a));
 #else
-			return GenericArithmetic<T>.Sub(expression(b), expression(a));
+			return Arithmetic<T>.Sub(expression(b), expression(a));
 #endif
 		}
 

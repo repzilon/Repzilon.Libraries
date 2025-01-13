@@ -273,7 +273,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (checkBiases) {
 				// ReSharper disable once InvokeAsExtensionMethod
 				Console.WriteLine("\trelative bias: {0:p}",
-				 GenericArithmetic<TStorage>.SubtractScalars(b, ExtraMath.ConvertTo<TStorage>(1)));
+				 Arithmetic<TStorage>.SubtractScalars(b, ExtraMath.ConvertTo<TStorage>(1)));
 			} else {
 				Console.Write(Environment.NewLine);
 			}
@@ -283,9 +283,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu),
 			 lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
 			Console.WriteLine("b = {0}", new ErrorMargin<TStorage>(b,
-			 GenericArithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
+			 Arithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
 			Console.WriteLine("a = {0}", new ErrorMargin<TStorage>(lrp.Intercept,
-			 GenericArithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
+			 Arithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
 			if (xForYExtrapolation.HasValue) {
 				var x = xForYExtrapolation.Value;
 				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, true);
@@ -311,7 +311,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 x.ToString(numberFormat, culture),
 			 repeated ? "Infinity" : "1\t",
 			 new ErrorMargin<T>(lrp.InterpolateY(x),
-			 GenericArithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
+			 Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
 		}
 
 		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
@@ -321,7 +321,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
 			 yc.ToString(numberFormat, culture),
 			 k.ToString(numberFormat, culture),
-			 new ErrorMargin<T>(Divide(GenericArithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), GenericArithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
+			 new ErrorMargin<T>(Divide(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
 		}
 
 		private static T Divide<T>(T dividend, T divisor) where T : struct, IConvertible

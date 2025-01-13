@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2024 René Rhéaume
+// Copyright (C) 2022-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -204,16 +204,16 @@ namespace Repzilon.Libraries.Core.Vectors
 
 			while (angle.CompareTo(zero) < 0) {
 #if NET20
-				angle = GenericArithmetic<T>.AddScalars(angle, turn);
+				angle = Arithmetic<T>.AddScalars(angle, turn);
 #else
-				angle = GenericArithmetic<T>.Adder(angle, turn);
+				angle = Arithmetic<T>.Adder(angle, turn);
 #endif
 			}
 			while (angle.CompareTo(turn) > 0) {
 #if NET20
-				angle = GenericArithmetic<T>.SubtractScalars(angle, turn);
+				angle = Arithmetic<T>.SubtractScalars(angle, turn);
 #else
-				angle = GenericArithmetic<T>.Sub(angle, turn);
+				angle = Arithmetic<T>.Sub(angle, turn);
 #endif
 			}
 
@@ -415,9 +415,9 @@ namespace Repzilon.Libraries.Core.Vectors
 			var u = x.Unit;
 			if (u == y.Unit) {
 #if NET20
-				return new Angle<T>(GenericArithmetic<T>.AddScalars(x.Value, y.Value), u);
+				return new Angle<T>(Arithmetic<T>.AddScalars(x.Value, y.Value), u);
 #else
-				return new Angle<T>(GenericArithmetic<T>.Adder(x.Value, y.Value), u);
+				return new Angle<T>(Arithmetic<T>.Adder(x.Value, y.Value), u);
 #endif
 			} else {
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
@@ -445,9 +445,9 @@ namespace Repzilon.Libraries.Core.Vectors
 			var u = x.Unit;
 			if (u == y.Unit) {
 #if NET20
-				return new Angle<T>(GenericArithmetic<T>.SubtractScalars(x.Value, y.Value), u);
+				return new Angle<T>(Arithmetic<T>.SubtractScalars(x.Value, y.Value), u);
 #else
-				return new Angle<T>(GenericArithmetic<T>.Sub(x.Value, y.Value), u);
+				return new Angle<T>(Arithmetic<T>.Sub(x.Value, y.Value), u);
 #endif
 			} else {
 				var dx = x.ConvertTo<decimal>(AngleUnit.Radian, false);
@@ -487,7 +487,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		where TAngle : struct, IFormattable, IEquatable<TAngle>, IComparable<TAngle>
 		where TInteger : struct, IEquatable<TInteger>
 		{
-			var mult = GenericArithmetic<TAngle>.BuildMultiplier<TInteger>();
+			var mult = Arithmetic<TAngle>.BuildMultiplier<TInteger>();
 			return new Angle<TAngle>(mult(multiplier, angle.Value), angle.Unit);
 		}
 

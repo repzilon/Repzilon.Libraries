@@ -147,17 +147,17 @@ namespace Repzilon.Libraries.Core
 		public static AffineBinomial<T> operator +(AffineBinomial<T> binomial, T scalar)
 		{
 			return new AffineBinomial<T>(binomial.Slope, binomial.Variable,
-			 GenericArithmetic<T>.AddScalars(binomial.Constant, scalar));
+			 Arithmetic<T>.AddScalars(binomial.Constant, scalar));
 		}
 
 		public static AffineBinomial<T> operator +(AffineBinomial<T> first, AffineBinomial<T> second)
 		{
 			if (second.Variable == first.Variable) {
 #if NET20
-				return new AffineBinomial<T>(GenericArithmetic<T>.AddScalars(first.Slope, second.Slope),
-				 first.Variable, GenericArithmetic<T>.AddScalars(first.Constant, second.Constant));
+				return new AffineBinomial<T>(Arithmetic<T>.AddScalars(first.Slope, second.Slope),
+				 first.Variable, Arithmetic<T>.AddScalars(first.Constant, second.Constant));
 #else
-				var add = GenericArithmetic<T>.Adder;
+				var add = Arithmetic<T>.Adder;
 				return new AffineBinomial<T>(add(first.Slope, second.Slope), first.Variable,
 				 add(first.Constant, second.Constant));
 #endif
@@ -171,10 +171,10 @@ namespace Repzilon.Libraries.Core
 		{
 			if (second.Variable == first.Variable) {
 #if NET20
-				return new AffineBinomial<T>(GenericArithmetic<T>.SubtractScalars(first.Slope, second.Slope),
-				 first.Variable, GenericArithmetic<T>.SubtractScalars(first.Constant, second.Constant));
+				return new AffineBinomial<T>(Arithmetic<T>.SubtractScalars(first.Slope, second.Slope),
+				 first.Variable, Arithmetic<T>.SubtractScalars(first.Constant, second.Constant));
 #else
-				var sub = GenericArithmetic<T>.Sub;
+				var sub = Arithmetic<T>.Sub;
 				return new AffineBinomial<T>(sub(first.Slope, second.Slope), first.Variable,
 				 sub(first.Constant, second.Constant));
 #endif
@@ -187,16 +187,16 @@ namespace Repzilon.Libraries.Core
 		public static AffineBinomial<T> operator -(AffineBinomial<T> binomial, T scalar)
 		{
 			return new AffineBinomial<T>(binomial.Slope, binomial.Variable,
-			 GenericArithmetic<T>.SubtractScalars(binomial.Constant, scalar));
+			 Arithmetic<T>.SubtractScalars(binomial.Constant, scalar));
 		}
 
 		public static AffineBinomial<T> operator *(AffineBinomial<T> binomial, T scalar)
 		{
 #if NET20
-			return new AffineBinomial<T>(GenericArithmetic<T>.MultiplyScalars(binomial.Slope, scalar),
-			 binomial.Variable, GenericArithmetic<T>.MultiplyScalars(binomial.Constant, scalar));
+			return new AffineBinomial<T>(Arithmetic<T>.MultiplyScalars(binomial.Slope, scalar),
+			 binomial.Variable, Arithmetic<T>.MultiplyScalars(binomial.Constant, scalar));
 #else
-			var mul = GenericArithmetic<T>.MulT;
+			var mul = Arithmetic<T>.MulT;
 			return new AffineBinomial<T>(mul(binomial.Slope, scalar), binomial.Variable, mul(binomial.Constant, scalar));
 #endif
 		}

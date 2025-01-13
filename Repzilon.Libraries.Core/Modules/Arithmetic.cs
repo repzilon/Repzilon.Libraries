@@ -1,5 +1,5 @@
 ﻿//
-//  GenericArithmetic.cs
+//  Arithmetic.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
@@ -18,8 +18,7 @@ using System.Linq.Expressions;
 
 namespace Repzilon.Libraries.Core
 {
-	// TODO : Rename GenericArithmetic<T> to Arithmetic<T>
-	public static class GenericArithmetic<T>
+	public static class Arithmetic<T>
 	where T : struct, IFormattable, IEquatable<T>
 	{
 #if !NET20

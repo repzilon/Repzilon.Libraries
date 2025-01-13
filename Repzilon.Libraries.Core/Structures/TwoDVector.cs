@@ -287,10 +287,10 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static TwoDVector<T> operator +(TwoDVector<T> u, TwoDVector<T> v)
 		{
 #if NET20
-			return new TwoDVector<T>(GenericArithmetic<T>.AddScalars(u.X, v.X),
-			 GenericArithmetic<T>.AddScalars(u.Y, v.Y));
+			return new TwoDVector<T>(Arithmetic<T>.AddScalars(u.X, v.X),
+			 Arithmetic<T>.AddScalars(u.Y, v.Y));
 #else
-			var addi = GenericArithmetic<T>.Adder;
+			var addi = Arithmetic<T>.Adder;
 			return new TwoDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y));
 #endif
 		}
@@ -298,10 +298,10 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static TwoDVector<T> operator -(TwoDVector<T> u, TwoDVector<T> v)
 		{
 #if NET20
-			return new TwoDVector<T>(GenericArithmetic<T>.SubtractScalars(u.X, v.X),
-			 GenericArithmetic<T>.SubtractScalars(u.Y, v.Y));
+			return new TwoDVector<T>(Arithmetic<T>.SubtractScalars(u.X, v.X),
+			 Arithmetic<T>.SubtractScalars(u.Y, v.Y));
 #else
-			var sub = GenericArithmetic<T>.Sub;
+			var sub = Arithmetic<T>.Sub;
 			return new TwoDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y));
 #endif
 		}
@@ -349,11 +349,11 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static T Dot(TwoDVector<T> u, TwoDVector<T> v)
 		{
 #if NET20
-			return GenericArithmetic<T>.AddScalars(
-			 GenericArithmetic<T>.MultiplyScalars(u.X, v.X), GenericArithmetic<T>.MultiplyScalars(u.Y, v.Y));
+			return Arithmetic<T>.AddScalars(
+			 Arithmetic<T>.MultiplyScalars(u.X, v.X), Arithmetic<T>.MultiplyScalars(u.Y, v.Y));
 #else
-			var mult = GenericArithmetic<T>.MulT;
-			return GenericArithmetic<T>.Adder(mult(u.X, v.X), mult(u.Y, v.Y));
+			var mult = Arithmetic<T>.MulT;
+			return Arithmetic<T>.Adder(mult(u.X, v.X), mult(u.Y, v.Y));
 #endif
 		}
 
@@ -373,12 +373,12 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 #if NET20
 			return new ThreeDVector<T>(default(T), default(T),
-			 GenericArithmetic<T>.SubtractScalars(
-			 GenericArithmetic<T>.MultiplyScalars(u.X, v.Y), GenericArithmetic<T>.MultiplyScalars(u.Y, v.X)));
+			 Arithmetic<T>.SubtractScalars(
+			 Arithmetic<T>.MultiplyScalars(u.X, v.Y), Arithmetic<T>.MultiplyScalars(u.Y, v.X)));
 #else
-			var mult = GenericArithmetic<T>.MulT;
+			var mult = Arithmetic<T>.MulT;
 			return new ThreeDVector<T>(default(T), default(T),
-			 GenericArithmetic<T>.Sub(mult(u.X, v.Y), mult(u.Y, v.X)));
+			 Arithmetic<T>.Sub(mult(u.X, v.Y), mult(u.Y, v.X)));
 #endif
 		}
 
@@ -395,7 +395,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
 		{
-			var mult = GenericArithmetic<T>.BuildMultiplier<TScalar>();
+			var mult = Arithmetic<T>.BuildMultiplier<TScalar>();
 			return new TwoDVector<T>(mult(k, v.X), mult(k, v.Y));
 		}
 #endif

@@ -237,9 +237,9 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static PolarVector<T> operator *(T k, PolarVector<T> v)
 		{
 #if NET20
-			return new PolarVector<T>(GenericArithmetic<T>.MultiplyScalars(v.Norm, k), v.Angle);
+			return new PolarVector<T>(Arithmetic<T>.MultiplyScalars(v.Norm, k), v.Angle);
 #else
-			return new PolarVector<T>(GenericArithmetic<T>.MulT(v.Norm, k), v.Angle);
+			return new PolarVector<T>(Arithmetic<T>.MulT(v.Norm, k), v.Angle);
 #endif
 		}
 

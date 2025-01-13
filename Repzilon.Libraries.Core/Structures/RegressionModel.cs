@@ -87,9 +87,9 @@ namespace Repzilon.Libraries.Core.Regression
 		public T Determination()
 		{
 #if NET20
-			return GenericArithmetic<T>.MultiplyScalars(R, R);
+			return Arithmetic<T>.MultiplyScalars(R, R);
 #else
-			return GenericArithmetic<T>.MulT(R, R);
+			return Arithmetic<T>.MulT(R, R);
 #endif
 		}
 
@@ -224,15 +224,15 @@ namespace Repzilon.Libraries.Core.Regression
 			var model = this.Model;
 			var b = this.B;
 #if !NET20
-			var mul = GenericArithmetic<T>.MulT;
+			var mul = Arithmetic<T>.MulT;
 #endif
 			var dblX = Convert.ToDouble(x);
 #if !NET20
-			var add = GenericArithmetic<T>.Adder;
+			var add = Arithmetic<T>.Adder;
 #endif
 			if (model == MathematicalModel.Affine) {
 #if NET20
-				return GenericArithmetic<T>.AddScalars(A, GenericArithmetic<T>.MultiplyScalars(b, x));
+				return Arithmetic<T>.AddScalars(A, Arithmetic<T>.MultiplyScalars(b, x));
 #else
 				return add(A, mul(b, x));
 #endif
@@ -244,8 +244,8 @@ namespace Repzilon.Libraries.Core.Regression
 #endif
 			} else if (model == MathematicalModel.Logarithmic) {
 #if NET20
-				return GenericArithmetic<T>.AddScalars(
-				 GenericArithmetic<T>.MultiplyScalars(A, ExtraMath.ConvertTo<T>(Math.Log10(dblX))), b);
+				return Arithmetic<T>.AddScalars(
+				 Arithmetic<T>.MultiplyScalars(A, ExtraMath.ConvertTo<T>(Math.Log10(dblX))), b);
 #else
 				return add(mul(A, ExtraMath.ConvertTo<T>(Math.Log10(dblX))), b);
 #endif
@@ -263,7 +263,7 @@ namespace Repzilon.Libraries.Core.Regression
 #if NET20
 		private T RisingConcaveUpwards(double radix, double exponent)
 		{
-			return GenericArithmetic<T>.MultiplyScalars(A, ExtraMath.ConvertTo<T>(Math.Pow(radix, exponent)));
+			return Arithmetic<T>.MultiplyScalars(A, ExtraMath.ConvertTo<T>(Math.Pow(radix, exponent)));
 		}
 #else
 		private T RisingConcaveUpwards(Func<T, T, T> mul, double radix, double exponent)
@@ -283,17 +283,17 @@ namespace Repzilon.Libraries.Core.Regression
 			double dblSolution;
 			if (model == MathematicalModel.Affine) {
 #if NET20
-				dblSolution = Convert.ToDouble(GenericArithmetic<T>.SubtractScalars(y, A)) / dblB;
+				dblSolution = Convert.ToDouble(Arithmetic<T>.SubtractScalars(y, A)) / dblB;
 #else
-				dblSolution = Convert.ToDouble(GenericArithmetic<T>.Sub(y, A)) / dblB;
+				dblSolution = Convert.ToDouble(Arithmetic<T>.Sub(y, A)) / dblB;
 #endif
 			} else if (model == MathematicalModel.Exponential) {
 				dblSolution = Math.Log(yDivA, dblB);
 			} else if (model == MathematicalModel.Logarithmic) {
 #if NET20
-				dblSolution = Math.Pow(10, Convert.ToDouble(GenericArithmetic<T>.SubtractScalars(y, B)) / Convert.ToDouble(A));
+				dblSolution = Math.Pow(10, Convert.ToDouble(Arithmetic<T>.SubtractScalars(y, B)) / Convert.ToDouble(A));
 #else
-				dblSolution = Math.Pow(10, Convert.ToDouble(GenericArithmetic<T>.Sub(y, B)) / Convert.ToDouble(A));
+				dblSolution = Math.Pow(10, Convert.ToDouble(Arithmetic<T>.Sub(y, B)) / Convert.ToDouble(A));
 #endif
 			} else if (model == MathematicalModel.Power) {
 				dblSolution = Math.Pow(yDivA, 1.0 / dblB);
@@ -307,7 +307,7 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			var model = this.Model;
 #if !NET20
-			var mul = GenericArithmetic<T>.MulT;
+			var mul = Arithmetic<T>.MulT;
 #endif
 			var dblB = Convert.ToDouble(B);
 			var dblX = Convert.ToDouble(x);
@@ -316,7 +316,7 @@ namespace Repzilon.Libraries.Core.Regression
 				return this.B;
 			} else if (model == MathematicalModel.Exponential) {
 #if NET20
-				return GenericArithmetic<T>.MultiplyScalars(this.A,
+				return Arithmetic<T>.MultiplyScalars(this.A,
 				 ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) * Math.Log(dblB)));
 #else
 				return mul(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) * Math.Log(dblB)));
@@ -325,7 +325,7 @@ namespace Repzilon.Libraries.Core.Regression
 				return ExtraMath.ConvertTo<T>(Convert.ToDouble(A) / (Math.Log(10) * dblX));
 			} else if (model == MathematicalModel.Power) {
 #if NET20
-				return GenericArithmetic<T>.MultiplyScalars(GenericArithmetic<T>.MultiplyScalars(this.A, this.B),
+				return Arithmetic<T>.MultiplyScalars(Arithmetic<T>.MultiplyScalars(this.A, this.B),
 				 ExtraMath.ConvertTo<T>(Math.Pow(dblX, dblB - 1)));
 #else
 				return mul(mul(this.A, this.B), ExtraMath.ConvertTo<T>(Math.Pow(dblX, dblB - 1)));
@@ -339,39 +339,39 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			var model = this.Model;
 #if !NET20
-			var mul = GenericArithmetic<T>.MulT;
+			var mul = Arithmetic<T>.MulT;
 #endif
 			double coeff;
 			var dblX = Convert.ToDouble(x);
 			var dblB = Convert.ToDouble(B);
 #if !NET20
-			var add = GenericArithmetic<T>.Adder;
+			var add = Arithmetic<T>.Adder;
 #endif
 			if (model == MathematicalModel.Affine) {
 #if NET20
-				return GenericArithmetic<T>.MultiplyScalars(x, GenericArithmetic<T>.AddScalars(A,
-				 GenericArithmetic<T>.MultiplyScalars(ExtraMath.ConvertTo<T>(0.5), B, x)));
+				return Arithmetic<T>.MultiplyScalars(x, Arithmetic<T>.AddScalars(A,
+				 Arithmetic<T>.MultiplyScalars(ExtraMath.ConvertTo<T>(0.5), B, x)));
 #else
 				return mul(x, add(A, mul(mul(ExtraMath.ConvertTo<T>(0.5), B), x)));
 #endif
 			} else if (model == MathematicalModel.Exponential) {
 #if NET20
-				return GenericArithmetic<T>.MultiplyScalars(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) / Math.Log(10)));
+				return Arithmetic<T>.MultiplyScalars(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) / Math.Log(10)));
 #else
 				return mul(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblB, dblX) / Math.Log(10)));
 #endif
 			} else if (model == MathematicalModel.Logarithmic) {
 				coeff = Convert.ToDouble(this.A) / Math.Log(10);
 #if NET20
-				return GenericArithmetic<T>.MultiplyScalars(x,
+				return Arithmetic<T>.MultiplyScalars(x,
 				 ExtraMath.ConvertTo<T>(coeff * Math.Log(dblX) - coeff + dblB));
 #else
 				return mul(x, ExtraMath.ConvertTo<T>(coeff * Math.Log(dblX) - coeff + dblB));
 #endif
 			} else if (model == MathematicalModel.Power) {
 #if NET20
-				coeff = Convert.ToDouble(GenericArithmetic<T>.AddScalars(B, ExtraMath.ConvertTo<T>(1)));
-				return GenericArithmetic<T>.MultiplyScalars(this.A,
+				coeff = Convert.ToDouble(Arithmetic<T>.AddScalars(B, ExtraMath.ConvertTo<T>(1)));
+				return Arithmetic<T>.MultiplyScalars(this.A,
 				 ExtraMath.ConvertTo<T>(Math.Pow(dblX, coeff) / coeff));
 #else
 				coeff = Convert.ToDouble(add(B, ExtraMath.ConvertTo<T>(1)));

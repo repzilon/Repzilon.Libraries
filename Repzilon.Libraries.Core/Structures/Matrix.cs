@@ -322,9 +322,9 @@ namespace Repzilon.Libraries.Core
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
 #if NET20
-						m[i, j] = GenericArithmetic<T>.AddScalars(a[i, j], b[i, j]);
+						m[i, j] = Arithmetic<T>.AddScalars(a[i, j], b[i, j]);
 #else
-						m[i, j] = GenericArithmetic<T>.Adder(a[i, j], b[i, j]);
+						m[i, j] = Arithmetic<T>.Adder(a[i, j], b[i, j]);
 #endif
 					}
 				}
@@ -344,9 +344,9 @@ namespace Repzilon.Libraries.Core
 				for (byte i = 0; i < a.Lines; i++) {
 					for (byte j = 0; j < ac; j++) {
 #if NET20
-						m[i, j] = GenericArithmetic<T>.SubtractScalars(a[i, j], b[i, j]);
+						m[i, j] = Arithmetic<T>.SubtractScalars(a[i, j], b[i, j]);
 #else
-						m[i, j] = GenericArithmetic<T>.Sub(a[i, j], b[i, j]);
+						m[i, j] = Arithmetic<T>.Sub(a[i, j], b[i, j]);
 #endif
 					}
 				}
@@ -361,7 +361,7 @@ namespace Repzilon.Libraries.Core
 #if !NET20
 		private static Func<TScalar, T, T> BuildMultiplier<TScalar>() where TScalar : struct
 		{
-			return GenericArithmetic<T>.BuildMultiplier<TScalar>();
+			return Arithmetic<T>.BuildMultiplier<TScalar>();
 		}
 
 		public static Matrix<T> operator *(T k, Matrix<T> m)
@@ -389,10 +389,10 @@ namespace Repzilon.Libraries.Core
 						var sumOfCell = default(T);
 						for (byte x = 0; x < b.Lines; x++) {
 #if NET20
-							sumOfCell = GenericArithmetic<T>.AddScalars(sumOfCell,
-							 GenericArithmetic<T>.MultiplyScalars(a[i, x], b[x, j]));
+							sumOfCell = Arithmetic<T>.AddScalars(sumOfCell,
+							 Arithmetic<T>.MultiplyScalars(a[i, x], b[x, j]));
 #else
-							sumOfCell = GenericArithmetic<T>.Adder(sumOfCell, mult(a[i, x], b[x, j]));
+							sumOfCell = Arithmetic<T>.Adder(sumOfCell, mult(a[i, x], b[x, j]));
 #endif
 						}
 						c[i, j] = sumOfCell;
@@ -519,7 +519,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var coefficients = new T?[augmented.Lines];
 #if NET20
-			coefficients[c] = GenericArithmetic<T>.MultiplyScalars(augmented[l, c], minusOne);
+			coefficients[c] = Arithmetic<T>.MultiplyScalars(augmented[l, c], minusOne);
 #else
 			if (mult == null) {
 				throw new ArgumentNullException("mult");
@@ -563,10 +563,10 @@ namespace Repzilon.Libraries.Core
 					if (coefficients[i].HasValue) {
 						for (j = 0; j < this.Columns; j++) {
 #if NET20
-							accumulator[j] = GenericArithmetic<T>.AddScalars(accumulator[j],
-							 GenericArithmetic<T>.MultiplyScalars(coefficients[i].Value, this[i, j]));
+							accumulator[j] = Arithmetic<T>.AddScalars(accumulator[j],
+							 Arithmetic<T>.MultiplyScalars(coefficients[i].Value, this[i, j]));
 #else
-							accumulator[j] = GenericArithmetic<T>.Adder(accumulator[j],
+							accumulator[j] = Arithmetic<T>.Adder(accumulator[j],
 							 mult(coefficients[i].Value, this[i, j]));
 #endif
 						}
@@ -618,12 +618,12 @@ namespace Repzilon.Libraries.Core
 					return m_values[0, 0];
 				} else if (l == 2) { // we already know it is a square matrix
 #if NET20
-					return GenericArithmetic<T>.SubtractScalars(
-					 GenericArithmetic<T>.MultiplyScalars(m_values[0, 0], m_values[1, 1]),
-					 GenericArithmetic<T>.MultiplyScalars(m_values[0, 1], m_values[1, 0]));
+					return Arithmetic<T>.SubtractScalars(
+					 Arithmetic<T>.MultiplyScalars(m_values[0, 0], m_values[1, 1]),
+					 Arithmetic<T>.MultiplyScalars(m_values[0, 1], m_values[1, 0]));
 #else
 					mult = BuildMultiplier<T>();
-					return GenericArithmetic<T>.Sub(mult(m_values[0, 0], m_values[1, 1]),
+					return Arithmetic<T>.Sub(mult(m_values[0, 0], m_values[1, 1]),
 					 mult(m_values[0, 1], m_values[1, 0]));
 #endif
 				} else {
@@ -652,10 +652,10 @@ namespace Repzilon.Libraries.Core
 						// Accumulate determinant value at column
 						// det += m_values[0, j] * (-1)^(i+j) * det(subMatrix)
 #if NET20
-						det = GenericArithmetic<T>.AddScalars(det, GenericArithmetic<T>.MultiplyScalars(
+						det = Arithmetic<T>.AddScalars(det, Arithmetic<T>.MultiplyScalars(
 						 m_values[0, j], j % 2 == 0 ? plusOne : minusOne, subMatrix.Determinant()));
 #else
-						det = GenericArithmetic<T>.Adder(det,
+						det = Arithmetic<T>.Adder(det,
 						 mult(mult(m_values[0, j], j % 2 == 0 ? plusOne : minusOne), subMatrix.Determinant()));
 #endif
 					}
@@ -978,7 +978,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		where TScalar : struct
 		{
-			var mult = GenericArithmetic<T>.BuildMultiplier<TScalar>();
+			var mult = Arithmetic<T>.BuildMultiplier<TScalar>();
 			var mm = new Matrix<T>(m.Lines, m.Columns);
 			for (byte i = 0; i < m.Lines; i++) {
 				for (byte j = 0; j < m.Columns; j++) {

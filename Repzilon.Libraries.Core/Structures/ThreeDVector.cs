@@ -187,10 +187,10 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static ThreeDVector<T> operator +(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 #if NET20
-			return new ThreeDVector<T>(GenericArithmetic<T>.AddScalars(u.X, v.X),
-			 GenericArithmetic<T>.AddScalars(u.Y, v.Y), GenericArithmetic<T>.AddScalars(u.Z, v.Z));
+			return new ThreeDVector<T>(Arithmetic<T>.AddScalars(u.X, v.X),
+			 Arithmetic<T>.AddScalars(u.Y, v.Y), Arithmetic<T>.AddScalars(u.Z, v.Z));
 #else
-			var addi = GenericArithmetic<T>.Adder;
+			var addi = Arithmetic<T>.Adder;
 			return new ThreeDVector<T>(addi(u.X, v.X), addi(u.Y, v.Y), addi(u.Z, v.Z));
 #endif
 		}
@@ -198,10 +198,10 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static ThreeDVector<T> operator -(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 #if NET20
-			return new ThreeDVector<T>(GenericArithmetic<T>.SubtractScalars(u.X, v.X),
-			 GenericArithmetic<T>.SubtractScalars(u.Y, v.Y), GenericArithmetic<T>.SubtractScalars(u.Z, v.Z));
+			return new ThreeDVector<T>(Arithmetic<T>.SubtractScalars(u.X, v.X),
+			 Arithmetic<T>.SubtractScalars(u.Y, v.Y), Arithmetic<T>.SubtractScalars(u.Z, v.Z));
 #else
-			var sub = GenericArithmetic<T>.Sub;
+			var sub = Arithmetic<T>.Sub;
 			return new ThreeDVector<T>(sub(u.X, v.X), sub(u.Y, v.Y), sub(u.Z, v.Z));
 #endif
 		}
@@ -226,12 +226,12 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static T Dot(ThreeDVector<T> u, ThreeDVector<T> v)
 		{
 #if NET20
-			return GenericArithmetic<T>.AddScalars(GenericArithmetic<T>.AddScalars(
-			 GenericArithmetic<T>.MultiplyScalars(u.X, v.X), GenericArithmetic<T>.MultiplyScalars(u.Y, v.Y)),
-			 GenericArithmetic<T>.MultiplyScalars(u.Z, v.Z));
+			return Arithmetic<T>.AddScalars(Arithmetic<T>.AddScalars(
+			 Arithmetic<T>.MultiplyScalars(u.X, v.X), Arithmetic<T>.MultiplyScalars(u.Y, v.Y)),
+			 Arithmetic<T>.MultiplyScalars(u.Z, v.Z));
 #else
-			var mult = GenericArithmetic<T>.MulT;
-			var addi = GenericArithmetic<T>.Adder;
+			var mult = Arithmetic<T>.MulT;
+			var addi = Arithmetic<T>.Adder;
 			return addi(addi(mult(u.X, v.X), mult(u.Y, v.Y)), mult(u.Z, v.Z));
 #endif
 		}
@@ -240,12 +240,12 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 #if NET20
 			return new ThreeDVector<T>(
-			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.Y, v.Z), GenericArithmetic<T>.MultiplyScalars(u.Z, v.Y)),
-			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.Z, v.X), GenericArithmetic<T>.MultiplyScalars(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
-			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.X, v.Y), GenericArithmetic<T>.MultiplyScalars(u.Y, v.X)));
+			 Arithmetic<T>.SubtractScalars(Arithmetic<T>.MultiplyScalars(u.Y, v.Z), Arithmetic<T>.MultiplyScalars(u.Z, v.Y)),
+			 Arithmetic<T>.SubtractScalars(Arithmetic<T>.MultiplyScalars(u.Z, v.X), Arithmetic<T>.MultiplyScalars(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
+			 Arithmetic<T>.SubtractScalars(Arithmetic<T>.MultiplyScalars(u.X, v.Y), Arithmetic<T>.MultiplyScalars(u.Y, v.X)));
 #else
-			var mult = GenericArithmetic<T>.MulT;
-			var sub  = GenericArithmetic<T>.Sub;
+			var mult = Arithmetic<T>.MulT;
+			var sub  = Arithmetic<T>.Sub;
 			return new ThreeDVector<T>(
 			 sub(mult(u.Y, v.Z), mult(u.Z, v.Y)),
 			 sub(mult(u.Z, v.X), mult(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
@@ -288,7 +288,7 @@ namespace Repzilon.Libraries.Core.Vectors
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		where TScalar : struct, IEquatable<TScalar>
 		{
-			var mult = GenericArithmetic<T>.BuildMultiplier<TScalar>();
+			var mult = Arithmetic<T>.BuildMultiplier<TScalar>();
 			return new ThreeDVector<T>(mult(k, v.X), mult(k, v.Y), mult(k, v.Z));
 		}
 #endif
