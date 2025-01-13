@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2024 René Rhéaume
+// Copyright (C) 2022-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -352,7 +352,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			return GenericArithmetic<T>.AddScalars(
 			 GenericArithmetic<T>.MultiplyScalars(u.X, v.X), GenericArithmetic<T>.MultiplyScalars(u.Y, v.Y));
 #else
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mult = GenericArithmetic<T>.MulT;
 			return GenericArithmetic<T>.Adder(mult(u.X, v.X), mult(u.Y, v.Y));
 #endif
 		}
@@ -376,7 +376,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			 GenericArithmetic<T>.SubtractScalars(
 			 GenericArithmetic<T>.MultiplyScalars(u.X, v.Y), GenericArithmetic<T>.MultiplyScalars(u.Y, v.X)));
 #else
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mult = GenericArithmetic<T>.MulT;
 			return new ThreeDVector<T>(default(T), default(T),
 			 GenericArithmetic<T>.Sub(mult(u.X, v.Y), mult(u.Y, v.X)));
 #endif

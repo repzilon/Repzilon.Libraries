@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -239,7 +239,7 @@ namespace Repzilon.Libraries.Core.Vectors
 #if NET20
 			return new PolarVector<T>(GenericArithmetic<T>.MultiplyScalars(v.Norm, k), v.Angle);
 #else
-			return new PolarVector<T>(GenericArithmetic<T>.BuildMultiplier<T>()(v.Norm, k), v.Angle);
+			return new PolarVector<T>(GenericArithmetic<T>.MulT(v.Norm, k), v.Angle);
 #endif
 		}
 

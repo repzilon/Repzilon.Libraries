@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -55,7 +55,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			 GenericArithmetic<T>.MultiplyScalars(norm1, norm2),
 			 ExtraMath.ConvertTo<T>((HalfCircle - between).Cos())), ExtraMath.ConvertTo<T>(-2)));
 #else
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mult = GenericArithmetic<T>.MulT;
 			var addi = GenericArithmetic<T>.Adder;
 			var squaredResult = addi(addi(mult(norm1, norm1), mult(norm2, norm2)),
 			 mult(mult(mult(norm1, norm2), (HalfCircle - between).Cos().ConvertTo<T>()), (-2).ConvertTo<T>()));
@@ -82,7 +82,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			return GenericArithmetic<T>.MultiplyScalars(GenericArithmetic<T>.MultiplyScalars(norm1, norm2),
 			 ExtraMath.ConvertTo<T>(between.Cos()));
 #else
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mult = GenericArithmetic<T>.MulT;
 			return mult(mult(norm1, norm2), between.Cos().ConvertTo<T>());
 #endif
 		}

@@ -89,7 +89,7 @@ namespace Repzilon.Libraries.Core.Regression
 #if NET20
 			return GenericArithmetic<T>.MultiplyScalars(R, R);
 #else
-			return GenericArithmetic<T>.BuildMultiplier<T>()(R, R);
+			return GenericArithmetic<T>.MulT(R, R);
 #endif
 		}
 
@@ -224,7 +224,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var model = this.Model;
 			var b = this.B;
 #if !NET20
-			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mul = GenericArithmetic<T>.MulT;
 #endif
 			var dblX = Convert.ToDouble(x);
 #if !NET20
@@ -307,7 +307,7 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			var model = this.Model;
 #if !NET20
-			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mul = GenericArithmetic<T>.MulT;
 #endif
 			var dblB = Convert.ToDouble(B);
 			var dblX = Convert.ToDouble(x);
@@ -339,7 +339,7 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			var model = this.Model;
 #if !NET20
-			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mul = GenericArithmetic<T>.MulT;
 #endif
 			double coeff;
 			var dblX = Convert.ToDouble(x);

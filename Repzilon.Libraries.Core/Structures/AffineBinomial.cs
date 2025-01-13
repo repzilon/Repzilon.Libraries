@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the 
 // Mozilla Public License, v. 2.0. If a copy of the MPL was 
@@ -196,7 +196,7 @@ namespace Repzilon.Libraries.Core
 			return new AffineBinomial<T>(GenericArithmetic<T>.MultiplyScalars(binomial.Slope, scalar),
 			 binomial.Variable, GenericArithmetic<T>.MultiplyScalars(binomial.Constant, scalar));
 #else
-			var mul = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mul = GenericArithmetic<T>.MulT;
 			return new AffineBinomial<T>(mul(binomial.Slope, scalar), binomial.Variable, mul(binomial.Constant, scalar));
 #endif
 		}

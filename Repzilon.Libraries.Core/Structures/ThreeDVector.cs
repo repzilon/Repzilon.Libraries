@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -230,7 +230,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			 GenericArithmetic<T>.MultiplyScalars(u.X, v.X), GenericArithmetic<T>.MultiplyScalars(u.Y, v.Y)),
 			 GenericArithmetic<T>.MultiplyScalars(u.Z, v.Z));
 #else
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mult = GenericArithmetic<T>.MulT;
 			var addi = GenericArithmetic<T>.Adder;
 			return addi(addi(mult(u.X, v.X), mult(u.Y, v.Y)), mult(u.Z, v.Z));
 #endif
@@ -244,7 +244,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.Z, v.X), GenericArithmetic<T>.MultiplyScalars(u.X, v.Z)), // - (u1v3 - u3v1) = u3v1 - u1v3 [negation no longer needed]
 			 GenericArithmetic<T>.SubtractScalars(GenericArithmetic<T>.MultiplyScalars(u.X, v.Y), GenericArithmetic<T>.MultiplyScalars(u.Y, v.X)));
 #else
-			var mult = GenericArithmetic<T>.BuildMultiplier<T>();
+			var mult = GenericArithmetic<T>.MulT;
 			var sub  = GenericArithmetic<T>.Sub;
 			return new ThreeDVector<T>(
 			 sub(mult(u.Y, v.Z), mult(u.Z, v.Y)),

@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -18,10 +18,15 @@ using System.Linq.Expressions;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Rename GenericArithmetic<T> to Arithmetic<T>
 	public static class GenericArithmetic<T>
 	where T : struct, IFormattable, IEquatable<T>
 	{
 #if !NET20
+		internal static readonly Func<T, T, T> Adder = BuildAdder();
+		internal static readonly Func<T, T, T> Sub = BuildSubtractor();
+		internal static readonly Func<T, T, T> MulT = BuildMultiplier<T>();
+
 		internal static Func<TScalar, T, T> BuildMultiplier<TScalar>()
 		where TScalar : struct
 		{
@@ -34,10 +39,7 @@ namespace Repzilon.Libraries.Core
 
 			// Compile it
 			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
-		}
-
-		internal static readonly Func<T, T, T> Adder = BuildAdder();
-		internal static readonly Func<T, T, T> Sub = BuildSubtractor();
+		}	
 
 		private static Func<T, T, T> BuildAdder()
 		{
@@ -85,7 +87,7 @@ namespace Repzilon.Libraries.Core
 #if NET20
 			return ExtraMath.ConvertTo<T>(Convert.ToDouble(a) * Convert.ToDouble(b));
 #else
-			return BuildMultiplier<T>()(a, b);
+			return MulT(a, b);
 #endif
 		}
 
@@ -94,7 +96,7 @@ namespace Repzilon.Libraries.Core
 #if NET20
 			return ExtraMath.ConvertTo<T>(Convert.ToDouble(a) * Convert.ToDouble(b) * Convert.ToDouble(c));
 #else
-			var mult = BuildMultiplier<T>();
+			var mult = MulT;
 			return mult(mult(a, b), c);
 #endif
 		}
