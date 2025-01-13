@@ -35,6 +35,29 @@ namespace Repzilon.Libraries.Core
 			Y = y;
 		}
 
+		#region IL-size saving constructor overloads
+		public PointD(int x, double y) : this()
+		{
+			X = x;
+			Y = y;
+		}
+
+		public PointD(float x, float y) : this()
+		{
+			X = x;
+			X = RoundOff.UpsizeError(this.X);
+			Y = y;
+			Y = RoundOff.UpsizeError(this.Y);
+		}
+
+		public PointD(int x, float y) : this()
+		{
+			X = x;
+			Y = y;
+			Y = RoundOff.UpsizeError(this.Y);
+		}
+		#endregion
+
 		#region ICloneable members
 		public PointD(PointD source) : this(source.X, source.Y) { }
 

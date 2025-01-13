@@ -35,6 +35,12 @@ namespace Repzilon.Libraries.Core
 			Y = y;
 		}
 
+		public PointM(int x, decimal y) : this()
+		{
+			X = x;
+			Y = y;
+		}
+
 		#region ICloneable members
 		public PointM(PointM source) : this(source.X, source.Y) { }
 

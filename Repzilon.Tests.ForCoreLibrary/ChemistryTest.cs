@@ -170,12 +170,12 @@ STQTALA";
 			var ptdarHW_raw   = new PointD[kPoints];
 
 			for (int i = 0; i < kPoints; i++) {
-				var v0 = Math.Round(karVelocity[i], 3); // stupid C# compiler
+				var v0 = karVelocity[i];
 				ptdarMM[i]     = new PointD(karSubstrate[i], v0);
 				ptdarLB_raw[i] = new PointD(1.0 / karSubstrate[i], 1.0 / v0);
 				ptdarLB_table[i] = new PointD(Math.Round(karSubstrateInv[i], 2), Math.Round(karVelocityInv[i], 1));
 				ptdarEH_raw[i]   = new PointD(v0 / karSubstrate[i], v0);
-				ptdarEH_table[i] = new PointD(Math.Round(karVbyS[i], 5), v0);
+				ptdarEH_table[i] = new PointD(karVbyS[i], v0);
 				ptdarHW_raw[i]   = new PointD(karSubstrate[i], karSubstrate[i] / v0);
 			}
 
@@ -275,7 +275,7 @@ STQTALA";
 		RegressionModel<double> michaelisMenten)
 		{
 			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4), false);
-			Console.WriteLine("\t[Δ²={0}]",
+			Console.WriteLine("\t[{0}={1}]", IsMacOsX() ? "Δ²" : "A",
 			 EnzymeKinematicExtension.AreaBetween(kinematic, michaelisMenten, false));
 		}		
 	}

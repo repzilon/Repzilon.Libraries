@@ -33,12 +33,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("t{0} = {1}", 6 - 2, dblTalpha0_025n4);
 
 			var lrp = LinearRegression.Compute(
-				new PointD(2.00, 2.1),
-				new PointD(4.00, 4.4),
-				new PointD(6.00, 6.5),
-				new PointD(8.00, 8.6),
-				new PointD(10.00, 10.8),
-				new PointD(12.00, 12.9)
+				new PointD(2, 2.1f),
+				new PointD(4, 4.4f),
+				new PointD(6, 6.5f),
+				new PointD(8, 8.6f),
+				new PointD(10, 10.8f),
+				new PointD(12, 12.9f)
 			);
 			Program.OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
@@ -48,12 +48,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			// x can also be 7 or 8, and y can also be 7.5
 
 			var dlrp = LinearRegression.Compute(
-				new PointM(2.00m, 2.1m),
-				new PointM(4.00m, 4.4m),
-				new PointM(6.00m, 6.5m),
-				new PointM(8.00m, 8.6m),
-				new PointM(10.00m, 10.8m),
-				new PointM(12.00m, 12.9m)
+				new PointM(2, 2.1m),
+				new PointM(4, 4.4m),
+				new PointM(6, 6.5m),
+				new PointM(8, 8.6m),
+				new PointM(10, 10.8m),
+				new PointM(12, 12.9m)
 			);
 			Program.OutputHeading("Decimal data type");
 			Program.OutputSizeOf<PointM>();
@@ -110,34 +110,34 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(rmdBC2Ch1p15);
 
 			var rmdBC2Ch1p16 = RegressionModel.Compute(
-				new PointD(12.5, 0.037),
-				new PointD(20, 0.050),
-				new PointD(25, 0.055),
-				new PointD(50, 0.073),
-				new PointD(100, 0.091)
+				new PointD(12.5f, 0.037f),
+				new PointD(20, 0.050f),
+				new PointD(25, 0.055f),
+				new PointD(50, 0.073f),
+				new PointD(100, 0.091f)
 			);
 			OutputRegressionModel(rmdBC2Ch1p16);
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			var rmdBC2Ch1p22V0 = RegressionModel.Compute(
-				new PointD(1.0, 31.25),
-				new PointD(0.4, 18.18),
-				new PointD(0.2, 13.89),
-				new PointD(0.1, 11.11)
+				new PointD(1.0f, 31.25f),
+				new PointD(0.4f, 18.18f),
+				new PointD(0.2f, 13.89f),
+				new PointD(0.1f, 11.11f)
 			);
 			OutputRegressionModel(rmdBC2Ch1p22V0);
 			var rmdBC2Ch1p22VI = RegressionModel.Compute(
-				new PointD(1.0, 47.62),
-				new PointD(0.4, 24.39),
-				new PointD(0.2, 16.95),
-				new PointD(0.1, 12.99)
+				new PointD(1.0f, 47.62f),
+				new PointD(0.4f, 24.39f),
+				new PointD(0.2f, 16.95f),
+				new PointD(0.1f, 12.99f)
 			);
 			OutputRegressionModel(rmdBC2Ch1p22VI);
 			var rmdBC2Ch1p22VIp = RegressionModel.Compute(
-				new PointD(1.0, 47.62),
-				new PointD(0.4, 26.32),
-				new PointD(0.2, 20),
-				new PointD(0.1, 16.39)
+				new PointD(1.0f, 47.62f),
+				new PointD(0.4f, 26.32f),
+				new PointD(0.2f, 20f),
+				new PointD(0.1f, 16.39f)
 			);
 			OutputRegressionModel(rmdBC2Ch1p22VIp);
 
@@ -200,9 +200,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Cellular culture II Wound healing");
 			var rmdCC2Healing = RegressionModel.Compute(
-				new PointD(0, -0.2779),
-				new PointD(1, 0.2434),
-				new PointD(10, 1.1257)
+				new PointD(0, -0.2779f),
+				new PointD(1, 0.2434f),
+				new PointD(10, 1.1257f)
 			);
 			OutputRegressionModel(rmdCC2Healing);
 

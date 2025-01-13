@@ -28,6 +28,11 @@ namespace Repzilon.Libraries.Core
 			return Math.Round(value, 15 - 2, MidpointRounding.ToEven);
 		}
 
+		public static double UpsizeError(double formerSingle)
+		{
+			return Math.Round(formerSingle, 15 - 2 - 5, MidpointRounding.ToEven);
+		}
+
 		public static decimal Error(decimal value)
 		{
 			var x = Math.Round(value, 25, MidpointRounding.ToEven);
