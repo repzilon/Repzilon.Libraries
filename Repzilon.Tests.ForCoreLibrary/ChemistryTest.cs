@@ -39,6 +39,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
+			var blnMacOsX = IsMacOsX();
+
 			Program.OutputHeading("Molar mass of molecules");
 			var karFormulas = new string[] {
 				"Ca(OH)<sub>2</sub>",
@@ -52,7 +54,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				"Na<sub>3</sub>PO<sub>4</sub>•12 H<sub>2</sub>O", "SO<sub>4</sub>", "Na<sub>2</sub>SO<sub>4</sub>"
 			};
 			for (var i = 0; i < karFormulas.Length; i++) {
-				Console.WriteLine("{0,8:n3} g/mol {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
+				Console.WriteLine("{0,8:n3} g/mol {1}",
+				 Chemistry.MolarMass(karFormulas[i]), PrettyFormula(blnMacOsX, karFormulas[i]));
 			}
 
 			const string kBovineSerumAlbuminPeptides = /*"MKWVTFISLLLLFSSAYSRGVFRR" +*/
@@ -81,7 +84,7 @@ STQTALA";
 			foreach (var aa in dicAminoAcids.Values) {
 				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
 				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR, aa.Isoelectric(),
-				 Nanable(aa.MolarMass, "f3"), aa.Formula);
+				 Nanable(aa.MolarMass, "f3"), PrettyFormula(blnMacOsX, aa.Formula));
 			}
 
 			Program.OutputHeading("Fatty acids");
@@ -132,6 +135,11 @@ STQTALA";
 			EnzymeSpeedFloat();
 			Console.WriteLine("Decimal data type");
 			EnzymeSpeedDecimal();
+		}
+
+		private static string PrettyFormula(bool unicodeTerminal, string formula)
+		{
+			return unicodeTerminal ? formula.Replace("<sub>2</sub>", "₂").Replace("<sub>3</sub>", "₃").Replace("<sub>4</sub>", "₄") : formula;
 		}
 
 		private static float PolypeptideMass(char[] peptideSequenceLetters)
