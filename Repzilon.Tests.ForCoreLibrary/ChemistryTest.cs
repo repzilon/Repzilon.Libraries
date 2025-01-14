@@ -40,8 +40,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 			Program.OutputHeading("Molar mass of molecules");
-			var karFormulas = new string[]
-			{
+			var karFormulas = new string[] {
 				"Ca(OH)<sub>2</sub>",
 				"KH<sub>2</sub>PO<sub>4</sub>", "K<sub>2</sub>HPO<sub>4</sub>",
 				"C<sub>6</sub>H<sub>5</sub>COOH", "HOC<sub>6</sub>H<sub>4</sub>NO<sub>2</sub>",
@@ -56,7 +55,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.WriteLine("{0,8:n3} g/mol {1}", Chemistry.MolarMass(karFormulas[i]), karFormulas[i]);
 			}
 
-			const string kBovineSerumAlbuminPeptides = /*"MKWVTFISLLLLFSSAYSRGVFRR" +*/ @"DTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
+			const string kBovineSerumAlbuminPeptides = /*"MKWVTFISLLLLFSSAYSRGVFRR" +*/
+@"DTHKSEIAHRFKDLGEEHFKGLVLIAFSQYLQQCPF
 DEHVKLVNELTEFAKTCVADESHAGCEKSLHTLFGDELCKVASLRETYGDMADCCEKQEP
 ERNECFLSHKDDSPDLPKLKPDPNTLCDEFKADEKKFWGKYLYEIARRHPYFYAPELLYY
 ANKYNGVFQECCQAEDKGACLLPKIETMREKVLASSARQRLRCASIQKFGERALKAWSVA
@@ -67,7 +67,8 @@ LGEYGFQNALIVRYTRKVPQVSTPTLVEVSRSLGKVGTRCCTKPESERMPCTEDYLSLIL
 NRLCVLHEKTPVSEKVTKCCTESLVNRRPCFSALTPDETYVPKAFDEKLFTFHADICTLP
 DTEKQIKKQTALVELLKHKPKATEEQLKTVMENFVAFVDKCCAADDKEACFAVEGPKLVV
 STQTALA";
-			Console.WriteLine("Molar mass of BSA (Bovine Serum Albumin) is {0:n3} g/mol", PolypeptideMass(kBovineSerumAlbuminPeptides.ToCharArray()));
+			Console.WriteLine("Molar mass of BSA (Bovine Serum Albumin) is {0:n3} g/mol",
+			 PolypeptideMass(kBovineSerumAlbuminPeptides.ToCharArray()));
 
 			Program.OutputHeading("Amino acids");
 			Program.OutputSizeOf<AminoAcid>();
@@ -77,7 +78,6 @@ STQTALA";
 			for (var i = 0; i < lstAminoAcids.Count; i++) {
 				dicAminoAcids.Add(lstAminoAcids[i].Name, lstAminoAcids[i]);
 			}
-
 			foreach (var aa in dicAminoAcids.Values) {
 				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
 				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR, aa.Isoelectric(),
@@ -86,8 +86,7 @@ STQTALA";
 
 			Program.OutputHeading("Fatty acids");
 			Program.OutputSizeOf<FattyAcid>();
-			var lstFats = new List<FattyAcid>
-			{
+			var lstFats = new List<FattyAcid> {
 				new FattyAcid("Acide butyrique", -7.9f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>2</sub>COOH"),
 				new FattyAcid("Acide caproïque", -3.5f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>4</sub>COOH"),
 				new FattyAcid("Acide caprique", 31.6f, "CH<sub>3</sub>(CH<sub>2</sub>)<sub>8</sub>COOH"),
@@ -127,7 +126,6 @@ STQTALA";
 				 100.0 * nC / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
 				 100.0 * (nH - nC) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)));
 			}
-
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 15-16");
 			Console.WriteLine("Double data type");

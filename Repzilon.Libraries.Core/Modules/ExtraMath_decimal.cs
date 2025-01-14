@@ -17,6 +17,7 @@ using System;
 
 namespace Repzilon.Libraries.Core
 {
+	// TODO : Use the decimal math functions everywhere decimal type is involved
 	partial class ExtraMath
 	{
 		#region Code from raminrahimzada

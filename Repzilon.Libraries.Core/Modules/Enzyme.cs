@@ -24,6 +24,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private static readonly double TwoOnLn10 = 2.0 / Math.Log(10);
 		private static readonly double FourOnLn10 = 4.0 / Math.Log(10);
 
+		#region Speed method
 		public static EnzymeKinematic<double> Speed(string concentrationUnit, string speedUnit,
 		EnzymeSpeedRepresentation representation, params PointD[] dataPoints)
 		{
@@ -200,5 +201,6 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			return Math.Sign(a.Y - b.Y);
 		}
+		#endregion
 	}
 }
