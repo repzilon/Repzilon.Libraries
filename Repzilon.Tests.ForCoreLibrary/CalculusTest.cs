@@ -12,6 +12,9 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+#if !NET20 && !NET35
+using System.Numerics;
+#endif
 using Repzilon.Libraries.Core;
 
 namespace Repzilon.Tests.ForCoreLibrary
@@ -40,7 +43,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Console.WriteLine("Factorielles");
 			Console.WriteLine("20! vaut {0}", ExtraMath.Factorial(20));
-			for (byte i = 21; i <= 27; i++) {
+			byte i;
+			for (i = 21; i <= 27; i++) {
 				Console.WriteLine("{0}! vaut {1}", i, ExtraMath.BigFactorial(i));
 			}
 
@@ -66,6 +70,35 @@ namespace Repzilon.Tests.ForCoreLibrary
 			TestMathAnalog("Sinh", MathFunction.Hyperbolic, Math.Sinh, ExtraMath.Sinh);
 			TestMathAnalog("Cosh", MathFunction.Hyperbolic, Math.Cosh, ExtraMath.Cosh);
 			TestMathAnalog("Tanh", MathFunction.Hyperbolic, Math.Tanh, ExtraMath.Tanh);
+
+			try {
+				for (i = 0; i <= 254; i++) {
+					Fibonacci(i);
+				}
+			} catch (OverflowException) {
+				Console.Error.WriteLine("Fibonacci failed for n=" + i);
+			} finally {
+				Console.WriteLine("F({0})={1}", i - 1, Fibonacci((byte)(i - 1)));
+			}
+
+			try {
+				for (i = 0; i <= 254; i++) {
+					FibonacciDec(i);
+				}
+			} catch (OverflowException) {
+				Console.Error.WriteLine("Fibonacci failed for n=" + i);
+			} finally {
+				Console.WriteLine("F({0})={1}", i - 1, FibonacciDec((byte)(i - 1)));
+			}
+
+#if !NET20 && !NET35
+			Console.WriteLine("F({0})={1}", 255, FibonacciBig(255));
+			Console.WriteLine("F({0})={1}", 65535, FibonacciBig(65535));
+			DateTime dtmStart = DateTime.UtcNow;
+			var x = FibonacciBig(240000);
+			TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("F({0})={1} in {2}", 240000, x, tsElapsed);
+#endif
 		}
 
 		#region Summation test
@@ -221,5 +254,53 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Assert.AreEqual(dResult, 100000m);
 		}// */
 		#endregion
+
+
+		private static long Fibonacci(byte n)
+		{
+			long a = 0;
+			long b = 1;
+			long tmp;
+
+			while (n-- > 0) {
+				checked { tmp = a + b; }
+				a = b;
+				b = tmp;
+			}
+
+			return a;
+		}
+
+		private static decimal FibonacciDec(byte n)
+		{
+			decimal a = 0;
+			decimal b = 1;
+			decimal tmp;
+
+			while (n-- > 0) {
+				tmp = a + b;
+				a = b;
+				b = tmp; 
+			}
+
+			return a;
+		}
+
+#if !NET20 && !NET35
+		private static BigInteger FibonacciBig(uint n)
+		{
+			BigInteger a = 0;
+			BigInteger b = 1;
+			BigInteger tmp;
+
+			while (n-- > 0) {
+				tmp = a + b;
+				a = b;
+				b = tmp;
+			}
+
+			return a;
+		}
+#endif
 	}
 }
