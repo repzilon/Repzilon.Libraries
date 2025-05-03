@@ -202,5 +202,88 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			return Math.Sign(a.Y - b.Y);
 		}
 		#endregion
+
+		#region Compare method
+		public static Inhibition<double> Compare(EnzymeKinematic<double> original,
+		EnzymeKinematic<double> inhibited)
+		{
+			return Compare(original, inhibited, Double.NaN);
+		}
+
+		public static Inhibition<double> Compare(EnzymeKinematic<double> original,
+		EnzymeKinematic<double> inhibited, double inhibitorConcentration)
+		{
+			var intVmaxDiff = ApproximateRelativeDifferenceSign(original.Vmax.Key, inhibited.Vmax.Key);
+			var intKmDiff = ApproximateRelativeDifferenceSign(original.Km.Key, inhibited.Km.Key);
+			double dblKi = 0;
+
+			if ((intVmaxDiff == 0) && (intKmDiff == 0)) {
+				return new Inhibition<double>(InhibitionKind.Absent, dblKi, "");
+			} else if ((intKmDiff > 0) && (intVmaxDiff == 0)) {
+				if (inhibitorConcentration > 0) {
+					dblKi = inhibitorConcentration / ((inhibited.Km.Key / original.Km.Key) - 1);
+				}
+				return new Inhibition<double>(InhibitionKind.Competitive, dblKi, inhibited.Km.Value);
+			} else if ((intVmaxDiff < 0) && (intKmDiff < 0)) {
+				return new Inhibition<double>(InhibitionKind.Uncompetitive, dblKi, "");
+			} else if ((intKmDiff == 0) && (intVmaxDiff < 0)) {
+				if (inhibitorConcentration > 0) {
+					dblKi = (inhibited.Vmax.Key * inhibitorConcentration) / (original.Vmax.Key - inhibited.Vmax.Key);
+				}
+				return new Inhibition<double>(InhibitionKind.NonCompetitive, dblKi, inhibited.Vmax.Value);
+			} else if ((intKmDiff != 0) && (intVmaxDiff < 0)) {
+				return new Inhibition<double>(InhibitionKind.Mixed, dblKi, "");
+			} else {
+				throw new NotSupportedException();
+			}
+		}
+
+		private static int ApproximateRelativeDifferenceSign(double original, double inhibited)
+		{
+			// FIXME : Have something less hardcoded than -8 and 8
+			var dblRelativeDiff = RoundOff.Error(100 * (inhibited - original) / original);
+			return (dblRelativeDiff > -8) && (dblRelativeDiff < 8) ? 0 : Math.Sign(dblRelativeDiff);
+		}
+
+		public static Inhibition<decimal> Compare(EnzymeKinematic<decimal> original,
+		EnzymeKinematic<decimal> inhibited)
+		{
+			return Compare(original, inhibited, 0);
+		}
+
+		public static Inhibition<decimal> Compare(EnzymeKinematic<decimal> original,
+		EnzymeKinematic<decimal> inhibited, decimal inhibitorConcentration)
+		{
+			var intVmaxDiff = ApproximateRelativeDifferenceSign(original.Vmax.Key, inhibited.Vmax.Key);
+			var intKmDiff = ApproximateRelativeDifferenceSign(original.Km.Key, inhibited.Km.Key);
+			decimal dcmKi = 0;
+
+			if ((intVmaxDiff == 0) && (intKmDiff == 0)) {
+				return new Inhibition<decimal>(InhibitionKind.Absent, dcmKi, "");
+			} else if ((intKmDiff > 0) && (intVmaxDiff == 0)) {
+				if (inhibitorConcentration > 0) {
+					dcmKi = inhibitorConcentration / ((inhibited.Km.Key / original.Km.Key) - 1);
+				}
+				return new Inhibition<decimal>(InhibitionKind.Competitive, dcmKi, inhibited.Km.Value);
+			} else if ((intVmaxDiff < 0) && (intKmDiff < 0)) {
+				return new Inhibition<decimal>(InhibitionKind.Uncompetitive, dcmKi, "");
+			} else if ((intKmDiff == 0) && (intVmaxDiff < 0)) {
+				if (inhibitorConcentration > 0) {
+					dcmKi = (inhibited.Vmax.Key * inhibitorConcentration) / (original.Vmax.Key - inhibited.Vmax.Key);
+				}
+				return new Inhibition<decimal>(InhibitionKind.NonCompetitive, dcmKi, inhibited.Vmax.Value);
+			} else if ((intKmDiff != 0) && (intVmaxDiff < 0)) {
+				return new Inhibition<decimal>(InhibitionKind.Mixed, dcmKi, "");
+			} else {
+				throw new NotSupportedException();
+			}
+		}
+
+		private static int ApproximateRelativeDifferenceSign(decimal original, decimal inhibited)
+		{
+			var dcmRelativeDiff = RoundOff.Error(100 * (inhibited - original) / original);
+			return (dcmRelativeDiff > -8) && (dcmRelativeDiff < 8) ? 0 : Math.Sign(dcmRelativeDiff);
+		}
+		#endregion
 	}
 }

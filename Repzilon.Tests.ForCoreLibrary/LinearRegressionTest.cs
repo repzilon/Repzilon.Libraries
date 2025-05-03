@@ -198,6 +198,47 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(lrrBC2Ch1Ex5_0.ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(lrrBC2Ch1Ex5_1.ChangeModel(MathematicalModel.Affine));
 
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 6");
+			var lrrBC2Ch1Ex6 = LinearRegression.Compute(
+				new PointD(4 / 1.5, 4),
+				new PointD(6 / 2.5, 6),
+				new PointD(7.5 / 3.5, 7.5),
+				new PointD(10.4 / 6, 10.4),
+				new PointD(14 / 12.0, 14)
+			);
+			OutputRegressionModel(lrrBC2Ch1Ex6.ChangeModel(MathematicalModel.Affine));
+			vmax0 = SignificantDigits.Round(lrrBC2Ch1Ex6.Intercept, 2, RoundingMode.ToEven);
+			Km0 = SignificantDigits.Round(-lrrBC2Ch1Ex6.Slope, 2, RoundingMode.ToEven);
+			Console.WriteLine("Vmax  = {0,-4} mUI  Km  = {1} mmol/L", vmax0, Km0);
+
+			Program.OutputHeading("Biochemistry II laboratory 3");
+			var lrrBC2Lab3_a = LinearRegression.Compute(
+				new PointD(10, 0.174f),
+				new PointD(20, 0.285f),
+				new PointD(30, 0.387f),
+				new PointD(40, 0.511f),
+				new PointD(51, 0.659f)
+			);
+			Console.Write("Absorbance: ");
+			OutputRegressionModel(lrrBC2Lab3_a.ChangeModel(MathematicalModel.Affine));
+			var lrrBC2Lab3_r = LinearRegression.Compute(
+				 new PointD(1.0 / 0.00150, 1.0 / 0.0071),
+				 new PointD(1.0 / 0.00090, 1.0 / 0.0044),
+				 new PointD(1.0 / 0.00076, 1.0 / 0.0038),
+				 new PointD(1.0 / 0.00045, 1.0 / 0.0026),
+				 new PointD(1.0 / 0.00030, 1.0 / 0.0018)
+			);
+			Console.Write("Reaction  : ");
+			OutputRegressionModel(lrrBC2Lab3_r.ChangeModel(MathematicalModel.Affine));
+			vmax0 = 1.0 / lrrBC2Lab3_r.Intercept;
+			Km0 = vmax0 * lrrBC2Lab3_r.Slope;
+			vmax1 = vmax0 * 60 / lrrBC2Lab3_a.Slope;
+			Console.WriteLine("Vmax  = {1} A405/s  Km  = {2} mol/L{0}Vmax  = {3} µmol/min*L",
+			 Environment.NewLine,
+			 SignificantDigits.Round(vmax0, 5, RoundingMode.ToEven),
+			 SignificantDigits.Round(Km0, 4, RoundingMode.ToEven),
+			 SignificantDigits.Round(vmax1, 3, RoundingMode.ToEven));
+
 			Program.OutputHeading("Cellular culture II Wound healing");
 			var rmdCC2Healing = RegressionModel.Compute(
 				new PointD(0, -0.2779f),

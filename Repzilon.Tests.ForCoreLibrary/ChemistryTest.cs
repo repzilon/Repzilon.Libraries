@@ -135,6 +135,66 @@ STQTALA";
 			EnzymeSpeedFloat();
 			Console.WriteLine("Decimal data type");
 			EnzymeSpeedDecimal();
+
+			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
+			Program.OutputSizeOf<Inhibition<double>>();
+			var strSpeedUnit = IsMacOsX() ? "A₄₈₀/60 s" : "A<sub>480</sub>/60 s";
+			var ekO = new EnzymeKinematic<double>();
+			var ekI = new EnzymeKinematic<double>();
+			var ekIp = new EnzymeKinematic<double>();
+			OutputEnzymeKinematic("mmol/L", strSpeedUnit, 2, ref ekO,
+			 new PointD(1, 0.032f), new PointD(2.5f, 0.055f), new PointD(5, 0.072f), new PointD(10, 0.090f));
+			OutputEnzymeKinematic("mmol/L", strSpeedUnit, 2,ref ekI,
+			 new PointD(1, 0.021f), new PointD(2.5f, 0.041f), new PointD(5, 0.059f), new PointD(10, 0.077f));
+			Console.WriteLine(Enzyme.Compare(ekO, ekI));
+			OutputEnzymeKinematic("mmol/L", strSpeedUnit, 2, ref ekIp,
+			 new PointD(1, 0.021f), new PointD(2.5f, 0.038f), new PointD(5, 0.050f), new PointD(10, 0.061f));
+			Console.WriteLine(Enzyme.Compare(ekO, ekIp));
+
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 3");
+			OutputEnzymeKinematic("mol/L", "nmol/h", 4, ref ekO,
+			 new PointD(1e-6f, 1.16f), new PointD(1e-5f, 8.46f), new PointD(1e-4f, 24.94f), new PointD(1e-3f, 27.94f),
+			 new PointD(1e-2f, 29.95f));
+			Console.WriteLine("vmax: {0:f4} nmol/min", Math.Round(ekO.Vmax.Key / 60, 4));
+
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
+			OutputEnzymeKinematic("mol/L", "µmol/L*min", 3, ref ekO,
+			 new PointD(0.01f, 16.7f), new PointD(0.0133f, 20f), new PointD(0.02f, 25f),
+			 new PointD(0.025f, 27f), new PointD(0.05f, 35.7f), new PointD(0.1f, 41.7f));
+			OutputEnzymeKinematic("mol/L", "µmol/L*min", 3, ref ekI,
+			 new PointD(0.01f, 10f), new PointD(0.0133f, 12.5f), new PointD(0.02f, 16.7f),
+			 new PointD(0.025f, 19.2f), new PointD(0.05f, 27.8f), new PointD(0.1f, 35.7f));
+			Console.WriteLine(InhibitionExtensions.RoundedToPrecision(Enzyme.Compare(ekO, ekI, 0.02), 3));
+
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 5");
+			OutputEnzymeKinematic("mol/L", "u", 3, ref ekO, 
+			 new PointD(0.010f, 0.27f),new PointD(0.022f, 0.50f),
+			 new PointD(0.046f, 0.80f),new PointD(0.200f, 1.50f));
+			OutputEnzymeKinematic("mol/L", "u", 3, ref ekI,
+			 new PointD(0.010f, 0.21f), new PointD(0.022f, 0.40f),
+			 new PointD(0.046f, 0.65f), new PointD(0.200f, 1.18f));
+			Console.WriteLine(InhibitionExtensions.RoundedToPrecision(Enzyme.Compare(ekO, ekI, 0.17), 3));
+
+			Program.OutputHeading("Biochemistry II ch. 1 exercise 6");
+			OutputEnzymeKinematic("mmol/L", "mUI", 2, ref ekO,
+			 new PointD(1.5f, 4f), new PointD(2.5f, 6f), new PointD(3.5f, 7.5f),
+			 new PointD(6f, 10.4f), new PointD(12.0f, 14f));
+
+			Program.OutputHeading("Biochemistry II laboratory 3");
+			var rmdBC2Lab3_a = RegressionModel.Compute(
+				new PointD(10, 0.174f),
+				new PointD(20, 0.285f),
+				new PointD(30, 0.387f),
+				new PointD(40, 0.511f),
+				new PointD(51, 0.659f)
+			);
+			Console.Write("Absorbance: ");
+			LinearRegressionTest.OutputRegressionModel(rmdBC2Lab3_a);
+			OutputEnzymeKinematic("mol/L", "A405/s", 4, ref ekO,
+			 new PointD(0.00150, 0.0071), new PointD(0.00090, 0.0044), new PointD(0.00076, 0.0038),
+			 new PointD(0.00045, 0.0026), new PointD(0.00030, 0.0018));
+			Console.WriteLine("Vmax = {0} µmol/min*L",
+			 SignificantDigits.Round(ekO.Vmax.Key * 60 / rmdBC2Lab3_a.B, 3, RoundingMode.ToEven));
 		}
 
 		private static string PrettyFormula(bool unicodeTerminal, string formula)
@@ -195,8 +255,8 @@ STQTALA";
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.EadieHofstee, true, rmdMM, ptdarEH_table);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.HanesWoolf, true, rmdMM, ptdarHW_raw);
 
-			OutputRoundedEnzymeKinematic(Enzyme.DirectLinearPlot("mmol/L", A240By30s, ptdarMM), rmdMM);
-			OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, ptdarMM), rmdMM);
+			OutputRoundedEnzymeKinematic(4, Enzyme.DirectLinearPlot("mmol/L", A240By30s, ptdarMM), rmdMM);
+			OutputRoundedEnzymeKinematic(4, Enzyme.Speed("mmol/L", A240By30s, ptdarMM), rmdMM);
 		}
 
 		private static void EnzymeSpeedDecimal()
@@ -247,7 +307,8 @@ STQTALA";
 		RegressionModel<double> experimental, params PointD[] dataPoints)
 		{
 			if (withKinematic) {
-				OutputRoundedEnzymeKinematic(Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints), experimental);
+				OutputRoundedEnzymeKinematic(4, Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints),
+				 experimental);
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}
@@ -277,12 +338,25 @@ STQTALA";
 			}
 		}
 
-		private static void OutputRoundedEnzymeKinematic(EnzymeKinematic<double> kinematic,
-		RegressionModel<double> michaelisMenten)
+		private static void OutputRoundedEnzymeKinematic(byte significantDigits,
+		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten)
 		{
-			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4), false);
-			Console.WriteLine("\t[{0}={1}]", IsMacOsX() ? "Δ²" : "A",
+			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, significantDigits), false);
+			Console.WriteLine(IsMacOsX() ? "\t[Δ²={0} u²]" : "\t[A={0} u^2]",
 			 EnzymeKinematicExtension.AreaBetween(kinematic, michaelisMenten, false));
-		}		
+		}
+
+		private static void OutputEnzymeKinematic(string concentrationUnit, string speedUnit,
+		byte significantDigits, ref EnzymeKinematic<double> ek, params PointD[] dataPoints)
+		{
+			var rm = RegressionModel.Compute(dataPoints);
+			try {
+				ek = Enzyme.Speed(concentrationUnit, speedUnit, dataPoints);
+				OutputRoundedEnzymeKinematic(significantDigits, ek, rm);
+			} catch (NotSupportedException excNS) {
+				Console.Error.WriteLine(excNS.Message);
+				LinearRegressionTest.OutputRegressionModel(rm);
+			}
+		}
 	}
 }
