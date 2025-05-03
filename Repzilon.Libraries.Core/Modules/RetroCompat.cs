@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -14,14 +14,16 @@
 using System;
 #if !(NETSTANDARD1_1 || NETCOREAPP1_0 || NETSTANDARD1_3 || NETSTANDARD1_6)
 using System.ComponentModel;
+#else
+using System.Globalization;
 #endif
 
 namespace Repzilon.Libraries.Core
 {
-	public static class RetroCompat
+	internal static class RetroCompat
 	{
 #if NET35 || NET20
-		public static bool IsNullOrWhiteSpace(string text)
+		internal static bool IsNullOrWhiteSpace(string text)
 		{
 			return (text == null) || (text.Length < 1) || (text.Trim().Length < 1);
 		}
@@ -48,11 +50,18 @@ namespace Repzilon.Libraries.Core
 			return new InvalidEnumArgumentException(name, Convert.ToInt32(value), typeof(T));
 		}
 #endif
+
+#if NETCOREAPP1_0 || NETSTANDARD1_1 || NETSTANDARD1_3 || NETSTANDARD1_6
+		internal static string ToLower(this string text, CultureInfo culture)
+		{
+			return (culture == CultureInfo.InvariantCulture) ? text.ToLowerInvariant() : text.ToLower();
+		}
+#endif
 	}
 
 #if NET20
 	public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
 
-	public delegate TResult Func<out TResult>();
+	internal delegate TResult Func<out TResult>();
 #endif
 }
