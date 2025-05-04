@@ -33,6 +33,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 	internal static class Program
 	{
+		internal static readonly bool OnMacOsX = IsMacOsX();
+
 		private static void Main(string[] args)
 		{
 			var dicTests = new SortedList<string, Action<string[]>>();
@@ -182,6 +184,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write(Environment.NewLine);
 			Console.WriteLine(text);
 			Console.WriteLine(new String('-', text.Length));
+		}
+
+		private static bool IsMacOsX()
+		{
+#if NETFRAMEWORK
+			return Environment.OSVersion.Platform == PlatformID.MacOSX;
+#else
+			return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
+#endif
 		}
 	}
 }

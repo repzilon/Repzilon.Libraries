@@ -26,21 +26,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class ChemistryTest
 	{
-		private static readonly string A240By30s = IsMacOsX() ? "A₂₄₀/30 s" : "A<sub>240</sub>/30 s";
-
-		private static bool IsMacOsX()
-		{
-#if NETFRAMEWORK
-			return Environment.OSVersion.Platform == PlatformID.MacOSX;
-#else
-			return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
-#endif
-		}
+		private static readonly string A240By30s = Program.OnMacOsX ? "A₂₄₀/30 s" : "A<sub>240</sub>/30 s";
 
 		internal static void Run(string[] args)
 		{
-			var blnMacOsX = IsMacOsX();
-
 			Program.OutputHeading("Molar mass of molecules");
 			var karFormulas = @"Ca(OH)<sub>2</sub>
 KH<sub>2</sub>PO<sub>4</sub>
@@ -62,7 +51,7 @@ Na<sub>2</sub>SO<sub>4</sub>".Split((char[])null, StringSplitOptions.RemoveEmpty
 			int i;
 			for (i = 0; i < karFormulas.Length; i++) {
 				Console.WriteLine("{0,8:n3} g/mol {1}",
-				 Chemistry.MolarMass(karFormulas[i]), PrettyFormula(blnMacOsX, karFormulas[i]));
+				 Chemistry.MolarMass(karFormulas[i]), PrettyFormula(karFormulas[i]));
 			}
 
 			const string kBovineSerumAlbuminPeptides = /*"MKWVTFISLLLLFSSAYSRGVFRR" +*/
@@ -90,7 +79,7 @@ STQTALA";
 			foreach (var aa in dicAminoAcids.Values) {
 				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
 				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR, aa.Isoelectric(),
-				 Nanable(aa.MolarMass, "f3"), PrettyFormula(blnMacOsX, aa.Formula));
+				 Nanable(aa.MolarMass, "f3"), PrettyFormula(aa.Formula));
 			}
 
 			Program.OutputHeading("Fatty acids");
@@ -145,7 +134,7 @@ STQTALA";
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			Program.OutputSizeOf<Inhibition<double>>();
-			var strSpeedUnit = IsMacOsX() ? "A₄₈₀/60 s" : "A<sub>480</sub>/60 s";
+			var strSpeedUnit = Program.OnMacOsX ? "A₄₈₀/60 s" : "A<sub>480</sub>/60 s";
 			var ekO = new EnzymeKinematic<double>();
 			var ekI = new EnzymeKinematic<double>();
 			var ekIp = new EnzymeKinematic<double>();
@@ -204,9 +193,9 @@ STQTALA";
 			 SignificantDigits.Round(ekO.Vmax.Key * 60 / rmdBC2Lab3_a.B, 3, RoundingMode.ToEven));
 		}
 
-		private static string PrettyFormula(bool unicodeTerminal, string formula)
+		private static string PrettyFormula(string formula)
 		{
-			return unicodeTerminal ? formula.Replace("<sub>2</sub>", "₂").Replace("<sub>3</sub>", "₃").Replace("<sub>4</sub>", "₄") : formula;
+			return Program.OnMacOsX ? formula.Replace("<sub>2</sub>", "₂").Replace("<sub>3</sub>", "₃").Replace("<sub>4</sub>", "₄") : formula;
 		}
 
 		private static float PolypeptideMass(char[] peptideSequenceLetters)
@@ -336,7 +325,7 @@ STQTALA";
 		where T : struct, IComparable, IComparable<T>, IEquatable<T>, IFormattable
 		{
 			var strKinematic = kinematic.ToString("g", CultureInfo.CurrentCulture);
-			if (IsMacOsX()) {
+			if (Program.OnMacOsX) {
 				strKinematic = strKinematic.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
 			}
 			Console.Write(strKinematic);
@@ -349,7 +338,7 @@ STQTALA";
 		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten)
 		{
 			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, significantDigits), false);
-			Console.WriteLine(IsMacOsX() ? "\t[Δ²={0} u²]" : "\t[A={0} u^2]",
+			Console.WriteLine(Program.OnMacOsX ? "\t[Δ²={0} u²]" : "\t[A={0} u^2]",
 			 EnzymeKinematicExtension.AreaBetween(kinematic, michaelisMenten, false));
 		}
 
