@@ -257,9 +257,32 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputAgaroseRetention("9  :", 97);
 #endif
 
+			Program.OutputHeading("Instrumental analysis II Mass spectroscopy mean travel");
+			var ptdarMeanTravel = new PointD[] {
+				new PointD(101325, 0.000006f), new PointD(130, 0.0045f),
+				new PointD(0.13f, 4.5f), new PointD(0.013f, 45f),
+				new PointD(0.0013f, 450f), new PointD(0.00013f, 4500f),
+				new PointD(1.3e-5f, 45000f), new PointD(1.3e-7, 4500000)
+			};
+			Console.Write("  ");
+			OutputRegressionModel(RegressionModel.Compute(ptdarMeanTravel));
+			for (i = 0; i < ptdarMeanTravel.Length; i++) {
+				ptdarMeanTravel[i] = new PointD(ptdarMeanTravel[i].X, 1.0 / ptdarMeanTravel[i].Y);
+			}
+			Console.Write("1/");
+			var rm = RegressionModel.Compute(ptdarMeanTravel);
+			OutputRegressionModel(rm);
+			var b = 1.0 / rm.B;
+			for (i = 0; i < ptdarMeanTravel.Length; i++) {
+				ptdarMeanTravel[i] = new PointD(b / ptdarMeanTravel[i].X, 1.0 / ptdarMeanTravel[i].Y);
+			}
+			rm = RegressionModel.Compute(ptdarMeanTravel);
+			Console.WriteLine("  y = {1:g6} + {0:g6} * x^-1 r={2,-8:g6} S/N={3:g6} dB", b * rm.B, rm.A,
+			 rm.R, -10 * Math.Log10(1 - rm.R));
+
 			Program.OutputHeading("Factorial (1 to " + MaxFactorial + ")");
 			var factorialSuite = new List<PointM>(MaxFactorial);
-			for (byte i = 1; i <= MaxFactorial; i++) {
+			for (i = 1; i <= MaxFactorial; i++) {
 				var exact = ExtraMath.BigFactorial(i);
 				var approximative = ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Rounded);
 				if (approximative != exact) {
@@ -270,15 +293,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var rmmFactorial = RegressionModel.Compute(factorialSuite);
 			Program.OutputSizeOf<RegressionModel<decimal>>();
 			OutputRegressionModel(rmmFactorial);
-			for (byte i = 1; i <= MaxFactorial; i++) {
+			for (i = 1; i <= MaxFactorial; i++) {
 				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, ExtraMath.BigFactorial(i),
 				 ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Corrected));
 			}
 			Console.WriteLine("28! ≈ {0,39:n0}", ExtraMath.StirlingApproximateFactorial(28.0, StirlingMode.Corrected));
 
 			Program.OutputHeading("German imperialists are out of luck");
-			var rm = RegressionModel.Compute(new PointD(1, 1006), new PointD(2, 47), new PointD(3, 12));
-			Console.WriteLine(rm);
+			rm = RegressionModel.Compute(new PointD(1, 1006), new PointD(2, 47), new PointD(3, 12));
+			OutputRegressionModel(rm);
 			Console.WriteLine("The fourth reich would only last {0} years.", rm.Evaluate(4));
 		}
 
@@ -378,9 +401,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		internal static void OutputRegressionModel<T>(RegressionModel<T> mathModel)
-		where T : struct, IFormattable, IEquatable<T>
+		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
 		{
-			Console.WriteLine("{0:g6}\tr={1:g6}", mathModel, mathModel.R);
+			var r = mathModel.R;
+			Console.Write("{0:g6}\tr={1,-9:g6}", mathModel, r);
+			if (mathModel.Determination().CompareTo(ExtraMath.ConvertTo<T>(0.9998f)) > 0) {
+				Console.WriteLine(" S/N={0:g6} dB", -10 * Math.Log10(1 - Math.Abs(Convert.ToDouble(r))));
+			} else {
+				Console.Write(Environment.NewLine);
+			}
 			var kind = mathModel.Model;
 			if (kind == MathematicalModel.Exponential) {
 				Console.WriteLine("{0:eg6}\tGrowth rate: {1:p2}", mathModel, mathModel.GrowthRate());
