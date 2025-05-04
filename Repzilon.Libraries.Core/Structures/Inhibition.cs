@@ -148,7 +148,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 
 		private static void ValidateKind(InhibitionKind kind)
 		{
-			if ((kind < InhibitionKind.Absent) || (kind > InhibitionKind.Mixed)) {
+			if (kind > InhibitionKind.Mixed) {
 				throw RetroCompat.NewUndefinedEnumException("kind", kind);
 			}
 		}

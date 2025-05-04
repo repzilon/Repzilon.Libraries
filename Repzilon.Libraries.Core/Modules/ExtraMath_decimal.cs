@@ -502,7 +502,7 @@ namespace Repzilon.Libraries.Core
 			}
 
 			// Get a raw version of the decimal's integer
-			bits[3] = bits[3] & ~unchecked(signMask | scaleMask); // clear out exponent and negative bit
+			bits[3] = bits[3] & ~(signMask | scaleMask); // clear out exponent and negative bit
 			var rawValue = new decimal(bits);
 
 			// Account for trailing zeros

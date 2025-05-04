@@ -54,7 +54,7 @@ namespace Repzilon.Libraries.Core
 #if NETCOREAPP1_0 || NETSTANDARD1_1 || NETSTANDARD1_3 || NETSTANDARD1_6
 		internal static string ToLower(this string text, CultureInfo culture)
 		{
-			return (culture == CultureInfo.InvariantCulture) ? text.ToLowerInvariant() : text.ToLower();
+			return CultureInfo.InvariantCulture.Equals(culture) ? text.ToLowerInvariant() : text.ToLower();
 		}
 #endif
 	}
