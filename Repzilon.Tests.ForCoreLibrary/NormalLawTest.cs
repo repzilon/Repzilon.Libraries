@@ -14,6 +14,7 @@
 using System;
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Regression;
+// ReSharper disable RedundantExplicitArrayCreation
 
 namespace Repzilon.Tests.ForCoreLibrary
 {

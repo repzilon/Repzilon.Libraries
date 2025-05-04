@@ -73,6 +73,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 totalDiff, dcmTarget, totalDiff / dcmTarget);
 
 			Console.WriteLine("Réciproques d'intégrales de distributions de Student");
+			// ReSharper disable once RedundantExplicitArrayCreation
 			var karAlphas = new float[] { 0.4f, 0.25f, 0.1f, 0.05f, 0.025f, 0.010f, 0.005f, 0.0025f, 0.001f, 0.0005f };
 			var karNus = new byte[] { 1, 2, 4 };
 			TableHeader("nu/p", " {0,9:f4}", karAlphas);

@@ -22,6 +22,7 @@ using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Biochemistry;
 #endif
 // ReSharper disable InconsistentNaming
+// ReSharper disable RedundantExplicitArrayCreation
 
 #if !NET20
 namespace Repzilon.Tests.ForCoreLibrary

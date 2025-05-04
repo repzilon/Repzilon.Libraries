@@ -731,6 +731,7 @@ namespace Repzilon.Libraries.Core
 			for (byte i = 0; i < this.Lines; i++) {
 				for (byte j = 0; j < this.Columns; j++) {
 					if (this[i, j].Equals(value)) {
+						// ReSharper disable once RedundantExplicitArrayCreation
 						return new byte[] { i, j };
 					}
 				}

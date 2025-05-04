@@ -42,6 +42,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var blnMacOsX = IsMacOsX();
 
 			Program.OutputHeading("Molar mass of molecules");
+			// ReSharper disable once RedundantExplicitArrayCreation
 			var karFormulas = new string[] {
 				"Ca(OH)<sub>2</sub>",
 				"KH<sub>2</sub>PO<sub>4</sub>", "K<sub>2</sub>HPO<sub>4</sub>",
