@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -23,7 +23,9 @@ namespace Repzilon.Libraries.Core.Vectors
 
 	// Note : Do not make IComparableThreeDVector "inherit" from IComparableTwoDVector.
 	// A 3D vector is not considered as an extended 2D vector, but as a different notion.
-	internal interface IComparableThreeDVector
+	// Making the interface public allows to explicitly compare two ThreeDVector<T>
+	// instances with different backing T types.
+	public interface IComparableThreeDVector
 	{
 		IComparable X { get; }
 		IComparable Y { get; }

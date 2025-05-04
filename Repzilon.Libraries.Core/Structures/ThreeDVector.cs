@@ -123,7 +123,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			return X.Equals(other.X) && Y.Equals(other.Y) && Z.Equals(other.Z);
 		}
 
-		private bool Equals(IComparableThreeDVector other)
+		public bool Equals(IComparableThreeDVector other)
 		{
 			var typT = typeof(T);
 			return (other != null) && (this.X.CompareTo(Convert.ChangeType(other.X, typT)) == 0) &&
