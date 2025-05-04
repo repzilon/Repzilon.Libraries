@@ -266,6 +266,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			};
 			Console.Write("  ");
 			OutputRegressionModel(RegressionModel.Compute(ptdarMeanTravel));
+			byte i;
 			for (i = 0; i < ptdarMeanTravel.Length; i++) {
 				ptdarMeanTravel[i] = new PointD(ptdarMeanTravel[i].X, 1.0 / ptdarMeanTravel[i].Y);
 			}
