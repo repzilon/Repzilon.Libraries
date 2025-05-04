@@ -32,19 +32,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var dblTalpha0_025n4 = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), 6 - 2);
 			Console.WriteLine("t{0} = {1}", 6 - 2, dblTalpha0_025n4);
 
-			var lrp = LinearRegression.Compute(
-				new PointD(2, 2.1f),
-				new PointD(4, 4.4f),
-				new PointD(6, 6.5f),
-				new PointD(8, 8.6f),
-				new PointD(10, 10.8f),
-				new PointD(12, 12.9f)
-			);
 			Program.OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<double>>();
-			OutputLinearRegression2(lrp, dblTalpha0_025n4, "G", true, 8.25f, 3.4);
+			OutputLinearRegression2(LinearRegression.Compute(new PointD(2, 2.1f), new PointD(4, 4.4f), 
+			 new PointD(6, 6.5f), new PointD(8, 8.6f), new PointD(10, 10.8f), new PointD(12, 12.9f)),
+			 dblTalpha0_025n4, "G", true, 8.25f, 3.4);
 			// x can also be 7 or 8, and y can also be 7.5
 
 			var dlrp = LinearRegression.Compute(
@@ -63,99 +57,52 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
 
 			Program.OutputHeading("Revision");
-			var lrrRev5 = LinearRegression.Compute(
-				new PointM(0, 0.06m),
-				new PointM(5, 1.25m),
-				new PointM(10, 2.38m),
-				new PointM(15, 3.58m),
-				new PointM(20, 4.61m)
-			);
-			OutputLinearRegression2(lrrRev5, 3.18245m, "G7", false, 12, 4.154m);
+			OutputLinearRegression2(LinearRegression.Compute(new PointM(0, 0.06m), new PointM(5, 1.25m),
+			 new PointM(10, 2.38m), new PointM(15, 3.58m), new PointM(20, 4.61m)),
+			 3.18245m, "G7", false, 12, 4.154m);
 
 			Program.OutputHeading("Math I Example 38");
-			var lrrM1Ex38 = LinearRegression.Compute(
-				PointD.LogLog(100.0, 0.240),
-				PointD.LogLog(150.0, 0.295),
-				PointD.LogLog(250.0, 0.380),
-				PointD.LogLog(300.0, 0.415),
-				PointD.LogLog(400.0, 0.480),
-				PointD.LogLog(550.0, 0.560)
-			);
-			var rmdMEx38 = lrrM1Ex38.ChangeModel(MathematicalModel.LogLog);
 			Program.OutputSizeOf<RegressionModel<double>>();
-			OutputRegressionModel(rmdMEx38);
+			OutputRegressionModel(LinearRegression.Compute(PointD.LogLog(100.0, 0.240),
+			 PointD.LogLog(150.0, 0.295), PointD.LogLog(250.0, 0.380), PointD.LogLog(300.0, 0.415),
+			 PointD.LogLog(400.0, 0.480), PointD.LogLog(550.0, 0.560)).ChangeModel(MathematicalModel.LogLog));
 
 			Program.OutputHeading("Math I Exercise");
-			var lrrM1Exer = LinearRegression.Compute(
-				PointD.SemiLogY(8.0, 9858),
-				PointD.SemiLogY(14.0, 9416),
-				PointD.SemiLogY(18.0, 7234),
-				PointD.SemiLogY(24.0, 5426),
-				PointD.SemiLogY(37.5, 2789),
-				PointD.SemiLogY(41.0, 2251),
-				PointD.SemiLogY(71.0, 564)
-			);
-			var rmdM1Exer = lrrM1Exer.ChangeModel(MathematicalModel.Exponential);
-			OutputRegressionModel(rmdM1Exer);
+			OutputRegressionModel(LinearRegression.Compute(PointD.SemiLogY(8.0, 9858), PointD.SemiLogY(14.0, 9416),
+			 PointD.SemiLogY(18.0, 7234), PointD.SemiLogY(24.0, 5426), PointD.SemiLogY(37.5, 2789),
+			 PointD.SemiLogY(41.0, 2251), PointD.SemiLogY(71.0, 564)).ChangeModel(MathematicalModel.Exponential));
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 15-16");
-			var lrrBC2Ch1p15 = LinearRegression.Compute(
-				PointD.LogLog(12.5, 0.037),
-				PointD.LogLog(20, 0.050),
-				PointD.LogLog(25, 0.055),
-				PointD.LogLog(50, 0.073),
-				PointD.LogLog(100, 0.091)
-			);
-			var rmdBC2Ch1p15 = lrrBC2Ch1p15.ChangeModel(MathematicalModel.Power);
-			OutputRegressionModel(rmdBC2Ch1p15);
+			OutputRegressionModel(LinearRegression.Compute(PointD.LogLog(12.5, 0.037), PointD.LogLog(20, 0.050),
+			 PointD.LogLog(25, 0.055), PointD.LogLog(50, 0.073), 
+			 PointD.LogLog(100, 0.091)).ChangeModel(MathematicalModel.Power));
 
-			var rmdBC2Ch1p16 = RegressionModel.Compute(
-				new PointD(12.5f, 0.037f),
-				new PointD(20, 0.050f),
-				new PointD(25, 0.055f),
-				new PointD(50, 0.073f),
-				new PointD(100, 0.091f)
-			);
-			OutputRegressionModel(rmdBC2Ch1p16);
+			OutputRegressionModel(RegressionModel.Compute(new PointD(12.5f, 0.037f), new PointD(20, 0.050f),
+			 new PointD(25, 0.055f), new PointD(50, 0.073f), new PointD(100, 0.091f)));
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
-			var rmdBC2Ch1p22V0 = RegressionModel.Compute(
-				new PointD(1.0f, 31.25f),
-				new PointD(0.4f, 18.18f),
-				new PointD(0.2f, 13.89f),
-				new PointD(0.1f, 11.11f)
-			);
-			OutputRegressionModel(rmdBC2Ch1p22V0);
-			var rmdBC2Ch1p22VI = RegressionModel.Compute(
-				new PointD(1.0f, 47.62f),
-				new PointD(0.4f, 24.39f),
-				new PointD(0.2f, 16.95f),
-				new PointD(0.1f, 12.99f)
-			);
-			OutputRegressionModel(rmdBC2Ch1p22VI);
-			var rmdBC2Ch1p22VIp = RegressionModel.Compute(
-				new PointD(1.0f, 47.62f),
-				new PointD(0.4f, 26.32f),
-				new PointD(0.2f, 20f),
-				new PointD(0.1f, 16.39f)
-			);
-			OutputRegressionModel(rmdBC2Ch1p22VIp);
+			OutputRegressionModel(RegressionModel.Compute(new PointD(1.0f, 31.25f), new PointD(0.4f, 18.18f),
+			 new PointD(0.2f, 13.89f), new PointD(0.1f, 11.11f)));
+			OutputRegressionModel(RegressionModel.Compute(new PointD(1.0f, 47.62f), new PointD(0.4f, 24.39f),
+			 new PointD(0.2f, 16.95f), new PointD(0.1f, 12.99f)));
+			OutputRegressionModel(RegressionModel.Compute(new PointD(1.0f, 47.62f), new PointD(0.4f, 26.32f),
+			 new PointD(0.2f, 20f), new PointD(0.1f, 16.39f)));
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 3");
-			var lrrBC2Ch1Ex3 = LinearRegression.Compute(
+			var lrr0 = LinearRegression.Compute(
 				new PointD(1e6, SignificantDigits.Round(1.0 / 1.16, 3, RoundingMode.ToEven)),
 				new PointD(1e5, SignificantDigits.Round(1.0 / 8.46, 3, RoundingMode.ToEven)),
 				new PointD(1e4, SignificantDigits.Round(1.0 / 24.94, 4, RoundingMode.ToEven)),
 				new PointD(1e3, SignificantDigits.Round(1.0 / 27.94, 4, RoundingMode.ToEven)),
 				new PointD(1e2, SignificantDigits.Round(1.0 / 29.95, 4, RoundingMode.ToEven))
 			);
-			OutputRegressionModel(lrrBC2Ch1Ex3.ChangeModel(MathematicalModel.Affine));
-			var vmax0 = 1.0 / lrrBC2Ch1Ex3.Intercept;
-			var Km0 = lrrBC2Ch1Ex3.Slope * vmax0;
+			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
+			var vmax0 = 1.0 / lrr0.Intercept;
+			var Km0 = lrr0.Slope * vmax0;
 			Console.WriteLine("Vmax = {0:g4} nmol/min\tKm = {1:g4} mol/L", vmax0 / 60, Km0);
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
-			var lrrBC2Ch1Ex4_0 = LinearRegression.Compute(
+			lrr0 = LinearRegression.Compute(
 				new PointD(100, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
 				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 20, 3, RoundingMode.ToEven)),
 				new PointD(50, SignificantDigits.Round(1.0 / 25, 3, RoundingMode.ToEven)),
@@ -163,7 +110,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(20, SignificantDigits.Round(1.0 / 35.7, 3, RoundingMode.ToEven)),
 				new PointD(10, SignificantDigits.Round(1.0 / 41.7, 3, RoundingMode.ToEven))
 			);
-			var lrrBC2Ch1Ex4_1 = LinearRegression.Compute(
+			var lrr1 = LinearRegression.Compute(
 				new PointD(100, SignificantDigits.Round(1.0 / 10, 3, RoundingMode.ToEven)),
 				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 12.5, 3, RoundingMode.ToEven)),
 				new PointD(50, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
@@ -171,48 +118,39 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(20, SignificantDigits.Round(1.0 / 27.8, 3, RoundingMode.ToEven)),
 				new PointD(10, SignificantDigits.Round(1.0 / 35.7, 3, RoundingMode.ToEven))
 			);
-			OutputRegressionModel(lrrBC2Ch1Ex4_0.ChangeModel(MathematicalModel.Affine));
-			OutputRegressionModel(lrrBC2Ch1Ex4_1.ChangeModel(MathematicalModel.Affine));
-			vmax0 = 1.0 / lrrBC2Ch1Ex4_0.Intercept;
-			Km0 = lrrBC2Ch1Ex4_0.Slope * vmax0;
+			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
+			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
+			vmax0 = 1.0 / lrr0.Intercept;
+			Km0 = lrr0.Slope * vmax0;
 			Console.WriteLine("Vmax  = {0,-4:g3} µmol/min*L  Km  = {1:g3} mol/L", vmax0, Km0);
-			var vmax1 = 1.0 / lrrBC2Ch1Ex4_1.Intercept;
-			var Km1 = lrrBC2Ch1Ex4_1.Slope * vmax1;
+			var vmax1 = 1.0 / lrr1.Intercept;
+			var Km1 = lrr1.Slope * vmax1;
 			Console.WriteLine("Vmax' = {0,-4:g3} µmol/min*L  Km' = {1:g3} mol/L", vmax1, Km1);
-			var ki = 0.02 / ((Km1 / Km0) - 1);
-			Console.WriteLine("Ki = {0:g3} mol/L", ki);
+			Console.WriteLine("Ki = {0:g3} mol/L", 0.02 / ((Km1 / Km0) - 1));
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 5");
-			var lrrBC2Ch1Ex5_0 = LinearRegression.Compute(
-				new PointD(RoundedInverse("0,010"), RoundedInverse("0,27")),
-				new PointD(RoundedInverse("0,022"), RoundedInverse("0,50")),
-				new PointD(RoundedInverse("0,046"), RoundedInverse("0,80")),
-				new PointD(RoundedInverse("0,200"), RoundedInverse("1,50"))
-			);
-			var lrrBC2Ch1Ex5_1 = LinearRegression.Compute(
-				new PointD(RoundedInverse("0,010"), RoundedInverse("0,21")),
-				new PointD(RoundedInverse("0,022"), RoundedInverse("0,40")),
-				new PointD(RoundedInverse("0,046"), RoundedInverse("0,65")),
-				new PointD(RoundedInverse("0,200"), RoundedInverse("1,18"))
-			);
-			OutputRegressionModel(lrrBC2Ch1Ex5_0.ChangeModel(MathematicalModel.Affine));
-			OutputRegressionModel(lrrBC2Ch1Ex5_1.ChangeModel(MathematicalModel.Affine));
+			OutputRegressionModel(LinearRegression.Compute(new PointD(RoundedInverse("0,010"), RoundedInverse("0,27")),
+			 new PointD(RoundedInverse("0,022"), RoundedInverse("0,50")), new PointD(RoundedInverse("0,046"), RoundedInverse("0,80")),
+			 new PointD(RoundedInverse("0,200"), RoundedInverse("1,50"))).ChangeModel(MathematicalModel.Affine));
+			OutputRegressionModel(LinearRegression.Compute(new PointD(RoundedInverse("0,010"), RoundedInverse("0,21")),
+			 new PointD(RoundedInverse("0,022"), RoundedInverse("0,40")), new PointD(RoundedInverse("0,046"), RoundedInverse("0,65")),
+			 new PointD(RoundedInverse("0,200"), RoundedInverse("1,18"))).ChangeModel(MathematicalModel.Affine));
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 6");
-			var lrrBC2Ch1Ex6 = LinearRegression.Compute(
+			lrr0 = LinearRegression.Compute(
 				new PointD(4 / 1.5, 4),
 				new PointD(6 / 2.5, 6),
 				new PointD(7.5 / 3.5, 7.5),
 				new PointD(10.4 / 6, 10.4),
 				new PointD(14 / 12.0, 14)
 			);
-			OutputRegressionModel(lrrBC2Ch1Ex6.ChangeModel(MathematicalModel.Affine));
-			vmax0 = SignificantDigits.Round(lrrBC2Ch1Ex6.Intercept, 2, RoundingMode.ToEven);
-			Km0 = SignificantDigits.Round(-lrrBC2Ch1Ex6.Slope, 2, RoundingMode.ToEven);
+			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
+			vmax0 = SignificantDigits.Round(lrr0.Intercept, 2, RoundingMode.ToEven);
+			Km0 = SignificantDigits.Round(-lrr0.Slope, 2, RoundingMode.ToEven);
 			Console.WriteLine("Vmax  = {0,-4} mUI  Km  = {1} mmol/L", vmax0, Km0);
 
 			Program.OutputHeading("Biochemistry II laboratory 3");
-			var lrrBC2Lab3_a = LinearRegression.Compute(
+			lrr0 = LinearRegression.Compute(
 				new PointD(10, 0.174f),
 				new PointD(20, 0.285f),
 				new PointD(30, 0.387f),
@@ -220,8 +158,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(51, 0.659f)
 			);
 			Console.Write("Absorbance: ");
-			OutputRegressionModel(lrrBC2Lab3_a.ChangeModel(MathematicalModel.Affine));
-			var lrrBC2Lab3_r = LinearRegression.Compute(
+			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
+			lrr1 = LinearRegression.Compute(
 				 new PointD(1.0 / 0.00150, 1.0 / 0.0071),
 				 new PointD(1.0 / 0.00090, 1.0 / 0.0044),
 				 new PointD(1.0 / 0.00076, 1.0 / 0.0038),
@@ -229,10 +167,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 new PointD(1.0 / 0.00030, 1.0 / 0.0018)
 			);
 			Console.Write("Reaction  : ");
-			OutputRegressionModel(lrrBC2Lab3_r.ChangeModel(MathematicalModel.Affine));
-			vmax0 = 1.0 / lrrBC2Lab3_r.Intercept;
-			Km0 = vmax0 * lrrBC2Lab3_r.Slope;
-			vmax1 = vmax0 * 60 / lrrBC2Lab3_a.Slope;
+			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
+			vmax0 = 1.0 / lrr1.Intercept;
+			Km0 = vmax0 * lrr1.Slope;
+			vmax1 = vmax0 * 60 / lrr0.Slope;
 			Console.WriteLine("Vmax  = {1} A405/s  Km  = {2} mol/L{0}Vmax  = {3} µmol/min*L",
 			 Environment.NewLine,
 			 SignificantDigits.Round(vmax0, 5, RoundingMode.ToEven),
@@ -240,12 +178,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 SignificantDigits.Round(vmax1, 3, RoundingMode.ToEven));
 
 			Program.OutputHeading("Cellular culture II Wound healing");
-			var rmdCC2Healing = RegressionModel.Compute(
-				new PointD(0, -0.2779f),
-				new PointD(1, 0.2434f),
-				new PointD(10, 1.1257f)
-			);
-			OutputRegressionModel(rmdCC2Healing);
+			OutputRegressionModel(RegressionModel.Compute(new PointD(0, -0.2779f),
+			 new PointD(1, 0.2434f), new PointD(10, 1.1257f)));
 
 #if !NET20
 			Program.OutputHeading("Molecular biology laboratories");
@@ -285,15 +219,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var factorialSuite = new List<PointM>(MaxFactorial);
 			for (i = 1; i <= MaxFactorial; i++) {
 				var exact = ExtraMath.BigFactorial(i);
-				var approximative = ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Rounded);
-				if (approximative != exact) {
-					factorialSuite.Add(new PointM(i, exact / approximative));
+				var approximate = ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Rounded);
+				if (approximate != exact) {
+					factorialSuite.Add(new PointM(i, exact / approximate));
 				}
-				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, exact, approximative);
+				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, exact, approximate);
 			}
-			var rmmFactorial = RegressionModel.Compute(factorialSuite);
 			Program.OutputSizeOf<RegressionModel<decimal>>();
-			OutputRegressionModel(rmmFactorial);
+			OutputRegressionModel(RegressionModel.Compute(factorialSuite));
 			for (i = 1; i <= MaxFactorial; i++) {
 				Console.WriteLine("{0,2}! is {1,38:n0} ≈ {2,38:n0}", i, ExtraMath.BigFactorial(i),
 				 ExtraMath.StirlingApproximateFactorial(i, StirlingMode.Corrected));
