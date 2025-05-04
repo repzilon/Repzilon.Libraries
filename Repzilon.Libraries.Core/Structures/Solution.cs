@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -12,7 +12,6 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-using System.Collections.Generic;
 using System.Runtime.InteropServices;
 using System.Text;
 using Coefficient = System.Single;
@@ -50,19 +49,36 @@ namespace Repzilon.Libraries.Core
 		{
 			return this.Concentration.Key == other.Concentration.Key &&
 				   RoundOff.AreEqual(this.Concentration.Value, other.Concentration.Value) &&
-				   EqualityComparer<Measure?>.Default.Equals(SolutionVolume, other.SolutionVolume) &&
+				   Equals(SolutionVolume, other.SolutionVolume) &&
 				   MatrixExtensionMethods.Equals(SolventVolume, other.SolventVolume) &&
 				   MatrixExtensionMethods.Equals(SoluteVolume, other.SoluteVolume);
+		}
+
+		private static bool Equals(Measure? measure1, Measure? measure2)
+		{
+			if (measure1.HasValue && measure2.HasValue) {
+				var m1 = measure1.Value;
+				var m2 = measure2.Value;
+				return (m1.Key == m2.Key) && RoundOff.AreEqual(m1.Value, m2.Value);
+			} else {
+				return measure2.HasValue == measure1.HasValue;
+			}
 		}
 
 		public override int GetHashCode()
 		{
 			unchecked {
 				var magic = -1521134295;
-				var kvpConcentration = this.Concentration;
-				var hashCode = (-1047427533 * -1521134295) + kvpConcentration.Key.GetHashCode();
-				hashCode = (hashCode * magic) + kvpConcentration.Value.GetHashCode();
-				hashCode = (hashCode * magic) + SolutionVolume.GetHashCode();
+				var kvp = this.Concentration;
+				var hashCode = (-1047427533 * -1521134295) + kvp.Key.GetHashCode();
+				hashCode = (hashCode * magic) + kvp.Value.GetHashCode();
+				if (SolutionVolume.HasValue) {
+					kvp = SolutionVolume.Value;
+					hashCode = (hashCode * magic) + kvp.Key.GetHashCode();
+					hashCode = (hashCode * magic) + kvp.Value.GetHashCode();
+				} else {
+					hashCode *= magic;
+				}
 				hashCode = (hashCode * magic) + SolventVolume.GetHashCode();
 				return (hashCode * magic) + SoluteVolume.GetHashCode();
 			}
