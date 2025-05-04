@@ -90,11 +90,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 3");
 			var lrr0 = LinearRegression.Compute(
-				new PointD(1000000, RoundedInverse("1.16")),
-				new PointD(100000, RoundedInverse("8.46")),
-				new PointD(10000, RoundedInverse("24.94")),
-				new PointD(1000, RoundedInverse("27.94")),
-				new PointD(100, RoundedInverse("29.95"))
+				new PointD(1000000, RoundedInverse("1,16")),
+				new PointD(100000, RoundedInverse("8,46")),
+				new PointD(10000, RoundedInverse("24,94")),
+				new PointD(1000, RoundedInverse("27,94")),
+				new PointD(100, RoundedInverse("29,95"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			var vmax0 = 1.0 / lrr0.Intercept;
@@ -103,20 +103,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
 			lrr0 = LinearRegression.Compute(
-				new PointD(100, RoundedInverse("16.7")),
+				new PointD(100, RoundedInverse("16,7")),
 				new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("20")),
 				new PointD(50, RoundedInverse("25")),
 				new PointD(40, RoundedInverse("27")),
-				new PointD(20, RoundedInverse("35.7")),
-				new PointD(10, RoundedInverse("41.7"))
+				new PointD(20, RoundedInverse("35,7")),
+				new PointD(10, RoundedInverse("41,7"))
 			);
 			var lrr1 = LinearRegression.Compute(
 				new PointD(100, RoundedInverse("10")),
-				new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("12.5")),
-				new PointD(50, RoundedInverse("16.7")),
-				new PointD(40, RoundedInverse("19.2")),
-				new PointD(20, RoundedInverse("27.8")),
-				new PointD(10, RoundedInverse("35.7"))
+				new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("12,5")),
+				new PointD(50, RoundedInverse("16,7")),
+				new PointD(40, RoundedInverse("19,2")),
+				new PointD(20, RoundedInverse("27,8")),
+				new PointD(10, RoundedInverse("35,7"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
@@ -130,11 +130,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 5");
 			OutputRegressionModel(LinearRegression.Compute(new PointD(RoundedInverse("0,010"), RoundedInverse("0,27")),
-			 new PointD(RoundedInverse("0,022"), RoundedInverse("0,50")), new PointD(RoundedInverse("0,046"), RoundedInverse("0,80")),
-			 new PointD(RoundedInverse("0,200"), RoundedInverse("1,50"))).ChangeModel(MathematicalModel.Affine));
+			 new PointD(RoundedInverse("0,022"), RoundedInverse("0,50")), new PointD(RoundedInverse("0,046"),
+			 RoundedInverse("0,80")), new PointD(RoundedInverse("0,200"),
+			 RoundedInverse("1,50"))).ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(LinearRegression.Compute(new PointD(RoundedInverse("0,010"), RoundedInverse("0,21")),
-			 new PointD(RoundedInverse("0,022"), RoundedInverse("0,40")), new PointD(RoundedInverse("0,046"), RoundedInverse("0,65")),
-			 new PointD(RoundedInverse("0,200"), RoundedInverse("1,18"))).ChangeModel(MathematicalModel.Affine));
+			 new PointD(RoundedInverse("0,022"), RoundedInverse("0,40")), new PointD(RoundedInverse("0,046"),
+			 RoundedInverse("0,65")), new PointD(RoundedInverse("0,200"),
+			 RoundedInverse("1,18"))).ChangeModel(MathematicalModel.Affine));
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 6");
 			lrr0 = LinearRegression.Compute(
