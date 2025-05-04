@@ -42,19 +42,25 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var blnMacOsX = IsMacOsX();
 
 			Program.OutputHeading("Molar mass of molecules");
-			// ReSharper disable once RedundantExplicitArrayCreation
-			var karFormulas = new string[] {
-				"Ca(OH)<sub>2</sub>",
-				"KH<sub>2</sub>PO<sub>4</sub>", "K<sub>2</sub>HPO<sub>4</sub>",
-				"C<sub>6</sub>H<sub>5</sub>COOH", "HOC<sub>6</sub>H<sub>4</sub>NO<sub>2</sub>",
-				"CH<sub>3</sub>COOH", "(CH<sub>2</sub>COOH)<sub>2</sub>",
-				"(CH<sub>3</sub>)<sub>2</sub>CO", "CHCl<sub>3</sub>",
-				"HOOC-COOH•2 H<sub>2</sub>O",
-				"C<sub>10</sub>H<sub>14</sub>N<sub>2</sub>Na<sub>2</sub>O<sub>8</sub>.2 H<sub>2</sub>O",
-				"NO<sub>3</sub>", "NaNO<sub>3</sub>", "PO<sub>4</sub>",
-				"Na<sub>3</sub>PO<sub>4</sub>•12 H<sub>2</sub>O", "SO<sub>4</sub>", "Na<sub>2</sub>SO<sub>4</sub>"
-			};
-			for (var i = 0; i < karFormulas.Length; i++) {
+			var karFormulas = @"Ca(OH)<sub>2</sub>
+KH<sub>2</sub>PO<sub>4</sub>
+K<sub>2</sub>HPO<sub>4</sub>
+C<sub>6</sub>H<sub>5</sub>COOH
+HOC<sub>6</sub>H<sub>4</sub>NO<sub>2</sub>
+CH<sub>3</sub>COOH
+(CH<sub>2</sub>COOH)<sub>2</sub>
+(CH<sub>3</sub>)<sub>2</sub>CO
+CHCl<sub>3</sub>
+HOOC-COOH•2 H<sub>2</sub>O
+C<sub>10</sub>H<sub>14</sub>N<sub>2</sub>Na<sub>2</sub>O<sub>8</sub>.2 H<sub>2</sub>O
+NO<sub>3</sub>
+NaNO<sub>3</sub>
+PO<sub>4</sub>
+Na<sub>3</sub>PO<sub>4</sub>•12 H<sub>2</sub>O
+SO<sub>4</sub>
+Na<sub>2</sub>SO<sub>4</sub>".Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+			int i;
+			for (i = 0; i < karFormulas.Length; i++) {
 				Console.WriteLine("{0,8:n3} g/mol {1}",
 				 Chemistry.MolarMass(karFormulas[i]), PrettyFormula(blnMacOsX, karFormulas[i]));
 			}
@@ -76,11 +82,10 @@ STQTALA";
 
 			Program.OutputHeading("Amino acids");
 			Program.OutputSizeOf<AminoAcid>();
-			var lstAminoAcids = AminoAcid.AlphaList;
-
 			var dicAminoAcids = new SortedDictionary<string, AminoAcid>();
-			for (var i = 0; i < lstAminoAcids.Count; i++) {
-				dicAminoAcids.Add(lstAminoAcids[i].Name, lstAminoAcids[i]);
+			for (i = 0; i < AminoAcid.AlphaList.Count; i++) {
+				var aa = AminoAcid.AlphaList[i];
+				dicAminoAcids.Add(aa.Name, aa);
 			}
 			foreach (var aa in dicAminoAcids.Values) {
 				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
@@ -117,7 +122,8 @@ STQTALA";
 				 "CH<sub>3</sub>CH<sub>2</sub>(CH=CH-CH<sub>2</sub>)<sub>6</sub>CH<sub>2</sub>COOH")
 			};
 			var MH = Chemistry.ElementMasses["H"];
-			foreach (var fat in lstFats) {
+			for (i = 0; i < lstFats.Count; i++) {
+				var fat = lstFats[i];
 				var dicElems = Chemistry.ElementComposition(fat.Formula);
 				var nC = dicElems["C"];
 				var nH = dicElems["H"];
