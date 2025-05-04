@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2023-2024 René Rhéaume
+// Copyright (C) 2023-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -179,7 +179,27 @@ namespace Repzilon.Libraries.Core
 			return new PointD(x, Math.Log10(y));
 		}
 
+		public static PointD SemiLogY(int x, float y)
+		{
+			return new PointD(x, Math.Log10(y));
+		}
+
+		public static PointD SemiLogY(float x, float y)
+		{
+			return new PointD(x, Math.Log10(y));
+		}
+
 		public static PointD LogLog(double x, double y)
+		{
+			return new PointD(Math.Log10(x), Math.Log10(y));
+		}
+
+		public static PointD LogLog(float x, float y)
+		{
+			return new PointD(Math.Log10(x), Math.Log10(y));
+		}
+
+		public static PointD LogLog(int x, float y)
 		{
 			return new PointD(Math.Log10(x), Math.Log10(y));
 		}

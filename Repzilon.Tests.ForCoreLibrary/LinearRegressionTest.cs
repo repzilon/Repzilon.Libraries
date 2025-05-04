@@ -63,19 +63,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Math I Example 38");
 			Program.OutputSizeOf<RegressionModel<double>>();
-			OutputRegressionModel(LinearRegression.Compute(PointD.LogLog(100.0, 0.240),
-			 PointD.LogLog(150.0, 0.295), PointD.LogLog(250.0, 0.380), PointD.LogLog(300.0, 0.415),
-			 PointD.LogLog(400.0, 0.480), PointD.LogLog(550.0, 0.560)).ChangeModel(MathematicalModel.LogLog));
+			OutputRegressionModel(LinearRegression.Compute(PointD.LogLog(100, 0.240f),
+			 PointD.LogLog(150, 0.295f), PointD.LogLog(250, 0.380f), PointD.LogLog(300, 0.415f),
+			 PointD.LogLog(400, 0.480f), PointD.LogLog(550, 0.560f)).ChangeModel(MathematicalModel.LogLog));
 
 			Program.OutputHeading("Math I Exercise");
-			OutputRegressionModel(LinearRegression.Compute(PointD.SemiLogY(8.0, 9858), PointD.SemiLogY(14.0, 9416),
-			 PointD.SemiLogY(18.0, 7234), PointD.SemiLogY(24.0, 5426), PointD.SemiLogY(37.5, 2789),
-			 PointD.SemiLogY(41.0, 2251), PointD.SemiLogY(71.0, 564)).ChangeModel(MathematicalModel.Exponential));
+			OutputRegressionModel(LinearRegression.Compute(PointD.SemiLogY(8, 9858), PointD.SemiLogY(14, 9416),
+			 PointD.SemiLogY(18, 7234), PointD.SemiLogY(24, 5426), PointD.SemiLogY(37.5f, 2789),
+			 PointD.SemiLogY(41, 2251), PointD.SemiLogY(71, 564)).ChangeModel(MathematicalModel.Exponential));
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 15-16");
-			OutputRegressionModel(LinearRegression.Compute(PointD.LogLog(12.5, 0.037), PointD.LogLog(20, 0.050),
-			 PointD.LogLog(25, 0.055), PointD.LogLog(50, 0.073), 
-			 PointD.LogLog(100, 0.091)).ChangeModel(MathematicalModel.Power));
+			OutputRegressionModel(LinearRegression.Compute(PointD.LogLog(12.5f, 0.037f), PointD.LogLog(20, 0.050f),
+			 PointD.LogLog(25, 0.055f), PointD.LogLog(50, 0.073f), 
+			 PointD.LogLog(100, 0.091f)).ChangeModel(MathematicalModel.Power));
 
 			OutputRegressionModel(RegressionModel.Compute(new PointD(12.5f, 0.037f), new PointD(20, 0.050f),
 			 new PointD(25, 0.055f), new PointD(50, 0.073f), new PointD(100, 0.091f)));
@@ -90,11 +90,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 3");
 			var lrr0 = LinearRegression.Compute(
-				new PointD(1e6, SignificantDigits.Round(1.0 / 1.16, 3, RoundingMode.ToEven)),
-				new PointD(1e5, SignificantDigits.Round(1.0 / 8.46, 3, RoundingMode.ToEven)),
-				new PointD(1e4, SignificantDigits.Round(1.0 / 24.94, 4, RoundingMode.ToEven)),
-				new PointD(1e3, SignificantDigits.Round(1.0 / 27.94, 4, RoundingMode.ToEven)),
-				new PointD(1e2, SignificantDigits.Round(1.0 / 29.95, 4, RoundingMode.ToEven))
+				new PointD(1000000, RoundedInverse("1.16")),
+				new PointD(100000, RoundedInverse("8.46")),
+				new PointD(10000, RoundedInverse("24.94")),
+				new PointD(1000, RoundedInverse("27.94")),
+				new PointD(100, RoundedInverse("29.95"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			var vmax0 = 1.0 / lrr0.Intercept;
@@ -103,20 +103,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
 			lrr0 = LinearRegression.Compute(
-				new PointD(100, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
-				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 20, 3, RoundingMode.ToEven)),
-				new PointD(50, SignificantDigits.Round(1.0 / 25, 3, RoundingMode.ToEven)),
-				new PointD(40, SignificantDigits.Round(1.0 / 27, 3, RoundingMode.ToEven)),
-				new PointD(20, SignificantDigits.Round(1.0 / 35.7, 3, RoundingMode.ToEven)),
-				new PointD(10, SignificantDigits.Round(1.0 / 41.7, 3, RoundingMode.ToEven))
+				new PointD(100, RoundedInverse("16.7")),
+				new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("20")),
+				new PointD(50, RoundedInverse("25")),
+				new PointD(40, RoundedInverse("27")),
+				new PointD(20, RoundedInverse("35.7")),
+				new PointD(10, RoundedInverse("41.7"))
 			);
 			var lrr1 = LinearRegression.Compute(
-				new PointD(100, SignificantDigits.Round(1.0 / 10, 3, RoundingMode.ToEven)),
-				new PointD(Math.Round(100 / 1.33, 1), SignificantDigits.Round(1.0 / 12.5, 3, RoundingMode.ToEven)),
-				new PointD(50, SignificantDigits.Round(1.0 / 16.7, 3, RoundingMode.ToEven)),
-				new PointD(40, SignificantDigits.Round(1.0 / 19.2, 3, RoundingMode.ToEven)),
-				new PointD(20, SignificantDigits.Round(1.0 / 27.8, 3, RoundingMode.ToEven)),
-				new PointD(10, SignificantDigits.Round(1.0 / 35.7, 3, RoundingMode.ToEven))
+				new PointD(100, RoundedInverse("10")),
+				new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("12.5")),
+				new PointD(50, RoundedInverse("16.7")),
+				new PointD(40, RoundedInverse("19.2")),
+				new PointD(20, RoundedInverse("27.8")),
+				new PointD(10, RoundedInverse("35.7"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
@@ -236,7 +236,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputHeading("German imperialists are out of luck");
 			rm = RegressionModel.Compute(new PointD(1, 1006), new PointD(2, 47), new PointD(3, 12));
 			OutputRegressionModel(rm);
-			Console.WriteLine("The fourth reich would only last {0} years.", rm.Evaluate(4));
+			Console.WriteLine("The fourth reich would only last {0:g4} years.", rm.Evaluate(4));
 		}
 
 #if !NET20
