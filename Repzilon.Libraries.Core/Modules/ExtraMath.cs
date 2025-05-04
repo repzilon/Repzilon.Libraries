@@ -200,6 +200,8 @@ namespace Repzilon.Libraries.Core
 		public static double StirlingApproximateFactorial(double n, StirlingMode mode)
 		{
 			var value = Math.Sqrt(2 * Math.PI * n) * Math.Pow(n / Math.E, n);
+			// A coarse comparison is what we ware looking for
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			var blnNisInteger = Math.Round(n) == n;
 			if (blnNisInteger && (mode >= StirlingMode.Rounded)) {
 				value = n > 1 ? RoundToMultiple(value, 2) : n;

@@ -71,7 +71,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			var zt = default(T);
 			var n = Convert.ToDouble(nt);
 			var mnt = ExtraMath.ConvertTo<T>(-1 * n);
-			if (vav == 0) {
+			if (RoundOff.AreEqual(vav, 0)) {
 				return new KeyValuePair<T, T>(nt, zt);
 			} else if (RoundOff.AreEqual(vav, quarterTurn)) {
 				return new KeyValuePair<T, T>(zt, nt);

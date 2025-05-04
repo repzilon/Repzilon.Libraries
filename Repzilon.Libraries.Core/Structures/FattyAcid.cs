@@ -100,8 +100,8 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			return Name == other.Name &&
 				   Formula == other.Formula &&
-				   MolarMass == other.MolarMass &&
-				   MeltingPoint == other.MeltingPoint;
+				   RoundOff.AreEqual(MolarMass, other.MolarMass) &&
+				   RoundOff.AreEqual(MeltingPoint, other.MeltingPoint);
 		}
 
 		public override int GetHashCode()

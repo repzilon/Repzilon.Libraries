@@ -235,7 +235,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		int o)
 		{
 			var delta = integral - expected;
+			// When the FP subtraction gives 0, it is not really zero here,
+			// it is just so small it cannot be computed correctly on a FPU.
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 			if (delta == 0) {
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				delta = 1e-18;
 			}
 			Console.WriteLine("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {6}{2:e7}   {3,-33} (n={4,4} o={5,4})",

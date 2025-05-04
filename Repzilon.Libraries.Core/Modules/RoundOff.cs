@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2024 René Rhéaume
+// Copyright (C) 2022-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -60,22 +60,33 @@ namespace Repzilon.Libraries.Core
 			 value.Base, value.Exponent);
 		}
 
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 		public static bool AreEqual(float value, int k)
 		{
-			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			// ReSharper disable CompareOfFloatsByEqualityOperator
 			return Error(value) == k;
 		}
 
 		public static bool AreEqual(double value, int k)
 		{
-			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			return Error(value) == k;
+		}
+
+		public static bool AreEqual(double value, float k)
+		{
+			return Error(value) == UpsizeError(k);
+		}
+		
+		public static bool AreEqual(double value, double k)
+		{
+			return Error(value) == Error(k);
 		}
 
 		public static bool AreEqual(float a, float b)
 		{
-			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			return Error(a) == Error(b);
+			// ReSharper restore CompareOfFloatsByEqualityOperator
 		}
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 	}
 }

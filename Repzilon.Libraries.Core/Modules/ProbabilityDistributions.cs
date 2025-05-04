@@ -129,7 +129,7 @@ namespace Repzilon.Libraries.Core
 		public static double InverseNormal(double p, short iterations)
 		{
 			InverseCheck(p);
-			if (p == 0.5) {
+			if (RoundOff.AreEqual(p, 0.5f)) {
 				return 0;
 			}
 			return Math.Sqrt(2) * InverseErf(p + p - 1, iterations);
@@ -220,7 +220,7 @@ namespace Repzilon.Libraries.Core
 		public static double Student(double x, byte liberties, bool cumulative)
 		{
 			if (cumulative) {
-				if (x == 0) {
+				if (RoundOff.AreEqual(x, 0)) {
 					return 0.5;
 				} else if (Double.IsNegativeInfinity(x)) {
 					return 0;
@@ -470,7 +470,7 @@ namespace Repzilon.Libraries.Core
 			/*const*/ double kOne = 1;
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);
-			if (p == kHalf) {
+			if (RoundOff.AreEqual(p, kHalf)) {
 				return 0;
 			}
 			double inter;
@@ -581,7 +581,7 @@ namespace Repzilon.Libraries.Core
 			/*const*/ double kHalf = 0.5;
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);
-			if (p == kHalf) {
+			if (RoundOff.AreEqual(p, kHalf)) {
 				return 0;
 			}
 
