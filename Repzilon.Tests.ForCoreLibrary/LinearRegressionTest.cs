@@ -201,15 +201,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("  ");
 			OutputRegressionModel(RegressionModel.Compute(ptdarMeanTravel));
 			byte i;
+			PointD ptd;
 			for (i = 0; i < ptdarMeanTravel.Length; i++) {
-				ptdarMeanTravel[i] = new PointD(ptdarMeanTravel[i].X, 1.0 / ptdarMeanTravel[i].Y);
+				ptd = ptdarMeanTravel[i];
+				ptdarMeanTravel[i] = new PointD(ptd.X, 1.0 / ptd.Y);
 			}
 			Console.Write("1/");
 			var rm = RegressionModel.Compute(ptdarMeanTravel);
 			OutputRegressionModel(rm);
 			var b = 1.0 / rm.B;
 			for (i = 0; i < ptdarMeanTravel.Length; i++) {
-				ptdarMeanTravel[i] = new PointD(b / ptdarMeanTravel[i].X, 1.0 / ptdarMeanTravel[i].Y);
+				ptd = ptdarMeanTravel[i];
+				ptdarMeanTravel[i] = new PointD(b / ptd.X, 1.0 / ptd.Y);
 			}
 			rm = RegressionModel.Compute(ptdarMeanTravel);
 			Console.WriteLine("  y = {1:g6} + {0:g6} * x^-1 r={2,-8:g6} S/N={3:g6} dB", b * rm.B, rm.A,
