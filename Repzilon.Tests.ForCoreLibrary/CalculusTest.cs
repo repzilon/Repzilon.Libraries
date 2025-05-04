@@ -29,7 +29,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 	internal static class CalculusTest
 	{
-		private const int testCount = 100000;
+		private const int TestCount = 100000;
 		private static readonly Random Random = new Random();
 
 		internal static void Run(string[] args)
@@ -174,7 +174,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("\t: ");
 			try {
 				DateTime dtmStart = DateTime.UtcNow;
-				for (int i = 0; i < testCount; i++) {
+				for (int i = 0; i < TestCount; i++) {
 					double x = Random.NextDouble();
 					if (kind == MathFunction.InverseTrigo) {
 						x = x * 2 - 1;
@@ -183,7 +183,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					}
 					TestMathAnalog(x, math, extraMath);
 				}
-				var hertz = testCount / (DateTime.UtcNow - dtmStart).TotalSeconds;
+				var hertz = TestCount / (DateTime.UtcNow - dtmStart).TotalSeconds;
 				Console.WriteLine("success at {0:n0} Hz", hertz);
 			} catch (Exception exc) {
 				Console.WriteLine("FAIL");
@@ -280,7 +280,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			while (n-- > 0) {
 				tmp = a + b;
 				a = b;
-				b = tmp; 
+				b = tmp;
 			}
 
 			return a;

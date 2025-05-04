@@ -128,7 +128,7 @@ namespace Repzilon.Libraries.Core
 		private const decimal SmallestNonZeroDec = 0.0000000000000000000000000001m;
 
 		// This table is required for the Round function which can specify the number of digits to round to
-		private static readonly decimal[] roundPower10Decimal = new decimal[]
+		private static readonly decimal[] RoundPower10Decimal = new decimal[]
 		{
 			1E0m,  1E1m,  1E2m,  1E3m,  1E4m,  1E5m,  1E6m,  1E7m,  1E8m,  1E9m,
 			1E10m, 1E11m, 1E12m, 1E13m, 1E14m, 1E15m, 1E16m, 1E17m, 1E18m, 1E19m,
@@ -534,7 +534,7 @@ namespace Repzilon.Libraries.Core
 				// Note that first "digit" will be the integer portion of d2
 				digit = Math.Truncate(shiftingNumber);
 
-				m1 -= timesInto * (digit / roundPower10Decimal[i]);
+				m1 -= timesInto * (digit / RoundPower10Decimal[i]);
 
 				shiftingNumber = (shiftingNumber - digit) * 10m; // remove used digit and shift for next iteration
 				if (shiftingNumber == 0m) {

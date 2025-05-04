@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2024-2025 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -220,9 +220,9 @@ namespace Repzilon.Libraries.Core
 	internal static class AffineBinomialExtensions
 	{
 #if NET20
-		internal static void AddConstant<K, T>(IDictionary<K, AffineBinomial<T>> dictionary, K key, double value)
+		internal static void AddConstant<TKey, T>(IDictionary<TKey, AffineBinomial<T>> dictionary, TKey key, double value)
 #else
-		internal static void AddConstant<K, T>(this IDictionary<K, AffineBinomial<T>> dictionary, K key, double value)
+		internal static void AddConstant<TKey, T>(this IDictionary<TKey, AffineBinomial<T>> dictionary, TKey key, double value)
 #endif
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{

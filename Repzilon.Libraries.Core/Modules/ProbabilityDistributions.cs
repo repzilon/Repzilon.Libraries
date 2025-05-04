@@ -25,7 +25,7 @@ namespace Repzilon.Libraries.Core
 		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 		private static readonly double HalfSqrtOfPi = 0.5 * Math.Sqrt(Math.PI);
 
-		private static short LastProbitIterationCall;
+		private static short _lastProbitIterationCall;
 		private static readonly Dictionary<int, double> CofCache = new Dictionary<int, double>();
 		// The Int32 key is 2 Int16 fused together
 		private static readonly Dictionary<int, double> CofInnerCache = new Dictionary<int, double>();
@@ -147,9 +147,9 @@ namespace Repzilon.Libraries.Core
 				 "At least 100 iterations are needed for a reasonably accurate evaluation.");
 			}
 			//* Not clearing the CofInnerCache worsens performance, strange, but keep that block
-			if (iterations > LastProbitIterationCall) {
+			if (iterations > _lastProbitIterationCall) {
 				CofInnerCache.Clear();
-				LastProbitIterationCall = iterations;
+				_lastProbitIterationCall = iterations;
 			}// */
 
 			double sum = 0;

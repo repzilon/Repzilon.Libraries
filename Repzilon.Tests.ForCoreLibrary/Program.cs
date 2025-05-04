@@ -170,11 +170,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static string TypeNameWithGeneric(Type dotnetType)
 		{
 #if !NETCOREAPP1_0
-			var typarGTA = dotnetType.GetGenericArguments();
+			var typarGta = dotnetType.GetGenericArguments();
 #else
-			var typarGTA = dotnetType.GenericTypeArguments;
+			var typarGta = dotnetType.GenericTypeArguments;
 #endif
-			return dotnetType.Name.Replace("`1", (typarGTA.Length == 1) ? "<" + typarGTA[0].Name + ">" : "<T>");
+			return dotnetType.Name.Replace("`1", (typarGta.Length == 1) ? "<" + typarGta[0].Name + ">" : "<T>");
 		}
 
 		internal static void OutputHeading(string text)
