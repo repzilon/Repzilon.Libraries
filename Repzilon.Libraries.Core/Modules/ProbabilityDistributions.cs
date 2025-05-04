@@ -25,7 +25,7 @@ namespace Repzilon.Libraries.Core
 		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 		private static readonly double HalfSqrtOfPi = 0.5 * Math.Sqrt(Math.PI);
 
-		private static short LastProbitIterationCall = 0;
+		private static short LastProbitIterationCall;
 		private static readonly Dictionary<int, double> CofCache = new Dictionary<int, double>();
 		// The Int32 key is 2 Int16 fused together
 		private static readonly Dictionary<int, double> CofInnerCache = new Dictionary<int, double>();
