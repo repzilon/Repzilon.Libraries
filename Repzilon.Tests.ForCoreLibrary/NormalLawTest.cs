@@ -433,7 +433,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void FindMacLaurinBreakpointForNormalLawIntegral(decimal targetDelta)
 		{
 			var blnBroken = false;
-			var dcmarDeltas = new decimal[22 - 16 + 1];
 			for (int i = 200; (!blnBroken) && (i <= 300); i++) {
 				var z = i * 0.01m;
 				var n = ProbabilityDistributions.SimpsonIterations((double)z);
@@ -444,7 +443,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 				for (byte k = 16; k <= 22; k++) {
 					ml = MacLaurinPositiveNormalIntegral(z, k);
 					delta = ml - simpson;
-					dcmarDeltas[k - 16] = delta;
 
 					if (Math.Abs(delta) < Math.Abs(bestDelta)) {
 						bestDelta = delta;

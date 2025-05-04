@@ -444,8 +444,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private static double FindNewtonCrossing(EnzymeKinematic<double> kinematic,
 		RegressionModel<double> michaelisMenten, double candidate, double min, double max)
 		{
-			/*const*/ double kNaN = Double.NaN;
-			double fx = kNaN;
+			double fx;
 			int k = 1;
 #if DEBUG
 			double dx;
@@ -465,7 +464,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #if DEBUG && !NETSTANDARD1_1
 			Console.WriteLine("Newton: différence de {0} après {1} itérations", fx, k);
 #endif
-			return (candidate >= min && candidate <= max) ? candidate : kNaN;
+			return (candidate >= min && candidate <= max) ? candidate : Double.NaN;
 		}
 
 		private static double ExperimentalMinusTheorical(RegressionModel<double> experimental,
