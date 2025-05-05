@@ -13,9 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
-#if !NETCOREAPP1_0
 using System.Globalization;
-#endif
 #if NETCOREAPP3_1 || NET5_0 || NET6_0
 using System.Runtime.CompilerServices;
 #endif
@@ -52,12 +50,45 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Normal law", NormalLawTest.Run);
 			dicTests.Add("Student distribution", StudentTest.Run);
 
+			if (args == null || args.Length < 1) {
+				RunInteractively(dicTests, args);
+			} else if ((args[0] == "--help") || (args[0] == "-h") || (args[0] == "/?")) {
+				OutputUsage();
+			} else if (args[0] == "--demos") {
+				var lstSequence = new List<int>();
+				int i;
+				for (i = 1; i < args.Length; i++) {
+					var strarTests = args[i].Split(',');
+					for (int j = 0; j < strarTests.Length; j++) {
+						int numero;
+						if (Int32.TryParse(strarTests[j], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out numero)) {
+							if ((numero >= 1) && (numero <= dicTests.Count)) {
+								lstSequence.Add(numero);
+							}
+						}
+					}
+				}
+
+				if (lstSequence.Count > 0) {
+					for (i = 0; i < lstSequence.Count; i++) {
+						RunSingleDemo(lstSequence[i], dicTests, args);
+					}
+				} else {
+					RunInteractively(dicTests, args);
+				}
+			} else {
+				RunInteractively(dicTests, args);
+			}
+		}
+
+		private static void RunInteractively(SortedList<string, Action<string[]>> allDemos, string[] args)
+		{
 #if NET40 || NET35 || NET20
 			var enuWorkaroundCygwin = TriState.Unknown;
 #else
 			var enuWorkaroundCygwin = Console.IsInputRedirected ? TriState.True : TriState.Unknown;
 #endif
-			DisplayMenu(enuWorkaroundCygwin, dicTests);
+			DisplayMenu(enuWorkaroundCygwin, allDemos);
 			var chrPressed = MyReadKey(ref enuWorkaroundCygwin);
 			while (char.ToUpperInvariant(chrPressed) != 'Q') {
 #if NETCOREAPP1_0
@@ -67,17 +98,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 				if (Uri.IsHexDigit(chrPressed)) {
 					var intPressed = Int32.Parse(chrPressed.ToString(), NumberStyles.HexNumber);
 #endif
-					if ((intPressed >= 1) && (intPressed <= dicTests.Count)) {
-						Console.Write(Environment.NewLine);
-						var dtmStart = DateTime.UtcNow;
-						dicTests.Values[intPressed - 1](args);
-						var tsElapsed = DateTime.UtcNow - dtmStart;
-						Console.WriteLine("{0} Test took {1:n3}s", dicTests.Keys[intPressed - 1], tsElapsed.TotalSeconds);
-						DisplayMenu(enuWorkaroundCygwin, dicTests);
+					if ((intPressed >= 1) && (intPressed <= allDemos.Count)) {
+						RunSingleDemo(intPressed, allDemos, args);
+						DisplayMenu(enuWorkaroundCygwin, allDemos);
 					}
 				}
 				chrPressed = MyReadKey(ref enuWorkaroundCygwin);
 			}
+		}
+
+		private static void RunSingleDemo(int numero, SortedList<string, Action<string[]>> allDemos, string[] args)
+		{
+			Console.Write(Environment.NewLine);
+			var dtmStart = DateTime.UtcNow;
+			allDemos.Values[numero - 1](args);
+			var tsElapsed = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("{0} Test took {1:n3}s", allDemos.Keys[numero - 1], tsElapsed.TotalSeconds);
 		}
 
 		private static char MyReadKey(ref TriState workaroundCygwin)
@@ -192,6 +228,34 @@ namespace Repzilon.Tests.ForCoreLibrary
 #else
 			return RuntimeInformation.IsOSPlatform(OSPlatform.OSX);
 #endif
+		}
+
+		private static void OutputUsage()
+		{
+			Console.WriteLine(
+@"NAME
+	Repzilon.Tests.ForCoreLibrary - Demo program for Repzilon.Libraries
+
+SYNOPSIS
+	Repzilon.Tests.ForCoreLibrary {--help|-h|/?} - displays this message
+	Repzilon.Tests.ForCoreLibrary --demos <comma separated test numbers>
+
+DESCRIPTION
+	When run without arguments, will display a menu listing demos, which 
+	can be selected by pressing a key associated with the demo, then 
+	return to the menu. You can exit the program by pressing Q in the menu.
+
+	When the --demos argument is used, the demos identified with the same
+	key as inside the menu will be run in sequence without displaying the
+	menu, without asking for a key press and leave immediately. However,
+	if no sequence is supplied, it will revert to the interactive mode,
+	just like when no arguments are passed.
+
+CONATCT INFO
+	(C) 2022-2025 René Rhéaume <repzilon@users.noreply.github.com>
+	Licensed under the MPL 2.0, available at https://mozilla.org/MPL/2.0/
+	There is NO WARRANTY, to the extent of the law.
+	Project page: https://github.com/repzilon/Repzilon.Libraries");
 		}
 	}
 }
