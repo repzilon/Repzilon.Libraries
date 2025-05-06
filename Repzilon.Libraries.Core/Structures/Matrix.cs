@@ -850,6 +850,7 @@ namespace Repzilon.Libraries.Core
 
 					// Find in the original matrix a line which has a non-zero coefficient for that variable
 					for (c = 0; c < m; c++) {
+						// ReSharper disable once IntVariableOverflowInUncheckedContext
 						if (!this[c, (byte)l].Equals(zero)) {
 							// When found, do the substitution with an affine binomial like above
 							SolveLinkedLine(zero, variables, dicSolved, c, MatrixExtensionMethods.Augment(this, constants), polymorph);

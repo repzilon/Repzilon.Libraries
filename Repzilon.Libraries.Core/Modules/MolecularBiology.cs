@@ -58,6 +58,7 @@ namespace Repzilon.Libraries.Core
 				var bpmax = Convert.ToUInt16(rmdUpper.Evaluate(ca));
 				var dicCheck = new Dictionary<ushort, bool>(forFragmentLengths.Length);
 #pragma warning disable CC0006 // Use foreach
+				// ReSharper disable once ForCanBeConvertedToForeach
 				for (int i = 0; i < forFragmentLengths.Length; i++) {
 #pragma warning restore CC0006 // Use foreach
 					var l = forFragmentLengths[i];
