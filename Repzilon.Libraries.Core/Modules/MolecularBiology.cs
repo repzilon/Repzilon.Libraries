@@ -16,6 +16,7 @@ using System;
 using System.Linq;
 using System.Collections.Generic;
 using Repzilon.Libraries.Core.Regression;
+// ReSharper disable RedundantExplicitArraySize
 
 namespace Repzilon.Libraries.Core
 {
@@ -27,12 +28,13 @@ namespace Repzilon.Libraries.Core
 #pragma warning disable S3963 // "static" fields should be initialized inline
 		static MolecularBiology()
 		{
-			var karAgarose = new float[7] { 0.3f, 0.6f, 0.7f, 0.9f, 1.2f, 1.5f, 2.0f };
-			var karMinSize = new short[7] { 5000, 1000, 800, 500, 400, 200, 100 };
-			var karMaxSize = new ushort[7] { 60000, 20000, 10000, 7000, 6000, 3000, 2000 };
-			var lstMin = new List<PointD>(7);
-			var lstMax = new List<PointD>(7);
-			for (byte i = 0; i < 7; i++) {
+			const int kPoints = 7;
+			var karAgarose = new float[kPoints] { 0.3f, 0.6f, 0.7f, 0.9f, 1.2f, 1.5f, 2.0f };
+			var karMinSize = new short[kPoints] { 5000, 1000, 800, 500, 400, 200, 100 };
+			var karMaxSize = new ushort[kPoints] { 60000, 20000, 10000, 7000, 6000, 3000, 2000 };
+			var lstMin = new List<PointD>(kPoints);
+			var lstMax = new List<PointD>(kPoints);
+			for (byte i = 0; i < kPoints; i++) {
 				var dblAgarose = Math.Round(karAgarose[i], 1);
 				lstMin.Add(new PointD(dblAgarose, karMinSize[i]));
 				lstMax.Add(new PointD(dblAgarose, karMaxSize[i]));

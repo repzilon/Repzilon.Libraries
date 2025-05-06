@@ -33,12 +33,10 @@ namespace Repzilon.Libraries.Core
 			var paramA = Expression.Parameter(typeof(TScalar), "a");
 			var paramB = Expression.Parameter(typeof(T), "b");
 
-			// Add the parameters together
-			var body = Expression.Multiply(paramA, paramB);
-
-			// Compile it
-			return Expression.Lambda<Func<TScalar, T, T>>(body, paramA, paramB).Compile();
-		}	
+			// Add the parameters together and compile it
+			return Expression.Lambda<Func<TScalar, T, T>>(Expression.Multiply(paramA, paramB),
+			 paramA, paramB).Compile();
+		}
 
 		private static Func<T, T, T> BuildAdder()
 		{
