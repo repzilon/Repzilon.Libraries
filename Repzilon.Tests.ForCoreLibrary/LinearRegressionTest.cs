@@ -29,32 +29,59 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
+			const int kBenchIterationsDecimal = 70000;
+			const int kBenchIterationsDouble = 25 * kBenchIterationsDecimal;
+
 			var dblTalpha0_025n4 = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), 6 - 2);
 			Console.WriteLine("t{0} = {1}", 6 - 2, dblTalpha0_025n4);
-
+			var ptdarFirst = new PointD[] {
+				new PointD(2, 2.1f), new PointD(4, 4.4f), new PointD(6, 6.5f), new PointD(8, 8.6f),
+				new PointD(10, 10.8f), new PointD(12, 12.9f)
+			};
 			Program.OutputHeading("Double data type");
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<double>>();
-			OutputLinearRegression2(LinearRegression.Compute(new PointD(2, 2.1f), new PointD(4, 4.4f), 
-			 new PointD(6, 6.5f), new PointD(8, 8.6f), new PointD(10, 10.8f), new PointD(12, 12.9f)),
+			OutputLinearRegression2(LinearRegression.Compute(ptdarFirst),
 			 dblTalpha0_025n4, "G", true, 8.25f, 3.4);
+			int j;
+			var dtmStart = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDouble; j++) {
+				LinearRegression.Compute((IEnumerable<PointD>)ptdarFirst);
+			}
+			var tsEnumerable = DateTime.UtcNow - dtmStart;
+			dtmStart     = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDouble; j++) {
+				LinearRegression.Compute((IList<PointD>)ptdarFirst);
+			}
+			var tsList = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointD>, {2:f3} s as IList<PointD>",
+			 kBenchIterationsDouble, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
 			// x can also be 7 or 8, and y can also be 7.5
 
-			var dlrp = LinearRegression.Compute(
-				new PointM(2, 2.1m),
-				new PointM(4, 4.4m),
-				new PointM(6, 6.5m),
-				new PointM(8, 8.6m),
-				new PointM(10, 10.8m),
-				new PointM(12, 12.9m)
-			);
+			var ptmarFirst = new PointM[] {
+				new PointM(2, 2.1m), new PointM(4, 4.4m), new PointM(6, 6.5m), new PointM(8, 8.6m),
+				new PointM(10, 10.8m), new PointM(12, 12.9m)
+			};
 			Program.OutputHeading("Decimal data type");
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<decimal>>();
+			var dlrp = LinearRegression.Compute(ptmarFirst);
 			OutputLinearRegression2(dlrp, (decimal)dblTalpha0_025n4, "G18", true, 7, 7.5m);
-			Console.WriteLine("a - 0.02 = {0}", dlrp.Intercept - 0.02m);
+			Console.WriteLine("a - {1} = {0}", dlrp.Intercept - 0.02m, 0.02m);
+			dtmStart = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDecimal; j++) {
+				LinearRegression.Compute((IEnumerable<PointM>)ptmarFirst);
+			}
+			tsEnumerable = DateTime.UtcNow - dtmStart;
+			dtmStart     = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDecimal; j++) {
+				LinearRegression.Compute((IList<PointM>)ptmarFirst);
+			}
+			tsList = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointM>, {2:f3} s as IList<PointM>",
+			 kBenchIterationsDecimal, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
 
 			Program.OutputHeading("Revision");
 			OutputLinearRegression2(LinearRegression.Compute(new PointM(0, 0.06m), new PointM(5, 1.25m),
@@ -74,7 +101,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 15-16");
 			OutputRegressionModel(LinearRegression.Compute(PointD.LogLog(12.5f, 0.037f), PointD.LogLog(20, 0.050f),
-			 PointD.LogLog(25, 0.055f), PointD.LogLog(50, 0.073f), 
+			 PointD.LogLog(25, 0.055f), PointD.LogLog(50, 0.073f),
 			 PointD.LogLog(100, 0.091f)).ChangeModel(MathematicalModel.Power));
 
 			OutputRegressionModel(RegressionModel.Compute(new PointD(12.5f, 0.037f), new PointD(20, 0.050f),
