@@ -115,23 +115,32 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			const double kToKiB = 1.0 / 1024;
 			Console.Write(Environment.NewLine);
-			var lngRamBefore = GetCurrentMemory() * kToKiB;
+			var lngRamBefore = Math.Ceiling(CurrentMemoryUsage() * kToKiB);
 			var dtmStart = DateTime.UtcNow;
 			allDemos.Values[numero - 1](args);
 			var tsElapsed = DateTime.UtcNow - dtmStart;
 			// ReSharper disable once InconsistentNaming
-			var lngRamAfterNoGC = GetCurrentMemory() * kToKiB;
+			var lngRamAfterNoGC = Math.Ceiling(CurrentMemoryUsage() * kToKiB);
 			// Calling GC.Collect, even an optimized one, makes the process consume more RAM
-			Console.WriteLine("{0} Demo took {1:n3}s\tRAM: {2} kiB -> {3} kiB",
-			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds,  lngRamBefore, lngRamAfterNoGC);
+			Console.WriteLine("{0} Demo took {1:n3}s\t{2}: {3} kiB -> {4} kiB",
+			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds, OnMacOsX ? "GC memory" : "RAM",
+			 lngRamBefore, lngRamAfterNoGC);
 		}
 
-		private static long GetCurrentMemory()
+		private static long CurrentMemoryUsage()
 		{
-			// A Process instance is more like a snapshot
-			using (var prcSelf = Process.GetCurrentProcess()) {
-				return prcSelf.PrivateMemorySize64;
-			}
+			if (OnMacOsX) {
+				// Microsoft is too lazy to provide a libproc wrapper. But libproc is poorly documented, so I will not
+				// dwell into it right now. Working set is also a poor metric: it is only reliable when swapping
+				// and memory compression are disabled. I will use the GC memory, while underestimating memory usage
+				// by a large measure, it does not have the relibility problem.
+				return GC.GetTotalMemory(false);
+			} else {
+				// A Process instance is more like a snapshot
+				using (var prcSelf = Process.GetCurrentProcess()) {
+					return prcSelf.PrivateMemorySize64;
+				}
+			}		
 		}
 
 		private static char MyReadKey(ref TriState workaroundCygwin)
