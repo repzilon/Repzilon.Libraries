@@ -13,6 +13,7 @@
 //
 using System;
 using System.Collections.Generic;
+using System.Diagnostics;
 using System.Globalization;
 #if NETCOREAPP3_1 || NET5_0 || NET6_0
 using System.Runtime.CompilerServices;
@@ -50,8 +51,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Normal law", NormalLawTest.Run);
 			dicTests.Add("Student distribution", StudentTest.Run);
 
-			
-			Console.WriteLine("CurrentCulture: {0}\tCurrentUICulture: {1}", 
+
+			Console.WriteLine("CurrentCulture: {0}\tCurrentUICulture: {1}",
 			 CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name);
 			if (args == null || args.Length < 1) {
 				RunInteractively(dicTests, args);
@@ -112,11 +113,25 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void RunSingleDemo(int numero, SortedList<string, Action<string[]>> allDemos, string[] args)
 		{
+			const double kToKiB = 1.0 / 1024;
 			Console.Write(Environment.NewLine);
+			var lngRamBefore = GetCurrentMemory() * kToKiB;
 			var dtmStart = DateTime.UtcNow;
 			allDemos.Values[numero - 1](args);
 			var tsElapsed = DateTime.UtcNow - dtmStart;
-			Console.WriteLine("{0} Test took {1:n3}s", allDemos.Keys[numero - 1], tsElapsed.TotalSeconds);
+			// ReSharper disable once InconsistentNaming
+			var lngRamAfterNoGC = GetCurrentMemory() * kToKiB;
+			// Calling GC.Collect, even an optimized one, makes the process consume more RAM
+			Console.WriteLine("{0} Demo took {1:n3}s\tRAM: {2} kiB -> {3} kiB",
+			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds,  lngRamBefore, lngRamAfterNoGC);
+		}
+
+		private static long GetCurrentMemory()
+		{
+			// A Process instance is more like a snapshot
+			using (var prcSelf = Process.GetCurrentProcess()) {
+				return prcSelf.PrivateMemorySize64;
+			}
 		}
 
 		private static char MyReadKey(ref TriState workaroundCygwin)
