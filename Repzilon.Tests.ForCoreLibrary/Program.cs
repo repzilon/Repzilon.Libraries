@@ -50,6 +50,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Normal law", NormalLawTest.Run);
 			dicTests.Add("Student distribution", StudentTest.Run);
 
+			
+			Console.WriteLine("CurrentCulture: {0}\tCurrentUICulture: {1}", 
+			 CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name);
 			if (args == null || args.Length < 1) {
 				RunInteractively(dicTests, args);
 			} else if ((args[0] == "--help") || (args[0] == "-h") || (args[0] == "/?")) {
