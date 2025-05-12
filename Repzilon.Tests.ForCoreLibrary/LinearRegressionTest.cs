@@ -34,7 +34,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			var dblTalpha0_025n4 = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), 6 - 2);
 			Console.WriteLine("t{0} = {1}", 6 - 2, dblTalpha0_025n4);
-			var ptdarFirst = new PointD[] {
+			var ptarDouble = new PointD[] {
 				new PointD(2, 2.1f), new PointD(4, 4.4f), new PointD(6, 6.5f), new PointD(8, 8.6f),
 				new PointD(10, 10.8f), new PointD(12, 12.9f)
 			};
@@ -42,24 +42,23 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<double>>();
-			OutputLinearRegression2(LinearRegression.Compute(ptdarFirst),
+			OutputLinearRegression2(LinearRegression.Compute(ptarDouble),
 			 dblTalpha0_025n4, "G", true, 8.25f, 3.4);
 			int j;
 			var dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
-				LinearRegression.Compute((IEnumerable<PointD>)ptdarFirst);
+				LinearRegression.Compute((IEnumerable<PointD>)ptarDouble);
 			}
 			var tsEnumerable = DateTime.UtcNow - dtmStart;
-			dtmStart     = DateTime.UtcNow;
+			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
-				LinearRegression.Compute((IList<PointD>)ptdarFirst);
+				LinearRegression.Compute((IList<PointD>)ptarDouble);
 			}
 			var tsList = DateTime.UtcNow - dtmStart;
-			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointD>, {2:f3} s as IList<PointD>",
-			 kBenchIterationsDouble, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
+			OutputBenchResults(kBenchIterationsDouble, tsEnumerable, tsList);
 			// x can also be 7 or 8, and y can also be 7.5
 
-			var ptmarFirst = new PointM[] {
+			var ptarDecimal = new PointM[] {
 				new PointM(2, 2.1m), new PointM(4, 4.4m), new PointM(6, 6.5m), new PointM(8, 8.6m),
 				new PointM(10, 10.8m), new PointM(12, 12.9m)
 			};
@@ -67,21 +66,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<PointM>();
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<decimal>>();
-			var dlrp = LinearRegression.Compute(ptmarFirst);
+			var dlrp = LinearRegression.Compute(ptarDecimal);
 			OutputLinearRegression2(dlrp, (decimal)dblTalpha0_025n4, "G18", true, 7, 7.5m);
 			Console.WriteLine("a - {1} = {0}", dlrp.Intercept - 0.02m, 0.02m);
 			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDecimal; j++) {
-				LinearRegression.Compute((IEnumerable<PointM>)ptmarFirst);
+				LinearRegression.Compute((IEnumerable<PointM>)ptarDecimal);
 			}
 			tsEnumerable = DateTime.UtcNow - dtmStart;
-			dtmStart     = DateTime.UtcNow;
+			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDecimal; j++) {
-				LinearRegression.Compute((IList<PointM>)ptmarFirst);
+				LinearRegression.Compute((IList<PointM>)ptarDecimal);
 			}
 			tsList = DateTime.UtcNow - dtmStart;
-			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointM>, {2:f3} s as IList<PointM>",
-			 kBenchIterationsDecimal, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
+			OutputBenchResults(kBenchIterationsDecimal, tsEnumerable, tsList);
 
 			Program.OutputHeading("Revision");
 			OutputLinearRegression2(LinearRegression.Compute(new PointM(0, 0.06m), new PointM(5, 1.25m),
@@ -104,40 +102,38 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 PointD.LogLog(25, 0.055f), PointD.LogLog(50, 0.073f),
 			 PointD.LogLog(100, 0.091f)).ChangeModel(MathematicalModel.Power));
 
-			var ptdarBC2Ch1p15 = new PointD[] {
+			ptarDouble = new PointD[] {
 				new PointD(12.5f, 0.037f), new PointD(20, 0.050f), new PointD(25, 0.055f), new PointD(50, 0.073f),
 				new PointD(100, 0.091f)
 			};
-			OutputRegressionModel(RegressionModel.Compute(ptdarBC2Ch1p15));
+			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
 			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
-				RegressionModel.Compute((IEnumerable<PointD>)ptdarBC2Ch1p15);
+				RegressionModel.Compute((IEnumerable<PointD>)ptarDouble);
 			}
 			tsEnumerable = DateTime.UtcNow - dtmStart;
 			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
-				RegressionModel.Compute((IList<PointD>)ptdarBC2Ch1p15);
+				RegressionModel.Compute((IList<PointD>)ptarDouble);
 			}
 			tsList = DateTime.UtcNow - dtmStart;
-			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointD>, {2:f3} s as IList<PointD>",
-			 kBenchIterationsDouble, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
-			var ptmarBC2Ch1p15 = new PointM[] {
+			OutputBenchResults(kBenchIterationsDouble, tsEnumerable, tsList);
+			ptarDecimal = new PointM[] {
 				new PointM(12.5m, 0.037m), new PointM(20, 0.050m), new PointM(25, 0.055m), new PointM(50, 0.073m),
 				new PointM(100, 0.091m)
 			};
-			OutputRegressionModel(RegressionModel.Compute(ptmarBC2Ch1p15));
+			OutputRegressionModel(RegressionModel.Compute(ptarDecimal));
 			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDecimal; j++) {
-				RegressionModel.Compute((IEnumerable<PointM>)ptmarBC2Ch1p15);
+				RegressionModel.Compute((IEnumerable<PointM>)ptarDecimal);
 			}
 			tsEnumerable = DateTime.UtcNow - dtmStart;
 			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDecimal; j++) {
-				RegressionModel.Compute((IList<PointM>)ptmarBC2Ch1p15);
+				RegressionModel.Compute((IList<PointM>)ptarDecimal);
 			}
 			tsList = DateTime.UtcNow - dtmStart;
-			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointM>, {2:f3} s as IList<PointM>",
-			 kBenchIterationsDecimal, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
+			OutputBenchResults(kBenchIterationsDecimal, tsEnumerable, tsList);
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			OutputRegressionModel(RegressionModel.Compute(new PointD(1.0f, 31.25f), new PointD(0.4f, 18.18f),
@@ -253,29 +249,29 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 
 			Program.OutputHeading("Instrumental analysis II Mass spectroscopy mean travel");
-			var ptdarMeanTravel = new PointD[] {
+			ptarDouble = new PointD[] {
 				new PointD(101325, 0.000006f), new PointD(130, 0.0045f),
 				new PointD(0.13f, 4.5f), new PointD(0.013f, 45f),
 				new PointD(0.0013f, 450f), new PointD(0.00013f, 4500f),
 				new PointD(1.3e-5f, 45000f), new PointD(1.3e-7, 4500000)
 			};
 			Console.Write("  ");
-			OutputRegressionModel(RegressionModel.Compute(ptdarMeanTravel));
-			byte i;
+			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
 			PointD ptd;
-			for (i = 0; i < ptdarMeanTravel.Length; i++) {
-				ptd = ptdarMeanTravel[i];
-				ptdarMeanTravel[i] = new PointD(ptd.X, 1.0 / ptd.Y);
+			for (i = 0; i < ptarDouble.Length; i++)
+			{
+				ptd = ptarDouble[i];
+				ptarDouble[i] = new PointD(ptd.X, 1.0 / ptd.Y);
 			}
 			Console.Write("1/");
-			var rm = RegressionModel.Compute(ptdarMeanTravel);
+			var rm = RegressionModel.Compute(ptarDouble);
 			OutputRegressionModel(rm);
 			var b = 1.0 / rm.B;
-			for (i = 0; i < ptdarMeanTravel.Length; i++) {
-				ptd = ptdarMeanTravel[i];
-				ptdarMeanTravel[i] = new PointD(b / ptd.X, 1.0 / ptd.Y);
+			for (i = 0; i < ptarDouble.Length; i++) {
+				ptd = ptarDouble[i];
+				ptarDouble[i] = new PointD(b / ptd.X, 1.0 / ptd.Y);
 			}
-			rm = RegressionModel.Compute(ptdarMeanTravel);
+			rm = RegressionModel.Compute(ptarDouble);
 			Console.WriteLine("  y = {1:g6} + {0:g6} * x^-1 r={2,-8:g6} S/N={3:g6} dB", b * rm.B, rm.A,
 			 rm.R, -10 * Math.Log10(1 - rm.R));
 
@@ -298,9 +294,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("28! ≈ {0,39:n0}", ExtraMath.StirlingApproximateFactorial(28.0, StirlingMode.Corrected));
 
 			Program.OutputHeading("German imperialists are out of luck");
-			rm = RegressionModel.Compute(new PointD(1, 1006), new PointD(2, 47), new PointD(3, 12));
+			rm = RegressionModel.Compute(new PointD(1, 1006), new PointD(2, 1918 - 1871), new PointD(3, 1945 - 1933));
 			OutputRegressionModel(rm);
 			Console.WriteLine("The fourth reich would only last {0:g4} years.", rm.Evaluate(4));
+		}
+
+		private static void OutputBenchResults(int iterations, TimeSpan withEnumerable, TimeSpan withList)
+		{
+			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointD>, {2:f3} s as IList<PointD>",
+			 iterations, withEnumerable.TotalSeconds, withList.TotalSeconds);
 		}
 
 #if !NET20
