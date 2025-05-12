@@ -1,5 +1,5 @@
 ﻿//
-//  RegressionModel.cs
+//  RegressionModelOfT.cs
 //
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
