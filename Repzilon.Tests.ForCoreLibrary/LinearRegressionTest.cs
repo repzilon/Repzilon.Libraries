@@ -104,8 +104,40 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 PointD.LogLog(25, 0.055f), PointD.LogLog(50, 0.073f),
 			 PointD.LogLog(100, 0.091f)).ChangeModel(MathematicalModel.Power));
 
-			OutputRegressionModel(RegressionModel.Compute(new PointD(12.5f, 0.037f), new PointD(20, 0.050f),
-			 new PointD(25, 0.055f), new PointD(50, 0.073f), new PointD(100, 0.091f)));
+			var ptdarBC2Ch1p15 = new PointD[] {
+				new PointD(12.5f, 0.037f), new PointD(20, 0.050f), new PointD(25, 0.055f), new PointD(50, 0.073f),
+				new PointD(100, 0.091f)
+			};
+			OutputRegressionModel(RegressionModel.Compute(ptdarBC2Ch1p15));
+			dtmStart = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDouble; j++) {
+				RegressionModel.Compute((IEnumerable<PointD>)ptdarBC2Ch1p15);
+			}
+			tsEnumerable = DateTime.UtcNow - dtmStart;
+			dtmStart = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDouble; j++) {
+				RegressionModel.Compute((IList<PointD>)ptdarBC2Ch1p15);
+			}
+			tsList = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointD>, {2:f3} s as IList<PointD>",
+			 kBenchIterationsDouble, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
+			var ptmarBC2Ch1p15 = new PointM[] {
+				new PointM(12.5m, 0.037m), new PointM(20, 0.050m), new PointM(25, 0.055m), new PointM(50, 0.073m),
+				new PointM(100, 0.091m)
+			};
+			OutputRegressionModel(RegressionModel.Compute(ptmarBC2Ch1p15));
+			dtmStart = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDecimal; j++) {
+				RegressionModel.Compute((IEnumerable<PointM>)ptmarBC2Ch1p15);
+			}
+			tsEnumerable = DateTime.UtcNow - dtmStart;
+			dtmStart = DateTime.UtcNow;
+			for (j = 0; j < kBenchIterationsDecimal; j++) {
+				RegressionModel.Compute((IList<PointM>)ptmarBC2Ch1p15);
+			}
+			tsList = DateTime.UtcNow - dtmStart;
+			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointM>, {2:f3} s as IList<PointM>",
+			 kBenchIterationsDecimal, tsEnumerable.TotalSeconds, tsList.TotalSeconds);
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			OutputRegressionModel(RegressionModel.Compute(new PointD(1.0f, 31.25f), new PointD(0.4f, 18.18f),

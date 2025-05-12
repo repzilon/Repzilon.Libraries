@@ -215,36 +215,63 @@ namespace Repzilon.Libraries.Core.Regression
 	{
 		public static RegressionModel<double> Compute(params PointD[] points)
 		{
-			return Compute((IEnumerable<PointD>)points);
+			return Compute(points as IList<PointD>);
 		}
 
 		public static RegressionModel<double> Compute(IEnumerable<PointD> points)
+		{
+			int c;
+			var lstarAll = InitLists(new List<PointD>(points), out c);
+
+			for (int i = 0; i < c; i++) {
+				AddDataPoint(lstarAll, lstarAll[(int)MathematicalModel.Affine][i]);
+			}
+
+			return FinishCompute(lstarAll);
+		}
+
+		public static RegressionModel<double> Compute(IList<PointD> points)
+		{
+			int c;
+			var lstarAll = InitLists(points, out c);
+
+			for (int i = 0; i < c; i++) {
+				AddDataPoint(lstarAll, points[i]);
+			}
+
+			return FinishCompute(lstarAll);
+		}
+
+		private static IList<T>[] InitLists<T>(IList<T> points, out int c)
 		{
 			if (points == null) {
 				throw new ArgumentNullException("points");
 			}
 
-			var lstarAll = new List<PointD>[4];
-			lstarAll[(int)MathematicalModel.Affine] = new List<PointD>(points);
-			int i;
-			var c = lstarAll[(int)MathematicalModel.Affine].Count;
-			for (i = 1; i < 4; i++) {
-				lstarAll[i] = new List<PointD>(c);
+			var lstarAll = new IList<T>[4];
+			lstarAll[(int)MathematicalModel.Affine] = points;
+			c = points.Count;
+			for (int i = 1; i < 4; i++) {
+				lstarAll[i] = new List<T>(c);
 			}
+			return lstarAll;
+		}
 
-			for (i = 0; i < c; i++) {
-				var pt     = lstarAll[(int)MathematicalModel.Affine][i];
-				var x      = pt.X;
-				var y      = pt.Y;
-				var log10X = Math.Log10(x);
-				var log10Y = Math.Log10(y);
-				lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointD(log10X, y));
-				lstarAll[(int)MathematicalModel.SemiLogY].Add(new PointD(x, log10Y));
-				lstarAll[(int)MathematicalModel.LogLog].Add(new PointD(log10X, log10Y));
-			}
+		private static void AddDataPoint(IList<PointD>[] lstarAll, PointD pt)
+		{
+			var x = pt.X;
+			var y = pt.Y;
+			var log10X = Math.Log10(x);
+			var log10Y = Math.Log10(y);
+			lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointD(log10X, y));
+			lstarAll[(int)MathematicalModel.SemiLogY].Add(new PointD(x, log10Y));
+			lstarAll[(int)MathematicalModel.LogLog].Add(new PointD(log10X, log10Y));
+		}
 
+		private static RegressionModel<double> FinishCompute(IList<PointD>[] lstarAll)
+		{
 			var rmarAll = new RegressionModel<double>[4];
-			for (i = 0; i < 4; i++) {
+			for (int i = 0; i < 4; i++) {
 				rmarAll[i] = LinearRegression.Compute(lstarAll[i]).ChangeModel((MathematicalModel)i);
 			}
 
@@ -256,41 +283,53 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			var xR = x.R;
 			var yR = y.R;
-			return -1 * (xR * xR).CompareTo(yR * yR);
+			return -(xR * xR).CompareTo(yR * yR);
 		}
 
 		public static RegressionModel<decimal> Compute(params PointM[] points)
 		{
-			return Compute((IEnumerable<PointM>)points);
+			return Compute(points as IList<PointM>);
 		}
 
 		public static RegressionModel<decimal> Compute(IEnumerable<PointM> points)
 		{
-			if (points == null) {
-				throw new ArgumentNullException("points");
+			int c;
+			var lstarAll = InitLists(new List<PointM>(points), out c);
+
+			for (int i = 0; i < c; i++) {
+				AddDataPoint(lstarAll, lstarAll[(int)MathematicalModel.Affine][i]);
 			}
 
-			var lstarAll = new List<PointM>[4];
-			lstarAll[(int)MathematicalModel.Affine] = new List<PointM>(points);
-			int i;
-			var c = lstarAll[(int)MathematicalModel.Affine].Count;
-			for (i = 1; i < 4; i++) {
-				lstarAll[i] = new List<PointM>(c);
+			return FinishCompute(lstarAll);
+		}
+
+		public static RegressionModel<decimal> Compute(IList<PointM> points)
+		{
+			int c;
+			var lstarAll = InitLists(points, out c);
+
+			for (int i = 0; i < c; i++){
+				AddDataPoint(lstarAll, points[i]);
 			}
 
-			for (i = 0; i < c; i++) {
-				var pt     = lstarAll[(int)MathematicalModel.Affine][i];
-				var x      = pt.X;
-				var y      = pt.Y;
-				var log10X = (decimal)Math.Log10((double)x);
-				var log10Y = (decimal)Math.Log10((double)y);
-				lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointM(log10X, y));
-				lstarAll[(int)MathematicalModel.SemiLogY].Add(new PointM(x, log10Y));
-				lstarAll[(int)MathematicalModel.LogLog].Add(new PointM(log10X, log10Y));
-			}
+			return FinishCompute(lstarAll);
+		}
 
+		private static void AddDataPoint(IList<PointM>[] lstarAll, PointM pt)
+		{
+			var x = pt.X;
+			var y = pt.Y;
+			var log10X = (decimal)Math.Log10((double)x);
+			var log10Y = (decimal)Math.Log10((double)y);
+			lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointM(log10X, y));
+			lstarAll[(int)MathematicalModel.SemiLogY].Add(new PointM(x, log10Y));
+			lstarAll[(int)MathematicalModel.LogLog].Add(new PointM(log10X, log10Y));
+		}
+
+		private static RegressionModel<decimal> FinishCompute(IList<PointM>[] lstarAll)
+		{
 			var rmarAll = new RegressionModel<decimal>[4];
-			for (i = 0; i < 4; i++) {
+			for (int i = 0; i < 4; i++) {
 				rmarAll[i] = LinearRegression.Compute(lstarAll[i]).ChangeModel((MathematicalModel)i);
 			}
 
@@ -302,7 +341,7 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			var xR = x.R;
 			var yR = y.R;
-			return -1 * (xR * xR).CompareTo(yR * yR);
+			return -(xR * xR).CompareTo(yR * yR);
 		}
 	}
 }
