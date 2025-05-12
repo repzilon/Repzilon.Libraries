@@ -258,8 +258,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("  ");
 			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
 			PointD ptd;
-			for (i = 0; i < ptarDouble.Length; i++)
-			{
+			byte i;
+			for (i = 0; i < ptarDouble.Length; i++)  {
 				ptd = ptarDouble[i];
 				ptarDouble[i] = new PointD(ptd.X, 1.0 / ptd.Y);
 			}
