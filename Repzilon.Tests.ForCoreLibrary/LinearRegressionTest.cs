@@ -234,6 +234,78 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 SignificantDigits.Round(Km0, 4, RoundingMode.ToEven),
 			 SignificantDigits.Round(vmax1, 3, RoundingMode.ToEven));
 
+			Program.OutputHeading("Biochemistry II laboratory 4");
+			lrr0 = LinearRegression.Compute(
+				new PointD(0.0100f, 0.142f),
+				new PointD(0.020f, 0.251f),
+				new PointD(0.030f, 0.390f),
+				new PointD(0.040f, 0.520f)
+			);
+			Console.Write("Calibration    : ");
+			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
+			Km0 = lrr0.SlopeStdDev() * ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), (byte)(lrr0.Count - 2));
+			Km0 = SignificantDigits.Round(Km0, 1, RoundingMode.Ceiling);
+			Console.WriteLine("ε para-nitrophenol={0}±{1} A405*mL/µmol", Math.Round(lrr0.Slope), Km0);
+			vmax1 = 60 / lrr0.Slope;
+			var lstSpeeds = new List<PointD>(5);
+			Km1 = 0;
+			lrr1 = LinearRegression.Compute(new PointD(0, 0.01830f), new PointD(9.77f, 0.01830f),
+			 new PointD(19.77f, 0.01970f), new PointD(29.78f, 0.02100f), new PointD(39.80f, 0.02070f),
+			 new PointD(49.82f, 0.02270f), new PointD(59.83f, 0.02290f), new PointD(69.88f, 0.02460f),
+			 new PointD(79.90f, 0.02520f), new PointD(89.91f, 0.02550f), new PointD(99.92f, 0.02650f),
+			 new PointD(109.93f, 0.02770f), new PointD(119.94f, 0.02830f));
+			vmax0 = lrr1.Slope;
+			Console.Write("A@{0,-6} mg/mL : ", 0);
+			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
+			lrr1 = LinearRegression.Compute(new PointD(0, 0.02640f), new PointD(9.77f, 0.03220f),
+			 new PointD(19.78f, 0.03840f), new PointD(29.79f, 0.04510f), new PointD(39.80f, 0.05100f),
+			 new PointD(49.82f, 0.05740f), new PointD(59.83f, 0.06410f), new PointD(69.88f, 0.06920f),
+			 new PointD(79.90f, 0.07660f), new PointD(89.91f, 0.08170f), new PointD(99.92f, 0.08770f),
+			 new PointD(109.93f, 0.09430f), new PointD(119.94f, 0.1013f));
+			Km1 += SpecificActivity(lrr1, 0.0061, vmax0, vmax1, lstSpeeds);
+			lrr1 = LinearRegression.Compute(new PointD(0, 0.03500f), new PointD(9.77f, 0.04580f),
+			 new PointD(19.77f, 0.05740f), new PointD(29.79f, 0.06870f), new PointD(39.80f, 0.08010f),
+			 new PointD(49.82f, 0.09110f), new PointD(59.83f, 0.1034f), new PointD(69.88f, 0.1145f),
+			 new PointD(79.90f, 0.1271f), new PointD(89.91f, 0.1380f), new PointD(99.92f, 0.1499f),
+			 new PointD(109.93f, 0.1623f), new PointD(119.94f, 0.1723f));
+			Km1 += SpecificActivity(lrr1, 0.0122, vmax0, vmax1, lstSpeeds);
+			lrr1 = LinearRegression.Compute(new PointD(0, 0.05280f), new PointD(9.77f, 0.07520f),
+			 new PointD(19.78f, 0.09810f), new PointD(29.79f, 0.1197f), new PointD(39.80f, 0.1425f),
+			 new PointD(49.82f, 0.1641f), new PointD(59.83f, 0.1883f), new PointD(69.89f, 0.2096f),
+			 new PointD(79.90f, 0.2306f), new PointD(89.91f, 0.2551f), new PointD(99.92f, 0.2766f),
+			 new PointD(109.93f, 0.2996f),new PointD(119.95f, 0.3242f));
+			Km1 += SpecificActivity(lrr1, 0.018, vmax0, vmax1, lstSpeeds);
+			lrr1 = LinearRegression.Compute(new PointD(0, 0.04950f), new PointD(9.77f, 0.07090f),
+			 new PointD(19.78f, 0.09200f), new PointD(29.79f, 0.1118f), new PointD(39.80f, 0.1358f),
+			 new PointD(49.82f, 0.1563f), new PointD(59.83f, 0.1797f), new PointD(69.88f, 0.2015f),
+			 new PointD(79.90f, 0.2233f), new PointD(89.91f, 0.2462f), new PointD(99.92f, 0.2699f),
+			 new PointD(109.93f, 0.2909f), new PointD(119.94f, 0.3136f));
+			Km1 += SpecificActivity(lrr1, 0.024, vmax0, vmax1, lstSpeeds);
+			lrr1 = LinearRegression.Compute(new PointD(0, 0.07860f), new PointD(9.77f, 0.1106f),
+			 new PointD(19.77f, 0.1451f), new PointD(29.78f, 0.1780f), new PointD(39.80f, 0.2115f),
+			 new PointD(49.82f, 0.2445f), new PointD(59.83f, 0.2787f), new PointD(69.88f, 0.3117f),
+			 new PointD(79.90f, 0.3452f), new PointD(89.91f, 0.3800f), new PointD(99.92f, 0.4161f),
+			 new PointD(109.93f, 0.4514f), new PointD(119.94f, 0.4884f));
+			Km1 += SpecificActivity(lrr1, 0.031, vmax0, vmax1, lstSpeeds);
+			Console.Write("Speed [dA/(dt*dC)]: ");
+			lrr1 = LinearRegression.Compute(lstSpeeds);
+			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
+			Console.Write("Speed [dA/(dt*dC)]: ");
+			var rm = RegressionModel.Compute(lstSpeeds);
+			OutputRegressionModel(rm);
+			Km1 *= 0.2;
+			Console.WriteLine("Specific activity average={0,-6:f3} µmol PNPA/mg BCA*min", Km1);
+			Console.WriteLine("Specific activity linear ={0,-6:f4} µmol PNPA/mg BCA*min", lrr1.Slope * vmax1);
+			Km0 = 0;
+			for (j = 0; j < lstSpeeds.Count; j++) {
+				Km0 += rm.Evaluate(lstSpeeds[j].X) / lstSpeeds[j].X;
+			}
+			Km0 *= 0.2 * vmax1;
+			Console.WriteLine("Specific activity x_power={0,-6:f3} µmol PNPA/mg BCA*min", Km0);
+			Km0 = (Km1 + (lrr1.Slope * vmax1)) * 0.5 * 30;
+			Console.WriteLine("Molecular activity={0:f3} µmol PNPA/µmol BCA*min", Km0);
+			Console.WriteLine("{0:g3} UI", 1.0 / Km0);
+
 			Program.OutputHeading("Cellular culture II Wound healing");
 			OutputRegressionModel(RegressionModel.Compute(new PointD(0, -0.2779f),
 			 new PointD(1, 0.2434f), new PointD(10, 1.1257f)));
@@ -258,13 +330,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("  ");
 			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
 			PointD ptd;
-			byte i;
 			for (i = 0; i < ptarDouble.Length; i++)  {
 				ptd = ptarDouble[i];
 				ptarDouble[i] = new PointD(ptd.X, 1.0 / ptd.Y);
 			}
 			Console.Write("1/");
-			var rm = RegressionModel.Compute(ptarDouble);
+			rm = RegressionModel.Compute(ptarDouble);
 			OutputRegressionModel(rm);
 			var b = 1.0 / rm.B;
 			for (i = 0; i < ptarDouble.Length; i++) {
@@ -423,6 +494,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ciFrCa = new CultureInfo("fr-CA");
 			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
+		}
+
+		private static double SpecificActivity(LinearRegressionResult lrr, double bcaConcentration, double bufferSpeed,
+		double multiplier, IList<PointD> speedsByConcentration)
+		{
+			var venz = lrr.Slope - bufferSpeed;
+			speedsByConcentration.Add(new PointD(bcaConcentration, venz));
+			Console.Write("A@{0,-6} mg/mL : ", bcaConcentration);
+			OutputRegressionModel(lrr.ChangeModel(MathematicalModel.Affine));
+			return venz * multiplier / bcaConcentration;
 		}
 	}
 }
