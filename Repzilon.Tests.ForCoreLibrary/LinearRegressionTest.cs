@@ -14,9 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-#if !NET20
-using System.Linq;
-#endif
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Regression;
 // ReSharper disable InconsistentNaming
@@ -314,6 +311,37 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputAgaroseRetention("9  :", 97);
 #endif
 
+			Program.OutputHeading("Immunotechniques lab 1C");
+			OutputRegressionModel(RegressionModel.Compute(
+				new PointD(1, Math.Round(0.772f, 3)), new PointD(1, Math.Round(0.744f, 3)), new PointD(1, Math.Round(0.787f, 3)),
+				new PointD(0.5f, Math.Round(0.407f, 3)), new PointD(0.5f, Math.Round(0.394f, 3)), new PointD(0.5f, Math.Round(0.387f, 3)),
+				new PointD(0.25f, Math.Round(0.211f, 3)), new PointD(0.25f, Math.Round(0.247f, 3)), new PointD(0.25f, Math.Round(0.216f, 3)),
+				new PointD(0.125f, 0.126f), new PointD(0.125f, 0.131f), new PointD(0.125f, 0.133f),
+				new PointD(0.0625f, 0.078f), new PointD(0.0625f, 0.081f), new PointD(0.0625f, 0.084f),
+				new PointD(0.03125f, 0.054f), new PointD(0.03125f, 0.060f), new PointD(0.03125f, 0.059f),
+				new PointD(0.0078125f, 0.043f), new PointD(0.0078125f, 0.047f), new PointD(0.0078125f, 0.044f)
+			));
+
+			Program.OutputHeading("Instrumental analysis II lab 8");
+			const float kBloodPartition = 2100f / 2573f;
+			OutputRegressionModel(RegressionModel.Compute(
+				new PointD(0, 0),
+				new PointD(0.0434f * kBloodPartition, 0.0319f),
+				new PointD(0.0616f * kBloodPartition, 0.059f),
+				new PointD(0.0853f * kBloodPartition, 0.078f),
+				new PointD(0.1063f * kBloodPartition, 0.065f),
+				new PointD(0.1213f * kBloodPartition, 0.071f),
+				new PointD(0.1853f * kBloodPartition, 0.1617f)
+			));
+
+			Program.OutputHeading("Ecotoxicology microtox");
+			byte[] karSnowI0 = new byte[10] { 96, 88, 87, 86, 87, 92, 88, 87, 88, 80 };
+			byte[] karPO4WasteI0 = new byte[10] { 92, 96, 95, 95, 98, 94, 97, 98, 94, 94 };
+			OutputMicrotox("Neige sale", 5, karSnowI0, new byte[10] { 125, 122, 129, 123, 126, 128, 116, 121, 98, 67 });
+			OutputMicrotox("Neige sale", 15, karSnowI0, new byte[10] { 123, 118, 125, 121, 125, 123, 115, 114, 92, 65 });
+			OutputMicrotox("Rejets PO4", 5, karPO4WasteI0, new byte[10] { 126, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
+			OutputMicrotox("Rejets PO4", 15, karPO4WasteI0, new byte[10] { 120, 0, 0, 1, 0, 0, 0, 0, 2, 0 });
+
 			Program.OutputHeading("Instrumental analysis II Mass spectroscopy mean travel");
 			ptarDouble = new PointD[] {
 				new PointD(101325, 0.000006f), new PointD(130, 0.0045f),
@@ -369,6 +397,45 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointD>, {2:f3} s as IList<PointD>",
 			 iterations, withEnumerable.TotalSeconds, withList.TotalSeconds);
+		}
+
+		private static void OutputMicrotox(string sample, byte minutes, byte[] i0, byte[] it)
+		{
+			const double kMicrotoxMaxC = 81.9;
+			var dblRefGamma = (double)it[0] / (double)i0[0];
+#if true
+			// Like my Excel data
+			var ptdarDeltas = new PointD[9];
+			for (byte i = 1; i < 10; i++) {
+				ptdarDeltas[i - 1] = new PointD(Math.Pow(2, i - 9) * kMicrotoxMaxC,
+				 (dblRefGamma - ((double)it[i] / (double)i0[i])) / dblRefGamma);
+			}
+#else
+			// More like the generated report
+			var ptdarDeltas = new List<PointD>(9);
+			for (byte i = 1; i < 10; i++) {
+				var inhibition = (dblRefGamma - ((double)it[i] / (double)i0[i])) / dblRefGamma;
+				if ((inhibition > 0) || (i == 1)) {
+					ptdarDeltas.Add(new PointD(Math.Pow(2, i - 9) * kMicrotoxMaxC, inhibition));
+				}
+			}
+#endif
+			Console.Write("{0} {1,2} min. ", sample, minutes);
+			var rmdMicrotox = LinearRegression.Compute(ptdarDeltas).ChangeModel(MathematicalModel.Affine);
+			OutputRegressionModel(rmdMicrotox);
+			Console.WriteLine("\t\tCI50 = {0:g4}\tn = {1}", Effective50(rmdMicrotox, ptdarDeltas), ptdarDeltas.Length);
+		}
+
+		private static double Effective50(RegressionModel<double> line, IList<PointD> points)
+		{
+			var c = points.Count;
+			for (var i = 0; i < c; i++) {
+				var pt = points[i];
+				if (pt.Y > 0.5f) {
+					return pt.X;
+				}
+			}
+			return line.Solve(0.5f);
 		}
 
 #if !NET20
@@ -489,6 +556,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ciFrCa = new CultureInfo("fr-CA");
 			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
+		}
+
+		private static T[] Take<T>(int howMany, params T[] from)
+		{
+			if (from == null) {
+				return new T[0];
+			} else {
+				var c = Math.Min(howMany, from.Length);
+				var objarOut = new T[c];
+				for (var i = 0; i < c; i++) {
+					objarOut[i] = from[i];
+				}
+				return objarOut;
+			}
 		}
 
 		private static double SpecificActivity(float bcaConcentration, double bufferSpeed,
