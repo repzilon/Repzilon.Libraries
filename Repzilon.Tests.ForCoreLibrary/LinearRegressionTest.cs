@@ -256,27 +256,27 @@ namespace Repzilon.Tests.ForCoreLibrary
 			vmax0 = lrr1.Slope;
 			Console.Write("A@{0,-6} mg/mL : ", 0);
 			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
-			Km1 = SpecificActivity(0.0061, vmax0, vmax1, lstSpeeds, new PointD(0, 0.02640f), new PointD(9.77f, 0.03220f),
+			Km1 = SpecificActivity(0.0061f, vmax0, vmax1, lstSpeeds, new PointD(0, 0.02640f), new PointD(9.77f, 0.03220f),
 			 new PointD(19.78f, 0.03840f), new PointD(29.79f, 0.04510f), new PointD(39.80f, 0.05100f),
 			 new PointD(49.82f, 0.05740f), new PointD(59.83f, 0.06410f), new PointD(69.88f, 0.06920f),
 			 new PointD(79.90f, 0.07660f), new PointD(89.91f, 0.08170f), new PointD(99.92f, 0.08770f),
 			 new PointD(109.93f, 0.09430f), new PointD(119.94f, 0.1013f));
-			Km1 += SpecificActivity(0.0122, vmax0, vmax1, lstSpeeds, new PointD(0, 0.03500f), new PointD(9.77f, 0.04580f),
+			Km1 += SpecificActivity(0.0122f, vmax0, vmax1, lstSpeeds, new PointD(0, 0.03500f), new PointD(9.77f, 0.04580f),
 			 new PointD(19.77f, 0.05740f), new PointD(29.79f, 0.06870f), new PointD(39.80f, 0.08010f),
 			 new PointD(49.82f, 0.09110f), new PointD(59.83f, 0.1034f), new PointD(69.88f, 0.1145f),
 			 new PointD(79.90f, 0.1271f), new PointD(89.91f, 0.1380f), new PointD(99.92f, 0.1499f),
 			 new PointD(109.93f, 0.1623f), new PointD(119.94f, 0.1723f));
-			Km1 += SpecificActivity(0.018, vmax0, vmax1, lstSpeeds, new PointD(0, 0.05280f), new PointD(9.77f, 0.07520f),
+			Km1 += SpecificActivity(0.018f, vmax0, vmax1, lstSpeeds, new PointD(0, 0.05280f), new PointD(9.77f, 0.07520f),
 			 new PointD(19.78f, 0.09810f), new PointD(29.79f, 0.1197f), new PointD(39.80f, 0.1425f),
 			 new PointD(49.82f, 0.1641f), new PointD(59.83f, 0.1883f), new PointD(69.89f, 0.2096f),
 			 new PointD(79.90f, 0.2306f), new PointD(89.91f, 0.2551f), new PointD(99.92f, 0.2766f),
 			 new PointD(109.93f, 0.2996f), new PointD(119.95f, 0.3242f));
-			Km1 += SpecificActivity(0.024, vmax0, vmax1, lstSpeeds, new PointD(0, 0.04950f), new PointD(9.77f, 0.07090f),
+			Km1 += SpecificActivity(0.024f, vmax0, vmax1, lstSpeeds, new PointD(0, 0.04950f), new PointD(9.77f, 0.07090f),
 			 new PointD(19.78f, 0.09200f), new PointD(29.79f, 0.1118f), new PointD(39.80f, 0.1358f),
 			 new PointD(49.82f, 0.1563f), new PointD(59.83f, 0.1797f), new PointD(69.88f, 0.2015f),
 			 new PointD(79.90f, 0.2233f), new PointD(89.91f, 0.2462f), new PointD(99.92f, 0.2699f),
 			 new PointD(109.93f, 0.2909f), new PointD(119.94f, 0.3136f));
-			Km1 += SpecificActivity(0.031, vmax0, vmax1, lstSpeeds, new PointD(0, 0.07860f), new PointD(9.77f, 0.1106f),
+			Km1 += SpecificActivity(0.031f, vmax0, vmax1, lstSpeeds, new PointD(0, 0.07860f), new PointD(9.77f, 0.1106f),
 			 new PointD(19.77f, 0.1451f), new PointD(29.78f, 0.1780f), new PointD(39.80f, 0.2115f),
 			 new PointD(49.82f, 0.2445f), new PointD(59.83f, 0.2787f), new PointD(69.88f, 0.3117f),
 			 new PointD(79.90f, 0.3452f), new PointD(89.91f, 0.3800f), new PointD(99.92f, 0.4161f),
@@ -491,15 +491,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
 		}
 
-		private static double SpecificActivity(double bcaConcentration, double bufferSpeed,
+		private static double SpecificActivity(float bcaConcentration, double bufferSpeed,
 		double multiplier, IList<PointD> speedsByConcentration, params PointD[] absorbancesAtSeconds)
 		{
+			var cacb = Math.Round(bcaConcentration, 4);
 			var lrr = LinearRegression.Compute(absorbancesAtSeconds);
 			var venz = lrr.Slope - bufferSpeed;
-			speedsByConcentration.Add(new PointD(bcaConcentration, venz));
-			Console.Write("A@{0,-6} mg/mL : ", bcaConcentration);
+			speedsByConcentration.Add(new PointD(cacb, venz));
+			Console.Write("A@{0,-6} mg/mL : ", cacb);
 			OutputRegressionModel(lrr.ChangeModel(MathematicalModel.Affine));
-			return venz * multiplier / bcaConcentration;
+			return venz * multiplier / cacb;
 		}
 	}
 }
