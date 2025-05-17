@@ -59,6 +59,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
+			Program.OutputHeading("Biofermentation week 3 exercice");
+			LogisticModel(new PointM(0, 1.5m), new PointM(5, 2), new PointM(9, 3.5m), new PointM(13, 6.2m),
+			 new PointM(16, 8.2m), new PointM(20, 9.4m), new PointM(24, 9.8m), new PointM(28, 9.9m));
+
+			Console.WriteLine("Biofermentation labo 5 saturation en oxygène");
+			LogisticModel(new PointM(0, 105.1m), new PointM(0.5m, 103.7m), new PointM(1, 98.4m),
+			 new PointM(1.5m, 85.5m), new PointM(2, 51.6m), new PointM(2.5m, 1), new PointM(3, 0.8m),
+			 new PointM(3.5m, 0.3m));
+
 			Console.WriteLine("Intégrale d'une loi normale centrée réduite");
 			var karZ = new float[] { 1, 1.23f, 1.96f, 2, 3 };
 			var karExpected = new double[] {
@@ -466,6 +475,58 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("{0,5:f2} {1,7:f3} {2:f16} {3:f16} {4:f16} {5:f16} {6}{7:e7} {8,4}",
 			 RoundOff.Error(2 * (1 - p)), p, logit, logit * SqrtEighthOfPi,
 			 ProbabilityDistributions.InverseNormalEstimate(p), probit, delta >= 0 ? " " : "", delta, iterations);
+		}
+
+		private static void LogisticModel(params PointM[] points)
+		{
+			var iLast = points.Length - 1;
+			var last = points[iLast].Y;
+			var intercept = Math.Min(last, points[0].Y);
+			var amplitude = Math.Abs(last - points[0].Y);
+			// Find the point which is the observed middle
+			var yMid = 0.5m * (last + points[0].Y);
+			var iMid = points.Length / 2;
+			int ixyMid = -1;
+			int k;
+			last = Decimal.MaxValue;
+			for (k = iMid - 1; k <= iMid + 1; k++) {
+				var diff = Math.Abs(points[k].Y - yMid);
+				if (diff < last) {
+					last = diff;
+					ixyMid = k;
+				}
+			}
+
+			var lrrSecant = LinearRegression.Compute(points[ixyMid - 1], points[ixyMid], points[ixyMid + 1]);
+			var location = lrrSecant.InterpolateX(yMid);
+			last = LinearRegression.Compute(points).Slope;
+			// The scale parameter is the hardest to adjust
+			var scale = Math.Sign(last) * Math.Max(lrrSecant.Slope, last) / Math.Min(lrrSecant.Slope, last);
+
+			var ptmarRoughModel = new PointM[points.Length];
+			for (k = 0; k < points.Length; k++) {
+				var exponent = (points[k].X - location) / (-1 * scale);
+				var unscaled = 1 / (1 + (decimal)Math.Exp((double)exponent));
+				ptmarRoughModel[k] = new PointM(intercept + (amplitude * unscaled), points[k].Y);
+				Console.WriteLine("{0}\t{1}\t{2:f1}", points[k].X, points[k].Y, ptmarRoughModel[k].X);
+			}
+			Console.WriteLine("y = {0} + {1}*[1/(1+e^((x-{2})/-{3}))]",
+			 intercept, amplitude, location, scale);
+			lrrSecant = LinearRegression.Compute(ptmarRoughModel[0], ptmarRoughModel[iLast]);
+			Console.Write(lrrSecant);
+			Console.WriteLine("\tr={0}", RoundOff.Error(lrrSecant.Correlation));
+
+			intercept = lrrSecant.Intercept + lrrSecant.Slope * intercept;
+			amplitude *= lrrSecant.Slope;
+
+			for (k = 0; k < points.Length; k++) {
+				var exponent = (points[k].X - location) / (-1 * scale);
+				var unscaled = 1 / (1 + (decimal)Math.Exp((double)exponent));
+				ptmarRoughModel[k] = new PointM(intercept + (amplitude * unscaled), points[k].Y);
+				Console.WriteLine("{0}\t{1}\t{2:f1}", points[k].X, points[k].Y, ptmarRoughModel[k].X);
+			}
+			Console.WriteLine("y = {0} + {1}*[1/(1+e^((x-{2})/-{3}))]",
+			 intercept, amplitude, location, scale);
 		}
 	}
 }
