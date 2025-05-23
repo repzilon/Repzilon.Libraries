@@ -597,24 +597,27 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static double SpecificActivity(RegressionModel<double> rm, double x0, double x1, double multiplier)
 		{
-			var totalArea = rm.EvaluatePrimitive(x1) - rm.EvaluatePrimitive(x0);
 			var shapeBase = x1 - x0;
-			var rectangleArea = rm.Evaluate(x0) * shapeBase;
-			var triangleArea = totalArea - rectangleArea;
-			return 2 * triangleArea / shapeBase / shapeBase * multiplier;
+			return 2 * (rm.EvaluatePrimitive(x1) - rm.EvaluatePrimitive(x0) - rm.Evaluate(x0) * shapeBase) / (shapeBase * shapeBase) * multiplier;
 		}
 
 		private static double SpecificActivity(IList<PointD> speedsByConcentration, double multiplier)
 		{
+			int    i;
 			double totalArea = 0;
-			int c = speedsByConcentration.Count;
-			for (int i = 0; i < c - 1; i++) {
-				totalArea += (speedsByConcentration[i + 1].X - speedsByConcentration[i].X) * 0.5 * (speedsByConcentration[i + 1].Y + speedsByConcentration[i].Y);
+			// ReSharper disable once JoinDeclarationAndInitializer
+			double shapeBase;
+			var    c        = speedsByConcentration.Count;
+			PointD pt0, pt1 = default;
+			for (i = 0; i < c - 1; i++) {
+				pt0       =  speedsByConcentration[i];
+				pt1       =  speedsByConcentration[i + 1];
+				totalArea += (pt1.X - pt0.X) * (pt1.Y + pt0.Y);
 			}
-			var shapeBase = speedsByConcentration[c - 1].X - speedsByConcentration[0].X;
-			var rectangleArea = speedsByConcentration[0].Y * shapeBase;
-			var triangleArea = totalArea - rectangleArea;
-			return 2 * triangleArea / shapeBase / shapeBase * multiplier;
+			totalArea *= 0.5f;
+			pt0       =  speedsByConcentration[0];
+			shapeBase =  pt1.X - pt0.X;
+			return 2 * (totalArea - pt0.Y * shapeBase) / (shapeBase * shapeBase) * multiplier;
 		}
 	}
 }
