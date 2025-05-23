@@ -285,8 +285,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var rm = RegressionModel.Compute(lstSpeeds);
 			OutputRegressionModel(rm);
 			Km1 *= 0.2;
-			Console.WriteLine("Specific activity average={0,-6:f3} µmol PNPA/mg BCA*min", Km1);
-			Console.WriteLine("Specific activity linear ={0,-6:f4} µmol PNPA/mg BCA*min", lrr1.Slope * vmax1);
+			const double kEnzymeIU2Katal = 0.000001 / 60;
+			Console.WriteLine(
+			 "Specific activity average={0,-6:f3} µmol PNPA/mg BCA*min or {0,-6:f3} UI/mg BCA or {1:g3} katal/mg",
+			 Km1, Km1 * kEnzymeIU2Katal);
+			Console.WriteLine(
+			 "Specific activity linear ={0,-6:f4} µmol PNPA/mg BCA*min or {0,-6:f4} UI/mg BCA or {1:g3} katal/mg",
+			 lrr1.Slope * vmax1, lrr1.Slope * vmax1 * kEnzymeIU2Katal);
 			Km0 = 0;
 			for (j = 0; j < lstSpeeds.Count; j++) {
 				Km0 += rm.Evaluate(lstSpeeds[j].X) / lstSpeeds[j].X;
@@ -294,8 +299,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Km0 *= 0.2 * vmax1;
 			Console.WriteLine("Specific activity x_power={0,-6:f3} µmol PNPA/mg BCA*min", Km0);
 			Km0 = (Km1 + (lrr1.Slope * vmax1)) * 0.5 * 30;
-			Console.WriteLine("Molecular activity={0:f3} µmol PNPA/µmol BCA*min", Km0);
-			Console.WriteLine("{0:g3} UI", 1.0 / Km0);
+			Console.WriteLine("Molecular activity={0:f3} µmol PNPA/µmol BCA*min or {0:f3} UI/µmol BCA or {1:g3} katal/µmol",
+			 Km0, Km0 * kEnzymeIU2Katal);
 
 			Program.OutputHeading("Cellular culture II Wound healing");
 			OutputRegressionModel(RegressionModel.Compute(new PointD(0, -0.2779f),
