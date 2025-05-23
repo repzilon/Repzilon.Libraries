@@ -298,6 +298,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			Km0 *= 0.2 * vmax1;
 			Console.WriteLine("Specific activity x_power={0,-6:f3} µmol PNPA/mg BCA*min", Km0);
+			Console.WriteLine("Specific activity ∫[0; {1}] power={0,-6:f3} µmol PNPA/mg BCA*min",
+			 SpecificActivity(rm, 0, lstSpeeds[4].X, vmax1), lstSpeeds[4].X);
+			Console.WriteLine("Specific activity ∫[{2}; {1}] power={0,-6:f3} µmol PNPA/mg BCA*min",
+			 SpecificActivity(rm, lstSpeeds[0].X, lstSpeeds[4].X, vmax1), lstSpeeds[4].X, lstSpeeds[0].X);
+			Console.WriteLine("Specific activity trapeze={0,-6:f3} µmol PNPA/mg BCA*min",
+			 SpecificActivity(lstSpeeds, vmax1));
 			Km0 = (Km1 + (lrr1.Slope * vmax1)) * 0.5 * 30;
 			Console.WriteLine("Molecular activity={0:f3} µmol PNPA/µmol BCA*min or {0:f3} UI/µmol BCA or {1:g3} katal/µmol",
 			 Km0, Km0 * kEnzymeIU2Katal);
@@ -587,6 +593,28 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("A@{0,-6} mg/mL : ", cacb);
 			OutputRegressionModel(lrr.ChangeModel(MathematicalModel.Affine));
 			return venz * multiplier / cacb;
+		}
+
+		private static double SpecificActivity(RegressionModel<double> rm, double x0, double x1, double multiplier)
+		{
+			var totalArea = rm.EvaluatePrimitive(x1) - rm.EvaluatePrimitive(x0);
+			var shapeBase = x1 - x0;
+			var rectangleArea = rm.Evaluate(x0) * shapeBase;
+			var triangleArea = totalArea - rectangleArea;
+			return 2 * triangleArea / shapeBase / shapeBase * multiplier;
+		}
+
+		private static double SpecificActivity(IList<PointD> speedsByConcentration, double multiplier)
+		{
+			double totalArea = 0;
+			int c = speedsByConcentration.Count;
+			for (int i = 0; i < c - 1; i++) {
+				totalArea += (speedsByConcentration[i + 1].X - speedsByConcentration[i].X) * 0.5 * (speedsByConcentration[i + 1].Y + speedsByConcentration[i].Y);
+			}
+			var shapeBase = speedsByConcentration[c - 1].X - speedsByConcentration[0].X;
+			var rectangleArea = speedsByConcentration[0].Y * shapeBase;
+			var triangleArea = totalArea - rectangleArea;
+			return 2 * triangleArea / shapeBase / shapeBase * multiplier;
 		}
 	}
 }
