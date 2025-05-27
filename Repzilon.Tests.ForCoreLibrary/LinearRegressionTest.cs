@@ -734,7 +734,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			// ReSharper disable once JoinDeclarationAndInitializer
 			double shapeBase;
 			var    c        = speedsByConcentration.Count;
-			PointD pt0, pt1 = default;
+			PointD pt0, pt1 = default(PointD);
 			for (i = 0; i < c - 1; i++) {
 				pt0       =  speedsByConcentration[i];
 				pt1       =  speedsByConcentration[i + 1];

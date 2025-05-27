@@ -76,7 +76,7 @@ namespace Repzilon.Libraries.Core
 		{
 			return Error(value) == UpsizeError(k);
 		}
-		
+
 		public static bool AreEqual(double value, double k)
 		{
 			return Error(value) == Error(k);
