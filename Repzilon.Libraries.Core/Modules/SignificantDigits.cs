@@ -314,6 +314,21 @@ namespace Repzilon.Libraries.Core
 			return mantissa * power;
 		}
 
+		public static decimal Round(decimal value, byte figures)
+		{
+			return Round(value, figures, RoundingMode.ToEven);
+		}
+
+		public static double Round(double value, byte figures)
+		{
+			return Round(value, figures, RoundingMode.ToEven);
+		}
+
+		public static float Round(float value, byte figures)
+		{
+			return Round(value, figures, RoundingMode.ToEven);
+		}
+
 		private static double PowerOf(double value)
 		{
 			return Math.Pow(10, Math.Floor(Math.Log10(Math.Abs(value))));
@@ -348,6 +363,38 @@ namespace Repzilon.Libraries.Core
 			}
 #pragma warning restore CC0019 // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
+		}
+		#endregion
+
+		#region Method Ceil
+		public static decimal Ceil(decimal value, byte figures)
+		{
+			return Round(value, figures, RoundingMode.Ceiling);
+		}
+
+		public static double Ceil(double value, byte figures)
+		{
+			return Round(value, figures, RoundingMode.Ceiling);
+		}
+
+		public static float Ceil(float value, byte figures)
+		{
+			return Round(value, figures, RoundingMode.Ceiling);
+		}
+
+		public static decimal Ceil(decimal value)
+		{
+			return Round(value, 1, RoundingMode.Ceiling);
+		}
+
+		public static double Ceil(double value)
+		{
+			return Round(value, 1, RoundingMode.Ceiling);
+		}
+
+		public static float Ceil(float value)
+		{
+			return Round(value, 1, RoundingMode.Ceiling);
 		}
 		#endregion
 	}

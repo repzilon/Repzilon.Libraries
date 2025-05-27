@@ -345,6 +345,80 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(0.1853f * kBloodPartition, 0.1617f)
 			));
 
+			byte i;
+
+			Program.OutputHeading("Immunotechniques lab 2");
+			Console.WriteLine("Concentration from absorbance");
+			const float kBlank = 0.265f / 3;
+			OutputRegressionModel(RegressionModel.Compute(
+				new PointD(2, SignificantDigits.Round(0.323f - kBlank, 3)),
+				new PointD(1, SignificantDigits.Round(0.212f - kBlank, 3)),
+				new PointD(0.5f, SignificantDigits.Round(0.151f - kBlank, 3)),
+				new PointD(0.25f, SignificantDigits.Round(0.1107f - kBlank, 3)),
+				new PointD(0.125f, SignificantDigits.Round(0.0967f - kBlank, 3)),
+				new PointD(0.0625f, SignificantDigits.Round(0.091f - kBlank, 3)),
+				new PointD(0.03125f, SignificantDigits.Round(.087f - kBlank, 3))
+			));
+			Console.WriteLine("Molecular weight from relative mobility");
+			float kFrontDistance = 53.0f;
+			var ptdarImmunoLab2WeightRaw = new PointD[] {
+				new PointD(250000, 3.0f/kFrontDistance),
+				new PointD(150000, 5.0f/kFrontDistance),
+				new PointD(100000, 8.0f/kFrontDistance),
+				new PointD(75000, 10.5f/kFrontDistance),
+				new PointD(50000, 16.0f/kFrontDistance),
+				new PointD(37000, 21.0f/kFrontDistance),
+				new PointD(25000, 29.5f/kFrontDistance),
+				new PointD(20000, 32.5f/kFrontDistance),
+				new PointD(15000, 40.5f/kFrontDistance),
+				new PointD(10000, 47.0f/kFrontDistance)
+			};
+			RegressionModel<double> rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner, rmdImmunoLabWeightPow;
+			CalibrateGelElectrophoresis(ptdarImmunoLab2WeightRaw,
+			 out rmdImmunoLabWeightLogOuter, out rmdImmunoLabWeightLogInner, out rmdImmunoLabWeightPow);
+
+			Console.WriteLine("Pit Distance  Rf   M from log10 w. tails M from log10 no tail M from power");
+			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
+			 rmdImmunoLabWeightPow, 9, 53.5f, 30.5f, 17);
+
+			Program.OutputHeading("Immunotechniques lab 4");
+			float kFrontDistance4Std = 90.5f;
+			var ptdarImmunoLab4WeightRaw = new PointD[] {
+				new PointD(250000, 20.5f/kFrontDistance4Std),
+				new PointD(150000, 27.0f/kFrontDistance4Std),
+				new PointD(100000, 32.5f/kFrontDistance4Std),
+				new PointD(75000,  36.5f/kFrontDistance4Std),
+				new PointD(50000,  44.5f/kFrontDistance4Std),
+				new PointD(37000,  51.0f/kFrontDistance4Std),
+				new PointD(25000,  59.0f/kFrontDistance4Std),
+				new PointD(20000,  63.0f/kFrontDistance4Std),
+				new PointD(15000,  70.5f/kFrontDistance4Std),
+			};
+			CalibrateGelElectrophoresis(ptdarImmunoLab4WeightRaw,
+			 out rmdImmunoLabWeightLogOuter, out rmdImmunoLabWeightLogInner, out rmdImmunoLabWeightPow);
+			Console.WriteLine("Pit Distance  Rf   M from log10 w. tails M from log10 no tail M from power");
+			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
+			 rmdImmunoLabWeightPow, 2, kFrontDistance4Std, 59, 66);
+			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
+			 rmdImmunoLabWeightPow, 3, 90, 59, 65);
+			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
+			 rmdImmunoLabWeightPow, 4, 90, 57.5f, 66);
+			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
+			 rmdImmunoLabWeightPow, 5, 90, 57.5f, 66.5f);
+			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
+			 rmdImmunoLabWeightPow, 6, kFrontDistance4Std, 59, 65);
+
+			Program.OutputHeading("Biofermentation week 3 exercice");
+			ptarDouble = new PointD[] {
+				new PointD(0, 1.5f), new PointD(5, 2), new PointD(9, 3.5f),
+				new PointD(13, 6.2f), new PointD(16, 8.2f), new PointD(20, 9.4f),
+				new PointD(24, 9.8f), new PointD(28, 9.9f)
+			};
+			for (i = 2; i <= ptarDouble.Length; i++) {
+				Console.Write("{0,2}h : ", ptarDouble[i - 1].X);
+				OutputRegressionModel(RegressionModel.Compute(Take(i, ptarDouble)));
+			}
+
 			Program.OutputHeading("Ecotoxicology microtox");
 			byte[] karSnowI0 = new byte[10] { 96, 88, 87, 86, 87, 92, 88, 87, 88, 80 };
 			byte[] karPO4WasteI0 = new byte[10] { 92, 96, 95, 95, 98, 94, 97, 98, 94, 94 };
@@ -363,7 +437,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("  ");
 			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
 			PointD ptd;
-			byte   i;
 			for (i = 0; i < ptarDouble.Length; i++)  {
 				ptd = ptarDouble[i];
 				ptarDouble[i] = new PointD(ptd.X, 1.0 / ptd.Y);
@@ -447,6 +520,51 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 			}
 			return line.Solve(0.5f);
+		}
+
+		private static void InterpolateMolecularWeight(RegressionModel<double> logarithmicFullModel,
+		RegressionModel<double> logarithmicInnerModel, RegressionModel<double> powerModel,
+		byte pitNumber, float migrationFront, params float[] bands)
+		{
+			for (var i = 0; i < bands.Length; i++) {
+				var rf = bands[i] / migrationFront;
+				Console.WriteLine("{0,3}   {1,4:f1}   {2:f3}  {3:f0}\t{4:f0}\t{5:f0}",
+				 pitNumber, bands[i], rf,
+				 SignificantDigits.Round(logarithmicInnerModel.Solve(rf), 3),
+				 SignificantDigits.Round(logarithmicFullModel.Solve(rf), 3),
+				 SignificantDigits.Round(powerModel.Solve(rf), 3));
+			}
+		}
+
+
+		private static void CalibrateGelElectrophoresis(
+		PointD[] molarWeightsAndRelativeMobility,
+		out RegressionModel<double> logarithmicFullModel,
+		out RegressionModel<double> logarithmicInnerModel,
+		out RegressionModel<double> powerModel)
+		{
+			var ptdarImmunoLab2WeightLogOuter = new PointD[molarWeightsAndRelativeMobility.Length];
+			var ptdarImmunoLab2WeightLogInner = new PointD[checked(molarWeightsAndRelativeMobility.Length - 2)];
+			var ptdarImmunoLab2WeightPow = new PointD[molarWeightsAndRelativeMobility.Length];
+			for (var i = 0; i < molarWeightsAndRelativeMobility.Length; i++) {
+				var log10 = Math.Log10(molarWeightsAndRelativeMobility[i].X);
+				var ptdLogLin = new PointD(log10, molarWeightsAndRelativeMobility[i].Y);
+				var ptdLogLog = new PointD(log10, Math.Log10(molarWeightsAndRelativeMobility[i].Y));
+				ptdarImmunoLab2WeightLogOuter[i] = ptdLogLin;
+				if ((i != 0) && (i < molarWeightsAndRelativeMobility.Length - 1)) {
+					ptdarImmunoLab2WeightLogInner[i - 1] = ptdLogLin;
+				}
+				ptdarImmunoLab2WeightPow[i] = ptdLogLog;
+			}
+			var lrdImmunoLab2WeightLogOuter = LinearRegression.Compute(ptdarImmunoLab2WeightLogOuter);
+			var lrdImmunoLab2WeightLogInner = LinearRegression.Compute(ptdarImmunoLab2WeightLogInner);
+			var lrdImmunoLab2WeightPow = LinearRegression.Compute(ptdarImmunoLab2WeightPow);
+			logarithmicFullModel = lrdImmunoLab2WeightLogOuter.ChangeModel(MathematicalModel.Logarithmic);
+			logarithmicInnerModel = lrdImmunoLab2WeightLogInner.ChangeModel(MathematicalModel.Logarithmic);
+			powerModel = lrdImmunoLab2WeightPow.ChangeModel(MathematicalModel.Power);
+			OutputRegression("Log. with tails", lrdImmunoLab2WeightLogOuter, logarithmicFullModel);
+			OutputRegression("Log. no tails", lrdImmunoLab2WeightLogInner, logarithmicInnerModel);
+			OutputRegression("Power", lrdImmunoLab2WeightPow, powerModel);
 		}
 
 #if !NET20
@@ -567,6 +685,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ciFrCa = new CultureInfo("fr-CA");
 			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
 			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
+		}
+
+		private static void OutputRegression<T>(string header,
+		ILinearRegressionResult<T> linearized, RegressionModel<T> reformed)
+		where T : struct, IFormattable, IEquatable<T>
+		{
+			Console.WriteLine("{0,-15}: {1:g6}  r={2:g6}\t{3:g6}  R2={4:g6}",
+			 header, linearized, linearized.Correlation, reformed, reformed.Determination());
 		}
 
 		private static T[] Take<T>(int howMany, params T[] from)
