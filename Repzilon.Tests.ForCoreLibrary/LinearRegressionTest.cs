@@ -360,8 +360,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(0.03125f, SignificantDigits.Round(.087f - kBlank, 3))
 			));
 			Console.WriteLine("Molecular weight from relative mobility");
-			float kFrontDistance = 53.0f;
-			var ptdarImmunoLab2WeightRaw = new PointD[] {
+			const float kFrontDistance = 53.0f;
+			ptarDouble = new PointD[] {
 				new PointD(250000, 3.0f/kFrontDistance),
 				new PointD(150000, 5.0f/kFrontDistance),
 				new PointD(100000, 8.0f/kFrontDistance),
@@ -373,17 +373,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(15000, 40.5f/kFrontDistance),
 				new PointD(10000, 47.0f/kFrontDistance)
 			};
-			RegressionModel<double> rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner, rmdImmunoLabWeightPow;
-			CalibrateGelElectrophoresis(ptdarImmunoLab2WeightRaw,
-			 out rmdImmunoLabWeightLogOuter, out rmdImmunoLabWeightLogInner, out rmdImmunoLabWeightPow);
+			RegressionModel<double> rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner;
+			CalibrateGelElectrophoresis(ptarDouble,
+			 out rmdImmunoLabWeightLogOuter, out rmdImmunoLabWeightLogInner, out rm);
 
 			Console.WriteLine("Pit Distance  Rf   M from log10 w. tails M from log10 no tail M from power");
 			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
-			 rmdImmunoLabWeightPow, 9, 53.5f, 30.5f, 17);
+			 rm, 9, 53.5f, 30.5f, 17);
 
 			Program.OutputHeading("Immunotechniques lab 4");
-			float kFrontDistance4Std = 90.5f;
-			var ptdarImmunoLab4WeightRaw = new PointD[] {
+			const float kFrontDistance4Std = 90.5f;
+			ptarDouble = new PointD[] {
 				new PointD(250000, 20.5f/kFrontDistance4Std),
 				new PointD(150000, 27.0f/kFrontDistance4Std),
 				new PointD(100000, 32.5f/kFrontDistance4Std),
@@ -394,19 +394,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(20000,  63.0f/kFrontDistance4Std),
 				new PointD(15000,  70.5f/kFrontDistance4Std),
 			};
-			CalibrateGelElectrophoresis(ptdarImmunoLab4WeightRaw,
-			 out rmdImmunoLabWeightLogOuter, out rmdImmunoLabWeightLogInner, out rmdImmunoLabWeightPow);
+			CalibrateGelElectrophoresis(ptarDouble,
+			 out rmdImmunoLabWeightLogOuter, out rmdImmunoLabWeightLogInner, out rm);
 			Console.WriteLine("Pit Distance  Rf   M from log10 w. tails M from log10 no tail M from power");
 			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
-			 rmdImmunoLabWeightPow, 2, kFrontDistance4Std, 59, 66);
+			 rm, 2, kFrontDistance4Std, 59, 66);
 			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
-			 rmdImmunoLabWeightPow, 3, 90, 59, 65);
+			 rm, 3, 90, 59, 65);
 			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
-			 rmdImmunoLabWeightPow, 4, 90, 57.5f, 66);
+			 rm, 4, 90, 57.5f, 66);
 			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
-			 rmdImmunoLabWeightPow, 5, 90, 57.5f, 66.5f);
+			 rm, 5, 90, 57.5f, 66.5f);
 			InterpolateMolecularWeight(rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner,
-			 rmdImmunoLabWeightPow, 6, kFrontDistance4Std, 59, 65);
+			 rm, 6, kFrontDistance4Std, 59, 65);
 
 			Program.OutputHeading("Biofermentation week 3 exercice");
 			ptarDouble = new PointD[] {
