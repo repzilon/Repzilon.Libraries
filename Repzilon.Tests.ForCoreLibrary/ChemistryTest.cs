@@ -190,7 +190,7 @@ STQTALA";
 			 new PointD(0.00150, 0.0071), new PointD(0.00090, 0.0044), new PointD(0.00076, 0.0038),
 			 new PointD(0.00045, 0.0026), new PointD(0.00030, 0.0018));
 			Console.WriteLine("Vmax = {0} µmol/min*L",
-			 SignificantDigits.Round(ekO.Vmax.Key * 60 / rmdBC2Lab3_a.B, 3, RoundingMode.ToEven));
+			 SignificantDigits.Round(ekO.Vmax.Key * 60 / rmdBC2Lab3_a.B, 3));
 		}
 
 		private static string PrettyFormula(string formula)

@@ -199,8 +199,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(14 / 12.0, 14)
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
-			vmax0 = SignificantDigits.Round(lrr0.Intercept, 2, RoundingMode.ToEven);
-			Km0 = SignificantDigits.Round(-lrr0.Slope, 2, RoundingMode.ToEven);
+			vmax0 = SignificantDigits.Round(lrr0.Intercept, 2);
+			Km0 = SignificantDigits.Round(-lrr0.Slope, 2);
 			Console.WriteLine("Vmax  = {0,-4} mUI  Km  = {1} mmol/L", vmax0, Km0);
 
 			Program.OutputHeading("Biochemistry II laboratory 3");
@@ -227,9 +227,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			vmax1 = vmax0 * 60 / lrr0.Slope;
 			Console.WriteLine("Vmax  = {1} A405/s  Km  = {2} mol/L{0}Vmax  = {3} µmol/min*L",
 			 Environment.NewLine,
-			 SignificantDigits.Round(vmax0, 5, RoundingMode.ToEven),
-			 SignificantDigits.Round(Km0, 4, RoundingMode.ToEven),
-			 SignificantDigits.Round(vmax1, 3, RoundingMode.ToEven));
+			 SignificantDigits.Round(vmax0, 5),
+			 SignificantDigits.Round(Km0, 4),
+			 SignificantDigits.Round(vmax1, 3));
 
 			Program.OutputHeading("Biochemistry II laboratory 4");
 			lrr0 = LinearRegression.Compute(
@@ -241,7 +241,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("Calibration    : ");
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			Km0 = lrr0.SlopeStdDev() * ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), (byte)(lrr0.Count - 2));
-			Km0 = SignificantDigits.Round(Km0, 1, RoundingMode.Ceiling);
+			Km0 = SignificantDigits.Round(Km0, 1);
 			Console.WriteLine("ε para-nitrophenol={0}±{1} A405*mL/µmol", Math.Round(lrr0.Slope), Km0);
 			vmax1 = 60 / lrr0.Slope;
 			var lstSpeeds = new List<PointD>(5);
@@ -684,7 +684,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var ciFrCa = new CultureInfo("fr-CA");
 			return SignificantDigits.Round(1.0 / Double.Parse(valueAsText, ciFrCa),
-			 SignificantDigits.Count(valueAsText, ciFrCa), RoundingMode.ToEven);
+			 SignificantDigits.Count(valueAsText, ciFrCa));
 		}
 
 		private static void OutputRegression<T>(string header,

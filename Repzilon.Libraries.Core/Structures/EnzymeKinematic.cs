@@ -242,8 +242,8 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			var kvpVmax = self.Vmax;
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<float>(
-			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
-			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation,
+			 SignificantDigits.Round(kvpVmax.Key, forSpeed), kvpVmax.Value,
+			 SignificantDigits.Round(kvpKm.Key, forConcentration), kvpKm.Value, self.Correlation,
 			 self.Representation);
 		}
 
@@ -265,8 +265,8 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			var kvpVmax = self.Vmax;
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<double>(
-			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
-			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation,
+			 SignificantDigits.Round(kvpVmax.Key, forSpeed), kvpVmax.Value,
+			 SignificantDigits.Round(kvpKm.Key, forConcentration), kvpKm.Value, self.Correlation,
 			 self.Representation);
 		}
 
@@ -288,8 +288,8 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			var kvpVmax = self.Vmax;
 			var kvpKm = self.Km;
 			return new EnzymeKinematic<decimal>(
-			 SignificantDigits.Round(kvpVmax.Key, forSpeed, RoundingMode.ToEven), kvpVmax.Value,
-			 SignificantDigits.Round(kvpKm.Key, forConcentration, RoundingMode.ToEven), kvpKm.Value, self.Correlation,
+			 SignificantDigits.Round(kvpVmax.Key, forSpeed), kvpVmax.Value,
+			 SignificantDigits.Round(kvpKm.Key, forConcentration), kvpKm.Value, self.Correlation,
 			 self.Representation);
 		}
 		#endregion

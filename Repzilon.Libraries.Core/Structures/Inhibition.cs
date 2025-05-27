@@ -162,8 +162,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public static Inhibition<float> RoundedToPrecision(this Inhibition<float> self, byte significantDigits)
 #endif
 		{
-			return new Inhibition<float>(self.Kind,
-			 SignificantDigits.Round(self.Value, significantDigits, RoundingMode.ToEven), self.Unit);
+			return new Inhibition<float>(self.Kind, SignificantDigits.Round(self.Value, significantDigits), self.Unit);
 		}
 
 #if NET20
@@ -172,8 +171,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public static Inhibition<double> RoundedToPrecision(this Inhibition<double> self, byte significantDigits)
 #endif
 		{
-			return new Inhibition<double>(self.Kind,
-			 SignificantDigits.Round(self.Value, significantDigits, RoundingMode.ToEven), self.Unit);
+			return new Inhibition<double>(self.Kind, SignificantDigits.Round(self.Value, significantDigits), self.Unit);
 		}
 
 #if NET20
@@ -182,8 +180,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public static Inhibition<decimal> RoundedToPrecision(this Inhibition<decimal> self, byte significantDigits)
 #endif
 		{
-			return new Inhibition<decimal>(self.Kind,
-			 SignificantDigits.Round(self.Value, significantDigits, RoundingMode.ToEven), self.Unit);
+			return new Inhibition<decimal>(self.Kind, SignificantDigits.Round(self.Value, significantDigits), self.Unit);
 		}
 	}
 }

@@ -62,13 +62,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(Environment.NewLine);
 				Console.WriteLine("Testing Round method");
 				for (byte f = 2; f <= 4; f++) {
-					var sngRounded = SignificantDigits.Round(43.50872f, f, RoundingMode.ToEven);
-					var dblRounded = SignificantDigits.Round(43.50872, f, RoundingMode.ToEven);
-					var dcmRounded = SignificantDigits.Round(43.50872m, f, RoundingMode.ToEven);
+					var sngRounded = SignificantDigits.Round(43.50872f, f);
+					var dblRounded = SignificantDigits.Round(43.50872, f);
+					var dcmRounded = SignificantDigits.Round(43.50872m, f);
 					Console.WriteLine("{0}\t{1}\t{2}\t{3}", 43.50872m, sngRounded, dblRounded, dcmRounded);
 				}
 				var x = (0.02015 * 0.25) - 0.001;
-				var xr = SignificantDigits.Round(x, 1, RoundingMode.ToEven);
+				var xr = SignificantDigits.Round(x, 1);
 				Console.WriteLine("{0} -> {1}", x, xr);
 
 				var karFiveFiguresInput = new double[] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
