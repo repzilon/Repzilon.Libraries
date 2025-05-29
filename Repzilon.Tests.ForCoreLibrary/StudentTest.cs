@@ -20,7 +20,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
-			Console.WriteLine("Distributions de Student");
+			Program.OutputHeading("Distributions de Student");
 			const int kStudentLoop = (300 - -300 + 1) * (255 - 1 + 1);
 			int k, x;
 			double z;
@@ -54,7 +54,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(Environment.NewLine);
 			}
 
-			Console.WriteLine("Intégrales de Student de faibles degrés de liberté");
+			Program.OutputHeading("Intégrales de Student de faibles degrés de liberté");
 			TenthTableHeader(" k={0} e-X        ", 1, 2, 3, 4, 5, 6, 7);
 			decimal totalDiff = 0;
 			for (x = -30; x <= 30; x++) {
@@ -72,7 +72,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Moyenne des différences : {0:e} i.e. {2} fois la cible de {1:e}",
 			 totalDiff, dcmTarget, totalDiff / dcmTarget);
 
-			Console.WriteLine("Réciproques d'intégrales de distributions de Student");
+			Program.OutputHeading("Réciproques d'intégrales de distributions de Student");
 			// ReSharper disable once RedundantExplicitArrayCreation
 			var karAlphas = new float[] { 0.4f, 0.25f, 0.1f, 0.05f, 0.025f, 0.010f, 0.005f, 0.0025f, 0.001f, 0.0005f };
 			TableHeader("nu/p", " {0,9:f4}", karAlphas);

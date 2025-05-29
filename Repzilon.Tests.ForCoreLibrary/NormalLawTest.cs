@@ -68,7 +68,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 new PointM(1.5m, 85.5m), new PointM(2, 51.6m), new PointM(2.5m, 1), new PointM(3, 0.8m),
 			 new PointM(3.5m, 0.3m));
 
-			Console.WriteLine("Intégrale d'une loi normale centrée réduite");
+			Program.OutputHeading("Intégrale d'une loi normale centrée réduite");
 			var karZ = new float[] { 1, 1.23f, 1.96f, 2, 3 };
 			var karExpected = new double[] {
 				0.8413447460685429485852325456320379224779129667266043909873944502429914419872048295008849184056393275,
@@ -104,7 +104,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 "Série de MacLaurin corrigée", 16, 15);
 			}
 
-			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Double)");
+			Program.OutputHeading("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Double)");
 			FindBestIterationCountForNormalLawIntegral(karZ, karExpected, Math.Abs(dblTargetDelta));
 
 			var karExpectedDecimal = new decimal[] {
@@ -121,13 +121,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 DecimalOneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
 
 			var dcmFinalTargetDelta = FinalTargetDelta();
-			Console.WriteLine("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
+			Program.OutputHeading("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
 			FindBestIterationCountForNormalLawIntegral(karZ, karExpectedDecimal, dcmFinalTargetDelta);
 
-			Console.WriteLine("Détermination du point de cassure de la série de MacLaurin");
+			Program.OutputHeading("Détermination du point de cassure de la série de MacLaurin");
 			FindMacLaurinBreakpointForNormalLawIntegral(dcmFinalTargetDelta);
 
-			Console.WriteLine("Estimation et détermination du nombre d'itérations idéales pour probit");
+			Program.OutputHeading("Estimation et détermination du nombre d'itérations idéales pour probit");
 			var karExpectedProbits = new decimal[] {
 				1.64485362695147271486384890799163213608319574427532207176967209440410635m,
 				1.69539771027213631465960937404132749234638104498567357232875989576081084m,

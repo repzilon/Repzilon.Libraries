@@ -512,6 +512,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static double Effective50(RegressionModel<double> line, IList<PointD> points)
 		{
+			// With external data, I would sort the points by X, but I already filled lists that way.
 			var c = points.Count;
 			for (var i = 0; i < c; i++) {
 				var pt = points[i];
@@ -528,14 +529,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			for (var i = 0; i < bands.Length; i++) {
 				var rf = bands[i] / migrationFront;
-				Console.WriteLine("{0,3}   {1,4:f1}   {2:f3}  {3:f0}\t{4:f0}\t{5:f0}",
+				Console.WriteLine("{0,3}   {1,4:f1}   {2:f3}\t   {3:f0}\t\t{4:f0}\t\t  {5:f0}",
 				 pitNumber, bands[i], rf,
 				 SignificantDigits.Round(logarithmicInnerModel.Solve(rf), 3),
 				 SignificantDigits.Round(logarithmicFullModel.Solve(rf), 3),
 				 SignificantDigits.Round(powerModel.Solve(rf), 3));
 			}
 		}
-
 
 		private static void CalibrateGelElectrophoresis(
 		PointD[] molarWeightsAndRelativeMobility,

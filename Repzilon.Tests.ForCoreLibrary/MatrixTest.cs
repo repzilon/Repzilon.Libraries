@@ -24,7 +24,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 #if !NET20
-			Console.WriteLine("Exemple 80 :");
+			Program.OutputHeading("Exemple 80 :");
 			var ex80_a = new Matrix<short>(3, 3, 2, -1, 5, -3, 4, 7, 1, -1, 0);
 			var ex80_b = new Matrix<short>(3, 3, 1, 4, 0, -3, 6, -5, 1, 0, -1);
 			var ex80_result = (3 * ex80_a) + ex80_b;
@@ -33,7 +33,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex80_result);
 #endif
 
-			Console.WriteLine("Exemple 81 :");
+			Program.OutputHeading("Exemple 81");
 			var ex81_a = new Matrix<short>(2, 2, 1, 3, -2, 1);
 			var ex81_b = new Matrix<short>(2, 3, 1, 2, 1, -3, 4, -5);
 			try {
@@ -45,7 +45,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Error.WriteLine(ex.Message);
 			}
 
-			Console.WriteLine("Exemple 82 :");
+			Program.OutputHeading("Exemple 82");
 			var ex82_m = new Matrix<double>(3, 3, 1.4, 1.2, 4.1, 1.4, 2.2, 3.7, 1.8, 3.2, 3.9);
 			var ex82_a = new Matrix<double>(3, 3, 0.3, 0.3, 0.3, 0.7, 0.7, 0.7, -0.2, -0.2, -0.2);
 			var ex82_ma = ex82_m + ex82_a;
@@ -60,7 +60,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex82_mxl);
 #endif
 
-			Console.WriteLine("Exercices papier :");
+			Program.OutputHeading("Exercices papier");
 			var pap_m = new Matrix<short>(3, 3, 4, 3, 5, -3, -7, 1, 8, 0, 0);
 			var pap_n = new Matrix<short>(3, 3, 4, 5, 1, 0, 1, -4, 6, 2, -1);
 			var pap_a = pap_m + pap_n;
@@ -76,7 +76,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(pap_c);
 			Console.WriteLine(pap_d);
 
-			Console.WriteLine("Exemple 83 :");
+			Program.OutputHeading("Exemple 83");
 			var ex83_c = new Matrix<short>(2, 2, 4, 3, 2, -1);
 			var ex83_s = new Matrix<short>(2, 1, -7, 9);
 			var ex83_plus = ex83_c | ex83_s;
@@ -84,7 +84,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex83_plus);
 			TrySolve("", ex83_c, ex83_s, 'x', 'y');
 
-			Console.WriteLine("Exemple 84 :");
+			Program.OutputHeading("Exemple 84");
 			var ex84_ac = new Matrix<short>(3, 3, 1, -1, 1, -1, 2, 2, 2, 1, 3);
 			var ex84_as = new Matrix<short>(3, 1, -2, 1, 1);
 			var ex84_aa = ex84_ac | ex84_as;
@@ -110,7 +110,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			TrySolve("b) ", ex84_bc, ex84_bs, 'x', 'y', 'z');
 			TrySolve("c) ", ex84_cc, ex84_cs, 'x', 'y', 'z');
 
-			Console.WriteLine("Exemple 85 :");
+			Program.OutputHeading("Exemple 85");
 			var ex85_c = new Matrix<float>(3, 4, 4, 0, -1, 0, 10, 0, 0, -2, 0, 2, -2, -1);
 			var ex85_s = new Matrix<float>(3, 1, 0, 0, 0);
 			var ex85_a = ex85_c | ex85_s;
@@ -119,7 +119,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex85_a);
 			TrySolve("", ex85_c, ex85_s, 'x', 'y', 'z', 'w');
 
-			Console.WriteLine("Exemple 86 :");
+			Program.OutputHeading("Exemple 86");
 			var ex86_s = new Matrix<double>(3, 1, 61.6, 68.4, 84.8);
 			var ex86_a = ex82_m | ex86_s;
 			ex86_a.RunCommand(1, -1, 1, null);
@@ -131,7 +131,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex86_a);
 			TrySolve("", ex82_m.Cast<decimal>(), ex86_s.Cast<decimal>(), 'x', 'y', 'z');
 
-			Console.WriteLine("Exemple 87 :");
+			Program.OutputHeading("Exemple 87");
 			var ex87_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
 			var ex87_ai = MatrixExtensionMethods.AugmentWithIdentity(ex87_a);
 			ex87_ai.RunCommand(1, -3, 2, null);
@@ -153,7 +153,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex87_bi);
 			Console.WriteLine(~ex87_b);
 
-			Console.WriteLine("Exemple 88 :");
+			Program.OutputHeading("Exemple 88");
 			var ex88_a = new Matrix<short>(3, 3, 2, 1, -1, 3, -3, 1, 1, -2, 1);
 			var ex88_b = new Matrix<short>(3, 1, 1, 16, 9);
 			var ex88_plus = ex88_a | ex88_b;
@@ -164,24 +164,24 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(ex88_m1 * ex88_b);
 			TrySolve("", ex88_a, ex88_b, 'x', 'y', 'z');
 
-			Console.WriteLine("Exemple 89 :");
+			Program.OutputHeading("Exemple 89");
 			var ex89_a = new Matrix<short>(3, 3, 2, 1, -4, 3, 1, 5, -2, 8, 7);
 			OutputExample89(ex89_a, (short)2);
 			OutputExample89(ex89_a, (short)5);
 
-			Console.WriteLine("Exemple 90 :");
+			Program.OutputHeading("Exemple 90");
 			var ex_89 = new Matrix<short>(2, 2, 3, 7, 2, 4);
 			Console.WriteLine("{0} det(M) = {1}", ex_89, ex_89.Determinant());
 
-			Console.WriteLine("Exemple 91 :");
+			Program.OutputHeading("Exemple 91");
 			Console.WriteLine("{0} det(M) = {1}", ex88_a, ex88_a.Determinant());
 			Console.WriteLine(Matrix<short>.Signature(3));
 
-			Console.WriteLine("Exemple 92 :");
+			Program.OutputHeading("Exemple 92");
 			OutputSolution("a) ", ex83_c.Solve(ex83_s, 'x', 'y'));
 			OutputSolution("b) ", ex88_a.Solve(ex88_b, 'x', 'y', 'z'));
 
-			Console.WriteLine("Travail 2 #7 :");
+			Program.OutputHeading("Travail 2 #7");
 			var t2_7a_c = new Matrix<short>(3, 3, 3, -1, -2, 2, 6, -9, 1, -7, 7);
 			var t2_7a_r = new Matrix<short>(3, 1, 19, 68, -49);
 			var t2_7a_a = t2_7a_c | t2_7a_r;
@@ -198,7 +198,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			t2_7b_a.RunCommand(2, null, 1, 10);
 			Console.WriteLine(t2_7b_a);
 
-			Console.WriteLine("Travail 2 #8 :");
+			Program.OutputHeading("Travail 2 #8");
 			var t2_8A = new Matrix<short>(3, 3, 1, 3, 4, -3, 5, 7, 4, 0, -1);
 			var t2_8B = new Matrix<short>(3, 3, 7, -4, 3, 2, -7, -5, -5, 2, 4);
 			var t2_8C = new Matrix<short>(1, 3, 1, 2, 4);
@@ -235,7 +235,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			MatrixExtensionMethods.RoundErrors(t2_8rf);
 			Console.WriteLine(t2_8rf);
 
-			Console.WriteLine("Physicochimie labo 10 :");
+			Program.OutputHeading("Physicochimie labo 10");
 			var fql10_coef = new Matrix<float>(3, 4, 7, 0, -1, 0, 6, 0, 0, -2, 2, 2, -2, -1);
 			var fql10_k = new Matrix<float>(3, 1, 0, 0, 0);
 			var fql10_a = fql10_coef | fql10_k;

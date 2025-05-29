@@ -34,21 +34,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
-			Console.WriteLine("Calcul intégral travail 1 #2");
+			Program.OutputHeading("Calcul intégral travail 1 #2");
 			SummationTest(10000, 729, "Math.Pow", CalculusWork1No2Fp);
 			SummationTest(10000, 729, "Pow(i32, u16)", CalculusWork1No2Int64);
 			SummationTest(10000, 729, "IIf", CalculusWork1No2IIf);
 			SummationTest(10000, 729, "IIfn", CalculusWork1No2IIfn);
 			SummationTest(10000, 729, "IIfd", CalculusWork1No2IIfd);
 
-			Console.WriteLine("Factorielles");
+			Program.OutputHeading("Factorielles");
 			Console.WriteLine("20! vaut {0}", ExtraMath.Factorial(20));
 			byte i;
 			for (i = 21; i <= 27; i++) {
 				Console.WriteLine("{0}! vaut {1}", i, ExtraMath.BigFactorial(i));
 			}
 
-			Console.WriteLine("Test de méthodes mathématiques avec Decimal");
+			Program.OutputHeading("Test de méthodes mathématiques avec Decimal");
 			// Force conversion from a stored decimal on disk to a double in memory by making it a variable
 			/*const*/ decimal kVerySmallSquare = 6.681844869362281E-18m;
 			TestMathAnalog((double)kVerySmallSquare, Math.Sqrt, ExtraMath.Sqrt);
@@ -71,6 +71,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			TestMathAnalog("Cosh", MathFunction.Hyperbolic, Math.Cosh, ExtraMath.Cosh);
 			TestMathAnalog("Tanh", MathFunction.Hyperbolic, Math.Tanh, ExtraMath.Tanh);
 
+			Program.OutputHeading("Fibonnaci itératif");
 			try {
 				for (i = 0; i <= 254; i++) {
 					Fibonacci(i);
@@ -254,7 +255,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Assert.AreEqual(dResult, 100000m);
 		}// */
 		#endregion
-
 
 		private static long Fibonacci(byte n)
 		{
