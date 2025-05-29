@@ -26,7 +26,7 @@ namespace Repzilon.Libraries.Core.Regression
 	public struct DecimalLinearRegressionResult : ILinearRegressionResult<decimal>,
 	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
 	{
-		public readonly int Count;
+		private readonly int m_intCount;
 		public decimal Slope { get; set; }
 		public decimal Intercept { get; set; }
 		public decimal Correlation { get; set; }
@@ -43,7 +43,7 @@ namespace Repzilon.Libraries.Core.Regression
 		decimal minX, decimal minY, decimal maxX, decimal maxY, decimal averageX, decimal averageY, decimal stdDevX,
 		decimal stdDevY) : this()
 		{
-			this.Count = n;
+			this.m_intCount = n;
 			this.Slope = slope;
 			this.Intercept = intercept;
 			this.Correlation = correlation;
@@ -60,7 +60,7 @@ namespace Repzilon.Libraries.Core.Regression
 		#region ICloneable members
 		public DecimalLinearRegressionResult(DecimalLinearRegressionResult other) : this()
 		{
-			this.Count = other.Count;
+			this.m_intCount = other.m_intCount;
 			this.Slope = other.Slope;
 			this.Intercept = other.Intercept;
 			this.Correlation = other.Correlation;
@@ -87,9 +87,14 @@ namespace Repzilon.Libraries.Core.Regression
 		}
 		#endregion
 
+		public int Count
+        {
+        	get { return m_intCount; }
+        }
+
 		public LinearRegressionResult ToDouble()
 		{
-			return new LinearRegressionResult(this.Count, (double)this.Intercept, (double)this.Slope,
+			return new LinearRegressionResult(this.m_intCount, (double)this.Intercept, (double)this.Slope,
 			 (double)this.Correlation, (double)this.MinX, (double)this.MinY, (double)this.MaxX, (double)this.MaxY,
 			 (double)this.AverageX, (double)this.AverageY, (double)this.StdDevOfX, (double)this.StdDevOfY);
 		}
@@ -163,7 +168,7 @@ namespace Repzilon.Libraries.Core.Regression
 		public decimal TotalVariation()
 		{
 			var sy = this.StdDevOfY;
-			return RoundOff.Error((this.Count - 1) * sy * sy); // Eat dirt
+			return RoundOff.Error((this.m_intCount - 1) * sy * sy); // Eat dirt
 		}
 
 		public decimal ExplainedVariation()
@@ -180,7 +185,7 @@ namespace Repzilon.Libraries.Core.Regression
 
 		public decimal ResidualStdDev()
 		{
-			var n = this.Count;
+			var n = this.m_intCount;
 			var r = this.Correlation;
 			var sy = this.StdDevOfY;
 			return ExtraMath.Sqrt(1.0m / (n - 2) * (1 - (r * r)) * (n - 1) * sy * sy);
@@ -189,12 +194,12 @@ namespace Repzilon.Libraries.Core.Regression
 		public decimal SlopeStdDev()
 		{
 			var sx = this.StdDevOfX;
-			return this.ResidualStdDev() / ExtraMath.Sqrt((this.Count - 1) * sx * sx);
+			return this.ResidualStdDev() / ExtraMath.Sqrt((this.m_intCount - 1) * sx * sx);
 		}
 
 		public decimal InterceptStdDev()
 		{
-			var n = this.Count;
+			var n = this.m_intCount;
 			// ReSharper disable once InconsistentNaming
 			var x_ = this.AverageX;
 			var sx = this.StdDevOfX;
@@ -203,7 +208,7 @@ namespace Repzilon.Libraries.Core.Regression
 
 		public decimal YExtrapolationConfidenceFactor(decimal x0, bool repeated)
 		{
-			var n = this.Count;
+			var n = this.m_intCount;
 			var diff = x0 - this.AverageX;
 			var sx = this.StdDevOfX;
 			decimal f = repeated ? 0 : 1;
@@ -214,7 +219,7 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			var diff = yc - this.AverageY;
 			var b = this.Slope;
-			var n = this.Count;
+			var n = this.m_intCount;
 			var sx = this.StdDevOfX;
 			return this.ResidualStdDev() / b *
 				   ExtraMath.Sqrt((1.0m / k) + (1.0m / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
@@ -235,7 +240,7 @@ namespace Repzilon.Libraries.Core.Regression
 
 		public bool Equals(DecimalLinearRegressionResult other)
 		{
-			return Count == other.Count &&
+			return m_intCount == other.m_intCount &&
 				   Slope == other.Slope &&
 				   Intercept == other.Intercept &&
 				   Correlation == other.Correlation &&
@@ -253,7 +258,7 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			unchecked {
 				var magic = -1521134295;
-				var hashCode = (338248910 * -1521134295) + Count;
+				var hashCode = (338248910 * -1521134295) + m_intCount;
 				hashCode = (hashCode * magic) + Slope.GetHashCode();
 				hashCode = (hashCode * magic) + Intercept.GetHashCode();
 				hashCode = (hashCode * magic) + Correlation.GetHashCode();
@@ -270,7 +275,7 @@ namespace Repzilon.Libraries.Core.Regression
 
 		public bool Equals(LinearRegressionResult other)
 		{
-			return Count == other.Count &&
+			return m_intCount == other.Count &&
 				   Slope == (decimal)other.Slope &&
 				   Intercept == (decimal)other.Intercept &&
 				   Correlation == (decimal)other.Correlation &&

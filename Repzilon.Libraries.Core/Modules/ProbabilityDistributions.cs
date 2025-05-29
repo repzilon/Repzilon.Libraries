@@ -13,6 +13,9 @@
 //
 using System;
 using System.Collections.Generic;
+#if !NET20
+using System.Linq;
+#endif
 
 namespace Repzilon.Libraries.Core
 {
@@ -485,7 +488,8 @@ namespace Repzilon.Libraries.Core
 				inter = 2 * Math.Sqrt(p * (kOne - p));
 				return Math.Sign(p - kHalf) * 2 * Math.Sqrt((Math.Cos(1.0 / 3 * Math.Acos(inter)) / inter) - kOne);
 			} else {
-				throw new NotSupportedException("Inverse Student currently supports 1, 2 or 4 degrees of liberty only.");
+				return Differential.NewtonCrossing(InverseNormal(p), 1e-18,
+				 x => Student(x, liberties, true), p, x => Student(x, liberties, false));
 			}
 		}
 

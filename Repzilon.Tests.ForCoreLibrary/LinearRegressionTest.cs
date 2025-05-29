@@ -29,8 +29,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			const int kBenchIterationsDecimal = 70000;
 			const int kBenchIterationsDouble = 25 * kBenchIterationsDecimal;
 
-			var dblTalpha0_025n4 = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), 6 - 2);
-			Console.WriteLine("t{0} = {1}", 6 - 2, dblTalpha0_025n4);
 			var ptarDouble = new PointD[] {
 				new PointD(2, 2.1f), new PointD(4, 4.4f), new PointD(6, 6.5f), new PointD(8, 8.6f),
 				new PointD(10, 10.8f), new PointD(12, 12.9f)
@@ -39,8 +37,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<PointD>();
 			Program.OutputSizeOf<LinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<double>>();
-			OutputLinearRegression2(LinearRegression.Compute(ptarDouble),
-			 dblTalpha0_025n4, "G", true, 8.25f, 3.4);
+			OutputLinearRegression2<LinearRegressionResult, double>(LinearRegression.Compute(ptarDouble),
+			 "G", true, 8.25f, 3.4f);
 			int j;
 			var dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
@@ -64,7 +62,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<DecimalLinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<decimal>>();
 			var dlrp = LinearRegression.Compute(ptarDecimal);
-			OutputLinearRegression2(dlrp, (decimal)dblTalpha0_025n4, "G18", true, 7, 7.5m);
+			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(
+			 dlrp, "G18", true, 7m, 7.5m);
 			Console.WriteLine("a - {1} = {0}", dlrp.Intercept - 0.02m, 0.02m);
 			dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDecimal; j++) {
@@ -79,9 +78,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputBenchResults(kBenchIterationsDecimal, tsEnumerable, tsList);
 
 			Program.OutputHeading("Revision");
-			OutputLinearRegression2(LinearRegression.Compute(new PointM(0, 0.06m), new PointM(5, 1.25m),
+			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(
+			 LinearRegression.Compute(new PointM(0, 0.06m), new PointM(5, 1.25m),
 			 new PointM(10, 2.38m), new PointM(15, 3.58m), new PointM(20, 4.61m)),
-			 3.18245m, "G7", false, 12, 4.154m);
+			  "G7", false, 12, 4.154m);
 
 			Program.OutputHeading("Math I Example 38");
 			Program.OutputSizeOf<RegressionModel<double>>();
@@ -584,7 +584,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 #endif
 
-		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp, TStorage studentLawValue,
+		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp,
 		string numberFormat, bool checkBiases, TStorage? xForYExtrapolation, TStorage? yForXExtrapolation)
 		where TRegression : struct, ILinearRegressionResult<TStorage>
 		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
@@ -608,6 +608,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 lrp.UnexplainedVariation().ToString(numberFormat, ciCu));
 			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu),
 			 lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
+			var studentLawValue = ExtraMath.ConvertTo<TStorage>(
+			 ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), checked((byte)(lrp.Count - 2))));
 			Console.WriteLine("b = {0}", new ErrorMargin<TStorage>(b,
 			 Arithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
 			Console.WriteLine("a = {0}", new ErrorMargin<TStorage>(lrp.Intercept,
@@ -647,19 +649,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
 			 yc.ToString(numberFormat, culture),
 			 k.ToString(numberFormat, culture),
-			 new ErrorMargin<T>(Divide(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
-		}
-
-		private static T Divide<T>(T dividend, T divisor) where T : struct, IConvertible
-		{
-			var tc = dividend.GetTypeCode();
-			if (tc == TypeCode.Double) {
-				return ExtraMath.ConvertTo<T>(Convert.ToDouble(dividend) / Convert.ToDouble(divisor));
-			} else if (tc == TypeCode.Decimal) {
-				return ExtraMath.ConvertTo<T>(Decimal.Divide(Convert.ToDecimal(dividend), Convert.ToDecimal(divisor)));
-			} else {
-				throw new NotSupportedException();
-			}
+			 new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
 		}
 
 		internal static void OutputRegressionModel<T>(RegressionModel<T> mathModel)

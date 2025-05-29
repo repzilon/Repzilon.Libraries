@@ -21,6 +21,7 @@ namespace Repzilon.Libraries.Core.Regression
 #endif
 	where T : struct
 	{
+		int Count { get; }
 		T Slope { get; }
 		T Intercept { get; }
 		T Correlation { get; }

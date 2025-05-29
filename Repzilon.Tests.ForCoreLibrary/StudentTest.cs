@@ -75,15 +75,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Réciproques d'intégrales de distributions de Student");
 			// ReSharper disable once RedundantExplicitArrayCreation
 			var karAlphas = new float[] { 0.4f, 0.25f, 0.1f, 0.05f, 0.025f, 0.010f, 0.005f, 0.0025f, 0.001f, 0.0005f };
-			var karNus = new byte[] { 1, 2, 4 };
 			TableHeader("nu/p", " {0,9:f4}", karAlphas);
-			for (k = 0; k < karNus.Length; k++) {
-				Console.Write("{0,4}", karNus[k]);
-				for (x = 0; x < karAlphas.Length; x++) {
-					Console.Write(" {0,9:g6}", ProbabilityDistributions.InverseStudent(RoundOff.Error(karAlphas[x]), karNus[k]));
-				}
-				Console.Write(Environment.NewLine);
+			for (k = 1; k <= 40; k++) {
+				InverseStudentTableRow(k, karAlphas);
 			}
+			for (k = 60; k <= 120; k += 20) {
+				InverseStudentTableRow(k, karAlphas);
+			}
+		}
+
+		private static void InverseStudentTableRow(int k, float[] karAlphas)
+		{
+			Console.Write("{0,4}", k);
+			for (int x = 0; x < karAlphas.Length; x++) {
+				Console.Write(" {0,9:g6}", ProbabilityDistributions.InverseStudent(RoundOff.Error(karAlphas[x]), (byte)k));
+			}
+			Console.Write(Environment.NewLine);
 		}
 
 		private static void TenthTableHeader(string format, params byte[] liberties)

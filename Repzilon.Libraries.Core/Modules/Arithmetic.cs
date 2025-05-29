@@ -97,5 +97,18 @@ namespace Repzilon.Libraries.Core
 			return mult(mult(a, b), c);
 #endif
 		}
+
+		public static T DivideScalars(T dividend, T divisor)
+		{
+			if (dividend is double) {
+				return ExtraMath.ConvertTo<T>(Convert.ToDouble(dividend) / Convert.ToDouble(divisor));
+			} else if (dividend is decimal) {
+				return ExtraMath.ConvertTo<T>(Decimal.Divide(Convert.ToDecimal(dividend), Convert.ToDecimal(divisor)));
+			} else if (dividend is float) {
+				return ExtraMath.ConvertTo<T>(Convert.ToSingle(dividend) / Convert.ToSingle(divisor));
+			} else {
+				return ExtraMath.ConvertTo<T>(Convert.ToInt64(dividend) / Convert.ToInt64(divisor));
+			}
+		}
 	}
 }
