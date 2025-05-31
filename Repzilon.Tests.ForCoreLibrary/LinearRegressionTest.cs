@@ -610,10 +610,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
 			var studentLawValue = ExtraMath.ConvertTo<TStorage>(
 			 ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), checked((byte)(lrp.Count - 2))));
-			Console.WriteLine("b = {0}", new ErrorMargin<TStorage>(b,
-			 Arithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.SlopeStdDev())).ToString(numberFormat, ciCu));
-			Console.WriteLine("a = {0}", new ErrorMargin<TStorage>(lrp.Intercept,
-			 Arithmetic<TStorage>.MultiplyScalars(studentLawValue, lrp.InterceptStdDev())).ToString(numberFormat, ciCu));
+			OutputParameterMargin('b', b, lrp.SlopeStdDev(), studentLawValue, numberFormat, ciCu);
+			OutputParameterMargin('a', lrp.Intercept, lrp.SlopeStdDev(), studentLawValue, numberFormat, ciCu);
 			if (xForYExtrapolation.HasValue) {
 				var x = xForYExtrapolation.Value;
 				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, true);
@@ -629,6 +627,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var yc = yForXExtrapolation.Value;
 				OutputXExtrapolation(lrp, studentLawValue, numberFormat, ciCu, yc, 5, b);
 			}
+		}
+
+		private static void OutputParameterMargin<T>(char argument, T value, T standardDeviation, T studentLawValue,
+		string numberFormat, IFormatProvider culture) where T : struct, IEquatable<T>, IFormattable, IComparable
+		{
+			var em = new ErrorMargin<T>(value, Arithmetic<T>.MultiplyScalars(studentLawValue, standardDeviation));
+			Console.WriteLine("{0} = {1} => {2}", argument, em.ToString(numberFormat, culture),
+			 em.Round().ToString(numberFormat, culture));
 		}
 
 		private static void OutputYExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,

@@ -166,5 +166,35 @@ namespace Repzilon.Libraries.Core
 			return !(left == right);
 		}
 		#endregion
+
+		public ErrorMargin<T> Round()
+		{
+			var numMargin = this.Margin;
+			var numValue = this.Middle;
+			if (numValue is double) {
+				double dblIncert = SignificantDigits.Ceil(Convert.ToDouble(numMargin));
+				return NewFrom(Math.Round(Convert.ToDouble(numValue), Decimals(dblIncert), MidpointRounding.ToEven), dblIncert);
+			} else if (numValue is decimal) {
+				decimal dcmIncert = SignificantDigits.Ceil(Convert.ToDecimal(numMargin));
+				return NewFrom(Math.Round(Convert.ToDecimal(numValue), Decimals((double)dcmIncert), MidpointRounding.ToEven), dcmIncert);
+			} else if (numValue is float) {
+				float sngIncert = SignificantDigits.Ceil(Convert.ToSingle(numMargin));
+				return NewFrom((float)Math.Round(Convert.ToSingle(numValue), Decimals(sngIncert), MidpointRounding.ToEven), sngIncert);
+			} else {
+				throw new NotSupportedException();
+			}
+		}
+
+		private static byte Decimals(double number)
+		{
+			return (byte)(-Math.Floor(Math.Log10(Math.Abs(number))));
+		}
+
+		private ErrorMargin<T> NewFrom<TIn>(TIn middle, TIn margin)
+		where TIn : struct
+		{
+			return new ErrorMargin<T>(ExtraMath.ConvertTo<T>(middle),
+			 ExtraMath.ConvertTo<T>(margin));
+		}
 	}
 }
