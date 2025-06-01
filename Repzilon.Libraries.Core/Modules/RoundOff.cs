@@ -45,6 +45,19 @@ namespace Repzilon.Libraries.Core
 #endif
 		}
 
+		internal static T Error<T>(T value) where T : struct
+		{
+			if (value is double) {
+				return ExtraMath.ConvertTo<T>(Error(Convert.ToDouble(value)));
+			} else if (value is decimal) {
+				return ExtraMath.ConvertTo<T>(Error(Convert.ToDecimal(value)));
+			} else if (value is float) {
+				return ExtraMath.ConvertTo<T>(Error(Convert.ToSingle(value)));
+			} else {
+				return value;
+			}
+		}
+
 		[CLSCompliant(false)]
 		public static Exp Error(Exp value)
 		{

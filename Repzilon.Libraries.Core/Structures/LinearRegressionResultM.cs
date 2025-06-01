@@ -133,7 +133,7 @@ namespace Repzilon.Libraries.Core.Regression
 				throw new ArgumentOutOfRangeException("x",
 					String.Format("x is outside the range [{0}; {1}]", min, max));
 			}
-			return this.Intercept + (x * this.Slope);
+			return RoundOff.Error(this.Intercept + (x * this.Slope));
 		}
 
 		public decimal InterpolateX(decimal y)

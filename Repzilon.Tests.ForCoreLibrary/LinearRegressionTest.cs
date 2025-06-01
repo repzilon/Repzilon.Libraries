@@ -610,10 +610,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 		IFormatProvider culture, T x, T studentLawValue, T sr, bool repeated)
 		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
-			Console.WriteLine("x = {0} k = {1}\ty^ = {2}",
+			var em = new ErrorMargin<T>(lrp.InterpolateY(x),
+			 Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated)));
+			// FIXME : change Infinity for something language-aware
+			Console.WriteLine("x = {0} k = {1,-8}  y^ = {2} => {3}",
 			 x.ToString(numberFormat, culture), repeated ? (Program.OnMacOsX ? "∞\t" : "Infinity") : "1\t",
-			 new ErrorMargin<T>(lrp.InterpolateY(x),
-			  Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
+			 em.ToString(numberFormat, culture), em.Round().ToString(numberFormat, culture));
 		}
 
 		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, string numberFormat,
@@ -621,10 +623,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			int k = lrp.Count - 1;
-			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
+			var em = new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b),
+			 Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k)));
+			Console.WriteLine("yc= {0} k = {1,-8}\tx0 = {2} => {3}",
 			 yc.ToString(numberFormat, culture), k.ToString(numberFormat, culture),
-			 new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b),
-			  Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
+			 em.ToString(numberFormat, culture), em.Round().ToString(numberFormat, culture));
 		}
 
 		internal static void OutputRegressionModel<T>(RegressionModel<T> mathModel)
