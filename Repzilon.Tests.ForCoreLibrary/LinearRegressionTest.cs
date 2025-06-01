@@ -39,6 +39,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<ErrorMargin<double>>();
 			OutputLinearRegression2<LinearRegressionResult, double>(LinearRegression.Compute(ptarDouble),
 			 "G", true, 8.25f, 3.4); // Rounding 3.4f takes more place
+			// x can also be 7 or 8, and y can also be 7.5
 			int j;
 			var dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
@@ -51,7 +52,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			var tsList = DateTime.UtcNow - dtmStart;
 			OutputBenchResults<PointD>(kBenchIterationsDouble, tsEnumerable, tsList);
-			// x can also be 7 or 8, and y can also be 7.5
 
 			var ptarDecimal = new PointM[] {
 				new PointM(2, 2.1m), new PointM(4, 4.4m), new PointM(6, 6.5m), new PointM(8, 8.6m),
@@ -142,10 +142,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 3");
 			var lrr0 = LinearRegression.Compute(
-				new PointD(1000000, RoundedInverse("1,16")),
-				new PointD(100000, RoundedInverse("8,46")),
-				new PointD(10000, RoundedInverse("24,94")),
-				new PointD(1000, RoundedInverse("27,94")),
+				new PointD(1000000, RoundedInverse("1,16")), new PointD(100000, RoundedInverse("8,46")),
+				new PointD(10000, RoundedInverse("24,94")), new PointD(1000, RoundedInverse("27,94")),
 				new PointD(100, RoundedInverse("29,95"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
@@ -155,20 +153,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
 			lrr0 = LinearRegression.Compute(
-				new PointD(100, RoundedInverse("16,7")),
-				new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("20")),
-				new PointD(50, RoundedInverse("25")),
-				new PointD(40, RoundedInverse("27")),
-				new PointD(20, RoundedInverse("35,7")),
-				new PointD(10, RoundedInverse("41,7"))
+				new PointD(100, RoundedInverse("16,7")), new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("20")),
+				new PointD(50, RoundedInverse("25")), new PointD(40, RoundedInverse("27")),
+				new PointD(20, RoundedInverse("35,7")), new PointD(10, RoundedInverse("41,7"))
 			);
 			var lrr1 = LinearRegression.Compute(
-				new PointD(100, RoundedInverse("10")),
-				new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("12,5")),
-				new PointD(50, RoundedInverse("16,7")),
-				new PointD(40, RoundedInverse("19,2")),
-				new PointD(20, RoundedInverse("27,8")),
-				new PointD(10, RoundedInverse("35,7"))
+				new PointD(100, RoundedInverse("10")), new PointD(Math.Round(100 / 1.33, 1), RoundedInverse("12,5")),
+				new PointD(50, RoundedInverse("16,7")), new PointD(40, RoundedInverse("19,2")),
+				new PointD(20, RoundedInverse("27,8")), new PointD(10, RoundedInverse("35,7"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
@@ -192,11 +184,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 6");
 			lrr0 = LinearRegression.Compute(
-				new PointD(4 / 1.5, 4),
-				new PointD(6 / 2.5, 6),
-				new PointD(7.5 / 3.5, 7.5),
-				new PointD(10.4 / 6, 10.4),
-				new PointD(14 / 12.0, 14)
+				new PointD(4 / 1.5, 4), new PointD(6 / 2.5, 6), new PointD(7.5 / 3.5, 7.5),
+				new PointD(10.4 / 6, 10.4), new PointD(14 / 12.0, 14)
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			vmax0 = SignificantDigits.Round(lrr0.Intercept, 2);
@@ -205,19 +194,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biochemistry II laboratory 3");
 			lrr0 = LinearRegression.Compute(
-				new PointD(10, 0.174f),
-				new PointD(20, 0.285f),
-				new PointD(30, 0.387f),
-				new PointD(40, 0.511f),
-				new PointD(51, 0.659f)
+				new PointD(10, 0.174f), new PointD(20, 0.285f), new PointD(30, 0.387f),
+				new PointD(40, 0.511f), new PointD(51, 0.659f)
 			);
 			Console.Write("Absorbance: ");
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			lrr1 = LinearRegression.Compute(
-				 new PointD(1.0 / 0.00150, 1.0 / 0.0071),
-				 new PointD(1.0 / 0.00090, 1.0 / 0.0044),
-				 new PointD(1.0 / 0.00076, 1.0 / 0.0038),
-				 new PointD(1.0 / 0.00045, 1.0 / 0.0026),
+				 new PointD(1.0 / 0.00150, 1.0 / 0.0071), new PointD(1.0 / 0.00090, 1.0 / 0.0044),
+				 new PointD(1.0 / 0.00076, 1.0 / 0.0038), new PointD(1.0 / 0.00045, 1.0 / 0.0026),
 				 new PointD(1.0 / 0.00030, 1.0 / 0.0018)
 			);
 			Console.Write("Reaction  : ");
@@ -226,17 +210,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Km0 = vmax0 * lrr1.Slope;
 			vmax1 = vmax0 * 60 / lrr0.Slope;
 			Console.WriteLine("Vmax  = {1} A405/s  Km  = {2} mol/L{0}Vmax  = {3} µmol/min*L",
-			 Environment.NewLine,
-			 SignificantDigits.Round(vmax0, 5),
-			 SignificantDigits.Round(Km0, 4),
+			 Environment.NewLine, SignificantDigits.Round(vmax0, 5), SignificantDigits.Round(Km0, 4),
 			 SignificantDigits.Round(vmax1, 3));
 
 			Program.OutputHeading("Biochemistry II laboratory 4");
 			lrr0 = LinearRegression.Compute(
-				new PointD(0.0100f, 0.142f),
-				new PointD(0.020f, 0.251f),
-				new PointD(0.030f, 0.390f),
-				new PointD(0.040f, 0.520f)
+				new PointD(0.0100f, 0.142f), new PointD(0.020f, 0.251f),
+				new PointD(0.030f, 0.390f), new PointD(0.040f, 0.520f)
 			);
 			Console.Write("Calibration    : ");
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
@@ -336,12 +316,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputHeading("Instrumental analysis II lab 8");
 			const float kBloodPartition = 2100f / 2573f;
 			OutputRegressionModel(RegressionModel.Compute(
-				new PointD(0, 0),
-				new PointD(0.0434f * kBloodPartition, 0.0319f),
-				new PointD(0.0616f * kBloodPartition, 0.059f),
-				new PointD(0.0853f * kBloodPartition, 0.078f),
-				new PointD(0.1063f * kBloodPartition, 0.065f),
-				new PointD(0.1213f * kBloodPartition, 0.071f),
+				new PointD(0, 0), new PointD(0.0434f * kBloodPartition, 0.0319f),
+				new PointD(0.0616f * kBloodPartition, 0.059f), new PointD(0.0853f * kBloodPartition, 0.078f),
+				new PointD(0.1063f * kBloodPartition, 0.065f), new PointD(0.1213f * kBloodPartition, 0.071f),
 				new PointD(0.1853f * kBloodPartition, 0.1617f)
 			));
 
@@ -362,16 +339,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Molecular weight from relative mobility");
 			const float kFrontDistance = 53.0f;
 			ptarDouble = new PointD[] {
-				new PointD(250000, 3.0f/kFrontDistance),
-				new PointD(150000, 5.0f/kFrontDistance),
-				new PointD(100000, 8.0f/kFrontDistance),
-				new PointD(75000, 10.5f/kFrontDistance),
-				new PointD(50000, 16.0f/kFrontDistance),
-				new PointD(37000, 21.0f/kFrontDistance),
-				new PointD(25000, 29.5f/kFrontDistance),
-				new PointD(20000, 32.5f/kFrontDistance),
-				new PointD(15000, 40.5f/kFrontDistance),
-				new PointD(10000, 47.0f/kFrontDistance)
+				new PointD(250000, 3.0f/kFrontDistance), new PointD(150000, 5.0f/kFrontDistance),
+				new PointD(100000, 8.0f/kFrontDistance), new PointD(75000, 10.5f/kFrontDistance),
+				new PointD(50000, 16.0f/kFrontDistance), new PointD(37000, 21.0f/kFrontDistance),
+				new PointD(25000, 29.5f/kFrontDistance), new PointD(20000, 32.5f/kFrontDistance),
+				new PointD(15000, 40.5f/kFrontDistance), new PointD(10000, 47.0f/kFrontDistance)
 			};
 			RegressionModel<double> rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner;
 			CalibrateGelElectrophoresis(ptarDouble,
@@ -384,14 +356,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputHeading("Immunotechniques lab 4");
 			const float kFrontDistance4Std = 90.5f;
 			ptarDouble = new PointD[] {
-				new PointD(250000, 20.5f/kFrontDistance4Std),
-				new PointD(150000, 27.0f/kFrontDistance4Std),
-				new PointD(100000, 32.5f/kFrontDistance4Std),
-				new PointD(75000,  36.5f/kFrontDistance4Std),
-				new PointD(50000,  44.5f/kFrontDistance4Std),
-				new PointD(37000,  51.0f/kFrontDistance4Std),
-				new PointD(25000,  59.0f/kFrontDistance4Std),
-				new PointD(20000,  63.0f/kFrontDistance4Std),
+				new PointD(250000, 20.5f/kFrontDistance4Std), new PointD(150000, 27.0f/kFrontDistance4Std),
+				new PointD(100000, 32.5f/kFrontDistance4Std), new PointD(75000,  36.5f/kFrontDistance4Std),
+				new PointD(50000,  44.5f/kFrontDistance4Std), new PointD(37000,  51.0f/kFrontDistance4Std),
+				new PointD(25000,  59.0f/kFrontDistance4Std), new PointD(20000,  63.0f/kFrontDistance4Std),
 				new PointD(15000,  70.5f/kFrontDistance4Std),
 			};
 			CalibrateGelElectrophoresis(ptarDouble,
@@ -410,9 +378,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Biofermentation week 3 exercice");
 			ptarDouble = new PointD[] {
-				new PointD(0, 1.5f), new PointD(5, 2), new PointD(9, 3.5f),
-				new PointD(13, 6.2f), new PointD(16, 8.2f), new PointD(20, 9.4f),
-				new PointD(24, 9.8f), new PointD(28, 9.9f)
+				new PointD(0, 1.5f), new PointD(5, 2), new PointD(9, 3.5f), new PointD(13, 6.2f),
+				new PointD(16, 8.2f), new PointD(20, 9.4f), new PointD(24, 9.8f), new PointD(28, 9.9f)
 			};
 			for (i = 2; i <= ptarDouble.Length; i++) {
 				Console.Write("{0,2}h : ", ptarDouble[i - 1].X);
@@ -429,9 +396,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Instrumental analysis II Mass spectroscopy mean travel");
 			ptarDouble = new PointD[] {
-				new PointD(101325, 0.000006f), new PointD(130, 0.0045f),
-				new PointD(0.13f, 4.5f), new PointD(0.013f, 45f),
-				new PointD(0.0013f, 450f), new PointD(0.00013f, 4500f),
+				new PointD(101325, 0.000006f), new PointD(130, 0.0045f), new PointD(0.13f, 4.5f),
+				new PointD(0.013f, 45f), new PointD(0.0013f, 450f), new PointD(0.00013f, 4500f),
 				new PointD(1.3e-5f, 45000f), new PointD(1.3e-7, 4500000)
 			};
 			Console.Write("  ");
@@ -653,8 +619,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
-			 yc.ToString(numberFormat, culture),
-			 k.ToString(numberFormat, culture),
+			 yc.ToString(numberFormat, culture), k.ToString(numberFormat, culture),
 			 new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
 		}
 
