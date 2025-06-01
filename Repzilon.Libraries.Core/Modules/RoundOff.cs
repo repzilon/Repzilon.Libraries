@@ -30,7 +30,7 @@ namespace Repzilon.Libraries.Core
 
 		public static double UpsizeError(double formerSingle)
 		{
-			return Math.Round(formerSingle, 15 - 2 - 5, MidpointRounding.ToEven);
+			return Math.Round(formerSingle, 15 - 2 - 7, MidpointRounding.ToEven);
 		}
 
 		public static decimal Error(decimal value)

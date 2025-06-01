@@ -38,7 +38,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<LinearRegressionResult>();
 			Program.OutputSizeOf<ErrorMargin<double>>();
 			OutputLinearRegression2<LinearRegressionResult, double>(LinearRegression.Compute(ptarDouble),
-			 "G", true, 8.25f, 3.4f);
+			 "G", true, 8.25f, 3.4); // Rounding 3.4f takes more place
 			int j;
 			var dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
