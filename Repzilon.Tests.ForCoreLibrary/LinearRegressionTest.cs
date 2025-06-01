@@ -50,7 +50,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				LinearRegression.Compute((IList<PointD>)ptarDouble);
 			}
 			var tsList = DateTime.UtcNow - dtmStart;
-			OutputBenchResults(kBenchIterationsDouble, tsEnumerable, tsList);
+			OutputBenchResults<PointD>(kBenchIterationsDouble, tsEnumerable, tsList);
 			// x can also be 7 or 8, and y can also be 7.5
 
 			var ptarDecimal = new PointM[] {
@@ -75,7 +75,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				LinearRegression.Compute((IList<PointM>)ptarDecimal);
 			}
 			tsList = DateTime.UtcNow - dtmStart;
-			OutputBenchResults(kBenchIterationsDecimal, tsEnumerable, tsList);
+			OutputBenchResults<PointM>(kBenchIterationsDecimal, tsEnumerable, tsList);
 
 			Program.OutputHeading("Revision");
 			OutputLinearRegression2<DecimalLinearRegressionResult, decimal>(
@@ -114,7 +114,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				RegressionModel.Compute((IList<PointD>)ptarDouble);
 			}
 			tsList = DateTime.UtcNow - dtmStart;
-			OutputBenchResults(kBenchIterationsDouble, tsEnumerable, tsList);
+			OutputBenchResults<PointD>(kBenchIterationsDouble, tsEnumerable, tsList);
 			ptarDecimal = new PointM[] {
 				new PointM(12.5m, 0.037m), new PointM(20, 0.050m), new PointM(25, 0.055m), new PointM(50, 0.073m),
 				new PointM(100, 0.091m)
@@ -130,7 +130,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				RegressionModel.Compute((IList<PointM>)ptarDecimal);
 			}
 			tsList = DateTime.UtcNow - dtmStart;
-			OutputBenchResults(kBenchIterationsDecimal, tsEnumerable, tsList);
+			OutputBenchResults<PointM>(kBenchIterationsDecimal, tsEnumerable, tsList);
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			OutputRegressionModel(RegressionModel.Compute(new PointD(1.0f, 31.25f), new PointD(0.4f, 18.18f),
@@ -477,10 +477,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("The fourth reich would only last {0:g4} years.", rm.Evaluate(4));
 		}
 
-		private static void OutputBenchResults(int iterations, TimeSpan withEnumerable, TimeSpan withList)
+		private static void OutputBenchResults<T>(int iterations, TimeSpan withEnumerable, TimeSpan withList)
 		{
-			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<PointD>, {2:f3} s as IList<PointD>",
-			 iterations, withEnumerable.TotalSeconds, withList.TotalSeconds);
+			Console.WriteLine("{0,9:n0} iterations in {1:f3} s as IEnumerable<{3}>, {2:f3} s as IList<{3}>",
+			 iterations, withEnumerable.TotalSeconds, withList.TotalSeconds, typeof(T).Name);
 		}
 
 		private static void OutputMicrotox(string sample, byte minutes, byte[] i0, byte[] it)
