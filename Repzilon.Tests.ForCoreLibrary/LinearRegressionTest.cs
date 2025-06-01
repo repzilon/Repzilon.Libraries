@@ -565,14 +565,24 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputYExtrapolation(lrp, numberFormat, ciCu, xForYExtrapolation, studentLawValue, sr, true);
 			OutputYExtrapolation(lrp, numberFormat, ciCu, xForYExtrapolation, studentLawValue, sr, false);
 			if (checkBiases) {
-				Console.WriteLine("x = {0}\t\ttotal error: {1}\trelative bias: {2}",
-				 xForYExtrapolation.ToString(numberFormat, ciCu),
-				 lrp.TotalError(xForYExtrapolation).ToString(numberFormat, ciCu),
-				 lrp.RelativeBias(xForYExtrapolation).ToString(numberFormat, ciCu));
+				OutputLine(numberFormat, ciCu, "x = {0}\t\ttotal error: {1}\trelative bias: {2}",
+				 xForYExtrapolation, lrp.TotalError(xForYExtrapolation), lrp.RelativeBias(xForYExtrapolation));
 			}
-			
+
 			OutputXExtrapolation(lrp, numberFormat, ciCu, yForXExtrapolation, studentLawValue, b);
 		}
+
+		/*
+		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp,
+		string numberFormat, bool checkBiases)
+		where TRegression : struct, ILinearRegressionResult<TStorage>
+		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
+		{
+			OutputLinearRegression2(numberFormat, CultureInfo.CurrentCulture, lrp.Slope,
+			 ExtraMath.ConvertTo<TStorage>(
+			 ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), checked((byte)(lrp.Count - 2)))),
+			 checkBiases, lrp, lrp.ResidualStdDev());
+		}// */
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(string numberFormat, CultureInfo culture,
 		TStorage b, TStorage studentLawValue, bool checkBiases, TRegression lrp, TStorage sr)
@@ -580,20 +590,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
 		{
 			Console.WriteLine(lrp.ToString(numberFormat, culture));
-			Console.Write("r = {0}\t{2} = {1}", lrp.Correlation.ToString(numberFormat, culture),
-			 lrp.Determination().ToString(numberFormat, culture), Program.OnMacOsX ? "R²" : "r^2");
+			Console.Write("r = {0}\t{1} = {2}", lrp.Correlation.ToString(numberFormat, culture),
+			 Program.OnMacOsX ? "R²" : "r^2",  lrp.Determination().ToString(numberFormat, culture));
 			if (checkBiases) {
 				// ReSharper disable once InvokeAsExtensionMethod
-				Console.WriteLine("\trelative bias: {0:p}",
+				Console.Write("\trelative bias: {0:p}",
 				 Arithmetic<TStorage>.SubtractScalars(b, ExtraMath.ConvertTo<TStorage>(1)));
-			} else {
-				Console.Write(Environment.NewLine);
 			}
-			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, culture),
-			 lrp.ExplainedVariation().ToString(numberFormat, culture),
-			 lrp.UnexplainedVariation().ToString(numberFormat, culture));
-			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, culture),
-			 lrp.SlopeStdDev().ToString(numberFormat, culture), lrp.InterceptStdDev().ToString(numberFormat, culture));
+			OutputLine(numberFormat, culture,
+			 "␤SCT: {0}\tSCreg: {1}\tSCres: {2}␤Std. dev.: residual {3}\tslope {4}\tintercept {5}",
+			 lrp.TotalVariation(), lrp.ExplainedVariation(), lrp.UnexplainedVariation(),
+			 sr, lrp.SlopeStdDev(), lrp.InterceptStdDev());
 			OutputParameterMargin(numberFormat, culture, 'b', b, lrp.SlopeStdDev(), studentLawValue);
 			OutputParameterMargin(numberFormat, culture, 'a', lrp.Intercept, lrp.SlopeStdDev(), studentLawValue);
 		}
@@ -625,9 +632,42 @@ namespace Repzilon.Tests.ForCoreLibrary
 			int k = lrp.Count - 1;
 			var em = new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b),
 			 Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k)));
-			Console.WriteLine("yc= {0} k = {1,-8}\tx0 = {2} => {3}",
-			 yc.ToString(numberFormat, culture), k.ToString(numberFormat, culture),
-			 em.ToString(numberFormat, culture), em.Round().ToString(numberFormat, culture));
+			OutputLine(numberFormat, culture, "yc= {0} k = {1,-8}\tx0 = {2} => {3}", yc, k, em, em.Round());
+		}
+
+		/// <summary>
+		/// Formats numbers using their IFormattable interface, then perform composite formatting, so formatting can
+		/// be a customised without building a composite format string at run-time, the latter being a security risk.
+		/// </summary>
+		/// <param name="numberFormat">Formatting code applied to each number</param>
+		/// <param name="culture">Formatting provider for both number and composite formatting</param>
+		/// <param name="compositeFormat">
+		/// Composite format string passed to String.Format, with a twist: the 'symbol for newline' character will be
+		/// replaced with the platform-dependent new line sequence, after String.Format.
+		/// </param>
+		/// <param name="arguments">
+		/// An array of IFormattable instances (of a least 4 items to see an IL size benefit) to be formatted
+		/// according to numberFormat and culture, before being part of the final composite formatting.
+		/// </param>
+		/// <returns>A formatted string</returns>
+		/// <exception cref="ArgumentNullException">
+		/// When arguments is null or empty, which is generally an error from the programmer.
+		/// </exception>
+		private static void OutputLine(string numberFormat, IFormatProvider culture, string compositeFormat,
+		params IFormattable[] arguments)
+		{
+			if (arguments == null) {
+				throw new ArgumentNullException("arguments");
+			}
+			var c = arguments.Length;
+			if (c < 1) {
+				throw new ArgumentNullException("arguments");
+			}
+			var objarArgs = new object[c];
+			for (int i = 0; i < c; i++) {
+				objarArgs[i] = arguments[i].ToString(numberFormat, culture);
+			}
+			Console.WriteLine(String.Format(culture, compositeFormat, objarArgs).Replace("␤", Environment.NewLine));
 		}
 
 		internal static void OutputRegressionModel<T>(RegressionModel<T> mathModel)

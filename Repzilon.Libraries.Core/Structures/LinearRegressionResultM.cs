@@ -131,7 +131,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var max = this.MaxX;
 			if ((x < min) || (x > max)) {
 				throw new ArgumentOutOfRangeException("x",
-					String.Format("x is outside the range [{0}; {1}]", min, max));
+				 String.Format("x is outside the range [{0}; {1}]", min, max));
 			}
 			return RoundOff.Error(this.Intercept + (x * this.Slope));
 		}
@@ -142,7 +142,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var max = this.MaxY;
 			if ((y < min) || (y > max)) {
 				throw new ArgumentOutOfRangeException("y",
-					String.Format("y is outside the range [{0}; {1}]", min, max));
+				 String.Format("y is outside the range [{0}; {1}]", min, max));
 			}
 			return (y - this.Intercept) / this.Slope;
 		}
