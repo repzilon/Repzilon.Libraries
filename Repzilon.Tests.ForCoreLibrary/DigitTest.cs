@@ -23,6 +23,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 			Action<string> toConsole = WriteCompact;
+			CultureInfo ciOriginal = CultureInfo.CurrentCulture;
 			try {
 				//* Testing number types
 				TestDigitCount(new short[] { -2, -1, 0, 1, 2, 123, 2005, 2000, 325, 3002 },
@@ -80,6 +81,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex);
+			} finally {
+#if NET40 || NET35 || NET20
+				System.Threading.Thread.CurrentThread.CurrentCulture = ciOriginal;
+#else
+				CultureInfo.CurrentCulture = ciOriginal;
+#endif
 			}
 
 			Console.Write(Environment.NewLine);
