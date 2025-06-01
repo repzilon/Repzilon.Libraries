@@ -551,17 +551,37 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp,
-		string numberFormat, bool checkBiases, TStorage? xForYExtrapolation, TStorage? yForXExtrapolation)
+		string numberFormat, bool checkBiases, TStorage xForYExtrapolation, TStorage yForXExtrapolation)
 		where TRegression : struct, ILinearRegressionResult<TStorage>
 		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
 		{
 			var ciCu = CultureInfo.CurrentCulture;
-			Console.WriteLine(lrp.ToString(numberFormat, ciCu));
 			var b = lrp.Slope;
 			var sr = lrp.ResidualStdDev();
+			var studentLawValue = ExtraMath.ConvertTo<TStorage>(
+			 ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), checked((byte)(lrp.Count - 2))));
+			OutputLinearRegression2(numberFormat, ciCu, b, studentLawValue, checkBiases, lrp, sr);
 
-			Console.Write("r = {0}\tr^2 = {1}", lrp.Correlation.ToString(numberFormat, ciCu), lrp.Determination().ToString(numberFormat, ciCu));
-			Console.Write(Environment.NewLine);
+			OutputYExtrapolation(lrp, numberFormat, ciCu, xForYExtrapolation, studentLawValue, sr, true);
+			OutputYExtrapolation(lrp, numberFormat, ciCu, xForYExtrapolation, studentLawValue, sr, false);
+			if (checkBiases) {
+				Console.WriteLine("x = {0}\t\ttotal error: {1}\trelative bias: {2}",
+				 xForYExtrapolation.ToString(numberFormat, ciCu),
+				 lrp.TotalError(xForYExtrapolation).ToString(numberFormat, ciCu),
+				 lrp.RelativeBias(xForYExtrapolation).ToString(numberFormat, ciCu));
+			}
+			
+			OutputXExtrapolation(lrp, numberFormat, ciCu, yForXExtrapolation, studentLawValue, b);
+		}
+
+		private static void OutputLinearRegression2<TRegression, TStorage>(string numberFormat, CultureInfo culture,
+		TStorage b, TStorage studentLawValue, bool checkBiases, TRegression lrp, TStorage sr)
+		where TRegression : struct, ILinearRegressionResult<TStorage>
+		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
+		{
+			Console.WriteLine(lrp.ToString(numberFormat, culture));
+			Console.Write("r = {0}\t{2} = {1}", lrp.Correlation.ToString(numberFormat, culture),
+			 lrp.Determination().ToString(numberFormat, culture), Program.OnMacOsX ? "R²" : "r^2");
 			if (checkBiases) {
 				// ReSharper disable once InvokeAsExtensionMethod
 				Console.WriteLine("\trelative bias: {0:p}",
@@ -569,58 +589,42 @@ namespace Repzilon.Tests.ForCoreLibrary
 			} else {
 				Console.Write(Environment.NewLine);
 			}
-			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, ciCu),
-			 lrp.ExplainedVariation().ToString(numberFormat, ciCu),
-			 lrp.UnexplainedVariation().ToString(numberFormat, ciCu));
-			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, ciCu),
-			 lrp.SlopeStdDev().ToString(numberFormat, ciCu), lrp.InterceptStdDev().ToString(numberFormat, ciCu));
-			var studentLawValue = ExtraMath.ConvertTo<TStorage>(
-			 ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), checked((byte)(lrp.Count - 2))));
-			OutputParameterMargin('b', b, lrp.SlopeStdDev(), studentLawValue, numberFormat, ciCu);
-			OutputParameterMargin('a', lrp.Intercept, lrp.SlopeStdDev(), studentLawValue, numberFormat, ciCu);
-			if (xForYExtrapolation.HasValue) {
-				var x = xForYExtrapolation.Value;
-				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, true);
-				OutputYExtrapolation(lrp, studentLawValue, numberFormat, ciCu, x, sr, false);
-				if (checkBiases) {
-					Console.WriteLine("x = {0}\t\ttotal error: {1}\trelative bias: {2}",
-					 x.ToString(numberFormat, ciCu),
-					 lrp.TotalError(x).ToString(numberFormat, ciCu),
-					 lrp.RelativeBias(x).ToString(numberFormat, ciCu));
-				}
-			}
-			if (yForXExtrapolation.HasValue) {
-				var yc = yForXExtrapolation.Value;
-				OutputXExtrapolation(lrp, studentLawValue, numberFormat, ciCu, yc, 5, b);
-			}
+			Console.WriteLine("SCT: {0}\tSCreg: {1}\tSCres: {2}", lrp.TotalVariation().ToString(numberFormat, culture),
+			 lrp.ExplainedVariation().ToString(numberFormat, culture),
+			 lrp.UnexplainedVariation().ToString(numberFormat, culture));
+			Console.WriteLine("Std. dev.: residual {0}\tslope {1}\tintercept {2}", sr.ToString(numberFormat, culture),
+			 lrp.SlopeStdDev().ToString(numberFormat, culture), lrp.InterceptStdDev().ToString(numberFormat, culture));
+			OutputParameterMargin(numberFormat, culture, 'b', b, lrp.SlopeStdDev(), studentLawValue);
+			OutputParameterMargin(numberFormat, culture, 'a', lrp.Intercept, lrp.SlopeStdDev(), studentLawValue);
 		}
 
-		private static void OutputParameterMargin<T>(char argument, T value, T standardDeviation, T studentLawValue,
-		string numberFormat, IFormatProvider culture) where T : struct, IEquatable<T>, IFormattable, IComparable
+		private static void OutputParameterMargin<T>(string numberFormat, IFormatProvider culture, char argument,
+		T number, T standardDeviation, T studentLawValue) where T : struct, IEquatable<T>, IFormattable, IComparable
 		{
-			var em = new ErrorMargin<T>(value, Arithmetic<T>.MultiplyScalars(studentLawValue, standardDeviation));
+			var em = new ErrorMargin<T>(number, Arithmetic<T>.MultiplyScalars(studentLawValue, standardDeviation));
 			Console.WriteLine("{0} = {1} => {2}", argument, em.ToString(numberFormat, culture),
 			 em.Round().ToString(numberFormat, culture));
 		}
 
-		private static void OutputYExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
-		string numberFormat, IFormatProvider culture, T x, T sr, bool repeated)
+		private static void OutputYExtrapolation<T>(ILinearRegressionResult<T> lrp, string numberFormat,
+		IFormatProvider culture, T x, T studentLawValue, T sr, bool repeated)
 		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			Console.WriteLine("x = {0} k = {1}\ty^ = {2}",
-			 x.ToString(numberFormat, culture),
-			 repeated ? "Infinity" : "1\t",
+			 x.ToString(numberFormat, culture), repeated ? (Program.OnMacOsX ? "∞\t" : "Infinity") : "1\t",
 			 new ErrorMargin<T>(lrp.InterpolateY(x),
-			 Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
+			  Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated))).ToString(numberFormat, culture));
 		}
 
-		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, T studentLawValue,
-		string numberFormat, IFormatProvider culture, T yc, int k, T b)
+		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, string numberFormat,
+		IFormatProvider culture, T yc, T studentLawValue, T b)
 		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
+			int k = lrp.Count - 1;
 			Console.WriteLine("yc= {0} k = {1}\t\tx0 = {2}",
 			 yc.ToString(numberFormat, culture), k.ToString(numberFormat, culture),
-			 new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b), Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
+			 new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b),
+			  Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k))).ToString(numberFormat, culture));
 		}
 
 		internal static void OutputRegressionModel<T>(RegressionModel<T> mathModel)
