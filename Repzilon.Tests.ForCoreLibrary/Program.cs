@@ -121,10 +121,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var tsElapsed = DateTime.UtcNow - dtmStart;
 			// ReSharper disable once InconsistentNaming
 			var lngRamAfterNoGC = Math.Ceiling(CurrentMemoryUsage() * kToKiB);
-			// Calling GC.Collect, even an optimized one, makes the process consume more RAM
-			Console.WriteLine("{0} Demo took {1:n3}s\t{2}: {3} kiB -> {4} kiB",
+			Console.Write("{0} Demo took {1:n3}s\t{2}: {3} kiB -> {4} kiB",
 			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds, OnMacOsX ? "GC memory" : "RAM",
 			 lngRamBefore, lngRamAfterNoGC);
+			// Call GC.Collect only when memory usage blows up, otherwise it makes the process consume more RAM
+			if (lngRamAfterNoGC > 50 * 1024) {
+				GC.Collect();
+				Console.WriteLine(" -> {0} kiB", Math.Ceiling(CurrentMemoryUsage() * kToKiB));
+			} else {
+				Console.Write(Environment.NewLine);
+			}
 		}
 
 		private static long CurrentMemoryUsage()
