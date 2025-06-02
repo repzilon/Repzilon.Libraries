@@ -488,7 +488,7 @@ namespace Repzilon.Libraries.Core
 				inter = 2 * Math.Sqrt(p * (kOne - p));
 				return Math.Sign(p - kHalf) * 2 * Math.Sqrt((Math.Cos(1.0 / 3 * Math.Acos(inter)) / inter) - kOne);
 			} else {
-				return Differential.NewtonCrossing(InverseNormal(p), 1e-18,
+				return Differential.NewtonCrossing(InverseNormalEstimate(p), 5.6e-17,
 				 x => Student(x, liberties, true), p, x => Student(x, liberties, false));
 			}
 		}
