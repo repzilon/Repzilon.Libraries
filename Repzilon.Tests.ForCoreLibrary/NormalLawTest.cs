@@ -59,11 +59,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
-			Program.OutputHeading("Biofermentation week 3 exercice");
+			Program.OutputHeading("Biofermentation semaine 3 exercice");
 			LogisticModel(new PointM(0, 1.5m), new PointM(5, 2), new PointM(9, 3.5m), new PointM(13, 6.2m),
 			 new PointM(16, 8.2m), new PointM(20, 9.4m), new PointM(24, 9.8m), new PointM(28, 9.9m));
 
-			Console.WriteLine("Biofermentation labo 5 saturation en oxygène");
+			Program.OutputHeading("Biofermentation laboratoire 5 saturation en oxygène");
 			LogisticModel(new PointM(0, 105.1m), new PointM(0.5m, 103.7m), new PointM(1, 98.4m),
 			 new PointM(1.5m, 85.5m), new PointM(2, 51.6m), new PointM(2.5m, 1), new PointM(3, 0.8m),
 			 new PointM(3.5m, 0.3m));

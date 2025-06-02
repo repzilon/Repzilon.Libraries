@@ -201,15 +201,15 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			var kvpVmax = this.Vmax;
 			var kvpKm = this.Km;
-			return String.Format("v<sub>max</sub>:\xA0{0}\xA0{1}; k<sub>m</sub>:\xA0{2}\xA0{3} (r={4:f6} with {5})",
+			return String.Format("v<sub>max</sub>: {0} {1}; k<sub>m</sub>: {2} {3} (r={4:f6} with {5})",
 			 kvpVmax.Key, kvpVmax.Value, kvpKm.Key, kvpKm.Value, Correlation, Representation);
 		}
 
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
 			var stbAsString = new StringBuilder();
-			AppendMeasure(stbAsString.Append("v<sub>max</sub>:\xA0"), Vmax, format, formatProvider);
-			AppendMeasure(stbAsString.Append("; k<sub>m</sub>:\xA0"), Km, format, formatProvider);
+			AppendMeasure(stbAsString.Append("v<sub>max</sub>: "), Vmax, format, formatProvider);
+			AppendMeasure(stbAsString.Append("; k<sub>m</sub>: "), Km, format, formatProvider);
 			return stbAsString.Append(" (r=").Append(Correlation.ToString(format, formatProvider))
 			 .Append(" with ").Append(Representation).Append(')').ToString();
 		}

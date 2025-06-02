@@ -17,6 +17,8 @@ using System.Globalization;
 #if !NETFRAMEWORK
 using System.Runtime.InteropServices;
 #endif
+using System.Text;
+using System.Text.RegularExpressions;
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Biochemistry;
 using Repzilon.Libraries.Core.Regression;
@@ -47,7 +49,7 @@ NaNO<sub>3</sub>
 PO<sub>4</sub>
 Na<sub>3</sub>PO<sub>4</sub>•12 H<sub>2</sub>O
 SO<sub>4</sub>
-Na<sub>2</sub>SO<sub>4</sub>".Split((char[])null, StringSplitOptions.RemoveEmptyEntries);
+Na<sub>2</sub>SO<sub>4</sub>".Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 			int i;
 			for (i = 0; i < karFormulas.Length; i++) {
 				Console.WriteLine("{0,8:n3} g/mol {1}",
@@ -119,7 +121,8 @@ STQTALA";
 				var nO = dicElems["O"];
 				Console.WriteLine(
 				 "{0,-25} {1,5:f1}°C {2,5:f1}g/mol C{3,-2}H{4,-2}O{5} {6,4:f1}%H/mol {7,4:f1}%H/g {8:f4}%H/mol/K {9:f4}%C/mol/K {10:f4}%H-C/mol/K",
-				 fat.Name, fat.MeltingPoint, fat.MolarMass, nC, nH, nO,
+				 fat.Name, fat.MeltingPoint, fat.MolarMass,
+				 UnicodeSubscript(nC), UnicodeSubscript(nH), UnicodeSubscript(nO),
 				 100.0 * nH / (1.0 * (nC + nH + nO)), MH * nH * 100 / fat.MolarMass,
 				 100.0 * nH / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
 				 100.0 * nC / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
@@ -134,7 +137,7 @@ STQTALA";
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			Program.OutputSizeOf<Inhibition<double>>();
-			var strSpeedUnit = Program.OnMacOsX ? "A₄₈₀/60 s" : "A<sub>480</sub>/60 s";
+			var strSpeedUnit = Program.OnMacOsX ? "A₄₈₀/min" : "A<sub>480</sub>/min";
 			var ekO = new EnzymeKinematic<double>();
 			var ekI = new EnzymeKinematic<double>();
 			var ekIp = new EnzymeKinematic<double>();
@@ -151,16 +154,18 @@ STQTALA";
 			OutputEnzymeKinematic("mol/L", "nmol/h", 4, ref ekO,
 			 new PointD(1e-6f, 1.16f), new PointD(1e-5f, 8.46f), new PointD(1e-4f, 24.94f), new PointD(1e-3f, 27.94f),
 			 new PointD(1e-2f, 29.95f));
-			Console.WriteLine("vmax: {0:f4} nmol/min", Math.Round(ekO.Vmax.Key / 60, 4));
+			var strVmax = Program.OnMacOsX ? "vₘₐₓ" : "vmax";
+			Console.WriteLine("{1}: {0:f4} nmol/min", Math.Round(ekO.Vmax.Key / 60, 4), strVmax);
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
-			OutputEnzymeKinematic("mol/L", "µmol/L*min", 3, ref ekO,
+			strSpeedUnit = Program.OnMacOsX ? "µmol/L•min" : "µmol/L*min";
+			OutputEnzymeKinematic("mol/L", strSpeedUnit, 3, ref ekO,
 			 new PointD(0.01f, 16.7f), new PointD(0.0133f, 20f), new PointD(0.02f, 25f),
 			 new PointD(0.025f, 27f), new PointD(0.05f, 35.7f), new PointD(0.1f, 41.7f));
-			OutputEnzymeKinematic("mol/L", "µmol/L*min", 3, ref ekI,
+			OutputEnzymeKinematic("mol/L", strSpeedUnit, 3, ref ekI,
 			 new PointD(0.01f, 10f), new PointD(0.0133f, 12.5f), new PointD(0.02f, 16.7f),
 			 new PointD(0.025f, 19.2f), new PointD(0.05f, 27.8f), new PointD(0.1f, 35.7f));
-			Console.WriteLine(InhibitionExtensions.RoundedToPrecision(Enzyme.Compare(ekO, ekI, 0.02), 3));
+			OutputInhibition(ekO, ekI, 0.02, 3);
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 5");
 			OutputEnzymeKinematic("mol/L", "u", 3, ref ekO, 
@@ -169,7 +174,7 @@ STQTALA";
 			OutputEnzymeKinematic("mol/L", "u", 3, ref ekI,
 			 new PointD(0.010f, 0.21f), new PointD(0.022f, 0.40f),
 			 new PointD(0.046f, 0.65f), new PointD(0.200f, 1.18f));
-			Console.WriteLine(InhibitionExtensions.RoundedToPrecision(Enzyme.Compare(ekO, ekI, 0.17), 3));
+			OutputInhibition(ekO, ekI, 0.17, 3);
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 6");
 			OutputEnzymeKinematic("mmol/L", "mUI", 2, ref ekO,
@@ -189,13 +194,45 @@ STQTALA";
 			OutputEnzymeKinematic("mol/L", "A405/s", 4, ref ekO,
 			 new PointD(0.00150, 0.0071), new PointD(0.00090, 0.0044), new PointD(0.00076, 0.0038),
 			 new PointD(0.00045, 0.0026), new PointD(0.00030, 0.0018));
-			Console.WriteLine("Vmax = {0} µmol/min*L",
-			 SignificantDigits.Round(ekO.Vmax.Key * 60 / rmdBC2Lab3_a.B, 3));
+			Console.WriteLine("{1}: {0} {2}",
+			 SignificantDigits.Round(ekO.Vmax.Key * 60 / rmdBC2Lab3_a.B, 3), strVmax, strSpeedUnit);
 		}
 
 		private static string PrettyFormula(string formula)
 		{
-			return Program.OnMacOsX ? formula.Replace("<sub>2</sub>", "₂").Replace("<sub>3</sub>", "₃").Replace("<sub>4</sub>", "₄") : formula;
+			return Program.OnMacOsX ? Regex.Replace(formula, "<sub>([0-9]+)</sub>", UnicodeSubscript) : formula;
+		}
+
+		private static string UnicodeSubscript(Match m)
+		{
+			return UnicodeSubscript(m.Groups[1].Value);
+		}
+
+		private static string UnicodeSubscript(int number)
+		{
+			var strDigits = number.ToString();
+			return Program.OnMacOsX ? UnicodeSubscript(strDigits) : strDigits;
+		}
+
+		private static string UnicodeSubscript(string digits)
+		{
+			const string kSubscript = "₀₁₂₃₄₅₆₇₈₉";
+			var c = digits.Length;
+			var stbSub = new StringBuilder(c);
+			for (int i = 0; i < c; i++) {
+				stbSub.Append(kSubscript[digits[i] - '0']);
+			}
+			return stbSub.ToString();
+		}
+
+		private static void OutputInhibition(EnzymeKinematic<double> original, EnzymeKinematic<double> inhibited,
+		double inhibitorConcentration, byte significantsDigits)
+		{
+			var inhibition = InhibitionExtensions.RoundedToPrecision(
+			 Enzyme.Compare(original, inhibited, inhibitorConcentration), significantsDigits);
+			var strInhibition = inhibition.ToString().Replace("k<sub>i</sub>",
+			 Program.OnMacOsX ? "kᵢ" : "Ki");
+			Console.WriteLine(strInhibition);
 		}
 
 		private static float PolypeptideMass(char[] peptideSequenceLetters)

@@ -72,10 +72,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa63_a = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
 			var exa63_ng = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
 			var exa63_s = exa63_u + exa63_v;
-			Console.WriteLine("Exemple 63  : ||R||={0} u+v={1} ||u+v||={2}", exa63_ng, exa63_s, exa63_s.Norm);
+			var strNorm = Program.OnMacOsX ? "‖" : "||";
+			Console.WriteLine("Exemple 63  : {3}R{3}={0} u+v={1} {3}u+v{3}={2}",
+			 exa63_ng, exa63_s, exa63_s.Norm, strNorm);
 
 			var exa64_u = Vector.New(1.0f, 3.0f, 4.0f);
-			Console.WriteLine("Exemple 64  : ||u||={0:f3}", exa64_u.Norm());
+			Console.WriteLine("Exemple 64  : {1}u{1}={0:f3}", exa64_u.Norm(), strNorm);
 
 #if !NET20
 			Program.OutputSizeOf<ThreeDVector<short>>();
@@ -97,7 +99,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa67_theta = Angle<float>.Degrees(40.0f);
 			var exa67_A = 700 * exa67_theta.Cos() / exa67_theta.Sin();
 			var exa67_T = 700 / exa67_theta.Sin();
-			Console.WriteLine("Exemple 67  : ||A||={0:f2} ||T||={1:f2}", exa67_A, exa67_T);
+			Console.WriteLine("Exemple 67  : {2}A{2}={0:f2} {2}T{2}={1:f2}", exa67_A, exa67_T, strNorm);
 
 			var exa68_u = new PolarVector<float>(9, 35, AngleUnit.Degree);
 			var exa68_v = new PolarVector<float>(5, 90 + 20, AngleUnit.Degree);
@@ -118,7 +120,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<PolarVector<short>>();
 			var exa70_u = Vector.New<short>(2, 30, AngleUnit.Degree);
 			var exa70_v = Vector.New<short>(4, 0, AngleUnit.Degree);
-			Console.WriteLine("Exemple 70  : u.v={0}", exa70_u * exa70_v);
+			var strDot = Program.OnMacOsX ? "•" : ".";
+			Console.WriteLine("Exemple 70  : u{1}v={0}", exa70_u * exa70_v, strDot);
 
 			var exa71_u = Vector.New<short>(4, -2, 2);
 			var exa71_v = Vector.New<short>(1, 3, 1);
@@ -130,7 +133,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 72a : u={0} et v={1} perpendiculaires : {2}", exa72_u, exa72_v,
 			 ThreeDVector<short>.ArePerpendicular(exa72_u, exa72_v));
 			var exa72_theta = ThreeDVector<short>.AngleBetween(exa72_u, exa72_v).ToDegrees();
-			Console.WriteLine("Exemple 72b : θ={0:g3}", exa72_theta);
+			Console.WriteLine("Exemple 72b : {1}={0:g3}", exa72_theta, Program.OnMacOsX ? "θ" : "theta");
 
 			var exa74_w = Vector<float>.Dot(5, 12, 20, AngleUnit.Degree);
 			Console.WriteLine("Exemple 74  : W={0:f2}", exa74_w);
@@ -138,7 +141,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_u = Vector.New<short>(-2, 3, 1);
 			var exa78_v = Vector.New<short>(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
-			Console.WriteLine("Exemple 78b : A=bh=||u||.||v||.sin(θ)=||u x v||≈{0}", (exa78_u % exa78_v).Norm());
+			Console.WriteLine(Program.OnMacOsX ?
+			 "Exemple 78b : A=bh=‖u‖•‖v‖•sin(θ)=‖u x v‖≈{0}" :
+			 "Exemple 78b : A=bh=||u||.||v||.sin(theta)=||u x v||~={0}",
+			 (exa78_u % exa78_v).Norm());
 		}
 
 		#region Example 69 implementations
@@ -312,9 +318,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		{
 			if (consoleOutput) {
-				Console.WriteLine("Exemple 69a : ||F13||={0}", exa69_f13);
-				Console.WriteLine("Exemple 69b : ||F23||={0}", exa69_f23);
-				Console.WriteLine("Exemple 69c : F13={0} F23={1} ||R||={2}", exa69_v13, exa69_v23, exa69_r);
+				var strNorm = Program.OnMacOsX ? "‖" : "||";
+				Console.WriteLine("Exemple 69a : {1}F13{1}={0}", exa69_f13, strNorm);
+				Console.WriteLine("Exemple 69b : {1}F23{1}={0}", exa69_f23, strNorm);
+				Console.WriteLine("Exemple 69c : F13={0} F23={1} {3}R{3}={2}", exa69_v13, exa69_v23, exa69_r, strNorm);
 			}
 		}
 		#endregion

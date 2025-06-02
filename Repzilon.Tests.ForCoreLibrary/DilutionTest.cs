@@ -47,7 +47,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var blnInitialMotherVolume = mother.SolutionVolume.HasValue;
 			OutputDilution(title,
-			 "Pour la solution fille {0}, diluer {1} {2} de solution mère dans {3} {2} de solvant.",
+			 "Pour la solution fille {0}, diluer {1} {2} de solution mère dans {3} {2} de solvant.",
 			 Dilution.Direct(ref mother, children));
 			if (outputMother) {
 				var mutionv = mother.SolutionVolume.Value;
@@ -60,7 +60,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void PerformSerialDilution(string title, Solution mother, params Solution[] children)
 		{
 			OutputDilution(title,
-			 "Pour la solution fille {0}, prélever {1} {2} de la solution {4} pour la diluer dans {3} {2} de solvant.",
+			 "Pour la solution fille {0}, prélever {1} {2} de la solution {4} pour la diluer dans {3} {2} de solvant.",
 			 Dilution.Serial(ref mother, children));
 		}
 

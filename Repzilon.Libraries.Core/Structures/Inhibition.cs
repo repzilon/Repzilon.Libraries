@@ -133,7 +133,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			stbOut.Append("Inhibition: ");
 			stbOut.Append(this.Kind.ToString().ToLower(formatProvider as CultureInfo ?? CultureInfo.CurrentCulture));
 			if (!this.Value.Equals(default(T))) {
-				stbOut.Append(" Ki=").Append(this.Value.ToString(format, formatProvider));
+				stbOut.Append(" k<sub>i</sub>=").Append(this.Value.ToString(format, formatProvider));
 				stbOut.Append(' ').Append(this.Unit);
 			}
 			return stbOut.ToString();

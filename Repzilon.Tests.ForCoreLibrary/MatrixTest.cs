@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2022-2024 René Rhéaume
+// Copyright (C) 2022-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -24,7 +24,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 #if !NET20
-			Program.OutputHeading("Exemple 80 :");
+			Program.OutputHeading("Exemple 80");
 			var ex80_a = new Matrix<short>(3, 3, 2, -1, 5, -3, 4, 7, 1, -1, 0);
 			var ex80_b = new Matrix<short>(3, 3, 1, 4, 0, -3, 6, -5, 1, 0, -1);
 			var ex80_result = (3 * ex80_a) + ex80_b;
@@ -181,7 +181,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputSolution("a) ", ex83_c.Solve(ex83_s, 'x', 'y'));
 			OutputSolution("b) ", ex88_a.Solve(ex88_b, 'x', 'y', 'z'));
 
-			Program.OutputHeading("Travail 2 #7");
+			Program.OutputHeading("Travail 2 no 7");
 			var t2_7a_c = new Matrix<short>(3, 3, 3, -1, -2, 2, 6, -9, 1, -7, 7);
 			var t2_7a_r = new Matrix<short>(3, 1, 19, 68, -49);
 			var t2_7a_a = t2_7a_c | t2_7a_r;
@@ -198,7 +198,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			t2_7b_a.RunCommand(2, null, 1, 10);
 			Console.WriteLine(t2_7b_a);
 
-			Program.OutputHeading("Travail 2 #8");
+			Program.OutputHeading("Travail 2 no 8");
 			var t2_8A = new Matrix<short>(3, 3, 1, 3, 4, -3, 5, 7, 4, 0, -1);
 			var t2_8B = new Matrix<short>(3, 3, 7, -4, 3, 2, -7, -5, -5, 2, 4);
 			var t2_8C = new Matrix<short>(1, 3, 1, 2, 4);
@@ -235,7 +235,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			MatrixExtensionMethods.RoundErrors(t2_8rf);
 			Console.WriteLine(t2_8rf);
 
-			Program.OutputHeading("Physicochimie labo 10");
+			Program.OutputHeading("Physicochimie laboratoire 10");
 			var fql10_coef = new Matrix<float>(3, 4, 7, 0, -1, 0, 6, 0, 0, -2, 2, 2, -2, -1);
 			var fql10_k = new Matrix<float>(3, 1, 0, 0, 0);
 			var fql10_a = fql10_coef | fql10_k;
