@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2025 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -70,6 +70,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dblVolume = kStandardVolume * dblAreaZ / dblArea;
 			Console.WriteLine("Exercise 3d: Zeste    V = {0,-5:g4}µL C = {1:g3}% m/m", dblVolume,
 			 dblVolume * ((1.0 / 0.1260) * 0.001 * 0.8402 * 100));
+
+			Program.OutputHeading("Theorical plates and resolution between peaks in laboratory 9B");
+			OutputGasChromatographyPeakMetrics(3.037, 5.432, 0.0368, 0.0588, PeakWidthFrame.Delta, "Initial");
+			OutputGasChromatographyPeakMetrics(1.593, 1.764, 0.0234, 0.0263, PeakWidthFrame.Delta, "Optimised");
+		}
+
+		private static void OutputGasChromatographyPeakMetrics(double retentionTime1, double retentionTime2,
+		double width1, double width2, PeakWidthFrame reference, string conditionName)
+		{
+			Console.WriteLine("{5,-9}: t₁ = {0}min t₂ = {1}min N₁ = {2:n0} N₂ = {3:n0} R = {4,5:g4}",
+			 retentionTime1, retentionTime2,
+			 InstrumentalAnalysis.TheoricalPlates(retentionTime1, width1, reference),
+			 InstrumentalAnalysis.TheoricalPlates(retentionTime2, width2, reference),
+			 InstrumentalAnalysis.ResolutionBetweenPeaks(retentionTime1, retentionTime2, width1, width2, reference),
+			 conditionName);
 		}
 	}
 }
