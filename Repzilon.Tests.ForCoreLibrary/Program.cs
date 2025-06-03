@@ -50,7 +50,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Optics", OpticsTest.Run);
 			dicTests.Add("Normal law", NormalLawTest.Run);
 			dicTests.Add("Student distribution", StudentTest.Run);
-
+			dicTests.Add("Instrumental Analysis", InstrumentalAnalysisTest.Run);
 
 			Console.WriteLine("CurrentCulture: {0}\tCurrentUICulture: {1}",
 			 CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name);

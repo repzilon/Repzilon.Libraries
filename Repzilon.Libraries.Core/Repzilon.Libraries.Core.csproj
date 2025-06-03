@@ -19,6 +19,7 @@
   <ItemGroup>
     <Folder Include="Structures\" />
     <Folder Include="Interfaces\" />
+    <Folder Include="Classes\" />
   </ItemGroup>
   <ProjectExtensions>
     <MonoDevelop>
