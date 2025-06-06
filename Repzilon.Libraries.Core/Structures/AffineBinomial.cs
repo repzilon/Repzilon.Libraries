@@ -215,6 +215,11 @@ namespace Repzilon.Libraries.Core
 			return new AffineBinomial<TOut>(ExtraMath.ConvertTo<TOut>(this.Slope), this.Variable,
 			 ExtraMath.ConvertTo<TOut>(this.Constant));
 		}
+
+		public Regression.RegressionModel<T> ToModel(T minX, T maxX)
+		{
+			return Regression.RegressionModel<T>.Affine(this.Constant, this.Slope, minX, maxX);
+		}
 	}
 
 	internal static class AffineBinomialExtensions

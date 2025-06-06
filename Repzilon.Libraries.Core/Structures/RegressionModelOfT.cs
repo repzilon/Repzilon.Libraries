@@ -40,7 +40,7 @@ namespace Repzilon.Libraries.Core.Regression
 #if !NETCOREAPP1_0 && !NETSTANDARD1_1 && !NETSTANDARD1_3 && !NETSTANDARD1_6
 	, ICloneable
 #endif
-	where T : struct, IFormattable, IEquatable<T>
+	where T : struct, IFormattable, IEquatable<T>, IComparable<T>
 	{
 		/// <summary>In an affine model, value of the intercept.</summary>
 		public readonly T A;
@@ -65,6 +65,12 @@ namespace Repzilon.Libraries.Core.Regression
 			Model = model;
 			MinX = minX;
 			MaxX = maxX;
+		}
+
+		internal static RegressionModel<T> Affine(T a, T b, T minX, T maxX)
+		{
+			return new RegressionModel<T>(a, b, ExtraMath.ConvertTo<T>(b.CompareTo(default(T))),
+			 MathematicalModel.Affine, minX, maxX);
 		}
 
 		#region Clone

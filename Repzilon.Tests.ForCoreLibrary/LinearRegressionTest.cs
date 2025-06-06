@@ -709,7 +709,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputRegression<T>(string header,
 		ILinearRegressionResult<T> linearized, RegressionModel<T> reformed)
-		where T : struct, IFormattable, IEquatable<T>
+		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
 		{
 			Console.WriteLine("{0,-15}: {1:g6}  r={2:g6}\t{3:g6}  {5}={4:g6}",
 			 header, linearized, linearized.Correlation, reformed, reformed.Determination(),

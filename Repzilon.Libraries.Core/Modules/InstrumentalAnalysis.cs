@@ -58,8 +58,7 @@ namespace Repzilon.Libraries.Core
 		double waveLength1, double waveLength2)
 		{
 			var m = (absorbance2 - absorbance1) / (waveLength2 - waveLength1);
-			return new RegressionModel<double>(absorbance2 - (m * waveLength2), m, Math.Sign(m),
-			 MathematicalModel.Affine, waveLength1, waveLength2);
+			return RegressionModel<double>.Affine(absorbance2 - (m * waveLength2), m, waveLength1, waveLength2);
 		}
 
 		public static RegressionModel<double> ThreePointsDropLine(float absorbance1, float absorbance2,
@@ -67,8 +66,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var a2 = RoundOff.UpsizeError(absorbance2);
 			double m = (a2 - RoundOff.UpsizeError(absorbance1)) / (waveLength2 - waveLength1);
-			return new RegressionModel<double>(a2 - (m * waveLength2), m, Math.Sign(m),
-			 MathematicalModel.Affine, waveLength1, waveLength2);
+			return RegressionModel<double>.Affine(a2 - (m * waveLength2), m, waveLength1, waveLength2);
 		}
 	}
 }
