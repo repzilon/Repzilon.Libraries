@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using Repzilon.Libraries.Core.Regression;
 
 namespace Repzilon.Libraries.Core
 {
@@ -55,6 +56,23 @@ namespace Repzilon.Libraries.Core
 			} else {
 				throw RetroCompat.NewUndefinedEnumException<PeakWidthFrame>("reference", r2);
 			}
+		}
+
+		public static RegressionModel<double> ThreePointsDropLine(double absorbance1, double absorbance2,
+		double waveLength1, double waveLength2)
+		{
+			var m = (absorbance2 - absorbance1) / (waveLength2 - waveLength1);
+			return new RegressionModel<double>(absorbance2 - (m * waveLength2), m, Math.Sign(m),
+			 MathematicalModel.Affine, waveLength1, waveLength2);
+		}
+
+		public static RegressionModel<double> ThreePointsDropLine(float absorbance1, float absorbance2,
+		short waveLength1, short waveLength2)
+		{
+			var a2 = RoundOff.UpsizeError(absorbance2);
+			double m = (a2 - RoundOff.UpsizeError(absorbance1)) / (waveLength2 - waveLength1);
+			return new RegressionModel<double>(a2 - (m * waveLength2), m, Math.Sign(m),
+			 MathematicalModel.Affine, waveLength1, waveLength2);
 		}
 	}
 }

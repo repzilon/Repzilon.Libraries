@@ -13,6 +13,7 @@
 //
 using System;
 using Repzilon.Libraries.Core;
+using Repzilon.Libraries.Core.Regression;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -74,6 +75,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputHeading("Theorical plates and resolution between peaks in laboratory 9B");
 			OutputGasChromatographyPeakMetrics(3.037, 5.432, 0.0368, 0.0588, PeakWidthFrame.Delta, "Initial");
 			OutputGasChromatographyPeakMetrics(1.593, 1.764, 0.0234, 0.0263, PeakWidthFrame.Delta, "Optimised");
+
+			Program.OutputHeading("Three Points Drop Line chapter 8");
+			var rmdFlambda = InstrumentalAnalysis.ThreePointsDropLine(1.2395f, 1.2870f, 257, 303);
+			var dblAfinal = 1.5030 - rmdFlambda.Evaluate(273);
+			Output3PointsDropLine(rmdFlambda, dblAfinal, dblAfinal * ((1031.4 / 50) / 0.99476), "Example p.19");
+			rmdFlambda = InstrumentalAnalysis.ThreePointsDropLine(1f, 1.33f, 293, 406);
+			dblAfinal = 2.27 - rmdFlambda.Evaluate(350);
+			Output3PointsDropLine(rmdFlambda, dblAfinal, dblAfinal * (27.3 / 1.25), "Exercise 11");
 		}
 
 		private static void OutputGasChromatographyPeakMetrics(double retentionTime1, double retentionTime2,
@@ -85,6 +94,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 InstrumentalAnalysis.TheoricalPlates(retentionTime2, width2, reference),
 			 InstrumentalAnalysis.ResolutionBetweenPeaks(retentionTime1, retentionTime2, width1, width2, reference),
 			 conditionName);
+		}
+
+		private static void Output3PointsDropLine(RegressionModel<double> dropLine, double absorbance,
+		double concentration, string conditionName)
+		{
+			Console.WriteLine("{1,-12}: {0}", dropLine, conditionName);
+			Console.WriteLine("              A = {0,-5:g3} C = {1:g3}mg/L", absorbance, concentration);
 		}
 	}
 }
