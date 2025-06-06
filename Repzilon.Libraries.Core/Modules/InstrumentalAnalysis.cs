@@ -18,43 +18,39 @@ namespace Repzilon.Libraries.Core
 {
 	public enum PeakWidthFrame : byte
 	{
-		HalfWidthAt606ThousandthsOfHeight = 4,
-		Sigma = 4,
-		WidthAtHalfHeight = 6,
-		Delta = 6,
-		WidthOnBaseline = 16,
-		W = 16
+		HalfWidthAt606ThousandthsOfHeight = 2,
+		Sigma = 2,
+		WidthAtHalfHeight = 3,
+		Delta = 3,
+		WidthOnBaseline = 8,
+		W = 8
 	}
 
 	public static class InstrumentalAnalysis
 	{
-		public static double TheoricalPlates(double retentionTime, double width, PeakWidthFrame reference)
+		public static float TheoricalPlates(float retentionTime, float width, PeakWidthFrame reference)
 		{
-			if (reference == PeakWidthFrame.Delta) {
-				return 5.54 * retentionTime * retentionTime / (width * width);
-			} else if (reference == PeakWidthFrame.W) {
-				return 16 * retentionTime * retentionTime / (width * width);
+			if ((reference == PeakWidthFrame.Delta) || (reference == PeakWidthFrame.W)) {
+				return ((reference == PeakWidthFrame.Delta) ? 5.54f : 16f) * retentionTime * retentionTime / (width * width);
 			} else if (reference == PeakWidthFrame.Sigma) {
 				throw new NotSupportedException(
 				 "Counting number of theorical plates using the half-width at 60.6% of height is not supported.");
 			} else {
-				throw RetroCompat.NewUndefinedEnumException<PeakWidthFrame>("reference", reference);
+				throw RetroCompat.NewUndefinedEnumException("reference", reference);
 			}
 		}
 
-		public static double ResolutionBetweenPeaks(double retentionTime1, double retentionTime2,
-		double width1, double width2, PeakWidthFrame reference)
+		public static float ResolutionBetweenPeaks(float retentionTime1, float retentionTime2,
+		float width1, float width2, PeakWidthFrame reference)
 		{
 			var r2 = reference;
-			if (r2 == PeakWidthFrame.Delta) {
-				return 1.18 * (retentionTime2 - retentionTime1) / (width2 + width1);
-			} else if (r2 == PeakWidthFrame.W) {
-				return 2 * (retentionTime2 - retentionTime1) / (width2 + width1);
+			if ((r2 == PeakWidthFrame.Delta) || (r2 == PeakWidthFrame.W)) {
+				return ((r2 == PeakWidthFrame.Delta) ? 1.18f : 2) * (retentionTime2 - retentionTime1) / (width2 + width1);
 			} else if (r2 == PeakWidthFrame.Sigma) {
 				throw new NotSupportedException(
 				 "Computing resolution between peaks using their half-width at 60.6% of height is not supported.");
 			} else {
-				throw RetroCompat.NewUndefinedEnumException<PeakWidthFrame>("reference", r2);
+				throw RetroCompat.NewUndefinedEnumException("reference", r2);
 			}
 		}
 

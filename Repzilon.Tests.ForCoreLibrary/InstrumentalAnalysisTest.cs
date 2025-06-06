@@ -42,22 +42,22 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 dblVolume * (0.1 * 0.8411 / 0.0995));
 
 			Program.OutputHeading("Muliple Headspace Extraction chapter 1");
-			Console.WriteLine("Exercise 2a: Aₜ = {0:n0}pA•s",
-			 MultipleHeadspaceExtraction.TotalArea(74608, 47099, 30946, 20131));
-			Console.WriteLine("Exercise 2b: Aₜ = {0:n0}pA•s",
+			var strNewLine = Environment.NewLine;
+			Console.WriteLine("Exercise 2a: Aₜ = {1:n0}pA•s{0}Exercise 2b: Aₜ = {2:n0}pA•s", strNewLine,
+			 MultipleHeadspaceExtraction.TotalArea(74608, 47099, 30946, 20131),
 			 MultipleHeadspaceExtraction.TotalArea(56478, 47099, 30946, 20131));
 			var karStandard = new float[] { 55912, 37674, 26377, 18920 };
 			var karControl = new float[] { 59175, 40349, 28623, 20541 };
 			const double kStandardVolume = 48500 * 50 * 0.000001;
 			const double kControlVolume = 55000 * 50 * 0.000001;
 			var dblArea = MultipleHeadspaceExtraction.TotalArea(karStandard);
-			Console.WriteLine("Exercise 3a: Standard Aₜ = {0:n0}pA•s", dblArea);
 			var dblAreaC = MultipleHeadspaceExtraction.TotalArea(karControl);
-			Console.WriteLine("             Control  Aₜ = {0:n0}pA•s", dblAreaC);
+			Console.WriteLine("Exercise 3a: Standard Aₜ = {1:n0}pA•s{0}             Control  Aₜ = {2:n0}pA•s",
+			 strNewLine, dblArea, dblAreaC);
 			var dblAreaZ = MultipleHeadspaceExtraction.TotalArea(72714, 63614, 46056, 32198);
 			Console.WriteLine("             Zeste    Aₜ = {0:n0}pA•s", dblAreaZ);
-			Console.WriteLine("Exercise 3b: Standard V = {0,-5}µL", kStandardVolume);
-			Console.WriteLine("             Control  V = {0,-5}µL", kControlVolume);
+			Console.WriteLine("Exercise 3b: Standard V = {1,-5}µL{0}             Control  V = {2,-5}µL",
+			 strNewLine, kStandardVolume, kControlVolume);
 			mhe = new MultipleHeadspaceExtraction();
 			mhe.AddLevel(kStandardVolume, karStandard);
 			try {
@@ -73,34 +73,32 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 dblVolume * ((1.0 / 0.1260) * 0.001 * 0.8402 * 100));
 
 			Program.OutputHeading("Theorical plates and resolution between peaks in laboratory 9B");
-			OutputGasChromatographyPeakMetrics(3.037, 5.432, 0.0368, 0.0588, PeakWidthFrame.Delta, "Initial");
-			OutputGasChromatographyPeakMetrics(1.593, 1.764, 0.0234, 0.0263, PeakWidthFrame.Delta, "Optimised");
+			OutputGasChromatographyPeakMetrics(3.037f, 5.432f, 0.0368f, 0.0588f, "Initial");
+			OutputGasChromatographyPeakMetrics(1.593f, 1.764f, 0.0234f, 0.0263f, "Optimised");
 
 			Program.OutputHeading("Three Points Drop Line chapter 8");
-			var rmdFlambda = InstrumentalAnalysis.ThreePointsDropLine(1.2395f, 1.2870f, 257, 303);
-			var dblAfinal = 1.5030 - rmdFlambda.Evaluate(273);
-			Output3PointsDropLine(rmdFlambda, dblAfinal, dblAfinal * ((1031.4 / 50) / 0.99476), "Example p.19");
-			rmdFlambda = InstrumentalAnalysis.ThreePointsDropLine(1f, 1.33f, 293, 406);
-			dblAfinal = 2.27 - rmdFlambda.Evaluate(350);
-			Output3PointsDropLine(rmdFlambda, dblAfinal, dblAfinal * (27.3 / 1.25), "Exercise 11");
+			Output3PointsDropLine(InstrumentalAnalysis.ThreePointsDropLine(1.2395f, 1.2870f, 257, 303),
+			 1.5030f, 273, (1031.4 / 50) / 0.99476, "Example p.19");
+			Output3PointsDropLine(InstrumentalAnalysis.ThreePointsDropLine(1f, 1.33f, 293, 406),
+			 2.27f, 350, 27.3 / 1.25, "Exercise 11");
 		}
 
-		private static void OutputGasChromatographyPeakMetrics(double retentionTime1, double retentionTime2,
-		double width1, double width2, PeakWidthFrame reference, string conditionName)
+		private static void OutputGasChromatographyPeakMetrics(float retentionTime1, float retentionTime2,
+		float width1, float width2, /*PeakWidthFrame reference,*/ string conditionName)
 		{
-			Console.WriteLine("{5,-9}: t₁ = {0}min t₂ = {1}min N₁ = {2:n0} N₂ = {3:n0} R = {4,5:g4}",
-			 retentionTime1, retentionTime2,
-			 InstrumentalAnalysis.TheoricalPlates(retentionTime1, width1, reference),
-			 InstrumentalAnalysis.TheoricalPlates(retentionTime2, width2, reference),
-			 InstrumentalAnalysis.ResolutionBetweenPeaks(retentionTime1, retentionTime2, width1, width2, reference),
-			 conditionName);
+			Console.Write("{2,-9}: tᵣ₁ = {0}min tᵣ₂ = {1}min ", retentionTime1, retentionTime2, conditionName);
+			Console.WriteLine("N₁ = {0:n0} N₂ = {1:n0} R = {2,5:g4}",
+			 InstrumentalAnalysis.TheoricalPlates(retentionTime1, width1, PeakWidthFrame.Delta),
+			 InstrumentalAnalysis.TheoricalPlates(retentionTime2, width2, PeakWidthFrame.Delta),
+			 InstrumentalAnalysis.ResolutionBetweenPeaks(retentionTime1, retentionTime2, width1, width2, PeakWidthFrame.Delta));
 		}
 
-		private static void Output3PointsDropLine(RegressionModel<double> dropLine, double absorbance,
-		double concentration, string conditionName)
+		private static void Output3PointsDropLine(RegressionModel<double> dropLine, float measuredAbsorbance,
+		short optimalWaveLength, double concentrationMultipler, string conditionName)
 		{
+			var dblAfinal = measuredAbsorbance - dropLine.Evaluate(optimalWaveLength);
 			Console.WriteLine("{1,-12}: {0}", dropLine, conditionName);
-			Console.WriteLine("              A = {0,-5:g3} C = {1:g3}mg/L", absorbance, concentration);
+			Console.WriteLine("              A = {0,-5:g3} C = {1:g3}mg/L", dblAfinal, dblAfinal * concentrationMultipler);
 		}
 	}
 }
