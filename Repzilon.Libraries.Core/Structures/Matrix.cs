@@ -330,9 +330,10 @@ namespace Repzilon.Libraries.Core
 				}
 				return m;
 			} else {
-				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
-				 "To add matrices, their dimensions must be identical. They are {0}x{1} and {2}x{3}.",
-				 a.Lines, ac, b.Lines, b.Columns));
+				throw new ArrayTypeMismatchException(new StringBuilder(90)
+				 .AppendFormat("To add matrices, their dimensions must be identical. They are {0}x{1} and {2}x",
+				  a.Lines, ac, b.Lines)
+				 .Append(b.Columns).Append('.').ToString());
 			}
 		}
 
@@ -352,9 +353,10 @@ namespace Repzilon.Libraries.Core
 				}
 				return m;
 			} else {
-				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
-				 "To subtract matrices, their dimensions must be identical. They are {0}x{1} and {2}x{3}.",
-				 a.Lines, ac, b.Lines, b.Columns));
+				throw new ArrayTypeMismatchException(new StringBuilder(90)
+				 .AppendFormat("To subtract matrices, their dimensions must be identical. They are {0}x{1} and {2}x",
+				  a.Lines, ac, b.Lines)
+				 .Append(b.Columns).Append('.').ToString());
 			}
 		}
 
@@ -400,9 +402,9 @@ namespace Repzilon.Libraries.Core
 				}
 				return c;
 			} else {
-				throw new ArrayTypeMismatchException(String.Format(CultureInfo.CurrentCulture,
-				 "Cannot multiply a {0}x{1} matrix with a {2}x{3} matrix.",
-				 a.Lines, a.Columns, b.Lines, b.Columns));
+				throw new ArrayTypeMismatchException(new StringBuilder(90)
+				 .AppendFormat("Cannot multiply a {0}x{1} matrix with a {2}x", a.Lines, a.Columns, b.Lines)
+				 .Append(b.Columns).Append(" matrix.").ToString());
 			}
 		}
 

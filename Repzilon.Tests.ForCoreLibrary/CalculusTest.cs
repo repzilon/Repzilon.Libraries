@@ -201,13 +201,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			double fr8 = math(x);
 			decimal fD = extraMath((decimal)x);
-
 			double der8 = (double)fD - fr8;
-			decimal deD = fD - (decimal)fr8;
 			if (!RoundOff.AreEqual(der8, 0)) {
 				throw new ArithmeticException(String.Format(
 				 "Too big difference: x={1}{0}\tf(x[r8])={2,-29} Δ[r8]={4:e16}{0}\t f(x[D])={3} Δ[D]={5:e25}",
-				 Environment.NewLine, x, fr8, fD, der8, deD));
+				 Environment.NewLine, x, fr8, fD, der8, fD - (decimal)fr8));
 			}
 		}
 
