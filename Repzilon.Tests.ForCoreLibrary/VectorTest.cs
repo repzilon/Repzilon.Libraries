@@ -28,7 +28,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa55b_f4 = Vector<float>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_f8 = Vector<double>.Sum(3, 4, 45, AngleUnit.Degree);
 			var exa55b_de = Vector<decimal>.Sum(3, 4, 45, AngleUnit.Degree);
-			Console.WriteLine("Exemple 55b : Int16={0} Single={1} Double={2} Decimal={3}", exa55b_i2, exa55b_f4, exa55b_f8, exa55b_de);
+			Console.Write("Exemple 55b : Int16={0} Single={1} Double={2} Decimal=", exa55b_i2, exa55b_f4, exa55b_f8);
+			Console.WriteLine(exa55b_de);
 			var exa55c_n = Math.Sqrt(25 + 12 * Math.Sqrt(2));
 			var exa55c_sr = Math.Asin(2 * Math.Sqrt(2) / exa55c_n);
 			var exa55c_a135d = Angle<double>.Degrees(135);
@@ -73,8 +74,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa63_ng = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
 			var exa63_s = exa63_u + exa63_v;
 			var strNorm = Program.OnMacOsX ? "‖" : "||";
-			Console.WriteLine("Exemple 63  : {3}R{3}={0} u+v={1} {3}u+v{3}={2}",
-			 exa63_ng, exa63_s, exa63_s.Norm, strNorm);
+			Console.Write("Exemple 63  : {2}R{2}={0} u+v={1} {2}u+v{2}=", exa63_ng, exa63_s, strNorm);
+			Console.WriteLine(exa63_s.Norm);
 
 			var exa64_u = Vector.New(1.0f, 3.0f, 4.0f);
 			Console.WriteLine("Exemple 64  : {1}u{1}={0:f3}", exa64_u.Norm(), strNorm);
@@ -285,12 +286,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<PolarVector<T>>();
 			Program.OutputSizeOf<TwoDVector<T>>();
 			var ru = implementation(true, false);
-			var rr = implementation(true, true);
-			var tsNotRounded = BenchExample69(false, implementation);
-			var tsRounded = BenchExample69(true, implementation);
-			Console.WriteLine("Exemple 69 {0,-7} : {1:f3}s non arrondi Δ {3:e}; {2:f3}s arrondi Δ {4:e}",
-			 typeof(T), tsNotRounded.TotalSeconds, tsRounded.TotalSeconds,
-			 InDecimal(ru) - referenceResult, InDecimal(rr) - referenceResult);
+			var rr = implementation(true, true); 
+			Console.Write("Exemple 69 {0,-7} : {1:f3}s non arrondi Δ {2:e}; ",
+			 typeof(T), BenchExample69(false, implementation).TotalSeconds, InDecimal(ru) - referenceResult);
+			Console.WriteLine("{0:f3}s arrondi Δ {1:e}",
+			 BenchExample69(true, implementation).TotalSeconds, InDecimal(rr) - referenceResult);
 		}
 
 		private static decimal InDecimal(object value)
@@ -319,9 +319,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			if (consoleOutput) {
 				var strNorm = Program.OnMacOsX ? "‖" : "||";
-				Console.WriteLine("Exemple 69a : {1}F13{1}={0}", exa69_f13, strNorm);
-				Console.WriteLine("Exemple 69b : {1}F23{1}={0}", exa69_f23, strNorm);
-				Console.WriteLine("Exemple 69c : F13={0} F23={1} {3}R{3}={2}", exa69_v13, exa69_v23, exa69_r, strNorm);
+				Console.Write("Exemple 69a : {1}F13{1}={2}{0}Exemple 69b : {1}F23{1}=",
+				 Environment.NewLine, strNorm, exa69_f13);
+				Console.WriteLine(exa69_f23);
+				Console.Write("Exemple 69c : F13={0} F23={1} {2}R{2}=", exa69_v13, exa69_v23, strNorm);
+				Console.WriteLine(exa69_r);
 			}
 		}
 		#endregion

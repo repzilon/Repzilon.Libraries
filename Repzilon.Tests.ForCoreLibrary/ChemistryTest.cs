@@ -79,9 +79,10 @@ STQTALA";
 				dicAminoAcids.Add(aa.Name, aa);
 			}
 			foreach (var aa in dicAminoAcids.Values) {
-				Console.WriteLine("{0} {1} {2,-20} {3,4:f1} {4,4} {5,4:f1} {6,5:f2} {7,7}g/mol {8}",
-				 aa.Letter, aa.Symbol, aa.Name, aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR, aa.Isoelectric(),
-				 Nanable(aa.MolarMass, "f3"), PrettyFormula(aa.Formula));
+				Console.Write("{0} {1} {2,-20} ", aa.Letter, aa.Symbol, aa.Name);
+				Console.Write("{0,4:f1} {1,4} {2,4:f1} ", aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR);
+				Console.WriteLine("{0,5:f2} {1,7}g/mol {2}",
+				 aa.Isoelectric(), Nanable(aa.MolarMass, "f3"), PrettyFormula(aa.Formula));
 			}
 
 			Program.OutputHeading("Fatty acids");
@@ -119,14 +120,12 @@ STQTALA";
 				var nC = dicElems["C"];
 				var nH = dicElems["H"];
 				var nO = dicElems["O"];
-				Console.WriteLine(
-				 "{0,-25} {1,5:f1}°C {2,5:f1}g/mol C{3,-2}H{4,-2}O{5} {6,4:f1}%H/mol {7,4:f1}%H/g {8:f4}%H/mol/K {9:f4}%C/mol/K {10:f4}%H-C/mol/K",
-				 fat.Name, fat.MeltingPoint, fat.MolarMass,
-				 UnicodeSubscript(nC), UnicodeSubscript(nH), UnicodeSubscript(nO),
-				 100.0 * nH / (1.0 * (nC + nH + nO)), MH * nH * 100 / fat.MolarMass,
-				 100.0 * nH / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
-				 100.0 * nC / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)),
-				 100.0 * (nH - nC) / ((273.15 + fat.MeltingPoint) * (nC + nH + nO)));
+				Console.Write("{0,-25} {1,5:f1}°C {2,5:f1}g/mol ", fat.Name, fat.MeltingPoint, fat.MolarMass);
+				Console.Write("C{0,-2}H{1,-2}O{2} ", UnicodeSubscript(nC), UnicodeSubscript(nH), UnicodeSubscript(nO));
+				var molByK = (273.15 + fat.MeltingPoint) * (nC + nH + nO);
+				Console.Write("{0,5:p1}H/mol {1,5:p1}H/g {2:p4}H/mol/K ",
+				 nH / (1.0 * (nC + nH + nO)), MH * nH / fat.MolarMass, nH / molByK);
+				Console.WriteLine("{0:p4}C/mol/K {1:p4}H-C/mol/K", nC / molByK, (nH - nC) / molByK);
 			}
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 15-16");

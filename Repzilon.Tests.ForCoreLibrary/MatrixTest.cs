@@ -281,9 +281,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var coords = matrix.Find(valueToFind);
 			if (coords != null) {
-				Console.WriteLine("a({1};{2})={0} sig={3} M({1};{2})=", valueToFind, coords[0] + 1, coords[1] + 1,
-				 MatrixExtensionMethods.Signature(coords[0], coords[1]));
-				Console.WriteLine(matrix.Minor(coords[0], coords[1]));
+				var x = coords[0];
+				var y = coords[1];
+				Console.WriteLine("a({1};{2})={0} sig={3} M({1};{2})=", valueToFind, x + 1, y + 1,
+				 MatrixExtensionMethods.Signature(x, y));
+				Console.WriteLine(matrix.Minor(x, y));
 			}
 		}
 	}

@@ -113,7 +113,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void RunSingleDemo(int numero, SortedList<string, Action<string[]>> allDemos, string[] args)
 		{
-			const double kToKiB = 1.0 / 1024;
+			const float kToKiB = 1.0f / 1024;
 			Console.Write(Environment.NewLine);
 			var lngRamBefore = Math.Ceiling(CurrentMemoryUsage() * kToKiB);
 			var dtmStart = DateTime.UtcNow;
@@ -121,16 +121,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var tsElapsed = DateTime.UtcNow - dtmStart;
 			// ReSharper disable once InconsistentNaming
 			var lngRamAfterNoGC = Math.Ceiling(CurrentMemoryUsage() * kToKiB);
-			Console.Write("{0} Demo took {1:n3}s\t{2}: {3} kiB -> {4} kiB",
-			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds, OnMacOsX ? "GC memory" : "RAM",
-			 lngRamBefore, lngRamAfterNoGC);
+			Console.Write("{0} Demo took {1:n3}s\t{2}: ",
+			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds, OnMacOsX ? "GC memory" : "RAM");
+			Console.Write("{0} kiB -> {1} kiB", lngRamBefore, lngRamAfterNoGC);
 			// Call GC.Collect only when memory usage blows up, otherwise it makes the process consume more RAM
 			if (lngRamAfterNoGC > 50 * 1024) {
 				GC.Collect();
 				Console.WriteLine(" -> {0} kiB", Math.Ceiling(CurrentMemoryUsage() * kToKiB));
-			} else {
-				Console.Write(Environment.NewLine);
 			}
+			Console.Write(Environment.NewLine);
 		}
 
 		private static long CurrentMemoryUsage()

@@ -240,8 +240,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 (odd * (1 << k) * ExtraMath.Factorial((byte)k)));
 		}
 
-		private static void OutputNormalIntegral(double z, double expected, double integral, string algorithm, int n,
-		int o)
+		private static void OutputNormalIntegral(double z, double expected, double integral, string algorithm,
+		int n, int o)
 		{
 			var delta = integral - expected;
 			// When the FP subtraction gives 0, it is not really zero here,
@@ -251,16 +251,27 @@ namespace Repzilon.Tests.ForCoreLibrary
 #pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				delta = 1e-18;
 			}
-			Console.WriteLine("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {6}{2:e7}   {3,-33} (n={4,4} o={5,4})",
-			 z, integral, delta, algorithm, n, o, delta >= 0 ? " " : "");
+			BeginOutputNormalIntegral(z, integral, delta, delta >= 0);
+			EndOutputNormalIntegral(algorithm, n, o);
 		}
 
-		private static void OutputNormalIntegral(decimal z, decimal expected, decimal integral, string algorithm, int n,
-		int o)
+		private static void OutputNormalIntegral(decimal z, decimal expected, decimal integral, string algorithm,
+		int n, int o)
 		{
 			var delta = integral - expected;
-			Console.WriteLine("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {6}{2:e7}   {3,-33} (n={4,4} o={5,4})",
-			 z, integral, delta, algorithm, n, o, delta >= 0 ? " " : "");
+			BeginOutputNormalIntegral(z, integral, delta, delta >= 0);
+			EndOutputNormalIntegral(algorithm, n, o);
+		}
+
+		private static void BeginOutputNormalIntegral<T>(T z, T integral, T delta, bool nonNegativeDelta)
+		{
+			Console.Write("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}", z, integral, nonNegativeDelta ? " " : "");
+			Console.Write("{0:e7}   ", delta);
+		}
+
+		private static void EndOutputNormalIntegral(string algorithm, int n, int o)
+		{
+			Console.WriteLine("{0,-33} (n={1,4} o={2,4})", algorithm, n, 0);
 		}
 
 		private static double NonCumulativeNormal(double z)
@@ -361,11 +372,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= c - 1;
 			stddev = Math.Sqrt(stddev);
-			var dblT99Percent4Degrees = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
-			var ideal = average + (dblT99Percent4Degrees * stddev);
+			var dblT99Percent = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
+			var ideal = average + (dblT99Percent * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
-			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c,
-			 dblT99Percent4Degrees, ideal);
+			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
+			Console.WriteLine("t99={0}  x^={1} itérations", dblT99Percent, ideal);
 			return Convert.ToInt32(ideal);
 		}
 
@@ -421,20 +432,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= c - 1;
 			stddev = ExtraMath.Sqrt(stddev);
-			var dcmT99Percent4Degrees = (decimal)ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
-			var ideal = average + (dcmT99Percent4Degrees * stddev);
+			var dcmT99Percent = (decimal)ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
+			var ideal = average + (dcmT99Percent * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
-			Console.WriteLine("x_={0} itérations  s={1}  n={2}  t99={3}  x^={4} itérations", average, stddev, c,
-			 dcmT99Percent4Degrees, ideal);
+			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
+			Console.WriteLine("t99={0}  x^={1} itérations", dcmT99Percent, ideal);
 
 			var ptmarIter = new PointM[c];
 			for (i = 0; i < c; i++) {
 				ptmarIter[i] = new PointM((decimal)Math.Round(allZ[i], 2), intarIterations[i]);
 			}
 			var rm = RegressionModel.Compute(ptmarIter);
-			Console.Write(rm);
-			Console.Write("\t r=");
-			Console.WriteLine(rm.R);
+			Console.WriteLine("{0}\t r={1}", rm, rm.R);
 
 			return Convert.ToInt32(ideal);
 		}
@@ -460,8 +469,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				ml = MacLaurinPositiveNormalIntegral(z, bestK);
 				delta = ml - simpson;
-				Console.WriteLine("∫[0; {0:f2}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {5}{2:e7} (s={3} m={4})",
-				 z, ml, delta, n, bestK, delta >= 0 ? " " : "");
+				Console.Write("∫[0; {0:f2}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}", z, ml, delta >= 0 ? " " : "");
+				Console.WriteLine("{0:e7} (s={1} m={2})", delta, n, bestK);
+
 				if (Math.Abs(delta) > Math.Abs(targetDelta) * 10) {
 					blnBroken = true;
 					Console.WriteLine("Cassure lorsque Z>{0}", (i - 1) * 0.01m);
@@ -472,9 +482,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void OutputProbitEstimate(double p, double probit, decimal delta, short iterations)
 		{
 			var logit = ProbabilityDistributions.InverseLogistic(p);
-			Console.WriteLine("{0,5:f2} {1,7:f3} {2:f16} {3:f16} {4:f16} {5:f16} {6}{7:e7} {8,4}",
-			 RoundOff.Error(2 * (1 - p)), p, logit, logit * SqrtEighthOfPi,
-			 ProbabilityDistributions.InverseNormalEstimate(p), probit, delta >= 0 ? " " : "", delta, iterations);
+			Console.Write("{0,5:f2} {1,7:f3} {2:f16} ", RoundOff.Error(2 * (1 - p)), p, logit);
+			Console.Write("{0:f16} {1:f16} {2:f16} ", logit * SqrtEighthOfPi,
+			 ProbabilityDistributions.InverseNormalEstimate(p), probit);
+			Console.WriteLine("{0}{1:e7} {2,4}", delta >= 0 ? " " : "", delta, iterations);
 		}
 
 		private static void LogisticModel(params PointM[] points)
@@ -504,29 +515,26 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var scale = Math.Sign(last) * Math.Max(lrrSecant.Slope, last) / Math.Min(lrrSecant.Slope, last);
 
 			var ptmarRoughModel = new PointM[points.Length];
-			for (k = 0; k < points.Length; k++) {
-				var exponent = (points[k].X - location) / (-1 * scale);
-				var unscaled = 1 / (1 + (decimal)Math.Exp((double)exponent));
-				ptmarRoughModel[k] = new PointM(intercept + (amplitude * unscaled), points[k].Y);
-				Console.WriteLine("{0}\t{1}\t{2:f1}", points[k].X, points[k].Y, ptmarRoughModel[k].X);
-			}
-			Console.WriteLine("y = {0} + {1}*[1/(1+e^((x-{2})/-{3}))]",
-			 intercept, amplitude, location, scale);
+			EvaluateLogisticModel(points, intercept, amplitude, location, scale, ptmarRoughModel);
 			lrrSecant = LinearRegression.Compute(ptmarRoughModel[0], ptmarRoughModel[iLast]);
-			Console.Write(lrrSecant);
-			Console.WriteLine("\tr={0}", RoundOff.Error(lrrSecant.Correlation));
+			Console.WriteLine("{0}\tr={1}", lrrSecant, RoundOff.Error(lrrSecant.Correlation));
 
 			intercept = lrrSecant.Intercept + lrrSecant.Slope * intercept;
 			amplitude *= lrrSecant.Slope;
+			EvaluateLogisticModel(points, intercept, amplitude, location, scale, ptmarRoughModel);
+		}
 
-			for (k = 0; k < points.Length; k++) {
-				var exponent = (points[k].X - location) / (-1 * scale);
+		private static void EvaluateLogisticModel(PointM[] points,
+		decimal intercept, decimal amplitude, decimal location, decimal scale, PointM[] ptmarRoughModel)
+		{
+			for (int k = 0; k < points.Length; k++) {
+				var exponent = (points[k].X - location) / -scale;
 				var unscaled = 1 / (1 + (decimal)Math.Exp((double)exponent));
 				ptmarRoughModel[k] = new PointM(intercept + (amplitude * unscaled), points[k].Y);
 				Console.WriteLine("{0}\t{1}\t{2:f1}", points[k].X, points[k].Y, ptmarRoughModel[k].X);
 			}
-			Console.WriteLine("y = {0} + {1}*[1/(1+e^((x-{2})/-{3}))]",
-			 intercept, amplitude, location, scale);
+			Console.Write("y = {0} + {1}*[1/(1+e^((x-{2})/-", intercept, amplitude, location);
+			Console.WriteLine("{0}))]", scale);
 		}
 	}
 }

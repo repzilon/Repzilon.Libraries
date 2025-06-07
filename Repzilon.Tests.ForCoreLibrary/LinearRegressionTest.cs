@@ -151,7 +151,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var Km0 = lrr0.Slope * vmax0;
 			var strVmax = Program.OnMacOsX ? "vₘₐₓ" : "vmax";
 			var strKm = Program.OnMacOsX ? "kₘ" : "Km";
-			Console.WriteLine("{2} = {0:g4} nmol/min\t{3} = {1:g4} mol/L", vmax0 / 60, Km0, strVmax, strKm);
+			Console.Write("{0} = {1:g4} nmol/min\t{2} = ", strVmax, vmax0 / 60, strKm);
+			Console.WriteLine("{0:g4} mol/L", Km0);
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
 			lrr0 = LinearRegression.Compute(
@@ -169,10 +170,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 			vmax0 = 1.0 / lrr0.Intercept;
 			Km0 = lrr0.Slope * vmax0;
 			var strUnit = Program.OnMacOsX ? "µmol/L•min" : "µmol/L*min";
-			Console.WriteLine("{2}  = {0,-4:g3} {4}  {3}  = {1:g3} mol/L", vmax0, Km0, strVmax, strKm, strUnit);
+			Console.Write("{0}  = {1,-4:g3} {2}  ", strVmax, vmax0, strUnit);
+			Console.WriteLine("{0}  = {1:g3} mol/L", strKm, Km0);
 			var vmax1 = 1.0 / lrr1.Intercept;
 			var Km1 = lrr1.Slope * vmax1;
-			Console.WriteLine("{2}' = {0,-4:g3} {4}  {3}' = {1:g3} mol/L", vmax1, Km1, strVmax, strKm, strUnit);
+			Console.Write("{0}' = {1,-4:g3} {2}  ", strVmax, vmax1, strUnit);
+			Console.WriteLine("{0}' = {1:g3} mol/L", strKm, Km1);
 			Console.WriteLine("{1} = {0:g3} mol/L", 0.02 / ((Km1 / Km0) - 1), Program.OnMacOsX ? "kᵢ" : "Ki");
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 5");
@@ -193,7 +196,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
 			vmax0 = SignificantDigits.Round(lrr0.Intercept, 2);
 			Km0 = SignificantDigits.Round(-lrr0.Slope, 2);
-			Console.WriteLine("{2}  = {0,-4} mUI  {3}  = {1} mmol/L", vmax0, Km0, strVmax, strKm);
+			Console.Write("{0}  = {1,-4} mUI  {2}  = ", strVmax, vmax0, strKm);
+			Console.WriteLine("{0} mmol/L", Km0);
 
 			Program.OutputHeading("Biochemistry II laboratory 3");
 			lrr0 = LinearRegression.Compute(
@@ -212,9 +216,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			vmax0 = 1.0 / lrr1.Intercept;
 			Km0 = vmax0 * lrr1.Slope;
 			vmax1 = vmax0 * 60 / lrr0.Slope;
-			Console.WriteLine("{4}  = {1} A405/s  {5}  = {2} mol/L{0}{4}  = {3} {6}",
-			 Environment.NewLine, SignificantDigits.Round(vmax0, 5), SignificantDigits.Round(Km0, 4),
-			 SignificantDigits.Round(vmax1, 3), strVmax, strKm, strUnit);
+			Console.Write("{0}  = {1} A405/s  {2}  = ", strVmax, SignificantDigits.Round(vmax0, 5), strKm);
+			Console.WriteLine("{0} mol/L", SignificantDigits.Round(Km0, 4));
+			Console.WriteLine("{0}  = {1} {2}", strVmax, SignificantDigits.Round(vmax1, 3), strUnit);
 
 			Program.OutputHeading("Biochemistry II laboratory 4");
 			lrr0 = LinearRegression.Compute(
@@ -284,8 +288,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Specific activity x_power={0,-6:f3} µmol PNPA/mg {1}", Km0, strUnit);
 			Console.WriteLine("Specific activity ∫[0; {1}] power={0,-6:f3} µmol PNPA/mg {2}",
 			 SpecificActivity(rm, 0, lstSpeeds[4].X, vmax1), lstSpeeds[4].X, strUnit);
-			Console.WriteLine("Specific activity ∫[{2}; {1}] power={0,-6:f3} µmol PNPA/mg {3}",
-			 SpecificActivity(rm, lstSpeeds[0].X, lstSpeeds[4].X, vmax1), lstSpeeds[4].X, lstSpeeds[0].X, strUnit);
+			Console.Write("Specific activity ∫[{2}; {1}] power={0,-6:f3} µmol PNPA/mg ",
+			 SpecificActivity(rm, lstSpeeds[0].X, lstSpeeds[4].X, vmax1), lstSpeeds[4].X, lstSpeeds[0].X);
+			Console.WriteLine(strUnit);
 			Console.WriteLine("Specific activity trapeze={0,-6:f3} µmol PNPA/mg {1}",
 			 SpecificActivity(lstSpeeds, vmax1), strUnit);
 			Km0 = (Km1 + (lrr1.Slope * vmax1)) * 0.5 * 30;
@@ -425,8 +430,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				ptarDouble[i] = new PointD(b / ptd.X, 1.0 / ptd.Y);
 			}
 			rm = RegressionModel.Compute(ptarDouble);
-			Console.WriteLine("  y = {1:g6} + {0:g6} * x^-1 r={2,-8:g6} S/N={3:g6} dB", b * rm.B, rm.A,
-			 rm.R, -10 * Math.Log10(1 - rm.R));
+			Console.Write("  y = {1:g6} + {0:g6} * x^-1 r={2,-8:g6} S/N=", b * rm.B, rm.A, rm.R);
+			Console.WriteLine("{0:g6} dB", -10 * Math.Log10(1 - rm.R)); 
 
 			Program.OutputHeading("Factorial (1 to " + MaxFactorial + ")");
 			var factorialSuite = new List<PointM>(MaxFactorial);
@@ -454,8 +459,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void OutputBenchResults<T>(int iterations, TimeSpan withEnumerable, TimeSpan withList)
 		{
-			Console.WriteLine("{0,9:n0} iterations in {1:f3}s as IEnumerable<{3}>, {2:f3}s as IList<{3}>",
-			 iterations, withEnumerable.TotalSeconds, withList.TotalSeconds, typeof(T).Name);
+			var strType = typeof(T).Name;
+			Console.Write("{0,9:n0} iterations in {1:f3}s as IEnumerable<{2}>, ",
+			 iterations, withEnumerable.TotalSeconds, strType);
+			Console.WriteLine("{0:f3}s as IList<{1}>", withList.TotalSeconds, strType);
 		}
 
 		private static void OutputMicrotox(string sample, byte minutes, byte[] i0, byte[] it)
@@ -504,8 +511,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			for (var i = 0; i < bands.Length; i++) {
 				var rf = bands[i] / migrationFront;
-				Console.WriteLine("{0,2}    {1,4:f1}   {2:f3}\t   {3:f0}\t\t{4:f0}\t\t  {5:f0}",
-				 pitNumber, bands[i], rf,
+				Console.Write("{0,2}    {1,4:f1}   {2:f3}\t   ", pitNumber, bands[i], rf);
+				Console.WriteLine("{0:f0}\t\t{1:f0}\t\t  {2:f0}",
 				 SignificantDigits.Round(logarithmicInnerModel.Solve(rf), 3),
 				 SignificantDigits.Round(logarithmicFullModel.Solve(rf), 3),
 				 SignificantDigits.Round(powerModel.Solve(rf), 3));
@@ -629,10 +636,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var em = new ErrorMargin<T>(lrp.InterpolateY(x),
 			 Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated)));
 			// FIXME : change Infinity for something language-aware
-			Console.WriteLine(
-			 Program.OnMacOsX ? "x = {0,-5} k = {1} ŷ  = {2} => {3}" : "x = {0} k = {1,-8}  y^ = {2} => {3}",
+			Console.Write(
+			 Program.OnMacOsX ? "x = {0,-5} k = {1} ŷ  = {2} => " : "x = {0} k = {1,-8}  y^ = {2} => ",
 			 x.ToString(numberFormat, culture), repeated ? (Program.OnMacOsX ? "∞" : "Infinity") : "1",
-			 em.ToString(numberFormat, culture), em.Round().ToString(numberFormat, culture));
+			 em.ToString(numberFormat, culture));
+			Console.WriteLine(em.Round().ToString(numberFormat, culture));
 		}
 
 		private static void OutputXExtrapolation<T>(ILinearRegressionResult<T> lrp, string numberFormat,
@@ -711,9 +719,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		ILinearRegressionResult<T> linearized, RegressionModel<T> reformed)
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>
 		{
-			Console.WriteLine("{0,-15}: {1:g6}  r={2:g6}\t{3:g6}  {5}={4:g6}",
-			 header, linearized, linearized.Correlation, reformed, reformed.Determination(),
-			 Program.OnMacOsX ? "R²" : "r^2");
+			Console.Write("{0,-15}: {1:g6}  r={2:g6}\t", header, linearized, linearized.Correlation);
+			Console.WriteLine("{0:g6}  {1}={2:g6}",
+			 reformed, Program.OnMacOsX ? "R²" : "r^2", reformed.Determination());
 		}
 
 		private static T[] Take<T>(int howMany, params T[] from)

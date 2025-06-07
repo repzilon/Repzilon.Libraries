@@ -63,19 +63,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(Environment.NewLine);
 				Console.WriteLine("Testing Round method");
 				for (byte f = 2; f <= 4; f++) {
-					var sngRounded = SignificantDigits.Round(43.50872f, f);
-					var dblRounded = SignificantDigits.Round(43.50872, f);
-					var dcmRounded = SignificantDigits.Round(43.50872m, f);
-					Console.WriteLine("{0}\t{1}\t{2}\t{3}", 43.50872m, sngRounded, dblRounded, dcmRounded);
+					Console.Write("{0}\t{1}\t{2}\t", 43.50872m,
+					 SignificantDigits.Round(43.50872f, f), SignificantDigits.Round(43.50872, f));
+					Console.WriteLine(SignificantDigits.Round(43.50872m, f));
 				}
-				var x = (0.02015 * 0.25) - 0.001;
-				var xr = SignificantDigits.Round(x, 1);
-				Console.WriteLine("{0} -> {1}", x, xr);
+				var dblComputed = (0.02015 * 0.25) - 0.001;
+				Console.WriteLine("{0} -> {1}", dblComputed, SignificantDigits.Round(dblComputed, 1));
 
 				var karFiveFiguresInput = new double[] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
 				var karFiveFiguresExpected = new double[] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
 				for (int i = 0; i < karFiveFiguresInput.Length; i++) {
-					var dblComputed = SignificantDigits.Round(karFiveFiguresInput[i], 5, RoundingMode.AwayFromZero);
+					dblComputed = SignificantDigits.Round(karFiveFiguresInput[i], 5, RoundingMode.AwayFromZero);
 					Console.WriteLine(RoundOff.Equals(dblComputed, karFiveFiguresExpected[i]) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
 					 karFiveFiguresInput[i], dblComputed, karFiveFiguresExpected[i]);
 				}
@@ -93,8 +91,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			const decimal b = -1.55859375m;
 			const decimal c = -4.8828125m;
-			var pr = ExtraMath.SolveQuadratic(1, b, c);
-			Console.WriteLine("Zeros for 1x² + {0}x + {1} : {2}", b, c, pr);
+			Console.WriteLine("Zeros for 1x² + {0}x + {1} : {2}", b, c, ExtraMath.SolveQuadratic(1, b, c));
 		}
 
 		private static bool[] TestDigitCount<T>(
