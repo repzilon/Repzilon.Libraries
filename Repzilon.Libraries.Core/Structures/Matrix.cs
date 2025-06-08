@@ -330,10 +330,8 @@ namespace Repzilon.Libraries.Core
 				}
 				return m;
 			} else {
-				throw new ArrayTypeMismatchException(new StringBuilder(90)
-				 .AppendFormat("To add matrices, their dimensions must be identical. They are {0}x{1} and {2}x",
-				  a.Lines, ac, b.Lines)
-				 .Append(b.Columns).Append('.').ToString());
+				throw MatrixDimensionsMismatch(
+				 "To add matrices, their dimensions must be identical. They are {0}x{1} and {2}x", ".", a, b);
 			}
 		}
 
@@ -353,10 +351,8 @@ namespace Repzilon.Libraries.Core
 				}
 				return m;
 			} else {
-				throw new ArrayTypeMismatchException(new StringBuilder(90)
-				 .AppendFormat("To subtract matrices, their dimensions must be identical. They are {0}x{1} and {2}x",
-				  a.Lines, ac, b.Lines)
-				 .Append(b.Columns).Append('.').ToString());
+				throw MatrixDimensionsMismatch(
+				 "To subtract matrices, their dimensions must be identical. They are {0}x{1} and {2}x", ".", a, b);
 			}
 		}
 
@@ -402,10 +398,16 @@ namespace Repzilon.Libraries.Core
 				}
 				return c;
 			} else {
-				throw new ArrayTypeMismatchException(new StringBuilder(90)
-				 .AppendFormat("Cannot multiply a {0}x{1} matrix with a {2}x", a.Lines, a.Columns, b.Lines)
-				 .Append(b.Columns).Append(" matrix.").ToString());
+				throw MatrixDimensionsMismatch("Cannot multiply a {0}x{1} matrix with a {2}x", " matrix.", a, b);
 			}
+		}
+
+		private static ArrayTypeMismatchException MatrixDimensionsMismatch(
+		string startFormat, string ending, Matrix<T> a, Matrix<T> b)
+		{
+			return new ArrayTypeMismatchException(new StringBuilder(90)
+			 .AppendFormat(startFormat, a.Lines, a.Columns, b.Lines)
+			 .Append(b.Columns).Append(ending).ToString());
 		}
 
 		public static Matrix<T> operator |(Matrix<T> coefficients, Matrix<T> values)
