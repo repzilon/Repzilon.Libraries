@@ -19,6 +19,7 @@ using System.Globalization;
 using System.Runtime.CompilerServices;
 #endif
 using System.Runtime.InteropServices;
+using System.Text;
 
 namespace Repzilon.Tests.ForCoreLibrary
 {
@@ -31,7 +32,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 	internal static class Program
 	{
-		internal static readonly bool OnMacOsX = IsMacOsX();
+		internal static readonly bool UnicodeTerminal = SupportsUnicodeTerminal();
 
 		private static void Main(string[] args)
 		{
@@ -52,8 +53,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Student distribution", StudentTest.Run);
 			dicTests.Add("Instrumental Analysis", InstrumentalAnalysisTest.Run);
 
-			Console.WriteLine("CurrentCulture: {0}\tCurrentUICulture: {1}",
-			 CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name);
+			// Needed on Windows to enable Unicode support
+#if NETFRAMEWORK
+			var os = Environment.OSVersion;
+			if ((os.Platform == PlatformID.Win32NT) && (os.Version.Major >= 6)) {
+#else
+			if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+#endif
+				Console.OutputEncoding = Encoding.UTF8;
+			}
+			Console.WriteLine("CurrentCulture: {0}\tCurrentUICulture: {1}\tOutputEncoding: {2} •₀₁₂₃₄₅₆₇₈₉ₘₐₓµ∫∞ŷΔ²",
+			 CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name,
+			 Console.OutputEncoding.WebName);
 			if (args == null || args.Length < 1) {
 				RunInteractively(dicTests, args);
 			} else if ((args[0] == "--help") || (args[0] == "-h") || (args[0] == "/?")) {
@@ -122,7 +133,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			// ReSharper disable once InconsistentNaming
 			var lngRamAfterNoGC = Math.Ceiling(CurrentMemoryUsage() * kToKiB);
 			Console.Write("{0} Demo took {1:n3}s\t{2}: ",
-			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds, OnMacOsX ? "GC memory" : "RAM");
+			 allDemos.Keys[numero - 1], tsElapsed.TotalSeconds, IsMacOsX() ? "GC memory" : "RAM");
 			Console.Write("{0} kiB -> {1} kiB", lngRamBefore, lngRamAfterNoGC);
 			// Call GC.Collect only when memory usage blows up, otherwise it makes the process consume more RAM
 			if (lngRamAfterNoGC > 50 * 1024) {
@@ -134,7 +145,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static long CurrentMemoryUsage()
 		{
-			if (OnMacOsX) {
+			if (IsMacOsX()) {
 				// Microsoft is too lazy to provide a libproc wrapper. But libproc is poorly documented, so I will not
 				// dwell into it right now. Working set is also a poor metric: it is only reliable when swapping
 				// and memory compression are disabled. I will use the GC memory, while underestimating memory usage
@@ -145,7 +156,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				using (var prcSelf = Process.GetCurrentProcess()) {
 					return prcSelf.PrivateMemorySize64;
 				}
-			}		
+			}
 		}
 
 		private static char MyReadKey(ref TriState workaroundCygwin)
@@ -262,6 +273,27 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 		}
 
+		private static bool SupportsUnicodeTerminal()
+		{
+			if (IsMacOsX()) {
+				return true;
+			} else {
+#if NETFRAMEWORK
+				var os = Environment.OSVersion;
+				if (os.Platform == PlatformID.Win32NT) {
+					return os.Version.CompareTo(new Version(6, 2)) >= 0;
+				}
+#else
+				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
+					return true;
+				}
+#endif
+				else {
+					return (Console.OutputEncoding is UTF8Encoding) || (Console.OutputEncoding is UnicodeEncoding);
+				}
+			}
+		}
+
 		private static void OutputUsage()
 		{
 			Console.WriteLine(
@@ -273,8 +305,8 @@ SYNOPSIS
 	Repzilon.Tests.ForCoreLibrary --demos <comma separated test numbers>
 
 DESCRIPTION
-	When run without arguments, will display a menu listing demos, which 
-	can be selected by pressing a key associated with the demo, then 
+	When run without arguments, will display a menu listing demos, which
+	can be selected by pressing a key associated with the demo, then
 	return to the menu. You can exit the program by pressing Q in the menu.
 
 	When the --demos argument is used, the demos identified with the same
