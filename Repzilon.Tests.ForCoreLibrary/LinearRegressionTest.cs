@@ -510,8 +510,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		byte pitNumber, float migrationFront, params float[] bands)
 		{
 			for (var i = 0; i < bands.Length; i++) {
-				var rf = bands[i] / migrationFront;
-				Console.Write("{0,2}    {1,4:f1}   {2:f3}\t   ", pitNumber, bands[i], rf);
+				var band = bands[i];
+				var rf = band / migrationFront;
+				Console.Write("{0,2}    {1,4:f1}   {2:f3}\t   ", pitNumber, band, rf);
 				Console.WriteLine("{0:f0}\t\t{1:f0}\t\t  {2:f0}",
 				 SignificantDigits.Round(logarithmicInnerModel.Solve(rf), 3),
 				 SignificantDigits.Round(logarithmicFullModel.Solve(rf), 3),
@@ -525,15 +526,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 		out RegressionModel<double> logarithmicInnerModel,
 		out RegressionModel<double> powerModel)
 		{
-			var ptdarImmunoLab2WeightLogOuter = new PointD[molarWeightsAndRelativeMobility.Length];
-			var ptdarImmunoLab2WeightLogInner = new PointD[checked(molarWeightsAndRelativeMobility.Length - 2)];
-			var ptdarImmunoLab2WeightPow = new PointD[molarWeightsAndRelativeMobility.Length];
-			for (var i = 0; i < molarWeightsAndRelativeMobility.Length; i++) {
-				var log10 = Math.Log10(molarWeightsAndRelativeMobility[i].X);
-				var ptdLogLin = new PointD(log10, molarWeightsAndRelativeMobility[i].Y);
-				var ptdLogLog = new PointD(log10, Math.Log10(molarWeightsAndRelativeMobility[i].Y));
+			var c = molarWeightsAndRelativeMobility.Length;
+			var ptdarImmunoLab2WeightLogOuter = new PointD[c];
+			var ptdarImmunoLab2WeightLogInner = new PointD[checked(c - 2)];
+			var ptdarImmunoLab2WeightPow = new PointD[c];
+			for (var i = 0; i < c; i++) {
+				var ptd = molarWeightsAndRelativeMobility[i];
+				var log10 = Math.Log10(ptd.X);
+				var ptdLogLin = new PointD(log10, ptd.Y);
+				var ptdLogLog = new PointD(log10, Math.Log10(ptd.Y));
 				ptdarImmunoLab2WeightLogOuter[i] = ptdLogLin;
-				if ((i != 0) && (i < molarWeightsAndRelativeMobility.Length - 1)) {
+				if ((i != 0) && (i < c - 1)) {
 					ptdarImmunoLab2WeightLogInner[i - 1] = ptdLogLin;
 				}
 				ptdarImmunoLab2WeightPow[i] = ptdLogLog;

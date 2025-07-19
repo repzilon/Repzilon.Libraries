@@ -564,14 +564,15 @@ namespace Repzilon.Libraries.Core
 #endif
 				byte j;
 				for (byte i = 0; i < coefficients.Length; i++) {
-					if (coefficients[i].HasValue) {
+					var coefficient = coefficients[i];
+					if (coefficient.HasValue) {
 						for (j = 0; j < this.Columns; j++) {
 #if NET20
 							accumulator[j] = Arithmetic<T>.AddScalars(accumulator[j],
-							 Arithmetic<T>.MultiplyScalars(coefficients[i].Value, this[i, j]));
+							 Arithmetic<T>.MultiplyScalars(coefficient.Value, this[i, j]));
 #else
 							accumulator[j] = Arithmetic<T>.Adder(accumulator[j],
-							 mult(coefficients[i].Value, this[i, j]));
+							 mult(coefficient.Value, this[i, j]));
 #endif
 						}
 					}
@@ -915,10 +916,11 @@ namespace Repzilon.Libraries.Core
 				f = augmented[(byte)line, c];
 				if (!f.Equals(zero)) {
 					AffineBinomial<T> abFromSolved;
-					if (wipSolution.TryGetValue(variables[c], out abFromSolved)) {
+					var chrVarLetter = variables[c];
+					if (wipSolution.TryGetValue(chrVarLetter, out abFromSolved)) {
 						abTofLine += abFromSolved * f;
 					} else {
-						dicCoefficients.Add(variables[c], f);
+						dicCoefficients.Add(chrVarLetter, f);
 					}
 				}
 			}

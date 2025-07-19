@@ -133,11 +133,12 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			c = -1; // index of regression model having the best correlation
 			EnzymeKinematic<double> ek;
 			EnzymeKinematic<double> ekBest = new EnzymeKinematic<double>(); // empty one
+			var rmdMichMen = rmdarAll[0];
 			for (i = 0; i < 4; i++) {
 				var model = rmdarAll[i].Model;
 				if (((i != 0) && (model == MathematicalModel.Affine)) || ((i == 0) && (model == MathematicalModel.Logarithmic))) {
 					ek = Speed(concentrationUnit, speedUnit, (EnzymeSpeedRepresentation)i, rmdarAll[i]);
-					v0 = EnzymeKinematicExtension.AreaBetween(ek, rmdarAll[0], false);
+					v0 = EnzymeKinematicExtension.AreaBetween(ek, rmdMichMen, false);
 					if (v0 < s) {
 						s = v0;
 						c = i;
@@ -147,7 +148,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			}
 
 			ek = DirectLinearPlot(concentrationUnit, speedUnit, michaelisMentenDataPoints);
-			v0 = EnzymeKinematicExtension.AreaBetween(ek, rmdarAll[0], false);
+			v0 = EnzymeKinematicExtension.AreaBetween(ek, rmdMichMen, false);
 			return (c >= 0) && (v0 >= 0) ? ekBest : ek;
 		}
 
@@ -172,8 +173,9 @@ namespace Repzilon.Libraries.Core.Biochemistry
 				for (var j = 0; j < c; j++) {
 					if (j > i) {
 						pt = michaelisMentenDataPoints[i];
-						s = RoundOff.Error((michaelisMentenDataPoints[j].Y - pt.Y) / (dblarSlopes[i] - dblarSlopes[j]));
-						ptdarIntersections[k] = new PointD(s, RoundOff.Error((dblarSlopes[i] * s) + pt.Y));
+						var m = dblarSlopes[i];
+						s = RoundOff.Error((michaelisMentenDataPoints[j].Y - pt.Y) / (m - dblarSlopes[j]));
+						ptdarIntersections[k] = new PointD(s, RoundOff.Error((m * s) + pt.Y));
 						k++;
 					}
 				}

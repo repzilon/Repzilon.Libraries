@@ -52,8 +52,9 @@ SO<sub>4</sub>
 Na<sub>2</sub>SO<sub>4</sub>".Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
 			int i;
 			for (i = 0; i < karFormulas.Length; i++) {
+				var formula = karFormulas[i];
 				Console.WriteLine("{0,8:n3} g/mol {1}",
-				 Chemistry.MolarMass(karFormulas[i]), PrettyFormula(karFormulas[i]));
+				 Chemistry.MolarMass(formula), PrettyFormula(formula));
 			}
 
 			const string kBovineSerumAlbuminPeptides = /*"MKWVTFISLLLLFSSAYSRGVFRR" +*/
@@ -269,12 +270,13 @@ STQTALA";
 
 			for (int i = 0; i < kPoints; i++) {
 				var v0 = karVelocity[i];
-				ptdarMM[i]     = new PointD(karSubstrate[i], v0);
-				ptdarLB_raw[i] = new PointD(1.0 / karSubstrate[i], 1.0 / v0);
+				var s = karSubstrate[i];
+				ptdarMM[i]     = new PointD(s, v0);
+				ptdarLB_raw[i] = new PointD(1.0 / s, 1.0 / v0);
 				ptdarLB_table[i] = new PointD(Math.Round(karSubstrateInv[i], 2), Math.Round(karVelocityInv[i], 1));
-				ptdarEH_raw[i]   = new PointD(v0 / karSubstrate[i], v0);
+				ptdarEH_raw[i]   = new PointD(v0 / s, v0);
 				ptdarEH_table[i] = new PointD(karVbyS[i], v0);
-				ptdarHW_raw[i]   = new PointD(karSubstrate[i], karSubstrate[i] / v0);
+				ptdarHW_raw[i]   = new PointD(s, s / v0);
 			}
 
 			Program.OutputSizeOf<RegressionModel<double>>();
@@ -310,12 +312,13 @@ STQTALA";
 
 			for (int i = 0; i < kPoints; i++) {
 				var v0 = karVelocity[i];
-				ptmarMM[i]     = new PointM(karSubstrate[i], v0);
-				ptmarLB_raw[i] = new PointM(1.0m / karSubstrate[i], 1.0m / v0);
+				var s = karSubstrate[i];
+				ptmarMM[i]     = new PointM(s, v0);
+				ptmarLB_raw[i] = new PointM(1.0m / s, 1.0m / v0);
 				ptmarLB_table[i] = new PointM(karSubstrateInv[i], karVelocityInv[i]);
-				ptmarEH_raw[i]   = new PointM(v0 / karSubstrate[i], v0);
+				ptmarEH_raw[i]   = new PointM(v0 / s, v0);
 				ptmarEH_table[i] = new PointM(karVbyS[i], v0);
-				ptmarHW_raw[i]   = new PointM(karSubstrate[i], karSubstrate[i] / v0);
+				ptmarHW_raw[i]   = new PointM(s, s / v0);
 			}
 
 			Program.OutputSizeOf<RegressionModel<decimal>>();

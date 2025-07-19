@@ -107,7 +107,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 				if (a > 0) {
 					Console.Write(',');
 				}
-				var strLabel = saaarLateral[a].Symbol;
+				var aaLateral = saaarLateral[a];
+				var strLabel = aaLateral.Symbol;
 #pragma warning disable UD0011 // The composite format string is not valid
 				Console.WriteLine('{');
 #pragma warning restore UD0011 // The composite format string is not valid
@@ -120,12 +121,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 					AddDataPoint(saaarLateral, f, a, ref n);
 				}
 				int pki;
+
 				if ((strLabel == "Asp") || (strLabel == "Glu") || (strLabel == "Lys")) {
-					pki = Convert.ToInt32(saaarLateral[a].Isoelectric() * 100);
+					pki = Convert.ToInt32(aaLateral.Isoelectric() * 100);
 					AddDataPoint(saaarLateral, pki - 1, a, ref n);
 					AddDataPoint(saaarLateral, pki + 1, a, ref n);
 				} else if (strLabel == "Tyr") {
-					pki = Convert.ToInt32((saaarLateral[a].pKa2 + saaarLateral[a].pKaR) * 50);
+					pki = Convert.ToInt32((aaLateral.pKa2 + aaLateral.pKaR) * 50);
 					AddDataPoint(saaarLateral, pki - 1, a, ref n);
 					AddDataPoint(saaarLateral, pki + 1, a, ref n);
 				}

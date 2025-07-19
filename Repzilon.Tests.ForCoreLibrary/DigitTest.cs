@@ -73,9 +73,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				var karFiveFiguresInput = new double[] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
 				var karFiveFiguresExpected = new double[] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
 				for (int i = 0; i < karFiveFiguresInput.Length; i++) {
-					dblComputed = SignificantDigits.Round(karFiveFiguresInput[i], 5, RoundingMode.AwayFromZero);
-					Console.WriteLine(RoundOff.Equals(dblComputed, karFiveFiguresExpected[i]) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
-					 karFiveFiguresInput[i], dblComputed, karFiveFiguresExpected[i]);
+					var input = karFiveFiguresInput[i];
+					var expected = karFiveFiguresExpected[i];
+					dblComputed = SignificantDigits.Round(input, 5, RoundingMode.AwayFromZero);
+					Console.WriteLine(RoundOff.Equals(dblComputed, expected) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
+					 input, dblComputed, expected);
 				}
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex);
@@ -108,12 +110,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 				var blnarOk = new bool[c];
 				for (int i = 0; i < c; i++) {
-					var d = SignificantDigits.Count(values[i]);
-					blnarOk[i] = d == expectedCounts[i];
+					var value = values[i];
+					var expectedCount = expectedCounts[i];
+					var d = SignificantDigits.Count(value);
+					blnarOk[i] = d == expectedCount;
 					if (messageWriter != null) {
 						messageWriter(String.Format(
 						 blnarOk[i] ? "{0,13} -> {1} correct" : "{0,13} -> {1} WRONG (should be {2})",
-						 values[i], d, expectedCounts[i]));
+						 value, d, expectedCount));
 					}
 				}
 				return blnarOk;

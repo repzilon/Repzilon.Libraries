@@ -88,19 +88,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (i = 0; i < karZ.Length; i++) {
 				var z = Math.Round(karZ[i], 2);
 				var iter = ProbabilityDistributions.Iterations(z);
-				OutputNormalIntegral(z, karExpected[i], ProbabilityDistributions.Normal(z, true),
+				var expected = karExpected[i];
+				OutputNormalIntegral(z, expected, ProbabilityDistributions.Normal(z, true),
 				 "MacLaurin ou Simpson composite", iter, iter > 1000 ? iter + 1 : iter);
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal),
+				OutputNormalIntegral(z, expected, 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal),
 				 "Méthode composite de Simpson", n, n + 1);
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal),
+				OutputNormalIntegral(z, expected, 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal),
 				 "Méthode 3/8e composite de Simpson", n, n + 1);
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal),
+				OutputNormalIntegral(z, expected, 0.5 + Integral.SimpsonThreeEights(0, z, NonCumulativeNormal),
 				 "Méthode 3/8e de Simpson", 3, 4);
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Simpson(0, z, NonCumulativeNormal),
+				OutputNormalIntegral(z, expected, 0.5 + Integral.Simpson(0, z, NonCumulativeNormal),
 				 "1re méthode de Simpson", 2, 3);
-				OutputNormalIntegral(z, karExpected[i], 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal),
+				OutputNormalIntegral(z, expected, 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal),
 				 "Somme de Riemann", n, n);
-				OutputNormalIntegral(z, karExpected[i], 0.5 + MacLaurinPositiveNormalIntegral(z, 16),
+				OutputNormalIntegral(z, expected, 0.5 + MacLaurinPositiveNormalIntegral(z, 16),
 				 "Série de MacLaurin corrigée", 16, 15);
 			}
 
@@ -347,16 +348,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (i = 0; i < c; i++) {
 				var z = Math.Round(allZ[i], 2);
 				var blnFound = false;
+				var ex = expected[i];
 				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r0 = 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
-					if (MoreExact(r0, s1, s2, expected[i], targetDelta)) {
+					if (MoreExact(r0, s1, s2, ex, targetDelta)) {
 						blnFound = true;
 						intarIterations[i] = n;
-						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann", n, n);
-						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson", n, n + 1);
-						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson", n, n + 1);
+						OutputNormalIntegral(z, ex, r0, "Somme de Riemann", n, n);
+						OutputNormalIntegral(z, ex, s1, "Méthode composite de Simpson", n, n + 1);
+						OutputNormalIntegral(z, ex, s2, "Méthode 3/8e composite de Simpson", n, n + 1);
 					}
 				}
 			}
@@ -389,16 +391,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (i = 0; i < c; i++) {
 				var z = (decimal)Math.Round(allZ[i], 2);
 				var blnFound = false;
+				var ex = expected[i];
 				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r0 = 0.5m + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5m + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5m + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
-					if (MoreExact(r0, s1, s2, expected[i], targetDelta)) {
+					if (MoreExact(r0, s1, s2, ex, targetDelta)) {
 						blnFound = true;
 						intarIterations[i] = n;
-						OutputNormalIntegral(z, expected[i], r0, "Somme de Riemann", n, n);
-						OutputNormalIntegral(z, expected[i], s1, "Méthode composite de Simpson", n, n + 1);
-						OutputNormalIntegral(z, expected[i], s2, "Méthode 3/8e composite de Simpson", n, n + 1);
+						OutputNormalIntegral(z, ex, r0, "Somme de Riemann", n, n);
+						OutputNormalIntegral(z, ex, s1, "Méthode composite de Simpson", n, n + 1);
+						OutputNormalIntegral(z, ex, s2, "Méthode 3/8e composite de Simpson", n, n + 1);
 					}
 				}
 				blnFound = false;
@@ -406,9 +409,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				for (int n = 16; (overflowAt < 1) && (n <= 23); n++) {
 					try {
 						var ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)n);
-						if (MoreExact(ml, expected[i], targetDelta)) {
+						if (MoreExact(ml, ex, targetDelta)) {
 							blnFound = true;
-							OutputNormalIntegral(z, expected[i], ml, "Série de MacLaurin corrigée", n, n - 1);
+							OutputNormalIntegral(z, ex, ml, "Série de MacLaurin corrigée", n, n - 1);
 						}
 					} catch (OverflowException) {
 						overflowAt = n;
@@ -416,7 +419,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				if ((!blnFound) && (overflowAt > 0)) {
 					var ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)(overflowAt - 1));
-					OutputNormalIntegral(z, expected[i], ml, "Série de MacLaurin corrigée°", overflowAt - 1,
+					OutputNormalIntegral(z, ex, ml, "Série de MacLaurin corrigée°", overflowAt - 1,
 					 overflowAt - 2);
 				}
 			}
