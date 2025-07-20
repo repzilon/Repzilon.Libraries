@@ -76,18 +76,18 @@ namespace Repzilon.Libraries.Core
 		public T Min()
 		{
 #if NET20
-			return RoundOff.Error<T>(Arithmetic<T>.SubtractScalars(Middle, Margin));
+			return RoundOff.Error(Arithmetic<T>.SubtractScalars(Middle, Margin));
 #else
-			return RoundOff.Error<T>(Arithmetic<T>.Sub(Middle, Margin));
+			return RoundOff.Error(Arithmetic<T>.Sub(Middle, Margin));
 #endif
 		}
 
 		public T Max()
 		{
 #if NET20
-			return RoundOff.Error<T>(Arithmetic<T>.AddScalars(Middle, Margin));
+			return RoundOff.Error(Arithmetic<T>.AddScalars(Middle, Margin));
 #else
-			return RoundOff.Error<T>(Arithmetic<T>.Adder(Middle, Margin));
+			return RoundOff.Error(Arithmetic<T>.Adder(Middle, Margin));
 #endif
 		}
 

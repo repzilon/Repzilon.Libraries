@@ -23,10 +23,6 @@ namespace Repzilon.Libraries.Core
 		private bool m_blnRanCalibrate;
 		private LinearRegressionResult m_lrdCalibration;
 
-		public MultipleHeadspaceExtraction()
-		{
-		}
-
 		public void AddLevel(double volume, params float[] areas)
 		{
 			if (m_blnRanCalibrate) {

@@ -14,9 +14,6 @@
 using System;
 using System.Collections.Generic;
 using System.Globalization;
-#if !NETFRAMEWORK
-using System.Runtime.InteropServices;
-#endif
 using System.Text;
 using System.Text.RegularExpressions;
 using Repzilon.Libraries.Core;

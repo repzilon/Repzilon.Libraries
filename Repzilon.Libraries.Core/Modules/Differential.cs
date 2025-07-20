@@ -12,9 +12,6 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
-#if !NET20
-using System.Linq;
-#endif
 
 namespace Repzilon.Libraries.Core
 {
@@ -26,11 +23,11 @@ namespace Repzilon.Libraries.Core
 		/// <typeparam name="T">Numeric data type for functions</typeparam>
 		/// <param name="candidate">First estimate of the intersection</param>
 		/// <param name="targetDelta">Very small value that will be used as the stop value</param>
-		/// <param name="functionF">f(x). If you have an experimental and a theorical function, use this as the experimental function</param>
-		/// <param name="functionG">g(x). If you have an experimental and a theorical function, use this as the theorical function</param>
+		/// <param name="functionF">f(x). If you have an experimental and a theoretical function, use this as the experimental function</param>
+		/// <param name="functionG">g(x). If you have an experimental and a theoretical function, use this as the theoretical function</param>
 		/// <param name="derivativeF">f'(x), i.e. the first derivative of f(x)</param>
 		/// <param name="derivativeG">g'(x), i.e. the first derivative of g(x)</param>
-		/// <returns>x value at with g(x) equals f(x)</returns>
+		/// <returns>x value at which g(x) equals f(x)</returns>
 		public static T NewtonCrossing<T>(T candidate, T targetDelta,
 #if NET20
 		Converter<T, T> functionF, Converter<T, T> functionG, Converter<T, T> derivativeF, Converter<T, T> derivativeG)
