@@ -20,7 +20,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class NormalLawTest
 	{
-		private static readonly decimal DecimalOneOfRootOfTwoPi = 1.0m / ExtraMath.Sqrt(2 * ExtraMath.Pi);
+		private static readonly decimal DecimalOneOfRootOfTwoPi = Decimal.One / ExtraMath.Sqrt(2 * ExtraMath.Pi);
 		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
 		private static readonly double SqrtEighthOfPi = Math.Sqrt(0.125 * Math.PI);
 
@@ -47,7 +47,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static decimal IntegralInDecimal()
 		{
-			return 1 + ExponentialSeries(1.0m) - ExponentialSeries(0.0m);
+			return 1 + ExponentialSeries(Decimal.One) - ExponentialSeries(0.0m);
 		}
 
 		private static decimal DecimalTargetDelta()

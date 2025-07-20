@@ -87,12 +87,12 @@ namespace Repzilon.Libraries.Core.Biochemistry
 					vmax = intercept;
 					km = -1 * slope;
 				} else if (representation == EnzymeSpeedRepresentation.LineweaverBurk) {
-					vmax = 1.0m / intercept;
+					vmax = 1 / intercept;
 					km = vmax * slope;
 				} else if (representation == EnzymeSpeedRepresentation.MichaelisMenten) {
 					throw new NotSupportedException(LinearMichaelisMenten);
 				} else if (representation == EnzymeSpeedRepresentation.HanesWoolf) {
-					vmax = 1.0m / slope;
+					vmax = 1 / slope;
 					km = vmax * intercept;
 				} else {
 					throw RetroCompat.NewUndefinedEnumException("representation", representation);

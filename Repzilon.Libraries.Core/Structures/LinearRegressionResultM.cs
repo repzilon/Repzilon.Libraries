@@ -188,7 +188,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var n = this.m_intCount;
 			var r = this.Correlation;
 			var sy = this.StdDevOfY;
-			return ExtraMath.Sqrt(1.0m / (n - 2) * (1 - (r * r)) * (n - 1) * sy * sy);
+			return ExtraMath.Sqrt(Decimal.One / (n - 2) * (1 - (r * r)) * (n - 1) * sy * sy);
 		}
 
 		public decimal SlopeStdDev()
@@ -203,7 +203,7 @@ namespace Repzilon.Libraries.Core.Regression
 			// ReSharper disable once InconsistentNaming
 			var x_ = this.AverageX;
 			var sx = this.StdDevOfX;
-			return this.ResidualStdDev() * ExtraMath.Sqrt((1.0m / n) + (x_ * x_ / ((n - 1) * sx * sx)));
+			return this.ResidualStdDev() * ExtraMath.Sqrt((Decimal.One / n) + (x_ * x_ / ((n - 1) * sx * sx)));
 		}
 
 		public decimal YExtrapolationConfidenceFactor(decimal x0, bool repeated)
@@ -212,7 +212,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var diff = x0 - this.AverageX;
 			var sx = this.StdDevOfX;
 			decimal f = repeated ? 0 : 1;
-			return ExtraMath.Sqrt(f + (1.0m / n) + (diff * diff / ((n - 1) * sx * sx)));
+			return ExtraMath.Sqrt(f + (Decimal.One / n) + (diff * diff / ((n - 1) * sx * sx)));
 		}
 
 		public decimal StdDevForYc(decimal yc, int k)
@@ -222,7 +222,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var n = this.m_intCount;
 			var sx = this.StdDevOfX;
 			return this.ResidualStdDev() / b *
-				   ExtraMath.Sqrt((1.0m / k) + (1.0m / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
+				   ExtraMath.Sqrt((Decimal.One / k) + (Decimal.One / n) + (diff * diff / ((n - 1) * b * b * sx * sx)));
 		}
 		#endregion
 

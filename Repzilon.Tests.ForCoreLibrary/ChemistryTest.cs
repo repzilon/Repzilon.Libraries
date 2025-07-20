@@ -328,7 +328,7 @@ STQTALA";
 				v0 = karVelocity[i];
 				s = karSubstrate[i];
 				ptmarMM[i]     = new PointM(s, v0);
-				ptmarLB_raw[i] = new PointM(1.0m / s, 1.0m / v0);
+				ptmarLB_raw[i] = new PointM(Decimal.One / s, Decimal.One / v0);
 				ptmarLB_table[i] = new PointM(karSubstrateInv[i], karVelocityInv[i]);
 				ptmarEH_raw[i]   = new PointM(v0 / s, v0);
 				ptmarEH_table[i] = new PointM(karVbyS[i], v0);

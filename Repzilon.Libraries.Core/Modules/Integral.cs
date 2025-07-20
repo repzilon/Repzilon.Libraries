@@ -281,7 +281,7 @@ namespace Repzilon.Libraries.Core
 			if (expression == null) {
 				throw new ArgumentNullException("expression");
 			}
-			const decimal kOneThird = 1.0m / 3;
+			const decimal kOneThird = Decimal.One / 3;
 			var h = (b - a) / n;
 			var sum = expression(a) + expression(b);
 			for (int i = 1; i < n; i++) {
