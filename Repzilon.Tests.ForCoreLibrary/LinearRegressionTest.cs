@@ -604,8 +604,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
 		{
 			Console.WriteLine(lrp.ToString(numberFormat, culture));
+#pragma warning disable U2U1104
 			Console.Write("r = {0}\t{1} = {2}", lrp.Correlation.ToString(numberFormat, culture),
 			 Program.UnicodeTerminal ? "R²" : "r^2",  lrp.Determination().ToString(numberFormat, culture));
+#pragma warning restore U2U1104
 			if (checkBiases) {
 				// ReSharper disable once InvokeAsExtensionMethod
 				Console.Write("\trelative bias: {0:p}",

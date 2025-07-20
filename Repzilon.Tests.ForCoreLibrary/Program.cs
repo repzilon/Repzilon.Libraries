@@ -62,9 +62,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 				Console.OutputEncoding = Encoding.UTF8;
 			}
+#pragma warning disable U2U1104
 			Console.WriteLine("CurrentCulture: {0}\tCurrentUICulture: {1}\tOutputEncoding: {2} •₀₁₂₃₄₅₆₇₈₉ₘₐₓµ∫∞ŷΔ²",
 			 CultureInfo.CurrentCulture.Name, CultureInfo.CurrentUICulture.Name,
 			 Console.OutputEncoding.WebName);
+#pragma warning restore U2U1104
 			if (args == null || args.Length < 1) {
 				RunInteractively(dicTests, args);
 			} else if ((args[0] == "--help") || (args[0] == "-h") || (args[0] == "/?")) {

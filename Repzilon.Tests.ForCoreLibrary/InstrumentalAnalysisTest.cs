@@ -63,7 +63,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			try {
 				dblVolume = mhe.InterpolateVolume(karControl);
 			} catch (Exception ex) {
-				Console.Error.WriteLine("{0}: {1}", ex.GetType().Name, ex.Message);
+				Console.Error.WriteLine(ex.GetType().Name + ": " + ex.Message);
 				dblVolume = kStandardVolume * dblAreaC / dblArea;
 			}
 			Console.WriteLine("Exercise 3c: Control  V = {0,-5:g4}µL Δ = {1:p1}", dblVolume,

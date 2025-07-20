@@ -39,7 +39,7 @@ namespace Repzilon.Libraries.Core
 			var ciC = CultureInfo.InvariantCulture;
 			var s = x.ToString(ciC);
 #if NETFRAMEWORK || NETSTANDARD
-			return s.Contains(".") ? Decimal.Parse(s.TrimEnd('0'), ciC) : x;
+			return s.IndexOf('.') >= 0 ? Decimal.Parse(s.TrimEnd('0'), ciC) : x;
 #else
 			return s.Contains('.') ? Decimal.Parse(s.TrimEnd('0'), ciC) : x;
 #endif

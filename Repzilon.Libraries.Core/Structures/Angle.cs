@@ -312,7 +312,9 @@ namespace Repzilon.Libraries.Core.Vectors
 			var tu = this.Unit;
 			IFormattable tv = this.Value;
 			stbAngle.Append(tv.ToString(format, formatProvider)).Append('\xA0');
+#pragma warning disable U2U1100
 			if (format.ToUpperInvariant() == format) { // is long unit name requested?
+#pragma warning restore U2U1100
 				stbAngle.Append(tu.ToString().ToLowerInvariant());
 				if (Math.Abs(Convert.ToInt32(tv)) != 0) {
 					stbAngle.Append('s');

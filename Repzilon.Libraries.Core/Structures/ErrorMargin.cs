@@ -190,7 +190,7 @@ namespace Repzilon.Libraries.Core
 			return (byte)(-Math.Floor(Math.Log10(Math.Abs(number))));
 		}
 
-		private ErrorMargin<T> NewFrom<TIn>(TIn middle, TIn margin)
+		private static ErrorMargin<T> NewFrom<TIn>(TIn middle, TIn margin)
 		where TIn : struct
 		{
 			return new ErrorMargin<T>(ExtraMath.ConvertTo<T>(middle),

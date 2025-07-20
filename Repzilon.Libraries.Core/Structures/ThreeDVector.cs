@@ -73,14 +73,15 @@ namespace Repzilon.Libraries.Core.Vectors
 		#region ICartesianVector members
 		public double Norm()
 		{
+#pragma warning disable U2U1019
+#pragma warning disable U2U1018
 			ValueType cx = this.X;
 			ValueType cy = this.Y;
 			ValueType cz = this.Z;
-			if (cx is decimal) {
-				return Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy, (decimal)cz));
-			} else {
-				return ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy), Convert.ToDouble(cz));
-			}
+#pragma warning restore U2U1018
+#pragma warning restore U2U1019
+			return cx is decimal ? Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy, (decimal)cz)) : 
+			 ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy), Convert.ToDouble(cz));
 		}
 
 		public ThreeDVector<TOut> Cast<TOut>()
