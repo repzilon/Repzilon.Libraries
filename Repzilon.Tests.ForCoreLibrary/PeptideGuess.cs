@@ -85,19 +85,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
-			var lstLateral = Enum.GetValues(typeof(AlphaAminoAcid)).Cast<AlphaAminoAcid>().Where(x => x.HasPkaR()).Select(x => x.ToString()).ToList();
-			var saaarLateral = AminoAcid.AlphaList.Where(x => lstLateral.Contains(x.Symbol)).ToArray();
 			int a;
+			var lstLateral = Enum.GetValues(typeof(AlphaAminoAcid)).Cast<AlphaAminoAcid>().Where(AlphaAminoAcidExtension.HasPkaR).Select(x => x.ToString()).ToList();
+			var saaarLateral = AminoAcid.AlphaList.Where(x => lstLateral.Contains(x.Symbol)).ToArray();
+			
 			Console.Write("pH");
 			for (a = 0; a < saaarLateral.Length; a++) {
 				Console.Write('\t');
 				Console.Write(saaarLateral[a].Symbol);
 			}
 			Console.Write(Environment.NewLine);
-			for (var f = 100; f <= 1400; f += 5) {
-				Console.Write("{0,5:f2}", f * 0.01f);
+			int cpH;
+			for (cpH = 100; cpH <= 1400; cpH += 5) {
+				Console.Write("{0,5:f2}", cpH * 0.01f);
 				for (a = 0; a < saaarLateral.Length; a++) {
-					Console.Write("\t{0,6:f3}", saaarLateral[a].WeightedCharge(RoundOff.Error(f * 0.01f)));
+					Console.Write("\t{0,6:f3}", saaarLateral[a].WeightedCharge(RoundOff.Error(cpH * 0.01f)));
 				}
 				Console.Write(Environment.NewLine);
 			}
@@ -117,19 +119,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.WriteLine("',");
 				Console.Write("\tdata: [");
 				var n = 0;
-				for (var f = 100; f <= 1400; f += 5) {
-					AddDataPoint(saaarLateral, f, a, ref n);
+				for (cpH = 100; cpH <= 1400; cpH += 5) {
+					AddDataPoint(saaarLateral, cpH, a, ref n);
 				}
-				int pki;
 
 				if ((strLabel == "Asp") || (strLabel == "Glu") || (strLabel == "Lys")) {
-					pki = Convert.ToInt32(aaLateral.Isoelectric() * 100);
-					AddDataPoint(saaarLateral, pki - 1, a, ref n);
-					AddDataPoint(saaarLateral, pki + 1, a, ref n);
+					cpH = Convert.ToInt32(aaLateral.Isoelectric() * 100);
+					AddDataPoint(saaarLateral, cpH - 1, a, ref n);
+					AddDataPoint(saaarLateral, cpH + 1, a, ref n);
 				} else if (strLabel == "Tyr") {
-					pki = Convert.ToInt32((aaLateral.pKa2 + aaLateral.pKaR) * 50);
-					AddDataPoint(saaarLateral, pki - 1, a, ref n);
-					AddDataPoint(saaarLateral, pki + 1, a, ref n);
+					cpH = Convert.ToInt32((aaLateral.pKa2 + aaLateral.pKaR) * 50);
+					AddDataPoint(saaarLateral, cpH - 1, a, ref n);
+					AddDataPoint(saaarLateral, cpH + 1, a, ref n);
 				}
 				Console.Write("]}");
 			}

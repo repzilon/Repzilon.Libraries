@@ -105,9 +105,9 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		params PointD[] michaelisMentenDataPoints)
 		{
 			int    i;
-			var    c = michaelisMentenDataPoints.Length;
 			double s, v0;
 			var    ptdMatrix = new PointD[4][];
+			var	   c = michaelisMentenDataPoints.Length;
 
 			for (i = 0; i < 4; i++) {
 				ptdMatrix[i] = new PointD[c];

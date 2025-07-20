@@ -59,6 +59,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
+			int i, j;
+			// ReSharper disable once TooWideLocalVariableScope
+			double z, p;
+
 			Program.OutputHeading("Biofermentation semaine 3 exercice");
 			LogisticModel(new PointM(0, 1.5m), new PointM(5, 2), new PointM(9, 3.5m), new PointM(13, 6.2m),
 			 new PointM(16, 8.2m), new PointM(20, 9.4m), new PointM(24, 9.8m), new PointM(28, 9.9m));
@@ -77,16 +81,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9772498680518207927997173628334665625282237762983215660163339998695237096472242516517308479242103851,
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829
 			};
-			var dblIntegral = IntegralInDouble();
 			var dblTargetDelta = DoubleTargetDelta();
 			Console.WriteLine(
 			 "∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}   Δ =  {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)",
-			 DoubleOneOfRootOfTwoPi * dblIntegral, dblTargetDelta);
+			 DoubleOneOfRootOfTwoPi * IntegralInDouble(), dblTargetDelta);
 
-			int i;
 			const int n = 7968; // must be a multiple of 6
 			for (i = 0; i < karZ.Length; i++) {
-				var z = Math.Round(karZ[i], 2);
+				z = Math.Round(karZ[i], 2);
 				var iter = ProbabilityDistributions.Iterations(z);
 				var expected = karExpected[i];
 				OutputNormalIntegral(z, expected, ProbabilityDistributions.Normal(z, true),
@@ -115,11 +117,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9772498680518207927997173628334665625282237762983215660163339998695237096472242516517308479242103851m,
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829m
 			};
-			var dcmIntegral = IntegralInDecimal();
-			var dcmTargetDelta = DecimalTargetDelta();
 			Console.Write(Environment.NewLine);
 			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",
-			 DecimalOneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
+			 DecimalOneOfRootOfTwoPi * IntegralInDecimal(), DecimalTargetDelta());
 
 			var dcmFinalTargetDelta = FinalTargetDelta();
 			Program.OutputHeading("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
@@ -144,9 +144,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(
 			 "α     P-value logit(P)           logit(P) * √(π/8)  ≈Φ^-1              Φ^-1               Δ               n");
 			const int kBigProbitIter = 1500;
-			int j;
 			var ptdarProbitIter = new PointD[karExpectedProbits.Length];
-			double p, probit;
+			double probit;
 			for (i = 950, j = 0; i < 1000; i += 5, j++) {
 				p = RoundOff.Error(i * 0.001);
 				probit = 0;
@@ -342,14 +341,17 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, double[] expected,
 		double targetDelta)
 		{
-			int i;
+			// ReSharper disable once TooWideLocalVariableScope
+			int i, n;
 			var c = allZ.Length;
+			double z;
+			double stddev = 0;
 			var intarIterations = new int[c];
 			for (i = 0; i < c; i++) {
-				var z = Math.Round(allZ[i], 2);
+				z = Math.Round(allZ[i], 2);
 				var blnFound = false;
 				var ex = expected[i];
-				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
+				for (n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r0 = 0.5 + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5 + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5 + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
@@ -367,16 +369,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 				average += intarIterations[i];
 			}
 			average /= c;
-			double stddev = 0;
 			for (i = 0; i < c; i++) {
-				var d = intarIterations[i] - average;
-				stddev += d * d;
+				z = intarIterations[i] - average;
+				stddev += z * z;
 			}
 			stddev /= c - 1;
 			stddev = Math.Sqrt(stddev);
+			// FIXME: Calling the InverseStudent that is indirectly calibrated by this very method is like a dog running against its tail
 			var dblT99Percent = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
-			var ideal = average + (dblT99Percent * stddev);
-			ideal = Math.Ceiling(ideal / 6) * 6;
+			var ideal = Math.Ceiling((average + (dblT99Percent * stddev)) / 6) * 6;
 			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
 			Console.WriteLine("t99={0}  x^={1} itérations", dblT99Percent, ideal);
 			return Convert.ToInt32(ideal);
@@ -385,14 +386,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, decimal[] expected,
 		decimal targetDelta)
 		{
-			int i;
+			// ReSharper disable once TooWideLocalVariableScope
+			int i, n;
 			var c = allZ.Length;
+			decimal z;
 			var intarIterations = new int[c];
 			for (i = 0; i < c; i++) {
-				var z = (decimal)Math.Round(allZ[i], 2);
+				z = (decimal)Math.Round(allZ[i], 2);
 				var blnFound = false;
 				var ex = expected[i];
-				for (int n = 30; (!blnFound) && (n <= 32766); n += 6) {
+				for (n = 30; (!blnFound) && (n <= 32766); n += 6) {
 					var r0 = 0.5m + Integral.Riemann(0, z, n, NonCumulativeNormal);
 					var s1 = 0.5m + Integral.Simpson(0, z, n, NonCumulativeNormal);
 					var s2 = 0.5m + Integral.SimpsonThreeEights(0, z, n, NonCumulativeNormal);
@@ -406,9 +409,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				blnFound = false;
 				var overflowAt = 0;
-				for (int n = 16; (overflowAt < 1) && (n <= 23); n++) {
+				decimal ml;
+				for (n = 16; (overflowAt < 1) && (n <= 23); n++) {
 					try {
-						var ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)n);
+						ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)n);
 						if (MoreExact(ml, ex, targetDelta)) {
 							blnFound = true;
 							OutputNormalIntegral(z, ex, ml, "Série de MacLaurin corrigée", n, n - 1);
@@ -418,7 +422,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					}
 				}
 				if ((!blnFound) && (overflowAt > 0)) {
-					var ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)(overflowAt - 1));
+					ml = 0.5m + MacLaurinPositiveNormalIntegral(z, (byte)(overflowAt - 1));
 					OutputNormalIntegral(z, ex, ml, "Série de MacLaurin corrigée°", overflowAt - 1,
 					 overflowAt - 2);
 				}
@@ -430,14 +434,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			average /= c;
 			decimal stddev = 0;
 			for (i = 0; i < c; i++) {
-				var d = intarIterations[i] - average;
-				stddev += d * d;
+				z = intarIterations[i] - average;
+				stddev += z * z;
 			}
 			stddev /= c - 1;
 			stddev = ExtraMath.Sqrt(stddev);
+			// FIXME: Calling the InverseStudent that is indirectly calibrated by this very method is like a dog running against its tail
 			var dcmT99Percent = (decimal)ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
-			var ideal = average + (dcmT99Percent * stddev);
-			ideal = Math.Ceiling(ideal / 6) * 6;
+			var ideal = Math.Ceiling((average + (dcmT99Percent * stddev)) / 6) * 6;
 			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
 			Console.WriteLine("t99={0}  x^={1} itérations", dcmT99Percent, ideal);
 

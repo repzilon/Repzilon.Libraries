@@ -23,6 +23,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 			Action<string> toConsole = WriteCompact;
+			// ReSharper disable TooWideLocalVariableScope
+			byte f;
+			double dblComputed;
+			// ReSharper restore TooWideLocalVariableScope
 			CultureInfo ciOriginal = CultureInfo.CurrentCulture;
 			try {
 				//* Testing number types
@@ -62,19 +66,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 				Console.Write(Environment.NewLine);
 				Console.WriteLine("Testing Round method");
-				for (byte f = 2; f <= 4; f++) {
+				for (f = 2; f <= 4; f++) {
 					Console.Write("{0}\t{1}\t{2}\t", 43.50872m,
 					 SignificantDigits.Round(43.50872f, f), SignificantDigits.Round(43.50872, f));
 					Console.WriteLine(SignificantDigits.Round(43.50872m, f));
 				}
-				var dblComputed = (0.02015 * 0.25) - 0.001;
+				dblComputed = (0.02015 * 0.25) - 0.001;
 				Console.WriteLine("{0} -> {1}", dblComputed, SignificantDigits.Round(dblComputed, 1));
 
-				var karFiveFiguresInput = new double[] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
-				var karFiveFiguresExpected = new double[] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
-				for (int i = 0; i < karFiveFiguresInput.Length; i++) {
-					var input = karFiveFiguresInput[i];
-					var expected = karFiveFiguresExpected[i];
+				var karFiveFiguresInput = new double[8] { 42.08651, 42.08615, 4286099, 4200800, 0.0000986013333, 1.00457e-14, 2.04445, 1.0406899e7 };
+				var karFiveFiguresExpected = new double[8] { 42.087, 42.086, 4286100, 4200800, 0.000098601, 1.0046e-14, 2.0445, 1.0407e7 };
+				for (f = 0; f < 8; f++) {
+					var input = karFiveFiguresInput[f];
+					var expected = karFiveFiguresExpected[f];
 					dblComputed = SignificantDigits.Round(input, 5, RoundingMode.AwayFromZero);
 					Console.WriteLine(RoundOff.Equals(dblComputed, expected) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
 					 input, dblComputed, expected);
@@ -105,7 +109,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					throw new ArgumentException("The count of elements in each of the passed arrays must be identical.");
 				}
 				if (messageWriter != null) {
-					messageWriter(String.Format("Data type: {0}", typeof(T).Name));
+					messageWriter("Data type: " + typeof(T).Name);
 				}
 
 				var blnarOk = new bool[c];

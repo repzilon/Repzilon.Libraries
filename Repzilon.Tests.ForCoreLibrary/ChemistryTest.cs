@@ -33,6 +33,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 		internal static void Run(string[] args)
 		{
 			Program.OutputHeading("Molar mass of molecules");
+			int i;
+			// ReSharper disable once JoinDeclarationAndInitializer
+			string strSpeedUnit;
+			// ReSharper disable once TooWideLocalVariableScope
+			int nH;
+			AminoAcid aa;
 			var karFormulas = @"Ca(OH)<sub>2</sub>
 KH<sub>2</sub>PO<sub>4</sub>
 K<sub>2</sub>HPO<sub>4</sub>
@@ -50,7 +56,6 @@ PO<sub>4</sub>
 Na<sub>3</sub>PO<sub>4</sub>•12 H<sub>2</sub>O
 SO<sub>4</sub>
 Na<sub>2</sub>SO<sub>4</sub>".Split("\r\n".ToCharArray(), StringSplitOptions.RemoveEmptyEntries);
-			int i;
 			for (i = 0; i < karFormulas.Length; i++) {
 				var formula = karFormulas[i];
 				Console.WriteLine("{0,8:n3} g/mol {1}",
@@ -74,12 +79,14 @@ STQTALA";
 
 			Program.OutputHeading("Amino acids");
 			Program.OutputSizeOf<AminoAcid>();
-			var dicAminoAcids = new SortedDictionary<string, AminoAcid>();
+			var dicAminoAcids = new SortedList<string, AminoAcid>();
 			for (i = 0; i < AminoAcid.AlphaList.Count; i++) {
-				var aa = AminoAcid.AlphaList[i];
+				aa = AminoAcid.AlphaList[i];
 				dicAminoAcids.Add(aa.Name, aa);
 			}
-			foreach (var aa in dicAminoAcids.Values) {
+			//foreach (var aa in dicAminoAcids.Values) {
+			for (i = 0; i < dicAminoAcids.Count; i++) {
+				aa = dicAminoAcids.Values[i];
 				Console.Write("{0} {1} {2,-20} ", aa.Letter, aa.Symbol, aa.Name);
 				Console.Write("{0,4:f1} {1,4} {2,4:f1} ", aa.pKa1, Nanable(aa.pKa2, "f1"), aa.pKaR);
 				Console.WriteLine("{0,5:f2} {1,7}g/mol {2}",
@@ -119,7 +126,7 @@ STQTALA";
 				var fat = lstFats[i];
 				var dicElems = Chemistry.ElementComposition(fat.Formula);
 				var nC = dicElems["C"];
-				var nH = dicElems["H"];
+					nH = dicElems["H"];
 				var nO = dicElems["O"];
 				Console.Write("{0,-25} {1,5:f1}°C {2,5:f1}g/mol ", fat.Name, fat.MeltingPoint, fat.MolarMass);
 				Console.Write("C{0,-2}H{1,-2}O{2} ", UnicodeSubscript(nC), UnicodeSubscript(nH), UnicodeSubscript(nO));
@@ -137,7 +144,7 @@ STQTALA";
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			Program.OutputSizeOf<Inhibition<double>>();
-			var strSpeedUnit = Program.UnicodeTerminal ? "A₄₈₀/min" : "A<sub>480</sub>/min";
+			strSpeedUnit = Program.UnicodeTerminal ? "A₄₈₀/min" : "A<sub>480</sub>/min";
 			var ekO = new EnzymeKinematic<double>();
 			var ekI = new EnzymeKinematic<double>();
 			var ekIp = new EnzymeKinematic<double>();
@@ -254,6 +261,12 @@ STQTALA";
 		private static void EnzymeSpeedFloat()
 		{
 			const int kPoints = 5;
+			int i;
+			// ReSharper disable once JoinDeclarationAndInitializer
+			RegressionModel<double> rmdMM;
+			// ReSharper disable TooWideLocalVariableScope
+			float v0, s;
+			// ReSharper restore TooWideLocalVariableScope
 			// ReSharper disable RedundantExplicitArraySize
 			var karSubstrate    = new float[kPoints] { 12.5f, 20, 25, 50, 100 };
 			var karVelocity     = new float[kPoints] { 0.037f, 0.050f, 0.055f, 0.073f, 0.091f };
@@ -268,9 +281,9 @@ STQTALA";
 			var ptdarEH_table = new PointD[kPoints];
 			var ptdarHW_raw   = new PointD[kPoints];
 
-			for (int i = 0; i < kPoints; i++) {
-				var v0 = karVelocity[i];
-				var s = karSubstrate[i];
+			for (i = 0; i < kPoints; i++) {
+				v0 = karVelocity[i];
+				s = karSubstrate[i];
 				ptdarMM[i]     = new PointD(s, v0);
 				ptdarLB_raw[i] = new PointD(1.0 / s, 1.0 / v0);
 				ptdarLB_table[i] = new PointD(Math.Round(karSubstrateInv[i], 2), Math.Round(karVelocityInv[i], 1));
@@ -281,7 +294,7 @@ STQTALA";
 
 			Program.OutputSizeOf<RegressionModel<double>>();
 			Program.OutputSizeOf<EnzymeKinematic<double>>();
-			var rmdMM = RegressionModel.Compute(ptdarMM);
+			rmdMM = RegressionModel.Compute(ptdarMM);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.MichaelisMenten, true, rmdMM, ptdarMM);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, rmdMM, ptdarLB_raw);
 			OutputEnzymeKinematic(EnzymeSpeedRepresentation.LineweaverBurk, true, rmdMM, ptdarLB_table);
@@ -296,6 +309,10 @@ STQTALA";
 		private static void EnzymeSpeedDecimal()
 		{
 			const int kPoints = 5;
+			int i;
+			// ReSharper disable TooWideLocalVariableScope
+			decimal v0, s;
+			// ReSharper restore TooWideLocalVariableScope
 			// ReSharper disable RedundantExplicitArraySize
 			var karSubstrate    = new decimal[kPoints] { 12.5m, 20, 25, 50, 100 };
 			var karVelocity     = new decimal[kPoints] { 0.037m, 0.050m, 0.055m, 0.073m, 0.091m };
@@ -303,16 +320,16 @@ STQTALA";
 			var karVelocityInv  = new decimal[kPoints] { 27, 20, 18.2m, 13.7m, 11 };
 			var karVbyS         = new decimal[kPoints] { 0.0030m, 0.0025m, 0.0022m, 0.0015m, 0.00091m };
 			// ReSharper restore RedundantExplicitArraySize
-			var ptmarMM       = new PointM[kPoints];
+			var ptmarMM = new PointM[kPoints];
 			var ptmarLB_raw   = new PointM[kPoints];
 			var ptmarLB_table = new PointM[kPoints];
 			var ptmarEH_raw   = new PointM[kPoints];
 			var ptmarEH_table = new PointM[kPoints];
 			var ptmarHW_raw   = new PointM[kPoints];
 
-			for (int i = 0; i < kPoints; i++) {
-				var v0 = karVelocity[i];
-				var s = karSubstrate[i];
+			for (i = 0; i < kPoints; i++) {
+				v0 = karVelocity[i];
+				s = karSubstrate[i];
 				ptmarMM[i]     = new PointM(s, v0);
 				ptmarLB_raw[i] = new PointM(1.0m / s, 1.0m / v0);
 				ptmarLB_table[i] = new PointM(karSubstrateInv[i], karVelocityInv[i]);
