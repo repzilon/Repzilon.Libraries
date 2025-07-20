@@ -21,7 +21,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 	{
 		internal static void Run(string[] args)
 		{
-			Program.OutputHeading("Muliple Headspace Extraction laboratory 5");
+			Program.OutputHeading("Multiple Headspace Extraction laboratory 5");
 			var mhe = new MultipleHeadspaceExtraction();
 			mhe.AddLevel(6062.5 * 49.89 / 1000000, 1696.2f, 1062.5f, 759.7f, 551.8f);
 			mhe.AddLevel(12125 * 49.89 / 1000000, 3548.8f, 2268.4f, 1585.1f, 1151.0f);
@@ -41,7 +41,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Zeste {0:f1}mg : V = {1:f2}µL C = {2:f2}% m/m", 99.5f, dblVolume,
 			 dblVolume * (0.1 * 0.8411 / 0.0995));
 
-			Program.OutputHeading("Muliple Headspace Extraction chapter 1");
+			Program.OutputHeading("Multiple Headspace Extraction chapter 1");
 			var strNewLine = Environment.NewLine;
 			Console.WriteLine("Exercise 2a: Aₜ = {1:n0}pA•s{0}Exercise 2b: Aₜ = {2:n0}pA•s", strNewLine,
 			 MultipleHeadspaceExtraction.TotalArea(74608, 47099, 30946, 20131),
@@ -72,7 +72,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exercise 3d: Zeste    V = {0,-5:g4}µL C = {1:g3}% m/m", dblVolume,
 			 dblVolume * ((1.0 / 0.1260) * 0.001 * 0.8402 * 100));
 
-			Program.OutputHeading("Theorical plates and resolution between peaks in laboratory 9B");
+			Program.OutputHeading("Theoretical plates and resolution between peaks in laboratory 9B");
 			OutputGasChromatographyPeakMetrics(3.037f, 5.432f, 0.0368f, 0.0588f, "Initial");
 			OutputGasChromatographyPeakMetrics(1.593f, 1.764f, 0.0234f, 0.0263f, "Optimised");
 
@@ -94,11 +94,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		private static void Output3PointsDropLine(RegressionModel<double> dropLine, float measuredAbsorbance,
-		short optimalWaveLength, double concentrationMultipler, string conditionName)
+		short optimalWaveLength, double concentrationMultiplier, string conditionName)
 		{
 			var dblAfinal = measuredAbsorbance - dropLine.Evaluate(optimalWaveLength);
 			Console.WriteLine("{1,-12}: {0}", dropLine, conditionName);
-			Console.WriteLine("              A = {0,-5:g3} C = {1:g3}mg/L", dblAfinal, dblAfinal * concentrationMultipler);
+			Console.WriteLine("              A = {0,-5:g3} C = {1:g3}mg/L", dblAfinal, dblAfinal * concentrationMultiplier);
 		}
 	}
 }
