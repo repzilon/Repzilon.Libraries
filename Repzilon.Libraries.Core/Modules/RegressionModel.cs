@@ -190,12 +190,12 @@ namespace Repzilon.Libraries.Core.Regression
 			var blnDontExcludeZero = (option != RegressionOption.OmitAnyNonPositive);
 
 			if (blnDontExcludeZero || (x > 0)) {
-				log10X = (decimal)Math.Log10((double)x);
+				log10X = ExtraMath.Log10(x);
 				lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointM(log10X, y));
 				c++;
 			}
 			if (blnDontExcludeZero || (y > 0)) {
-				log10Y = (decimal)Math.Log10((double)y);
+				log10Y = ExtraMath.Log10(y);
 				lstarAll[(int)MathematicalModel.SemiLogY].Add(new PointM(x, log10Y));
 				c++;
 			}

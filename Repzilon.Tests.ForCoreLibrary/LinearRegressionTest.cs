@@ -488,7 +488,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static double Effective50(RegressionModel<double> line, IList<PointD> points)
 		{
-			// With external data, I would sort the points by X, but I already filled lists that way.
+			// With external data, I would first sort the points by X, but I already filled lists that way.
 			var c = points.Count;
 			for (var i = 0; i < c; i++) {
 				var pt = points[i];
