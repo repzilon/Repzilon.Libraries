@@ -79,8 +79,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			};
 			var dblIntegral = IntegralInDouble();
 			var dblTargetDelta = DoubleTargetDelta();
-			Console.WriteLine(
-			 "∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}   Δ =  {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)",
+			Console.WriteLine(Program.UnicodeTerminal ?
+			 "∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}   Δ =  {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)" :
+			 "S[0; 1][N(0; 1)]\t~= {0:f16} delta= {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)",
 			 DoubleOneOfRootOfTwoPi * dblIntegral, dblTargetDelta);
 
 			int i;
@@ -117,7 +118,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var dcmIntegral = IntegralInDecimal();
 			var dcmTargetDelta = DecimalTargetDelta();
 			Console.Write(Environment.NewLine);
-			Console.WriteLine("∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",
+			Console.WriteLine(Program.UnicodeTerminal ?
+			 "∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)" :
+			 "S[0; 1][N(0; 1)]\t≈~= {0} delta= {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",
 			 DecimalOneOfRootOfTwoPi * dcmIntegral, dcmTargetDelta);
 
 			var dcmFinalTargetDelta = FinalTargetDelta();
@@ -265,7 +268,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void BeginOutputNormalIntegral<T>(T z, T integral, T delta, bool nonNegativeDelta)
 		{
-			Console.Write("∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}", z, integral, nonNegativeDelta ? " " : "");
+			Console.Write(Program.UnicodeTerminal ?
+			 "∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}" : "S[-∞; {0}][N(0; 1)]\t~= {1:f16} delta={2}",
+			 z, integral, nonNegativeDelta ? " " : "");
 			Console.Write("{0:e7}   ", delta);
 		}
 
@@ -376,7 +381,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ideal = average + (dblT99Percent * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
 			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
-			Console.WriteLine("t99={0}  x^={1} itérations", dblT99Percent, ideal);
+			Console.WriteLine(Program.UnicodeTerminal ? "t₉₉={0}  x^={1} itérations" : "t99={0}  x^={1} itérations",
+			 dblT99Percent, ideal);
 			return Convert.ToInt32(ideal);
 		}
 
@@ -436,7 +442,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ideal = average + (dcmT99Percent * stddev);
 			ideal = Math.Ceiling(ideal / 6) * 6;
 			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
-			Console.WriteLine("t99={0}  x^={1} itérations", dcmT99Percent, ideal);
+			Console.WriteLine(Program.UnicodeTerminal ? "t₉₉={0}  x^={1} itérations" : "t99={0}  x^={1} itérations",
+			 dcmT99Percent, ideal);
 
 			var ptmarIter = new PointM[c];
 			for (i = 0; i < c; i++) {
@@ -469,7 +476,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				ml = MacLaurinPositiveNormalIntegral(z, bestK);
 				delta = ml - simpson;
-				Console.Write("∫[0; {0:f2}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}", z, ml, delta >= 0 ? " " : "");
+				Console.Write(Program.UnicodeTerminal ?
+				 "∫[0; {0:f2}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}" : "S[0; {0:f2}][N(0; 1)]\t~= {1:f16} delta={2}",
+				 z, ml, delta >= 0 ? " " : "");
 				Console.WriteLine("{0:e7} (s={1} m={2})", delta, n, bestK);
 
 				if (Math.Abs(delta) > Math.Abs(targetDelta) * 10) {
