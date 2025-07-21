@@ -282,7 +282,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void EndOutputNormalIntegral(string algorithm, int n, int o)
 		{
-			Console.WriteLine("{0,-33} (n={1,4} o={2,4})", algorithm, n, 0);
+			Console.WriteLine("{0,-33} (n={1,4} o={2,4})", algorithm, n, o);
 		}
 
 		private static double NonCumulativeNormal(double z)
