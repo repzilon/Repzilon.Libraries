@@ -21,8 +21,19 @@ namespace Repzilon.Tests.ForCoreLibrary
 	internal static class NormalLawTest
 	{
 		private static readonly decimal DecimalOneOfRootOfTwoPi = Decimal.One / ExtraMath.Sqrt(2 * ExtraMath.Pi);
-		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
-		private static readonly double SqrtEighthOfPi = Math.Sqrt(0.125 * Math.PI);
+		private static readonly double DoubleOneOfRootOfTwoPi;
+		private static readonly double SqrtEighthOfPi;
+
+		static NormalLawTest()
+		{
+#pragma warning disable U2U1000 // Local variable can be inlined or declared const
+			byte kTwo = 2;
+#pragma warning restore U2U1000 // Local variable can be inlined or declared const
+			var sqrtPi = Math.Sqrt(Math.PI);
+			var sqrt2 = Math.Sqrt(kTwo);
+			DoubleOneOfRootOfTwoPi = sqrt2 / (kTwo * sqrtPi);	// 1÷√2π equals to √2÷(2√π)
+			SqrtEighthOfPi = sqrtPi / (kTwo * sqrt2);			// √(π÷8) = √π÷√8 = √π÷(2√2)
+		}
 
 		#region Target delta
 		internal static decimal FinalTargetDelta()

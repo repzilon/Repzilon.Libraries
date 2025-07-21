@@ -21,8 +21,23 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private const string LinearMichaelisMenten = "The Speed method cannot solve a linear Michaelis-Menten model.";
 		private const string NonLinearUnsupported = "The Speed method is unable to solve non-linear equations.";
 
-		private static readonly double TwoOnLn10 = 2.0 / Math.Log(10);
-		private static readonly double FourOnLn10 = 4.0 / Math.Log(10);
+		private static readonly double TwoOnLn10;
+		private static readonly double FourOnLn10;
+
+#pragma warning disable S3963 // "static" fields should be initialized inline
+		static Enzyme()
+		{
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
+			/*const*/ byte kTen = 10;
+			/*const*/ float kTwo = 2.0f;
+			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
+			double ln10 = Math.Log(kTen);
+			TwoOnLn10 = kTwo / ln10;
+			FourOnLn10 = kTwo * kTwo / ln10;
+		}
+#pragma warning restore S3963 // "static" fields should be initialized inline
 
 		#region Speed method
 		public static EnzymeKinematic<double> Speed(string concentrationUnit, string speedUnit,

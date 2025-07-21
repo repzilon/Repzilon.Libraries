@@ -18,7 +18,20 @@ namespace Repzilon.Libraries.Core.Regression
 {
 	public static class LinearRegression
 	{
-		internal static readonly double OneOfLn10 = 1.0 / Math.Log(10);
+		internal static readonly double OneOfLn10;
+
+#pragma warning disable S3963 // "static" fields should be initialized inline
+		static LinearRegression()
+		{
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
+			/*const*/ byte kTen = 10;
+			/*const*/ float kOne = 1.0f;
+			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
+			OneOfLn10 = kOne / Math.Log(kTen);
+		}
+#pragma warning restore S3963 // "static" fields should be initialized inline
 
 		public static LinearRegressionResult Compute(params PointD[] points)
 		{

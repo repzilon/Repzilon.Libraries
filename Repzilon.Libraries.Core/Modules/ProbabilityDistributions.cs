@@ -18,12 +18,29 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ProbabilityDistributions
 	{
+#pragma warning disable S3963 // "static" fields should be initialized inline
+		static ProbabilityDistributions()
+		{
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
+			byte kTwo = 2;
+			byte kThree = 3;
+			var kPi = Math.PI;
+			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
+			var sqrtPi = Math.Sqrt(kPi);
+			DoubleOneOfRootOfTwoPi = Math.Sqrt(kTwo) / (kTwo * sqrtPi); // 1÷√2π equals to √2÷(2√π)
+			HalfSqrtOfPi = sqrtPi / kTwo;
+			LogisticQ = kThree / kPi;
+		}
+#pragma warning restore S3963 // "static" fields should be initialized inline
+
 		#region Normal distribution
 		private const byte MacLaurinIterations = 22; // 16 for Int64+Double, 22 for Decimal (higher accuracy)
 		private const float MacLaurinBreakpoint = 2.07f;
 		private static readonly decimal DecimalOneOfRootOfTwoPi = 1 / ExtraMath.Sqrt(2 * ExtraMath.Pi);
-		private static readonly double DoubleOneOfRootOfTwoPi = 1.0 / Math.Sqrt(2 * Math.PI);
-		private static readonly double HalfSqrtOfPi = 0.5 * Math.Sqrt(Math.PI);
+		private static readonly double DoubleOneOfRootOfTwoPi;
+		private static readonly double HalfSqrtOfPi;
 
 		private static short _lastProbitIterationCall;
 		private static readonly Dictionary<int, double> CofCache = new Dictionary<int, double>();
@@ -498,7 +515,7 @@ namespace Repzilon.Libraries.Core
 		#endregion
 
 		#region Logistic distribution
-		private static readonly double LogisticQ = Math.Sqrt(3) / Math.PI;
+		private static readonly double LogisticQ;
 
 		/// <summary>
 		/// Logistic distribution function
