@@ -52,13 +52,23 @@ namespace Repzilon.Tests.ForCoreLibrary
 			// Force conversion from a stored decimal on disk to a double in memory by making it a variable
 			/*const*/ decimal kVerySmallSquare = 6.681844869362281E-18m;
 			TestMathAnalog((double)kVerySmallSquare, Math.Sqrt, ExtraMath.Sqrt);
+			var ln3d = Math.Log(3);
+			var ln3m = ExtraMath.Ln(3);
+			var strFormat = "ln(3)\t{0}   {1}m   Δ FPU: {2:g13}   Δ MATH: {3:g13}";
+			if (!Program.UnicodeTerminal) {
+				strFormat = strFormat.Replace("Δ", "Delta");
+			}
+			Console.WriteLine(strFormat, ln3d, ln3m, ln3m - (decimal)ln3d,
+			 ln3m - 1.098612288668109691395245236922525704647490557822749451734694333637494293218609m);
+			TestMathAnalog((double)kVerySmallSquare, Math.Log, ExtraMath.Ln);
 
 			TestMathAnalog("Sqrt", MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
 #if false
-			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
-			TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Log);
-			TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
+			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);		
 #endif
+			TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Ln);
+			TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
+
 			TestMathAnalog("Sin", MathFunction.Trigonometric, Math.Sin, ExtraMath.Sin);
 			TestMathAnalog("Cos", MathFunction.Trigonometric, Math.Cos, ExtraMath.Cos);
 #if false

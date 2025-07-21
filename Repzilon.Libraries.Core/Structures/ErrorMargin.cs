@@ -176,7 +176,7 @@ namespace Repzilon.Libraries.Core
 				return NewFrom(Math.Round(Convert.ToDouble(numValue), Decimals(dblIncert), MidpointRounding.ToEven), dblIncert);
 			} else if (numValue is decimal) {
 				decimal dcmIncert = SignificantDigits.Ceil(Convert.ToDecimal(numMargin));
-				return NewFrom(Math.Round(Convert.ToDecimal(numValue), Decimals((double)dcmIncert), MidpointRounding.ToEven), dcmIncert);
+				return NewFrom(Math.Round(Convert.ToDecimal(numValue), Decimals(dcmIncert), MidpointRounding.ToEven), dcmIncert);
 			} else if (numValue is float) {
 				float sngIncert = SignificantDigits.Ceil(Convert.ToSingle(numMargin));
 				return NewFrom((float)Math.Round(Convert.ToSingle(numValue), Decimals(sngIncert), MidpointRounding.ToEven), sngIncert);
@@ -188,6 +188,11 @@ namespace Repzilon.Libraries.Core
 		private static byte Decimals(double number)
 		{
 			return (byte)(-Math.Floor(Math.Log10(Math.Abs(number))));
+		}
+
+		private static byte Decimals(decimal number)
+		{
+			return (byte)(-Math.Floor(ExtraMath.Log10(Math.Abs(number))));
 		}
 
 		private ErrorMargin<T> NewFrom<TIn>(TIn middle, TIn margin)

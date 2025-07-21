@@ -32,10 +32,10 @@ namespace Repzilon.Libraries.Core
 
 		// Unfortunately too inaccurate when fuzz testing. Only hyperbolic functions work as intended.
 
-		private const decimal HalfPi = 1.570796326794896619231321691639751442098584699687552910487M;
-		private const decimal QuarterPi = 0.785398163397448309615660845819875721049292349843776455243M;
+		private static readonly decimal HalfPi = 1.570796326794896619231321691639751442098584699687552910487M;
+		private static readonly decimal QuarterPi = 0.785398163397448309615660845819875721049292349843776455243M;
 
-		private const decimal Half = 0.5M;
+		private static readonly decimal Half = 0.5M;
 
 		public static decimal Sinh(decimal x)
 		{
@@ -95,7 +95,7 @@ namespace Repzilon.Libraries.Core
 		/// the value of e (also called Euler's number or Napier's constant) to 100 decimal places is
 		/// 2.7182818284590452353602874713526624977572470936999595749669676277240766303535475945713821785251664274.
 		/// </remarks>
-		public const decimal E = 2.7182818284590452353602874714m;
+		public static readonly decimal E = 2.7182818284590452353602874714m;
 
 		/// <summary>
 		/// Represents the ratio of the circumference of a circle to its
@@ -106,7 +106,7 @@ namespace Repzilon.Libraries.Core
 		/// the value of π (also called Archimedes's constant) to 100 decimal places is
 		/// 3.1415926535897932384626433832795028841971693993751058209749445923078164062862089986280348253421170679.
 		/// </remarks>
-		public const decimal Pi = 3.1415926535897932384626433833m;
+		public static readonly decimal Pi = 3.1415926535897932384626433833m;
 
 		/// <summary>
 		/// Represents the ratio of the circumference of a circle to its radius, specified by the constant, τ.
@@ -117,7 +117,7 @@ namespace Repzilon.Libraries.Core
 		/// the value of τ to 100 decimal places is
 		/// 6.2831853071795864769252867665590057683943387987502116419498891846156328125724179972560696506842341359.
 		/// </remarks>
-		public const decimal Tau = 6.2831853071795864769252867666m;
+		public static readonly decimal Tau = 6.2831853071795864769252867666m;
 
 		/// <summary>
 		/// Smallest non-zero decimal value.
@@ -125,7 +125,7 @@ namespace Repzilon.Libraries.Core
 		/// <remarks>
 		/// <code>new decimal(1, 0, 0, false, 28);</code> or 1e-28m.
 		/// </remarks>
-		private const decimal SmallestNonZeroDec = 0.0000000000000000000000000001m;
+		private static readonly decimal SmallestNonZeroDec = 0.0000000000000000000000000001m;
 
 		// This table is required for the Round function which can specify the number of digits to round to
 		private static readonly decimal[] RoundPower10Decimal = new decimal[]
@@ -551,5 +551,70 @@ namespace Repzilon.Libraries.Core
 			return m1;
 		}
 		#endregion
+
+		private static readonly decimal LnOf2 = 0.6931471805599453094172321214581765680755001343602552541206800094933936219696947m;
+		private static readonly decimal LnOf10 = 2.302585092994045684017991454684364207601101488628772976033327900967572609677352m;
+		private static readonly decimal OneOfLn10 = 0.4342944819032518276511289189166050822943970058036665661144537831658646492088708m;
+
+		public static decimal Ln(decimal a)
+		{
+			/*const*/ decimal kOne = Decimal.One;
+			decimal x;
+			byte k, n;
+			if (a <= 0) {
+				throw new ArgumentOutOfRangeException("a", "The logarithm of 0 or a negative number does not exist.");
+			} else if (a < kOne) {
+				x = a;	// mantissa
+				k = 0;	// magnitude
+				while (x < kOne) {
+					x *= 10;
+					k++;
+				}
+				return Ln(x) - (k * LnOf10);
+			} else if (a == kOne) {
+				return 0;
+			} else if (a == 2) {
+				return LnOf2;
+			} else if (a == E) {
+				return kOne;
+			} else if (a == 10) {
+				return LnOf10;
+			} else {
+				// https://math.stackexchange.com/questions/1585952/is-there-a-way-to-calculate-decimal-powers-using-only-addition-subtraction-mul
+				// ln(x+1) developped as a series
+				// A. Find the biggest k where a/(2^k) > 1
+				x = a;
+				for (k = 1; (k < 32) && (x > kOne); k++) {
+					x = a / (1 << k);
+				}
+				if (x <= kOne) {
+					k--;
+				}
+				// B. Compute x for ln(x+1) which is a/(2^k) - 1
+				x = (a / (1 << k)) - kOne;
+				// C. Develop the series of ln(x+1) with a loop
+				var lnxp1 = x;
+				for (n = 2; n <= 44; n++) {
+					lnxp1 += Minus1Pow(n - 1) * Pow(x, n) / n;
+				}
+				// D. Return the result
+				return lnxp1 + (k * LnOf2);
+			}
+		}
+
+		public static decimal Log10(decimal a)
+		{
+			/*const*/ decimal kZero = Decimal.Zero;
+			/*const*/ decimal kOne = Decimal.One;
+			if (a <= kZero) {
+				throw new ArgumentOutOfRangeException("a", "The logarithm of 0 or a negative number does not exist.");
+			} else if (a == kOne) {
+				return kZero;
+			} else if (a == 10) {
+				return kOne;
+			} else {
+				return Ln(a) * OneOfLn10;
+			}
+		}
 	}
 }
