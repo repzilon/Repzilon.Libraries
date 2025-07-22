@@ -14,6 +14,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+// ReSharper disable ConvertToConstant.Global
 
 namespace Repzilon.Libraries.Core
 {

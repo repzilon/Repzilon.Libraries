@@ -24,6 +24,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static readonly double DoubleOneOfRootOfTwoPi;
 		private static readonly double SqrtEighthOfPi;
 
+#pragma warning disable S3963 // "static" fields should be initialized inline
 		static NormalLawTest()
 		{
 #pragma warning disable U2U1000 // Local variable can be inlined or declared const
@@ -34,6 +35,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			DoubleOneOfRootOfTwoPi = sqrt2 / (kTwo * sqrtPi);	// 1÷√2π equals to √2÷(2√π)
 			SqrtEighthOfPi = sqrtPi / (kTwo * sqrt2);			// √(π÷8) = √π÷√8 = √π÷(2√2)
 		}
+#pragma warning restore S3963 // "static" fields should be initialized inline
 
 		#region Target delta
 		internal static decimal FinalTargetDelta()

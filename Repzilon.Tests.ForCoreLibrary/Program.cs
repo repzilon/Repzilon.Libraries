@@ -299,6 +299,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void OutputUsage()
 		{
 			Console.WriteLine(
+#pragma warning disable UD0011 // The composite format string is not valid
 @"NAME
 	Repzilon.Tests.ForCoreLibrary - Demo program for Repzilon.Libraries
 
@@ -322,6 +323,7 @@ CONATCT INFO
 	Licensed under the MPL 2.0, available at https://mozilla.org/MPL/2.0/
 	There is NO WARRANTY, to the extent of the law.
 	Project page: https://github.com/repzilon/Repzilon.Libraries");
+#pragma warning restore UD0011 // The composite format string is not valid
 		}
 	}
 }

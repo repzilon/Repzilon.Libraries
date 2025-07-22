@@ -259,10 +259,16 @@ namespace Repzilon.Libraries.Core
 		private static double CumulativeStudent(double t, byte liberties)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ double kHalf = 0.5;
 			/*const*/ double kOne = 1;
+			// ReSharper disable TooWideLocalVariableScope
 			double dblOnePlusFractionOfTSquared, dblTOverSqrtNu;
+			// ReSharper restore TooWideLocalVariableScope
 			/*const*/ double kOneOfPi = 1.0 / Math.PI; // not to be replaced by kOne, bigger and slower
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
+			// ReSharper restore ConvertToConstant.Local
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			if (liberties == 6) {
 				return kHalf + ((t * (2 * t * t * t * t + 30 * t * t + 135)) / (4 * Math.Pow(t * t + liberties, 2.5)));
@@ -483,8 +489,12 @@ namespace Repzilon.Libraries.Core
 		public static double InverseStudent(double p, byte liberties)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+			// ReSharper disable ConvertToConstant.Local
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			/*const*/ double kHalf = 0.5;
 			/*const*/ double kOne = 1;
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
+			// ReSharper restore ConvertToConstant.Local
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);
 			if (RoundOff.AreEqual(p, kHalf)) {
@@ -596,6 +606,8 @@ namespace Repzilon.Libraries.Core
 		public static double InverseNormalEstimate(double p)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+			// ReSharper disable once ConvertToConstant.Local
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ double kHalf = 0.5;
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);

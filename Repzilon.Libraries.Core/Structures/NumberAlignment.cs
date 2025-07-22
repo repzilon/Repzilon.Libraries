@@ -4,7 +4,7 @@
 //  Author:
 //       René Rhéaume <repzilon@users.noreply.github.com>
 //
-// Copyright (C) 2024 René Rhéaume
+// Copyright (C) 2024-2025 René Rhéaume
 //
 // This Source Code Form is subject to the terms of the
 // Mozilla Public License, v. 2.0. If a copy of the MPL was
@@ -15,10 +15,13 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
+
 namespace Repzilon.Libraries.Core
 {
 	[Flags]
+#pragma warning disable S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
 	internal enum NumberAlignmentFlags : byte
+#pragma warning restore S2344 // Enumeration type names should not have "Flags" or "Enum" suffixes
 	{
 		NegativeMantissa = 1,
 		DecimalSeparator = 2,
@@ -39,6 +42,9 @@ namespace Repzilon.Libraries.Core
 		public byte ExponentDigits;
 
 		public bool this[NumberAlignmentFlags flag] {
+// Morons, the Flags attribute is there
+#pragma warning disable S3265 // Non-flags enums should not be used in bitwise operations
+#pragma warning disable RECS0016 // Bitwise operation on enum which has no [Flags] attribute
 			get { return (this.Flags & flag) != 0; }
 			set {
 				if (value) {
@@ -47,6 +53,8 @@ namespace Repzilon.Libraries.Core
 					this.Flags &= ~flag;
 				}
 			}
+#pragma warning restore RECS0016 // Bitwise operation on enum which has no [Flags] attribute
+#pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
 		}
 
 		private static NumberFormatInfo FindNumberFormat(IFormatProvider formatProvider)
