@@ -94,14 +94,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write('\t');
 				Console.Write(saaarLateral[a].Symbol);
 			}
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 			int cpH;
 			for (cpH = 100; cpH <= 1400; cpH += 5) {
 				Console.Write("{0,5:f2}", cpH * 0.01f);
 				for (a = 0; a < saaarLateral.Length; a++) {
 					Console.Write("\t{0,6:f3}", saaarLateral[a].WeightedCharge(RoundOff.Error(cpH * 0.01f)));
 				}
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 			}
 
 			Console.Write("datasets: [");
@@ -423,7 +423,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					}
 					Console.Write(candidate[i]);
 				}
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				n++;
 			}
 		}

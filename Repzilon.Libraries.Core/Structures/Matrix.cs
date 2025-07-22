@@ -305,7 +305,7 @@ namespace Repzilon.Libraries.Core
 				}
 
 				if (i < tl - 1) {
-					stbDesc.Append(Environment.NewLine);
+					stbDesc.AppendLine();
 				}
 			}
 			stbDesc.AppendFormat(" {0}x{1} of {2}", tl, this.Columns, typeof(T));

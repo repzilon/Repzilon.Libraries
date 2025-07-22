@@ -127,7 +127,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void RunSingleDemo(int numero, SortedList<string, Action<string[]>> allDemos, string[] args)
 		{
 			const float kToKiB = 1.0f / 1024;
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 			var lngRamBefore = Math.Ceiling(CurrentMemoryUsage() * kToKiB);
 			var dtmStart = DateTime.UtcNow;
 			allDemos.Values[numero - 1](args);
@@ -142,7 +142,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				GC.Collect();
 				Console.WriteLine(" -> {0} kiB", Math.Ceiling(CurrentMemoryUsage() * kToKiB));
 			}
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 		}
 
 		private static long CurrentMemoryUsage()
@@ -198,7 +198,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("====================================");
 			Console.WriteLine("Repzilon Libraries Interactive Tests");
 			Console.WriteLine("====================================");
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 			var i = 1;
 			foreach (var kvp in allTests) {
 #if NETCOREAPP1_0
@@ -211,7 +211,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 			}
 
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 			Console.Write(workaroundCygwin == TriState.True ?
 			 "In the next 10 seconds, type the number of the test or Q and press Return: " :
 			 "Press the number corresponding to the test, or Q to quit: ");
@@ -261,7 +261,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void OutputHeading(string text)
 		{
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 			Console.WriteLine(text);
 			Console.WriteLine(new String('-', text.Length));
 		}

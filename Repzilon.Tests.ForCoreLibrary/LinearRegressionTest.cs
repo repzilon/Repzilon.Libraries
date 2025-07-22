@@ -553,7 +553,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var agars = MolecularBiology.AgaroseConcentration(fragmentLengths);
 			Console.Write(heading);
 			if (agars.Length != 1) {
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 			}
 			for (int i = 0; i < agars.Length; i++) {
 				if (!String.IsNullOrEmpty(heading)) {
@@ -698,7 +698,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (mathModel.Determination().CompareTo(ExtraMath.ConvertTo<T>(0.9998f)) > 0) {
 				Console.WriteLine(" S/N={0:g6} dB", -10 * Math.Log10(1 - Math.Abs(Convert.ToDouble(r))));
 			} else {
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 			}
 			var kind = mathModel.Model;
 			if (kind == MathematicalModel.Exponential) {

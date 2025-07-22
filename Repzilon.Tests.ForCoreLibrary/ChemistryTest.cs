@@ -383,7 +383,7 @@ STQTALA";
 			}
 			Console.Write(strKinematic);
 			if (withNewLine) {
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 			}
 		}
 

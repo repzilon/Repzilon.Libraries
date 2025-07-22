@@ -116,7 +116,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			ShowcaseExample69(exa69_ref, Example69WithDecimal);
 			ShowcaseExample69(exa69_ref, Example69WithExp);
 			ShowcaseExample69(exa69_ref, Example69WithExp18);
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 
 			Program.OutputSizeOf<PolarVector<short>>();
 			var exa70_u = Vector.New<short>(2, 30, AngleUnit.Degree);
@@ -281,7 +281,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #pragma warning restore RECS0163 // Suggest the usage of the nameof operator
 #pragma warning restore CC0021 // Use nameof
 			}
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 			Program.OutputSizeOf<Angle<T>>();
 			Program.OutputSizeOf<PolarVector<T>>();
 			Program.OutputSizeOf<TwoDVector<T>>();

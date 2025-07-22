@@ -132,7 +132,7 @@ namespace Repzilon.Libraries.Core
 			var last = digitLengths[c - 1];
 			for (r = 0; r < c; r++) {
 				if (r > 0) {
-					stbPascal.Append(Environment.NewLine);
+					stbPascal.AppendLine();
 				}
 				stbPascal.Append(' ', (last - digitLengths[r]) / 2);
 				for (byte k = 0; k <= r; k++) {

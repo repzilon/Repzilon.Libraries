@@ -32,28 +32,28 @@ namespace Repzilon.Tests.ForCoreLibrary
 				//* Testing number types
 				TestDigitCount(new short[] { -2, -1, 0, 1, 2, 123, 2005, 2000, 325, 3002 },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 4, 1, 3, 4 }, toConsole);
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				TestDigitCount(new int[] { -2, -1, 0, 1, 2, 123, 2005, 2000, 325, 3002, 34000 },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 4, 1, 3, 4, 2 }, toConsole);
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				TestDigitCount(new long[] { -2, -1, 0, 1, 2, 123, 2005, 2000, 325, 3002, 34000 },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 4, 1, 3, 4, 2 }, toConsole);
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				TestDigitCount(new ushort[] { 0, 1, 2, 123, 2005, 2000, 325, 3002, 34000 },
 				 new byte[] { 1, 1, 1, 3, 4, 1, 3, 4, 2 }, toConsole);
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				TestDigitCount(
 				 new float[] { -2, -1, 0, 1, 2, 123f, 43.567f, 0.0054f, 0.124f, 25.02f, 2005f, 3.00f, 300.0f, 2000f, 325f, 3002f, 34000f, 40.40f, 0.00010300f },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 5, 2, 3, 4, 4, 1, 1, 1, 3, 4, 2, 3, 3 }, toConsole);
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				TestDigitCount(
 				 new double[] { -2, -1, 0, 1, 2, 123, 43.567, 0.0054, 0.124, 25.02, 2005, 3.00, 300.0, 2000, 325, 3002, 34000, 40.40, 0.00010300 },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 5, 2, 3, 4, 4, 1, 1, 1, 3, 4, 2, 3, 3 }, toConsole);
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				TestDigitCount(
 				 new decimal[] { -2, -1, 0, 1, 2, 123, 43.567m, 0.0054m, 0.124m, 25.02m, 2005, 3.00m, 300.0m, 2000, 325, 3002, 34000, 40.40m, 0.00010300m },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 5, 2, 3, 4, 4, 1, 1, 1, 3, 4, 2, 3, 3 }, toConsole);
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				// */
 #if NET40 || NET35 || NET20
 				System.Threading.Thread.CurrentThread.CurrentCulture = new CultureInfo("fr-CA");
@@ -64,7 +64,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				 new string[] { "-2", "-1", "0", "1", "2", "123", "43,567", "0,0054", "0,124", "25,02", "2005", "3,00", "300,0", "2000", "325", "3002", "34 000", "40,40", "0,000 103 00", "2,005" + "\xA0" + "700e14", "5,4e-3", "3,000E2" },
 				 new byte[] { 1, 1, 1, 1, 1, 3, 5, 2, 3, 4, 4, 3, 4, 1, 3, 4, 2, 4, 5, 7, 2, 4 }, toConsole);
 
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				Console.WriteLine("Testing Round method");
 				for (f = 2; f <= 4; f++) {
 					Console.Write("{0}\t{1}\t{2}\t", 43.50872m,
@@ -93,7 +93,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 			}
 
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 
 			const decimal b = -1.55859375m;
 			const decimal c = -4.8828125m;
@@ -139,7 +139,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write(text.Substring(0, text.IndexOf("->", StringComparison.Ordinal)).Trim());
 				Console.Write(" ; ");
 			} else {
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 				Console.WriteLine(text);
 			}
 		}

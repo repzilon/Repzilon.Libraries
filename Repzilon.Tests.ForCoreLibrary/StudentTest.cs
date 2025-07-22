@@ -51,7 +51,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					Console.Write(" {0:f6}",
 					 ProbabilityDistributions.Student(z, karLiberties[k], false));
 				}
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 			}
 
 			Program.OutputHeading("Intégrales de Student de faibles degrés de liberté");
@@ -65,7 +65,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					totalDiff += (decimal)Math.Abs(delta);
 					Console.Write(" {1}{0,12:e7}", delta, delta < 0 ? "" : " ");
 				}
-				Console.Write(Environment.NewLine);
+				Console.WriteLine();
 			}
 			totalDiff /= (61 * 7);
 			var dcmTarget = NormalLawTest.FinalTargetDelta();
@@ -90,7 +90,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (int x = 0; x < karAlphas.Length; x++) {
 				Console.Write(" {0,9:g6}", ProbabilityDistributions.InverseStudent(RoundOff.Error(karAlphas[x]), (byte)k));
 			}
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 		}
 
 		private static void TenthTableHeader(string format, params byte[] liberties)
@@ -104,7 +104,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (int i = 0; i < columns.Length; i++) {
 				Console.Write(format, columns[i]);
 			}
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 		}
 
 		private static double TenthTableLineHeader(int x)

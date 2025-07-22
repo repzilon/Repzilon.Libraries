@@ -129,7 +129,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9772498680518207927997173628334665625282237762983215660163339998695237096472242516517308479242103851m,
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829m
 			};
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 			Console.WriteLine(Program.UnicodeTerminal ?
 			 "∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)" :
 			 "S[0; 1][N(0; 1)]\t≈~= {0} delta= {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",

@@ -273,7 +273,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					Console.Write("{0}={1}; ", kvp.Key, kvp.Value);
 				}
 			}
-			Console.Write(Environment.NewLine);
+			Console.WriteLine();
 		}
 
 		private static void OutputExample89<T>(Matrix<T> matrix, T valueToFind)
