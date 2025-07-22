@@ -197,7 +197,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			} else if (this.Unit == AngleUnit.Gradian) {
 				turn = ExtraMath.ConvertTo<T>(400);
 			} else if (this.Unit == AngleUnit.Radian) {
-				turn = ExtraMath.ConvertTo<T>(2 * Math.PI);
+				turn = ExtraMath.ConvertTo<T>(RetroCompat.Tau);
 			} else {
 				throw new InvalidOperationException();
 			}

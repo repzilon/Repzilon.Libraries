@@ -20,7 +20,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class NormalLawTest
 	{
-		private static readonly decimal DecimalOneOfRootOfTwoPi = Decimal.One / ExtraMath.Sqrt(2 * ExtraMath.Pi);
+		private static readonly decimal DecimalOneOfRootOfTwoPi = Decimal.One / ExtraMath.Sqrt(ExtraMath.Tau);
 		private static readonly double DoubleOneOfRootOfTwoPi;
 		private static readonly double SqrtEighthOfPi;
 

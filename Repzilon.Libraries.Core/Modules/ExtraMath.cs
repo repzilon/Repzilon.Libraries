@@ -186,7 +186,7 @@ namespace Repzilon.Libraries.Core
 			if (n > 27) {
 				throw new ArgumentOutOfRangeException("n", n, "The factorial of 28 overflows a decimal.");
 			}
-			var value = Sqrt(2 * Pi * n) * Pow(n / E, n);
+			var value = Sqrt(Tau * n) * Pow(n / E, n);
 			if (mode >= StirlingMode.Rounded) {
 				value = n > 1 ? RoundToMultiple(value, 2) : n;
 			}
@@ -199,8 +199,8 @@ namespace Repzilon.Libraries.Core
 
 		public static double StirlingApproximateFactorial(double n, StirlingMode mode)
 		{
-			var value = Math.Sqrt(2 * Math.PI * n) * Math.Pow(n / Math.E, n);
-			// A coarse comparison is what we ware looking for
+			var value = Math.Sqrt(RetroCompat.Tau * n) * Math.Pow(n / Math.E, n);
+			// A coarse comparison is what we were looking for
 			// ReSharper disable once CompareOfFloatsByEqualityOperator
 			var blnNisInteger = Math.Round(n) == n;
 			if (blnNisInteger && (mode >= StirlingMode.Rounded)) {

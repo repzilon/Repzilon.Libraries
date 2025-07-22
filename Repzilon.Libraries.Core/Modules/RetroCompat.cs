@@ -57,6 +57,12 @@ namespace Repzilon.Libraries.Core
 			return CultureInfo.InvariantCulture.Equals(culture) ? text.ToLowerInvariant() : text.ToLower();
 		}
 #endif
+
+#if NET5_0 || NET6_0
+		internal const double Tau = Math.Tau;
+#else
+		internal const double Tau = 2 * Math.PI;
+#endif
 	}
 
 #if NET20

@@ -38,7 +38,7 @@ namespace Repzilon.Libraries.Core
 		#region Normal distribution
 		private const byte MacLaurinIterations = 22; // 16 for Int64+Double, 22 for Decimal (higher accuracy)
 		private const float MacLaurinBreakpoint = 2.07f;
-		private static readonly decimal DecimalOneOfRootOfTwoPi = 1 / ExtraMath.Sqrt(2 * ExtraMath.Pi);
+		private static readonly decimal DecimalOneOfRootOfTwoPi = 1 / ExtraMath.Sqrt(ExtraMath.Tau);
 		private static readonly double DoubleOneOfRootOfTwoPi;
 		private static readonly double HalfSqrtOfPi;
 
