@@ -394,8 +394,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			Program.OutputHeading("Ecotoxicology Microtox");
-			byte[] karSnowI0 = new byte[10] { 96, 88, 87, 86, 87, 92, 88, 87, 88, 80 };
-			byte[] karPO4WasteI0 = new byte[10] { 92, 96, 95, 95, 98, 94, 97, 98, 94, 94 };
+			var karSnowI0 = new byte[10] { 96, 88, 87, 86, 87, 92, 88, 87, 88, 80 };
+			var karPO4WasteI0 = new byte[10] { 92, 96, 95, 95, 98, 94, 97, 98, 94, 94 };
 			OutputMicrotox("Neige sale",  5, karSnowI0, new byte[10] { 125, 122, 129, 123, 126, 128, 116, 121, 98, 67 });
 			OutputMicrotox("Neige sale", 15, karSnowI0, new byte[10] { 123, 118, 125, 121, 125, 123, 115, 114, 92, 65 });
 			strUnit = Program.UnicodeTerminal ? "Rejets PO₄" : "Rejets PO4";
@@ -647,7 +647,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		IFormatProvider culture, T yc, T studentLawValue, T b)
 		where T : struct, IConvertible, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
-			int k = lrp.Count - 1;
+			var k = lrp.Count - 1;
 			var em = new ErrorMargin<T>(Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(yc, lrp.Intercept), b),
 			 Arithmetic<T>.MultiplyScalars(studentLawValue, lrp.StdDevForYc(yc, k)));
 			OutputLine(numberFormat, culture,

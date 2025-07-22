@@ -50,7 +50,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			Program.OutputHeading("Test de méthodes mathématiques avec Decimal");
 			// Force conversion from a stored decimal on disk to a double in memory by making it a variable
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ decimal kVerySmallSquare = 6.681844869362281E-18m;
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 			TestMathAnalog((double)kVerySmallSquare, Math.Sqrt, ExtraMath.Sqrt);
 			var ln3d = Math.Log(3);
 			var ln3m = ExtraMath.Ln(3);
@@ -64,7 +67,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			TestMathAnalog("Sqrt", MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
 #if false
-			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);		
+			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
 #endif
 			TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Ln);
 			TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
@@ -105,9 +108,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 #if !NET20 && !NET35
 			Console.WriteLine("F({0})={1}", 255, FibonacciBig(255));
 			Console.WriteLine("F({0})={1}", 65535, FibonacciBig(65535));
-			DateTime dtmStart = DateTime.UtcNow;
+			var dtmStart = DateTime.UtcNow;
 			var x = FibonacciBig(240000);
-			TimeSpan tsElapsed = DateTime.UtcNow - dtmStart;
+			var tsElapsed = DateTime.UtcNow - dtmStart;
 			Console.WriteLine("F({0})={1} in {2}", 240000, x, tsElapsed);
 #endif
 		}
@@ -184,9 +187,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write(name);
 			Console.Write("\t: ");
 			try {
-				DateTime dtmStart = DateTime.UtcNow;
+				var dtmStart = DateTime.UtcNow;
 				for (int i = 0; i < TestCount; i++) {
-					double x = Random.NextDouble();
+					var x = Random.NextDouble();
 					if (kind == MathFunction.InverseTrigo) {
 						x = x * 2 - 1;
 					} else {
@@ -209,9 +212,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 		Func<double, double> math, Func<decimal, decimal> extraMath)
 #endif
 		{
-			double fr8 = math(x);
-			decimal fD = extraMath((decimal)x);
-			double der8 = (double)fD - fr8;
+			var fr8 = math(x);
+			var fD = extraMath((decimal)x);
+			var der8 = (double)fD - fr8;
 			if (!RoundOff.AreEqual(der8, 0)) {
 				throw new ArithmeticException(String.Format(
 				 "Too big difference: x={1}{0}\tf(x[r8])={2,-29} Δ[r8]={4:e16}{0}\t f(x[D])={3} Δ[D]={5:e25}",

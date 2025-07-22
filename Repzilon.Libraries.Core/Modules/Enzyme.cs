@@ -28,12 +28,16 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		static Enzyme()
 		{
 #pragma warning disable U2U1000
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			// ReSharper disable ConvertToConstant.Local
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			/*const*/ byte kTen = 10;
 			/*const*/ float kTwo = 2.0f;
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
 			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000
-			double ln10 = Math.Log(kTen);
+			var ln10 = Math.Log(kTen);
 			TwoOnLn10 = kTwo / ln10;
 			FourOnLn10 = kTwo * kTwo / ln10;
 		}
@@ -147,7 +151,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			s = Double.MaxValue;  // smallest area between curves
 			c = -1; // index of regression model having the best correlation
 			EnzymeKinematic<double> ek;
-			EnzymeKinematic<double> ekBest = new EnzymeKinematic<double>(); // empty one
+			var ekBest = new EnzymeKinematic<double>(); // empty one
 			var rmdMichMen = rmdarAll[0];
 			for (i = 0; i < 4; i++) {
 				var model = rmdarAll[i].Model;

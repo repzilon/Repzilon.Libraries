@@ -65,7 +65,7 @@ namespace Repzilon.Libraries.Core
 		short waveLength1, short waveLength2)
 		{
 			var a2 = RoundOff.UpsizeError(absorbance2);
-			double m = (a2 - RoundOff.UpsizeError(absorbance1)) / (waveLength2 - waveLength1);
+			var m = (a2 - RoundOff.UpsizeError(absorbance1)) / (waveLength2 - waveLength1);
 			return RegressionModel<double>.Affine(a2 - (m * waveLength2), m, waveLength1, waveLength2);
 		}
 	}

@@ -27,7 +27,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			byte f;
 			double dblComputed;
 			// ReSharper restore TooWideLocalVariableScope
-			CultureInfo ciOriginal = CultureInfo.CurrentCulture;
+			var ciOriginal = CultureInfo.CurrentCulture;
 			try {
 				//* Testing number types
 				TestDigitCount(new short[] { -2, -1, 0, 1, 2, 123, 2005, 2000, 325, 3002 },

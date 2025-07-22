@@ -24,10 +24,14 @@ namespace Repzilon.Libraries.Core.Regression
 		static LinearRegression()
 		{
 #pragma warning disable U2U1000
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			// ReSharper disable ConvertToConstant.Local
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			/*const*/ byte kTen = 10;
 			/*const*/ float kOne = 1.0f;
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
 			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000
 			OneOfLn10 = kOne / Math.Log(kTen);
 		}
@@ -47,8 +51,10 @@ namespace Repzilon.Libraries.Core.Regression
 			var n = 0;
 
 			double dblAverageX = 0, dblSumXy = dblAverageX;
-			double dblMinX = Double.MaxValue;
-			double dblAverageY = dblAverageX, dblStdDevX = dblAverageX, dblStdDevY = dblAverageX;
+			var dblMinX = Double.MaxValue;
+			var dblAverageY = dblAverageX;
+			var dblStdDevX = dblAverageX;
+			var dblStdDevY = dblAverageX;
 
 			var dblMinY = dblMinX;
 			var dblMaxX = -dblMinX;
@@ -86,7 +92,8 @@ namespace Repzilon.Libraries.Core.Regression
 			var n0 = 0;
 
 			double dblAverageX = 0, dblAverageY = dblAverageX, dblSumXy = dblAverageX;
-			double dblStdDevX = dblAverageX, dblStdDevY = dblAverageX;
+			var dblStdDevX = dblAverageX;
+			var dblStdDevY = dblAverageX;
 
 			var dblMinX = Double.MaxValue;
 			var dblMinY = dblMinX;
@@ -105,7 +112,7 @@ namespace Repzilon.Libraries.Core.Regression
 			 dblSumXy, dblMinX, dblMinY, dblMaxX, dblMaxY);
 		}
 
-		private static void Aggregate(double newValue, ref double average, ref double m2, 
+		private static void Aggregate(double newValue, ref double average, ref double m2,
 		ref double minimum, ref double maximum, int n)
 		{
 			var delta = newValue - average;
@@ -117,7 +124,7 @@ namespace Repzilon.Libraries.Core.Regression
 			maximum = Math.Max(maximum, newValue);
 		}
 
-		private static LinearRegressionResult FinishCompute(double stdDevX, double stdDevY, int n, 
+		private static LinearRegressionResult FinishCompute(double stdDevX, double stdDevY, int n,
 		double averageX, double averageY, double sumXy, double minX, double minY, double maxX, double maxY)
 		{
 			stdDevX = Math.Sqrt(stdDevX / (n - 1));
@@ -142,7 +149,8 @@ namespace Repzilon.Libraries.Core.Regression
 			var n = 0;
 
 			decimal dcmAverageX = 0, dcmAverageY = dcmAverageX, dcmSumXy = dcmAverageX;
-			decimal dcmStdDevX = dcmAverageX, dcmStdDevY = dcmAverageX;
+			var dcmStdDevX = dcmAverageX;
+			var dcmStdDevY = dcmAverageX;
 
 			var dcmMinX = Decimal.MaxValue;
 			var dcmMinY = dcmMinX;
@@ -181,7 +189,8 @@ namespace Repzilon.Libraries.Core.Regression
 			var n0 = 0;
 
 			decimal dcmAverageX = 0, dcmAverageY = dcmAverageX, dcmSumXy = dcmAverageX;
-			decimal dcmStdDevX = dcmAverageX, dcmStdDevY = dcmAverageX;
+			var dcmStdDevX = dcmAverageX;
+			var dcmStdDevY = dcmAverageX;
 
 			var dcmMinX = Decimal.MaxValue;
 			var dcmMinY = dcmMinX;
@@ -200,7 +209,7 @@ namespace Repzilon.Libraries.Core.Regression
 			 dcmSumXy, dcmMinX, dcmMinY, dcmMaxX, dcmMaxY);
 		}
 
-		private static void Aggregate(decimal newValue, ref decimal average, ref decimal m2, 
+		private static void Aggregate(decimal newValue, ref decimal average, ref decimal m2,
 		ref decimal minimum, ref decimal maximum, int n)
 		{
 			var delta = newValue - average;
@@ -212,7 +221,7 @@ namespace Repzilon.Libraries.Core.Regression
 			maximum = Math.Max(maximum, newValue);
 		}
 
-		private static DecimalLinearRegressionResult FinishCompute(decimal stdDevX, decimal stdDevY, int n, 
+		private static DecimalLinearRegressionResult FinishCompute(decimal stdDevX, decimal stdDevY, int n,
 		decimal averageX, decimal averageY, decimal sumXy, decimal minX, decimal minY, decimal maxX, decimal maxY)
 		{
 			stdDevX = ExtraMath.Sqrt(stdDevX / (n - 1));

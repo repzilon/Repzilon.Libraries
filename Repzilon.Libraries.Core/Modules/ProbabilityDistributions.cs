@@ -23,9 +23,11 @@ namespace Repzilon.Libraries.Core
 		{
 #pragma warning disable U2U1000
 			// ReSharper disable ConvertToConstant.Local
-			byte kTwo = 2;
-			byte kThree = 3;
-			var kPi = Math.PI;
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
+			/*const*/ byte kTwo = 2;
+			/*const*/ byte kThree = 3;
+			/*const*/ double kPi = Math.PI;
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
 			// ReSharper restore ConvertToConstant.Local
 #pragma warning restore U2U1000
 			var sqrtPi = Math.Sqrt(kPi);

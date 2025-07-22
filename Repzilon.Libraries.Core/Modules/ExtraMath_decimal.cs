@@ -170,7 +170,7 @@ namespace Repzilon.Libraries.Core
 				return HalfPi - Atan(kOne / m);
 			}
 
-			var result = kZero;		
+			var result = kZero;
 			var y = (m * m) / (kOne + (m * m));
 			while (true) {
 				if (doubleIteration == 0) {
@@ -210,8 +210,10 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		public static decimal Atan2(decimal y, decimal x)
 		{
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
 			/*const*/ decimal kZero = 0;
 			/*const*/ decimal kPi = Pi;
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			if (x == kZero && y == kZero) {
 				return kZero;
@@ -239,6 +241,7 @@ namespace Repzilon.Libraries.Core
 		/// <returns></returns>
 		public static decimal Cos(decimal m)
 		{
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
 			/*const*/ decimal kZero = 0;
 
 			var doubleIteration = 0; // current iteration * 2
@@ -246,6 +249,7 @@ namespace Repzilon.Libraries.Core
 			var result = kZero;
 
 			/*const*/ decimal kTau = Tau;
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			// Normalize to between -2Pi <= m <= 2Pi
 			m = Remainder(m, kTau);
@@ -293,6 +297,7 @@ namespace Repzilon.Libraries.Core
 		private static decimal Exp(decimal m)
 #endif
 		{
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
 			/*const*/ decimal kZero = 0;
 			/*const*/ decimal kOne = 1;
 
@@ -302,6 +307,7 @@ namespace Repzilon.Libraries.Core
 			decimal t;
 
 			/*const*/ decimal kNapier = E;
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			reciprocal = m < kZero;
 			m = Math.Abs(m);
@@ -320,7 +326,7 @@ namespace Repzilon.Libraries.Core
 			} else {
 				// Fractional power < 1
 				// See http://mathworld.wolfram.com/ExponentialFunction.html
-				int iteration = 0;
+				var iteration = 0;
 				nextAdd = kZero;
 				result = kZero;
 
@@ -360,6 +366,7 @@ namespace Repzilon.Libraries.Core
 		/// <returns></returns>
 		public static decimal Sin(decimal m)
 		{
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
 			/*const*/ decimal kZero = 0;
 
 			var doubleIteration = 0; // current iteration * 2
@@ -367,6 +374,7 @@ namespace Repzilon.Libraries.Core
 			var result = kZero;
 
 			/*const*/ decimal kTau = Tau;
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			// Normalize to between -2Pi <= m <= 2Pi
 			m = Remainder(m, kTau);
@@ -433,7 +441,7 @@ namespace Repzilon.Libraries.Core
 
 			// Begin with an estimate for the square root.
 			// Use hardware to get us there quickly.
-			decimal x = (decimal)Math.Sqrt(decimal.ToDouble(m));
+			var x = (decimal)Math.Sqrt(decimal.ToDouble(m));
 
 			while (true) {
 				nextX = (x / 2m) + (halfS / x);
@@ -553,13 +561,17 @@ namespace Repzilon.Libraries.Core
 		}
 		#endregion
 
+		// ReSharper disable ConvertToConstant.Local
 		private static readonly decimal LnOf2 = 0.6931471805599453094172321214581765680755001343602552541206800094933936219696947m;
 		private static readonly decimal LnOf10 = 2.302585092994045684017991454684364207601101488628772976033327900967572609677352m;
 		private static readonly decimal OneOfLn10 = 0.4342944819032518276511289189166050822943970058036665661144537831658646492088708m;
+		// ReSharper restore ConvertToConstant.Local
 
 		public static decimal Ln(decimal a)
 		{
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
 			/*const*/ decimal kOne = Decimal.One;
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 			decimal x;
 			byte k, n;
 			if (a <= 0) {
@@ -582,7 +594,7 @@ namespace Repzilon.Libraries.Core
 				return LnOf10;
 			} else {
 				// https://math.stackexchange.com/questions/1585952/is-there-a-way-to-calculate-decimal-powers-using-only-addition-subtraction-mul
-				// ln(x+1) developped as a series
+				// ln(x+1) developed as a series
 				// A. Find the biggest k where a/(2^k) > 1
 				x = a;
 				for (k = 1; (k < 32) && (x > kOne); k++) {
@@ -605,8 +617,15 @@ namespace Repzilon.Libraries.Core
 
 		public static decimal Log10(decimal a)
 		{
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ decimal kZero = Decimal.Zero;
 			/*const*/ decimal kOne = Decimal.One;
+			// ReSharper restore ConvertToConstant.Local
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
+
 			if (a <= kZero) {
 				throw new ArgumentOutOfRangeException("a", "The logarithm of 0 or a negative number does not exist.");
 			} else if (a == kOne) {

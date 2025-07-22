@@ -37,7 +37,7 @@ namespace Repzilon.Libraries.Core
 			if ((areas == null) || (areas.Length < 1)) {
 				throw new ArgumentNullException("areas");
 			}
-			int c = areas.Length;
+			var c = areas.Length;
 			if (c < 4) {
 				throw new ArgumentException("A multiple headspace extraction needs at least four extractions.");
 			}

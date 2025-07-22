@@ -172,13 +172,13 @@ namespace Repzilon.Libraries.Core
 			var numMargin = this.Margin;
 			var numValue = this.Middle;
 			if (numValue is double) {
-				double dblIncert = SignificantDigits.Ceil(Convert.ToDouble(numMargin));
+				var dblIncert = SignificantDigits.Ceil(Convert.ToDouble(numMargin));
 				return NewFrom(Math.Round(Convert.ToDouble(numValue), Decimals(dblIncert), MidpointRounding.ToEven), dblIncert);
 			} else if (numValue is decimal) {
-				decimal dcmIncert = SignificantDigits.Ceil(Convert.ToDecimal(numMargin));
+				var dcmIncert = SignificantDigits.Ceil(Convert.ToDecimal(numMargin));
 				return NewFrom(Math.Round(Convert.ToDecimal(numValue), Decimals(dcmIncert), MidpointRounding.ToEven), dcmIncert);
 			} else if (numValue is float) {
-				float sngIncert = SignificantDigits.Ceil(Convert.ToSingle(numMargin));
+				var sngIncert = SignificantDigits.Ceil(Convert.ToSingle(numMargin));
 				return NewFrom((float)Math.Round(Convert.ToSingle(numValue), Decimals(sngIncert), MidpointRounding.ToEven), sngIncert);
 			} else {
 				throw new NotSupportedException();

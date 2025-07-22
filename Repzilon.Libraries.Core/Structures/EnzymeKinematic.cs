@@ -411,8 +411,12 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private static double[] FindKinematicCrossings(EnzymeKinematic<double> kinematic,
 		RegressionModel<double> michaelisMenten, double lowerBound, double upperBound)
 		{
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			/*const*/ double kZero = 0;
 			/*const*/ double kHalf = 0.5;
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 
 			if (lowerBound < kZero) {
 				throw new ArgumentOutOfRangeException("lowerBound", lowerBound,
@@ -446,7 +450,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		RegressionModel<double> michaelisMenten, double candidate, double min, double max)
 		{
 			double fx;
-			int k = 1;
+			var k = 1;
 #if DEBUG
 			double dx;
 #endif

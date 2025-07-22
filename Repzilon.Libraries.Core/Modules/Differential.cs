@@ -40,16 +40,16 @@ namespace Repzilon.Libraries.Core
 			var sub = Arithmetic<T>.Sub;
 #endif
 			T fx;
-			int n = 1;
+			var n = 1;
 
 			do {
 #if NET20
 				fx = Arithmetic<T>.SubtractScalars(functionF(candidate), functionG(candidate));
-				T dx = Arithmetic<T>.SubtractScalars(derivativeF(candidate), derivativeG(candidate));
+				var dx = Arithmetic<T>.SubtractScalars(derivativeF(candidate), derivativeG(candidate));
 				candidate = Arithmetic<T>.SubtractScalars(candidate, Arithmetic<T>.DivideScalars(fx, dx));
 #else
 				fx = sub(functionF(candidate), functionG(candidate));
-				T dx = sub(derivativeF(candidate), derivativeG(candidate));
+				var dx = sub(derivativeF(candidate), derivativeG(candidate));
 				candidate = sub(candidate, Arithmetic<T>.DivideScalars(fx, dx));
 #endif
 				n++;
@@ -79,10 +79,10 @@ namespace Repzilon.Libraries.Core
 			var sub = Arithmetic<T>.Sub;
 #endif
 			T fx;
-			int n = 1;
+			var n = 1;
 
 			do {
-				T dx = derivativeF(candidate);
+				var dx = derivativeF(candidate);
 #if NET20
 				fx = Arithmetic<T>.SubtractScalars(functionF(candidate), constant);
 				candidate = Arithmetic<T>.SubtractScalars(candidate, Arithmetic<T>.DivideScalars(fx, dx));

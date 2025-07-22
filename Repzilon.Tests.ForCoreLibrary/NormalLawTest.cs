@@ -28,7 +28,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 		static NormalLawTest()
 		{
 #pragma warning disable U2U1000 // Local variable can be inlined or declared const
-			byte kTwo = 2;
+			// ReSharper disable once ConvertToConstant.Local
+			/*const*/ byte kTwo = 2;
 #pragma warning restore U2U1000 // Local variable can be inlined or declared const
 			var sqrtPi = Math.Sqrt(Math.PI);
 			var sqrt2 = Math.Sqrt(kTwo);
@@ -526,7 +527,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			// Find the point which is the observed middle
 			var yMid = 0.5m * (last + points[0].Y);
 			var iMid = points.Length / 2;
-			int ixyMid = -1;
+			var ixyMid = -1;
 			int k;
 			last = Decimal.MaxValue;
 			for (k = iMid - 1; k <= iMid + 1; k++) {

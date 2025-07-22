@@ -6,9 +6,9 @@
 //
 // Copyright (C) 2025 René Rhéaume
 //
-// This Source Code Form is subject to the terms of the 
-// Mozilla Public License, v. 2.0. If a copy of the MPL was 
-// not distributed with this file, You can obtain one at 
+// This Source Code Form is subject to the terms of the
+// Mozilla Public License, v. 2.0. If a copy of the MPL was
+// not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
@@ -107,8 +107,11 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public override int GetHashCode()
 		{
 			unchecked {
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
+				// ReSharper disable once SuggestVarOrType_BuiltInTypes
 				/*const*/ int magic = -1521134295;
-				int hashCode = 1744539508 * -1521134295 + Name.GetHashCode();
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
+				var hashCode = 1744539508 * -1521134295 + Name.GetHashCode();
 				hashCode = hashCode * magic + Formula.GetHashCode();
 				hashCode = hashCode * magic + MolarMass.GetHashCode();
 				return hashCode * magic + MeltingPoint.GetHashCode();
@@ -127,4 +130,3 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		#endregion
 	}
 }
-
