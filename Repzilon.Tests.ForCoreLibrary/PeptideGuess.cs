@@ -448,11 +448,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static void Fill(List<AlphaAminoAcid>[] destination, params AlphaAminoAcid[] source)
 		{
-			for (var i = 0; i < destination.Length; i++) {
-				if (destination[i] == null) {
-					destination[i] = new List<AlphaAminoAcid>(source);
-				}
-			}
+#if NET40 || NET35 || NET20
+			Fill(destination, source as IList<AlphaAminoAcid>);
+#else
+			Fill(destination, source as IReadOnlyList<AlphaAminoAcid>);
+#endif
 		}
 
 		/* RestrictToAvailable is no longer needed if you restrict beforehand
