@@ -174,7 +174,11 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public override int GetHashCode()
 		{
 			unchecked {
-				var magic = -1521134295;
+#pragma warning disable U2U1000
+				// ReSharper disable once SuggestVarOrType_BuiltInTypes
+				// ReSharper disable once ConvertToConstant.Local
+				/*const*/ int magic = -1521134295;
+#pragma warning restore U2U1000
 				var measure = Vmax;
 				var hashCode = (667060969 * -1521134295) + measure.Key.GetHashCode();
 				hashCode = (hashCode * magic) + measure.Value.GetHashCode();
@@ -412,10 +416,14 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		RegressionModel<double> michaelisMenten, double lowerBound, double upperBound)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
 			// ReSharper disable SuggestVarOrType_BuiltInTypes
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ double kZero = 0;
 			/*const*/ double kHalf = 0.5;
+			// ReSharper restore ConvertToConstant.Local
 			// ReSharper restore SuggestVarOrType_BuiltInTypes
+#pragma warning restore U2U1000
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 
 			if (lowerBound < kZero) {

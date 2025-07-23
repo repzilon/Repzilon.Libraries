@@ -51,8 +51,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputHeading("Test de méthodes mathématiques avec Decimal");
 			// Force conversion from a stored decimal on disk to a double in memory by making it a variable
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
 			// ReSharper disable once SuggestVarOrType_BuiltInTypes
+			// ReSharper disable once ConvertToConstant.Local
 			/*const*/ decimal kVerySmallSquare = 6.681844869362281E-18m;
+#pragma warning restore U2U1000
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 			TestMathAnalog((double)kVerySmallSquare, Math.Sqrt, ExtraMath.Sqrt);
 			var ln3d = Math.Log(3);

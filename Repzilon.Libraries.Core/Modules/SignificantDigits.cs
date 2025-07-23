@@ -90,7 +90,10 @@ namespace Repzilon.Libraries.Core
 			var dcmAbsolute = Math.Abs(value);
 			var blnLessThanOne = dcmAbsolute < 1;
 			var dcmDigitalPart = dcmAbsolute - Math.Floor(dcmAbsolute);
-			var kTen = 10m;
+#pragma warning disable U2U1000 // Local variable can be inlined or declared const
+			// ReSharper disable once ConvertToConstant.Local
+			/*const*/ decimal kTen = 10m;
+#pragma warning restore U2U1000 // Local variable can be inlined or declared const
 			while ((value % kTen) == 0) {
 				value /= kTen;
 			}
@@ -336,7 +339,13 @@ namespace Repzilon.Libraries.Core
 
 		private static double RoundWithMode(double value, int digits, RoundingMode rounding)
 		{
-			var kTen = 10.0;
+#pragma warning disable U2U1017
+#pragma warning disable U2U1000 // Local variable can be inlined or declared const
+			// ReSharper disable once ConvertToConstant.Local
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
+			/*const*/ double kTen = 10.0;
+#pragma warning restore U2U1000 // Local variable can be inlined or declared const
+#pragma warning restore U2U1017
 			double bubble;
 #pragma warning disable RECS0012 // 'if' statement can be re-written as 'switch' statement
 #pragma warning disable CC0019 // Use 'switch'

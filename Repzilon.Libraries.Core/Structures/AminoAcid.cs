@@ -169,7 +169,11 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public override int GetHashCode()
 		{
 			unchecked {
-				var magic = -1521134295;
+#pragma warning disable U2U1000
+				// ReSharper disable once ConvertToConstant.Local
+				// ReSharper disable once SuggestVarOrType_BuiltInTypes
+				/*const*/ int magic = -1521134295;
+#pragma warning restore U2U1000
 				var hashCode = (-919792662 * magic) + MolarMass.GetHashCode();
 				hashCode = (hashCode * magic) + pKa1.GetHashCode();
 				hashCode = (hashCode * magic) + pKa2.GetHashCode();

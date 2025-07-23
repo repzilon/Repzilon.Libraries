@@ -114,7 +114,11 @@ namespace Repzilon.Libraries.Core.Regression
 		public override int GetHashCode()
 		{
 			unchecked {
-				var magic = -1521134295;
+#pragma warning disable U2U1000 // Local variable can be inlined or declared const
+				// ReSharper disable once SuggestVarOrType_BuiltInTypes
+				// ReSharper disable once ConvertToConstant.Local
+				/*const*/  int magic = -1521134295;
+#pragma warning restore U2U1000 // Local variable can be inlined or declared const
 				var hashCode = (-1053832008 * -1521134295) + A.GetHashCode();
 				hashCode = (hashCode * magic) + B.GetHashCode();
 				hashCode = (hashCode * magic) + R.GetHashCode();

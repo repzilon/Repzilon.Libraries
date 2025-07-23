@@ -70,10 +70,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (obj == null) {
 				return 0;
 			}
-			var magic = -1521134295;
+#pragma warning disable U2U1000
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
+			// ReSharper disable once ConvertToConstant.Local
+			/*const*/ int magic = -1521134295;
+#pragma warning restore U2U1000
 			var hashCode = -918342670;
 			unchecked {
-				for (int i = 0; i < obj.Count; i++) {
+				// ReSharper disable once ForCanBeConvertedToForeach
+				// ReSharper disable once LoopCanBeConvertedToQuery
+				for (var i = 0; i < obj.Count; i++) {
 					hashCode = (hashCode * magic) + (int)obj[i];
 				}
 			}

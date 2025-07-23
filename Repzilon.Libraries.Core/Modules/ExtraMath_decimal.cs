@@ -147,8 +147,12 @@ namespace Repzilon.Libraries.Core
 		/// <returns></returns>
 		public static decimal Atan(decimal m)
 		{
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ decimal kOne = 1;
 			/*const*/ decimal kZero = 0;
+			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
 
 			var doubleIteration = 0; // current iteration * 2
 			var nextAdd = kZero;
@@ -211,8 +215,14 @@ namespace Repzilon.Libraries.Core
 		public static decimal Atan2(decimal y, decimal x)
 		{
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			/*const*/ decimal kZero = 0;
 			/*const*/ decimal kPi = Pi;
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
+			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			if (x == kZero && y == kZero) {
@@ -242,13 +252,18 @@ namespace Repzilon.Libraries.Core
 		public static decimal Cos(decimal m)
 		{
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ decimal kZero = 0;
 
 			var doubleIteration = 0; // current iteration * 2
 			var nextAdd = kZero;
 			var result = kZero;
 
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ decimal kTau = Tau;
+			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			// Normalize to between -2Pi <= m <= 2Pi
@@ -298,15 +313,26 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ decimal kZero = 0;
 			/*const*/ decimal kOne = 1;
+#pragma warning restore U2U1000
 
 			decimal result;
+			// ReSharper disable TooWideLocalVariableScope
 			decimal nextAdd;
+			// ReSharper disable JoinDeclarationAndInitializer
 			bool reciprocal;
 			decimal t;
+			// ReSharper restore JoinDeclarationAndInitializer
+			// ReSharper restore TooWideLocalVariableScope
 
+#pragma warning disable U2U1017 // Initialized locals should be used
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ decimal kNapier = E;
+#pragma warning restore U2U1017 // Initialized locals should be used
+			// ReSharper restore ConvertToConstant.Local
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			reciprocal = m < kZero;
@@ -367,13 +393,18 @@ namespace Repzilon.Libraries.Core
 		public static decimal Sin(decimal m)
 		{
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ decimal kZero = 0;
 
 			var doubleIteration = 0; // current iteration * 2
 			var nextAdd = kZero;
 			var result = kZero;
 
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ decimal kTau = Tau;
+			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			// Normalize to between -2Pi <= m <= 2Pi
@@ -570,9 +601,14 @@ namespace Repzilon.Libraries.Core
 		public static decimal Ln(decimal a)
 		{
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
+			// ReSharper disable once ConvertToConstant.Local
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ decimal kOne = Decimal.One;
+#pragma warning restore U2U1000
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 			decimal x;
+			// ReSharper disable once TooWideLocalVariableScope
 			byte k, n;
 			if (a <= 0) {
 				throw new ArgumentOutOfRangeException("a", "The logarithm of 0 or a negative number does not exist.");
@@ -618,12 +654,15 @@ namespace Repzilon.Libraries.Core
 		public static decimal Log10(decimal a)
 		{
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000 // Local variable can be inlined or declared const
 			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			// ReSharper disable ConvertToConstant.Local
 			/*const*/ decimal kZero = Decimal.Zero;
 			/*const*/ decimal kOne = Decimal.One;
 			// ReSharper restore ConvertToConstant.Local
 			// ReSharper restore SuggestVarOrType_BuiltInTypes
+#pragma warning restore U2U1000 // Local variable can be inlined or declared const
+
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			if (a <= kZero) {

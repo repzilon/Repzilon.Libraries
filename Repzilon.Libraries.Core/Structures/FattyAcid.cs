@@ -108,8 +108,11 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			unchecked {
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
 				// ReSharper disable once SuggestVarOrType_BuiltInTypes
+				// ReSharper disable once ConvertToConstant.Local
 				/*const*/ int magic = -1521134295;
+#pragma warning restore U2U1000
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 				var hashCode = 1744539508 * -1521134295 + Name.GetHashCode();
 				hashCode = hashCode * magic + Formula.GetHashCode();

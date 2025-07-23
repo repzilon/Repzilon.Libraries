@@ -22,6 +22,7 @@ namespace Repzilon.Libraries.Core
 		static ProbabilityDistributions()
 		{
 #pragma warning disable U2U1000
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			// ReSharper disable ConvertToConstant.Local
 			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			/*const*/ byte kTwo = 2;
@@ -29,6 +30,7 @@ namespace Repzilon.Libraries.Core
 			/*const*/ double kPi = Math.PI;
 			// ReSharper restore SuggestVarOrType_BuiltInTypes
 			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000
 			var sqrtPi = Math.Sqrt(kPi);
 			DoubleOneOfRootOfTwoPi = Math.Sqrt(kTwo) / (kTwo * sqrtPi); // 1÷√2π equals to √2÷(2√π)
@@ -261,6 +263,8 @@ namespace Repzilon.Libraries.Core
 		private static double CumulativeStudent(double t, byte liberties)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000 // Local variable can be inlined or declared const
+#pragma warning disable U2U1017
 			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			// ReSharper disable ConvertToConstant.Local
 			/*const*/ double kHalf = 0.5;
@@ -271,6 +275,8 @@ namespace Repzilon.Libraries.Core
 			/*const*/ double kOneOfPi = 1.0 / Math.PI; // not to be replaced by kOne, bigger and slower
 			// ReSharper restore SuggestVarOrType_BuiltInTypes
 			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1017
+#pragma warning restore U2U1000 // Local variable can be inlined or declared const
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			if (liberties == 6) {
 				return kHalf + ((t * (2 * t * t * t * t + 30 * t * t + 135)) / (4 * Math.Pow(t * t + liberties, 2.5)));
@@ -303,7 +309,11 @@ namespace Repzilon.Libraries.Core
 		public static double CumulativeStudentEstimate(double t, byte liberties)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
+			// ReSharper disable once ConvertToConstant.Local
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ double kHalf = 0.5;
+#pragma warning restore U2U1000
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			return t < 0 ? kHalf - SimpsonForStudent(-1 * t, liberties) : kHalf + SimpsonForStudent(t, liberties);
 		}
@@ -314,7 +324,7 @@ namespace Repzilon.Libraries.Core
 			var n = SimpsonIterations(b);
 			var h = b / n;
 			var sum = Student(0, k, false) + Student(b, k, false);
-			for (int i = 1; i < n; i++) {
+			for (var i = 1; i < n; i++) {
 				sum += Student(i * h, k, false) * ((i % 2 == 1) ? 4 : 2);
 			}
 			return kOneThird * h * sum;
@@ -491,12 +501,14 @@ namespace Repzilon.Libraries.Core
 		public static double InverseStudent(double p, byte liberties)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
 			// ReSharper disable ConvertToConstant.Local
 			// ReSharper disable SuggestVarOrType_BuiltInTypes
 			/*const*/ double kHalf = 0.5;
 			/*const*/ double kOne = 1;
 			// ReSharper restore SuggestVarOrType_BuiltInTypes
 			// ReSharper restore ConvertToConstant.Local
+#pragma warning restore U2U1000
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);
 			if (RoundOff.AreEqual(p, kHalf)) {
@@ -608,9 +620,11 @@ namespace Repzilon.Libraries.Core
 		public static double InverseNormalEstimate(double p)
 		{
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+#pragma warning disable U2U1000
 			// ReSharper disable once ConvertToConstant.Local
 			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ double kHalf = 0.5;
+#pragma warning restore U2U1000
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 			InverseCheck(p);
 			if (RoundOff.AreEqual(p, kHalf)) {

@@ -68,7 +68,11 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				var magic = -1521134295;
+#pragma warning disable U2U1000
+				// ReSharper disable once SuggestVarOrType_BuiltInTypes
+				// ReSharper disable once ConvertToConstant.Local
+				/*const*/ int magic = -1521134295;
+#pragma warning restore U2U1000
 				var kvp = this.Concentration;
 				var hashCode = (-1047427533 * -1521134295) + kvp.Key.GetHashCode();
 				hashCode = (hashCode * magic) + kvp.Value.GetHashCode();

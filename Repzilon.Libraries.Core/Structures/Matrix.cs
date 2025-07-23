@@ -214,7 +214,11 @@ namespace Repzilon.Libraries.Core
 		public override int GetHashCode()
 		{
 			unchecked {
-				var magic = -1521134295;
+#pragma warning disable U2U1000
+				// ReSharper disable once SuggestVarOrType_BuiltInTypes
+				// ReSharper disable once ConvertToConstant.Local
+				/*const*/ int magic = -1521134295;
+#pragma warning restore U2U1000
 				var hashCode = (1832363379 * -1521134295) + Lines;
 				hashCode = (hashCode * magic) + Columns;
 				hashCode = (hashCode * magic) + m_bytAugmentedColumn.GetValueOrDefault();
