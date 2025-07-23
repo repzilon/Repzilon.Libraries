@@ -67,7 +67,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void OutputDilution(string title, string textPattern, params Solution[] children)
 		{
 			Console.WriteLine(title);
-			for (int i = 0; i < children.Length; i++) {
+			for (var i = 0; i < children.Length; i++) {
 				var child = children[i];
 				Console.WriteLine(textPattern,
 				 i + 1, child.SoluteVolume, child.SolutionVolume.Value.Key, child.SolventVolume,

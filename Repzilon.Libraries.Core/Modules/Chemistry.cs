@@ -42,7 +42,7 @@ namespace Repzilon.Libraries.Core
 			// ReSharper disable once RedundantExplicitArraySize
 			var karMasses = new float[k]
 			 { 12.011f, 1.008f, 15.999f, 14.007f, 30.974f, 32.06f, 22.99f, 24.305f, 39.098f, 40.078f, 18.998f, 35.45f, 79.904f, 126.90f, 10.81f, 55.845f, 58.933f, 63.546f, 65.38f };
-			for (int i = 0; i < k; i++) {
+			for (var i = 0; i < k; i++) {
 				dicMasses.Add(karSymbols[i], karMasses[i]);
 			}
 
@@ -68,7 +68,7 @@ namespace Repzilon.Libraries.Core
 		private static string RemoveChemicalGroups(string formula, MatchCollection mccChemicalGroups, int c)
 		{
 			// Remove them from the string
-			for (int i = c - 1; i >= 0; i--) {
+			for (var i = c - 1; i >= 0; i--) {
 				var mtc = mccChemicalGroups[i];
 				var ix = mtc.Index;
 #if NET5_0 || NET6_0
@@ -87,7 +87,7 @@ namespace Repzilon.Libraries.Core
 			// The following line transforms hydration to subgroup
 			formula = Regex.Replace(formula, "[.•]([0-9]+)\\s*([A-Za-z0-9<>/=-]+)$", "-($2)<sub>$1</sub>");
 			var mccChemicalGroups = MatchChemicalGroups(formula, out c);
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				var grcIter = mccChemicalGroups[i].Groups;
 				mass += CoreMolarMass(grcIter[1].Value) * Int32.Parse(grcIter[2].Value);
 			}
@@ -107,7 +107,7 @@ namespace Repzilon.Libraries.Core
 			float mass = 0;
 			var mccElements = Regex.Matches(formula, @"([A-Z][a-z]?)(?:<sub>([0-9]+)</sub>)?");
 			var c = mccElements.Count;
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				var grcElement = mccElements[i].Groups;
 				var strElementCount = grcElement[2].Value;
 #if DEBUG
@@ -125,7 +125,7 @@ namespace Repzilon.Libraries.Core
 			IDictionary<string, int> dicElements = new Dictionary<string, int>();
 			int c;
 			var mccChemicalGroups = MatchChemicalGroups(formula, out c);
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				var grcIter = mccChemicalGroups[i].Groups;
 				CoreElementComposition(dicElements, grcIter[1].Value, Int32.Parse(grcIter[2].Value));
 			}
@@ -139,7 +139,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var mccElements = Regex.Matches(formula, @"([A-Z][a-z]?)(?:<sub>([0-9]+)</sub>)?");
 			var c = mccElements.Count;
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				var grcElement = mccElements[i].Groups;
 				var strElementCount = grcElement[2].Value;
 				var strSymbol = grcElement[1].Value;

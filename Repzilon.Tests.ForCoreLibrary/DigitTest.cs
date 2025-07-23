@@ -113,7 +113,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 
 				var blnarOk = new bool[c];
-				for (int i = 0; i < c; i++) {
+				for (var i = 0; i < c; i++) {
 					var value = values[i];
 					var expectedCount = expectedCounts[i];
 					var d = SignificantDigits.Count(value);

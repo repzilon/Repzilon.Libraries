@@ -260,7 +260,7 @@ namespace Repzilon.Libraries.Core
 			const double kOneThird = 1.0 / 3;
 			var h = (b - a) / n;
 			var sum = expression(a) + expression(b);
-			for (int i = 1; i < n; i++) {
+			for (var i = 1; i < n; i++) {
 #if DEBUG
 				var xi = a + (i * h);
 				var y = expression(xi);
@@ -284,7 +284,7 @@ namespace Repzilon.Libraries.Core
 			const decimal kOneThird = Decimal.One / 3;
 			var h = (b - a) / n;
 			var sum = expression(a) + expression(b);
-			for (int i = 1; i < n; i++) {
+			for (var i = 1; i < n; i++) {
 #if DEBUG
 				var xi = a + (i * h);
 				var y = expression(xi);
@@ -310,7 +310,7 @@ namespace Repzilon.Libraries.Core
 			}
 			var h = (b - a) / n;
 			var sum = expression(a) + expression(b);
-			for (int i = 1; i < n; i += 3) {
+			for (var i = 1; i < n; i += 3) {
 #if DEBUG
 				var xi = a + (i * h);
 				var y = expression(xi);
@@ -350,7 +350,7 @@ namespace Repzilon.Libraries.Core
 			}
 			var h = (b - a) / n;
 			var sum = expression(a) + expression(b);
-			for (int i = 1; i < n; i += 3) {
+			for (var i = 1; i < n; i += 3) {
 #if DEBUG
 				var xi = a + (i * h);
 				var y = expression(xi);

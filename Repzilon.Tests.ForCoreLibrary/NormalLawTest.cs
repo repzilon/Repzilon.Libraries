@@ -174,7 +174,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				decimal delta = 1;
 				short withNewDelta = 0;
 				var repetitions = 0;
-				for (short m = checked((short)(3 * i - 2740)); m <= kBigProbitIter && (Math.Abs(delta) > dcmFinalTargetDelta) && (repetitions < 45); m++) {
+				for (var m = checked((short)(3 * i - 2740)); m <= kBigProbitIter && (Math.Abs(delta) > dcmFinalTargetDelta) && (repetitions < 45); m++) {
 					var previousDelta = delta;
 					probit = ProbabilityDistributions.InverseNormal(p, m);
 					delta = (decimal)probit - karExpectedProbits[j];
@@ -482,7 +482,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void FindMacLaurinBreakpointForNormalLawIntegral(decimal targetDelta)
 		{
 			var blnBroken = false;
-			for (int i = 200; (!blnBroken) && (i <= 300); i++) {
+			for (var i = 200; (!blnBroken) && (i <= 300); i++) {
 				var z = i * 0.01m;
 				var n = ProbabilityDistributions.SimpsonIterations((double)z);
 				var simpson = Integral.Simpson(0, z, n, NonCumulativeNormal);
@@ -560,7 +560,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void EvaluateLogisticModel(PointM[] points,
 		decimal intercept, decimal amplitude, decimal location, decimal scale, PointM[] ptmarRoughModel)
 		{
-			for (int k = 0; k < points.Length; k++) {
+			for (var k = 0; k < points.Length; k++) {
 				var exponent = (points[k].X - location) / -scale;
 				var unscaled = 1 / (1 + (decimal)Math.Exp((double)exponent));
 				ptmarRoughModel[k] = new PointM(intercept + (amplitude * unscaled), points[k].Y);

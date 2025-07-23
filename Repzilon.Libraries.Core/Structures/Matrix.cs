@@ -68,7 +68,7 @@ namespace Repzilon.Libraries.Core
 					 "For this {0}x{1} matrix, {2} values are expected.",
 					 lines, columns, count));
 				}
-				for (int i = 0; i < count; i++) {
+				for (var i = 0; i < count; i++) {
 					m_values[i / columns, i % columns] = lineByLineValues[i];
 				}
 			}
@@ -490,7 +490,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			for (byte c = 0; c < self.Columns - 1; c++) {
-				for (byte l = (byte)(c + 1); l < m; l++) {
+				for (var l = (byte)(c + 1); l < m; l++) {
 					if (!augmented[l, c].Equals(zero)) {
 #if NET20
 						AutoRun(augmented, l, c, minusOne);

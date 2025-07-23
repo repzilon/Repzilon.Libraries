@@ -305,7 +305,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static TimeSpan BenchExample69<T>(bool rounding, Func<bool, bool, T> implementation)
 		{
 			var dtmStart = DateTime.UtcNow;
-			for (int i = 0; i < 1000000; i++) {
+			for (var i = 0; i < 1000000; i++) {
 #pragma warning disable CC0031 // Check for null before calling a delegate (checking done in caller)
 				implementation(false, rounding);
 #pragma warning restore CC0031 // Check for null before calling a delegate

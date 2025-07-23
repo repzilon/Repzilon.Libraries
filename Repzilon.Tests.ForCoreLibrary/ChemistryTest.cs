@@ -223,7 +223,7 @@ STQTALA";
 			const string kSubscript = "₀₁₂₃₄₅₆₇₈₉";
 			var c = digits.Length;
 			var stbSub = new StringBuilder(c);
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				stbSub.Append(kSubscript[digits[i] - '0']);
 			}
 			return stbSub.ToString();
@@ -244,7 +244,7 @@ STQTALA";
 			float mass = 0;
 			var n = 0;
 			var aal = AminoAcid.AlphaLookup;
-			for (int i = 0; i < peptideSequenceLetters.Length; i++) {
+			for (var i = 0; i < peptideSequenceLetters.Length; i++) {
 				var l = peptideSequenceLetters[i];
 				AminoAcid aa;
 				if (Char.IsLetter(l) && aal.TryGetValue((AlphaAminoAcid)Char.ToUpperInvariant(l), out aa)) {

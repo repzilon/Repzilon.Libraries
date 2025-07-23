@@ -172,7 +172,7 @@ namespace Repzilon.Libraries.Core
 				throw new ArgumentNullException("concentrations");
 			}
 			var allSolutions = new Solution[concentrations.Length];
-			for (int i = 0; i < concentrations.Length; i++) {
+			for (var i = 0; i < concentrations.Length; i++) {
 				allSolutions[i] = Init(concentrations[i], concentrationUnit, solutionVolume, solutionUnit);
 			}
 			return allSolutions;

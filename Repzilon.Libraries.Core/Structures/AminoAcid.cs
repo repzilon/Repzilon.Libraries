@@ -247,7 +247,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			var lstAminoAcids = AminoAcid.AlphaList;
 			var dicAminoAcids = new SortedDictionary<AlphaAminoAcid, AminoAcid>();
-			for (int i = 0; i < lstAminoAcids.Count; i++) {
+			for (var i = 0; i < lstAminoAcids.Count; i++) {
 #if NETFRAMEWORK || NETCOREAPP1_0 || NETSTANDARD
 				var enuSymbol = (AlphaAminoAcid)Enum.Parse(typeof(AlphaAminoAcid), lstAminoAcids[i].Symbol.Replace('é', 'e'));
 #else

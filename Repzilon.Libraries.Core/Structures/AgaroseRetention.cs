@@ -85,7 +85,7 @@ namespace Repzilon.Libraries.Core
 		{
 			var c = this.FragmentLengths.Length;
 			var shrarCopy = new short[c];
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				shrarCopy[i] = this.FragmentLengths[i];
 			}
 			return new AgaroseRetention(this.LowerMassVolumeConcentration, this.UpperMassVolumeConcentration, shrarCopy);

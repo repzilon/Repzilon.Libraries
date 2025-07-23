@@ -59,7 +59,7 @@ namespace Repzilon.Libraries.Core
 				var dicCheck = new Dictionary<ushort, bool>(forFragmentLengths.Length);
 #pragma warning disable CC0006 // Use foreach
 				// ReSharper disable once ForCanBeConvertedToForeach
-				for (int i = 0; i < forFragmentLengths.Length; i++) {
+				for (var i = 0; i < forFragmentLengths.Length; i++) {
 #pragma warning restore CC0006 // Use foreach
 					var l = forFragmentLengths[i];
 					dicCheck.Add((ushort)l, (l >= bpmin) && (l <= bpmax));
@@ -84,7 +84,7 @@ namespace Repzilon.Libraries.Core
 					var f = agarLast.FragmentLengths.Length;
 					blnSame = lstBasePairs.Count == f;
 					if (blnSame) {
-						for (int i = 0; blnSame && i < f; i++) {
+						for (var i = 0; blnSame && i < f; i++) {
 							blnSame &= lstBasePairs.Contains(agarLast.FragmentLengths[i]);
 						}
 					}

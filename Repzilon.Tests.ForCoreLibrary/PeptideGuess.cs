@@ -48,7 +48,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			var c = x.Count;
 			if (y.Count == c) {
-				for (int i = 0; i < c; i++) {
+				for (var i = 0; i < c; i++) {
 					if (y[i] != x[i]) {
 						return false;
 					}
@@ -210,8 +210,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
-			for (int i = 0; i < firstPermutations.Count; i++) {
-				for (int j = 0; j < secondPermutations.Count; j++) {
+			for (var i = 0; i < firstPermutations.Count; i++) {
+				for (var j = 0; j < secondPermutations.Count; j++) {
 					var candidate = new List<AlphaAminoAcid>(peptideLength);
 					candidate.AddRange(firstPermutations[i]);
 					candidate.AddRange(secondPermutations[j]);
@@ -300,7 +300,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var c = singleSlotted[0].Count;
 			var lstPermutations = new List<List<AlphaAminoAcid>>(c);
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				lstPermutations.Add(new List<AlphaAminoAcid>(1) { singleSlotted[0][i] });
 			}
 			return lstPermutations;
@@ -321,9 +321,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
-			for (int i = 0; i < firstPermutations.Count; i++) {
-				for (int j = 0; j < secondPermutations.Count; j++) {
-					for (int k = 0; k < thirdPermutations.Count; k++) {
+			for (var i = 0; i < firstPermutations.Count; i++) {
+				for (var j = 0; j < secondPermutations.Count; j++) {
+					for (var k = 0; k < thirdPermutations.Count; k++) {
 						var candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(secondPermutations[j]);
@@ -409,7 +409,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			List<List<AlphaAminoAcid>> lstResults = null;
 			var dtmStart = DateTime.UtcNow;
-			for (int i = 0; i < iterations; i++) {
+			for (var i = 0; i < iterations; i++) {
 				lstResults = solver();
 			}
 			var tsEnum = DateTime.UtcNow - dtmStart;
@@ -491,10 +491,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
-			for (int s0 = 0; s0 < quadSlotted[0].Count; s0++) {
-				for (int s1 = 0; s1 < quadSlotted[1].Count; s1++) {
-					for (int s2 = 0; s2 < quadSlotted[2].Count; s2++) {
-						for (int s3 = 0; s3 < quadSlotted[3].Count; s3++) {
+			for (var s0 = 0; s0 < quadSlotted[0].Count; s0++) {
+				for (var s1 = 0; s1 < quadSlotted[1].Count; s1++) {
+					for (var s2 = 0; s2 < quadSlotted[2].Count; s2++) {
+						for (var s3 = 0; s3 < quadSlotted[3].Count; s3++) {
 							var candidate = new List<AlphaAminoAcid>(4) {
 								quadSlotted[0][s0],
 								quadSlotted[1][s1],
@@ -521,8 +521,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
-			for (int s0 = 0; s0 < doubleSlotted[0].Count; s0++) {
-				for (int s1 = 0; s1 < doubleSlotted[1].Count; s1++) {
+			for (var s0 = 0; s0 < doubleSlotted[0].Count; s0++) {
+				for (var s1 = 0; s1 < doubleSlotted[1].Count; s1++) {
 					var candidate = new List<AlphaAminoAcid>(2) {
 						doubleSlotted[0][s0],
 						doubleSlotted[1][s1]
@@ -539,7 +539,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var dicCounts = new Dictionary<AlphaAminoAcid, int>();
 			int freq;
-			for (int i = 0; i < candidateSequence.Count; i++) {
+			for (var i = 0; i < candidateSequence.Count; i++) {
 				var symbol = candidateSequence[i];
 				dicCounts.TryGetValue(symbol, out freq);
 				dicCounts[symbol] = freq + 1;

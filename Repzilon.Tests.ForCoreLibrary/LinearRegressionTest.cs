@@ -555,7 +555,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			if (agars.Length != 1) {
 				Console.WriteLine();
 			}
-			for (int i = 0; i < agars.Length; i++) {
+			for (var i = 0; i < agars.Length; i++) {
 				if (!String.IsNullOrEmpty(heading)) {
 					Console.Write('\t');
 				}
@@ -684,7 +684,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				throw new ArgumentNullException("arguments");
 			}
 			var objarArgs = new object[c];
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				objarArgs[i] = arguments[i].ToString(numberFormat, culture);
 			}
 			Console.WriteLine(String.Format(culture, compositeFormat, objarArgs).Replace("␤", Environment.NewLine));

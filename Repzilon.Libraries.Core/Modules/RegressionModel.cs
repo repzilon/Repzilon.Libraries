@@ -46,7 +46,7 @@ namespace Repzilon.Libraries.Core.Regression
 			int c;
 			var lstarAll = InitLists(option, new List<PointD>(points), out c);
 
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				AddDataPoint(option, lstarAll, lstarAll[(int)MathematicalModel.Affine][i]);
 			}
 
@@ -63,7 +63,7 @@ namespace Repzilon.Libraries.Core.Regression
 			int c;
 			var lstarAll = InitLists(option, points, out c);
 
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				AddDataPoint(option, lstarAll, points[i]);
 			}
 
@@ -87,7 +87,7 @@ namespace Repzilon.Libraries.Core.Regression
 			} else {
 				lstarAll[(int)MathematicalModel.Affine] = points;
 			}
-			for (int i = 1; i < 4; i++) {
+			for (var i = 1; i < 4; i++) {
 				lstarAll[i] = new List<T>(c);
 			}
 			return lstarAll;
@@ -120,7 +120,7 @@ namespace Repzilon.Libraries.Core.Regression
 		private static RegressionModel<double> FinishCompute(IList<PointD>[] allModelPoints)
 		{
 			var rmarAll = new RegressionModel<double>[4];
-			for (int i = 0; i < 4; i++) {
+			for (var i = 0; i < 4; i++) {
 				rmarAll[i] = LinearRegression.Compute(allModelPoints[i]).ChangeModel((MathematicalModel)i);
 			}
 
@@ -156,7 +156,7 @@ namespace Repzilon.Libraries.Core.Regression
 			int c;
 			var lstarAll = InitLists(option, new List<PointM>(points), out c);
 
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				AddDataPoint(option, lstarAll, lstarAll[(int)MathematicalModel.Affine][i]);
 			}
 
@@ -173,7 +173,7 @@ namespace Repzilon.Libraries.Core.Regression
 			int c;
 			var lstarAll = InitLists(option, points, out c);
 
-			for (int i = 0; i < c; i++) {
+			for (var i = 0; i < c; i++) {
 				AddDataPoint(option, lstarAll, points[i]);
 			}
 
@@ -207,7 +207,7 @@ namespace Repzilon.Libraries.Core.Regression
 		private static RegressionModel<decimal> FinishCompute(IList<PointM>[] allModelPoints)
 		{
 			var rmarAll = new RegressionModel<decimal>[4];
-			for (int i = 0; i < 4; i++) {
+			for (var i = 0; i < 4; i++) {
 				rmarAll[i] = LinearRegression.Compute(allModelPoints[i]).ChangeModel((MathematicalModel)i);
 			}
 

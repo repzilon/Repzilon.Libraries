@@ -128,7 +128,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 		{
 			var dtmStart = DateTime.UtcNow;
-			for (int i = 0; i < benchLoops; i++) {
+			for (var i = 0; i < benchLoops; i++) {
 				Integral.Summation(1, summationUpper, forEach);
 			}
 			var tsDuration = DateTime.UtcNow - dtmStart;
@@ -191,7 +191,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("\t: ");
 			try {
 				var dtmStart = DateTime.UtcNow;
-				for (int i = 0; i < TestCount; i++) {
+				for (var i = 0; i < TestCount; i++) {
 					var x = Random.NextDouble();
 					if (kind == MathFunction.InverseTrigo) {
 						x = x * 2 - 1;

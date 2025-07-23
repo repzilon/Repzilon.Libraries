@@ -92,7 +92,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void InverseStudentTableRow(int k, float[] karAlphas)
 		{
 			Console.Write("{0,4}", k);
-			for (int x = 0; x < karAlphas.Length; x++) {
+			for (var x = 0; x < karAlphas.Length; x++) {
 				Console.Write(" {0,9:g6}", ProbabilityDistributions.InverseStudent(RoundOff.Error(karAlphas[x]), (byte)k));
 			}
 			Console.WriteLine();
@@ -106,7 +106,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void TableHeader<T>(string corner, string format, params T[] columns)
 		{
 			Console.Write(corner);
-			for (int i = 0; i < columns.Length; i++) {
+			for (var i = 0; i < columns.Length; i++) {
 				Console.Write(format, columns[i]);
 			}
 			Console.WriteLine();

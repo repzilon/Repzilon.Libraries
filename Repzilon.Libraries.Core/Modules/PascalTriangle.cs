@@ -31,11 +31,11 @@ namespace Repzilon.Libraries.Core
 			if (n > 0) {
 				intjarPascal[1] = new int[] { 1, 1 };
 			}
-			for (int r = 2; r <= n; r++) {
+			for (var r = 2; r <= n; r++) {
 				var intarRow = new int[r + 1];
 				intarRow[0] = 1;
 				intarRow[r] = 1;
-				for (int c = 1; c < r; c++) {
+				for (var c = 1; c < r; c++) {
 					intarRow[c] = intjarPascal[r - 1][c - 1] + intjarPascal[r - 1][c];
 				}
 				intjarPascal[r] = intarRow;
@@ -54,11 +54,11 @@ namespace Repzilon.Libraries.Core
 			if (n > 0) {
 				lngjarPascal[1] = new long[] { 1, 1 };
 			}
-			for (int r = 2; r <= n; r++) {
+			for (var r = 2; r <= n; r++) {
 				var lngarRow = new long[r + 1];
 				lngarRow[0] = 1;
 				lngarRow[r] = 1;
-				for (int c = 1; c < r; c++) {
+				for (var c = 1; c < r; c++) {
 					lngarRow[c] = lngjarPascal[r - 1][c - 1] + lngjarPascal[r - 1][c];
 				}
 				lngjarPascal[r] = lngarRow;
@@ -77,11 +77,11 @@ namespace Repzilon.Libraries.Core
 			if (n > 0) {
 				dcmjarPascal[1] = new decimal[] { 1, 1 };
 			}
-			for (int r = 2; r <= n; r++) {
+			for (var r = 2; r <= n; r++) {
 				var dcmarRow = new decimal[r + 1];
 				dcmarRow[0] = 1;
 				dcmarRow[r] = 1;
-				for (int c = 1; c < r; c++) {
+				for (var c = 1; c < r; c++) {
 					dcmarRow[c] = dcmjarPascal[r - 1][c - 1] + dcmjarPascal[r - 1][c];
 				}
 				dcmjarPascal[r] = dcmarRow;
@@ -99,13 +99,13 @@ namespace Repzilon.Libraries.Core
 			if (jagged != null) {
 				stbJagged.Append('[');
 				var ls = culture.TextInfo.ListSeparator;
-				for (int r = 0; r < jagged.Length; r++) {
+				for (var r = 0; r < jagged.Length; r++) {
 					if (r > 0) {
 						stbJagged.AppendLine(ls);
 					}
 					stbJagged.Append('[');
 					var cn = jagged[r].Length;
-					for (int c = 0; c < cn; c++) {
+					for (var c = 0; c < cn; c++) {
 						if (c > 0) {
 							stbJagged.Append(ls);
 						}

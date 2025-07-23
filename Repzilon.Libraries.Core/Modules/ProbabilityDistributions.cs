@@ -102,7 +102,7 @@ namespace Repzilon.Libraries.Core
 			var n = SimpsonIterations(b);
 			var h = b / n;
 			var sum = DoubleOneOfRootOfTwoPi + NonCumulativeNormal(b); // OneOfRootOfTwoPi == NonCumulativeNormal(0) && a == 0
-			for (int i = 1; i < n; i++) {
+			for (var i = 1; i < n; i++) {
 				sum += NonCumulativeNormal(i * h) * ((i % 2 == 1) ? 4 : 2);
 			}
 			return kOneThird * h * sum;
@@ -452,7 +452,7 @@ namespace Repzilon.Libraries.Core
 
 		private static void AddGammaFactors(List<int> destination, int max, int min)
 		{
-			for (int k = max; k >= min; k -= 2) {
+			for (var k = max; k >= min; k -= 2) {
 				destination.Add(k);
 			}
 		}
@@ -492,7 +492,7 @@ namespace Repzilon.Libraries.Core
 		private static double MultiplyByFractions(List<int> numerators, List<int> denominators, double multiplier,
 		int commonCount)
 		{
-			for (int i = 0; i < commonCount; i++) {
+			for (var i = 0; i < commonCount; i++) {
 				multiplier *= 1.0 * numerators[i] / denominators[i];
 			}
 			return multiplier;

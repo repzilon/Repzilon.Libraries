@@ -76,7 +76,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				int i;
 				for (i = 1; i < args.Length; i++) {
 					var strarTests = args[i].Split(',');
-					for (int j = 0; j < strarTests.Length; j++) {
+					for (var j = 0; j < strarTests.Length; j++) {
 						int numero;
 						if (Int32.TryParse(strarTests[j], NumberStyles.HexNumber, CultureInfo.CurrentCulture, out numero)) {
 							if ((numero >= 1) && (numero <= dicTests.Count)) {
