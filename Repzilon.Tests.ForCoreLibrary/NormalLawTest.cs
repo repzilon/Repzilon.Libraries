@@ -12,6 +12,7 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+using System.Collections.Generic;
 using Repzilon.Libraries.Core;
 using Repzilon.Libraries.Core.Regression;
 // ReSharper disable RedundantExplicitArrayCreation
@@ -23,6 +24,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static readonly decimal DecimalOneOfRootOfTwoPi = Decimal.One / ExtraMath.Sqrt(ExtraMath.Tau);
 		private static readonly double DoubleOneOfRootOfTwoPi;
 		private static readonly double SqrtEighthOfPi;
+		internal static readonly Dictionary<int, decimal> StudentT99TwoSidedScores;
 
 #pragma warning disable S3963 // "static" fields should be initialized inline
 		static NormalLawTest()
@@ -35,6 +37,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var sqrt2 = Math.Sqrt(kTwo);
 			DoubleOneOfRootOfTwoPi = sqrt2 / (kTwo * sqrtPi);	// 1÷√2π equals to √2÷(2√π)
 			SqrtEighthOfPi = sqrtPi / (kTwo * sqrt2);			// √(π÷8) = √π÷√8 = √π÷(2√2)
+			var dicStudent = new Dictionary<int, decimal>();
+			dicStudent.Add(4, 4.604094871349993225385464412853251257128286533876668465m);
+			StudentT99TwoSidedScores = dicStudent;
 		}
 #pragma warning restore S3963 // "static" fields should be initialized inline
 
@@ -394,12 +399,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= c - 1;
 			stddev = Math.Sqrt(stddev);
-			// FIXME: Calling the InverseStudent that is indirectly calibrated by this very method is like a dog running against its tail
-			var dblT99Percent = ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
-			var ideal = Math.Ceiling((average + (dblT99Percent * stddev)) / 6) * 6;
+			var dblT99Percent = (double)StudentT99TwoSidedScores[c - 1];
+			var ideal         = Math.Ceiling((average + (dblT99Percent * stddev)) / 6) * 6;
 			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
-			Console.WriteLine(Program.UnicodeTerminal ? "t₉₉={0}  x^={1} itérations" : "t99={0}  x^={1} itérations",
-			 dblT99Percent, ideal);
+			Console.WriteLine(Program.UnicodeTerminal ? "t₉₉({2})={0}  x^={1} itérations" : "t(99;{2})={0}  x^={1} itérations",
+			 dblT99Percent, ideal, c - 1);
 			return Convert.ToInt32(ideal);
 		}
 
@@ -459,12 +463,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			stddev /= c - 1;
 			stddev = ExtraMath.Sqrt(stddev);
-			// FIXME: Calling the InverseStudent that is indirectly calibrated by this very method is like a dog running against its tail
-			var dcmT99Percent = (decimal)ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.005f), (byte)(c - 1));
-			var ideal = Math.Ceiling((average + (dcmT99Percent * stddev)) / 6) * 6;
+			var dcmT99Percent = StudentT99TwoSidedScores[c - 1];
+			var ideal         = Math.Ceiling((average + (dcmT99Percent * stddev)) / 6) * 6;
 			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
-			Console.WriteLine(Program.UnicodeTerminal ? "t₉₉={0}  x^={1} itérations" : "t99={0}  x^={1} itérations",
-			 dcmT99Percent, ideal);
+			Console.WriteLine(Program.UnicodeTerminal ? "t₉₉({2})={0}  x^={1} itérations" : "t(99;{2})={0}  x^={1} itérations",
+			 dcmT99Percent, ideal, c - 1);
 
 			var ptmarIter = new PointM[c];
 			for (i = 0; i < c; i++) {

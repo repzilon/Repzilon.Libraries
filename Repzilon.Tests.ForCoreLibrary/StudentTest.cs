@@ -82,6 +82,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (k = 60; k <= 120; k += 20) {
 				InverseStudentTableRow(k, karAlphas);
 			}
+
+			var t99Ref  = NormalLawTest.StudentT99TwoSidedScores[4];
+			var t99Calc = ProbabilityDistributions.InverseStudent(Math.Round(0.995f, 3), 4);
+			Console.Write("t(99;4)\tRef: {0}\tCalc: {1}\tDiff: {2:e}", t99Ref, t99Calc, (decimal)t99Calc - t99Ref);
+			Console.WriteLine(" i.e. {0} epsilon", ((decimal)t99Calc - t99Ref) / dcmTarget);
 		}
 
 		private static void InverseStudentTableRow(int k, float[] karAlphas)
