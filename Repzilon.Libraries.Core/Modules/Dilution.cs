@@ -24,7 +24,10 @@ namespace Repzilon.Libraries.Core
 			ValidateLength(children);
 
 			var blnInitialMotherVolume = mother.SolutionVolume.HasValue;
-			for (int i = 0; i < children.Length; i++) {
+			// Do not use a ref local variable because we change an array of value types
+#pragma warning disable U2U1015 
+			for (var i = 0; i < children.Length; i++) {
+#pragma warning restore U2U1015
 				var child = children[i];
 				ValidateUnits(mother, child, blnInitialMotherVolume, mother,
 				 "Child solution volume unit is different from the mother solution.");
@@ -55,7 +58,10 @@ namespace Repzilon.Libraries.Core
 
 			Solution child;
 			Coefficient volumeFromPrevious = 0;
-			for (int i = children.Length - 1; i >= 0; i--) {
+			// Do not use a ref local variable because we change an array of value types
+#pragma warning disable U2U1015
+			for (var i = children.Length - 1; i >= 0; i--) {
+#pragma warning restore U2U1015
 				child = children[i];
 				var adjacent = i > 0 ? children[i - 1] : mother;
 				ValidateUnits(mother, child, i > 0, adjacent,
