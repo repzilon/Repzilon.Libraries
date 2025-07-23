@@ -493,6 +493,8 @@ namespace Repzilon.Libraries.Core
 		/// <summary>
 		/// Raises one number to an integral power.
 		/// </summary>
+		/// <param name="x">Radix</param>
+		/// <param name="y">Exponent</param>
 		/// <remarks>
 		/// See http://en.wikipedia.org/wiki/Exponentiation_by_squaring
 		/// </remarks>
@@ -524,6 +526,8 @@ namespace Repzilon.Libraries.Core
 		/// <summary>
 		/// Gets the number of decimal places in a decimal value.
 		/// </summary>
+		/// <param name="m">The decimal number</param>
+		/// <param name="countTrailingZeros">Count trailing zeroes too?</param>
 		/// <remarks>
 		/// Started with something found here: http://stackoverflow.com/a/6092298/856595
 		/// </remarks>
@@ -557,6 +561,8 @@ namespace Repzilon.Libraries.Core
 		/// <summary>
 		/// Gets the remainder of one number divided by another number in such a way as to retain maximum precision.
 		/// </summary>
+		/// <param name="m1">Dividend</param>
+		/// <param name="m2">Divisor</param>
 		private static decimal Remainder(decimal m1, decimal m2)
 		{
 			if (Math.Abs(m1) < Math.Abs(m2)) {

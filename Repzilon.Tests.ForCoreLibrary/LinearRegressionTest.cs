@@ -670,7 +670,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		/// according to numberFormat and culture, before being part of the final composite formatting.
 		/// </param>
 		/// <returns>A formatted string</returns>
-		/// <exception cref="ArgumentNullException">
+		/// <exception cref="T:System.ArgumentNullException">
 		/// When arguments is null or empty, which is generally an error from the programmer.
 		/// </exception>
 		private static void OutputLine(string numberFormat, IFormatProvider culture, string compositeFormat,

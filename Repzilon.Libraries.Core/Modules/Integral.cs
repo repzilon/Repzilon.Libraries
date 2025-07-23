@@ -144,7 +144,7 @@ namespace Repzilon.Libraries.Core
 		/// <param name="n">Number of partitions</param>
 		/// <param name="expression">The function to integrate</param>
 		/// <returns>A rough approximation of the definite integral of the function</returns>
-		/// <exception cref="ArgumentNullException">When no function is passed</exception>
+		/// <exception cref="T:System.ArgumentNullException">When no function is passed</exception>
 		/// <remarks>
 		/// Though part of the fundamental theorem of calculus, a Riemann sum is so inaccurate
 		/// you need a very large number of partitions (in the millions), which makes it slow

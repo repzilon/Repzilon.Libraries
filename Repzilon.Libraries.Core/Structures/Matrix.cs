@@ -380,7 +380,7 @@ namespace Repzilon.Libraries.Core
 		/// <param name="a">First matrix</param>
 		/// <param name="b">Second matrix</param>
 		/// <returns>The scalar product in a new matrix.</returns>
-		/// <exception cref="ArrayTypeMismatchException">Thrown when the number of columns of the first matrix is different from the number of lines of the second matrix.</exception>
+		/// <exception cref="T:System.ArrayTypeMismatchException">Thrown when the number of columns of the first matrix is different from the number of lines of the second matrix.</exception>
 		public static Matrix<T> operator *(Matrix<T> a, Matrix<T> b)
 		{
 			if (a.Columns == b.Lines) {
@@ -546,9 +546,9 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		/// <param name="destinationLine">Zero-based destination line number</param>
 		/// <param name="coefficients">Multiplying coefficients of source lines. Specify null for that line to not include it in calculations.</param>
-		/// <exception cref="ArgumentOutOfRangeException">Thrown when destinationLine is bigger or equal than the number of lines of the matrix.</exception>
-		/// <exception cref="ArgumentNullException">Thrown when coefficients array is null</exception>
-		/// <exception cref="ArrayTypeMismatchException">Thrown when coefficients array does not have the same number of values as the number of lines of the matrix</exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">Thrown when destinationLine is bigger or equal than the number of lines of the matrix.</exception>
+		/// <exception cref="T:System.ArgumentNullException">Thrown when coefficients array is null</exception>
+		/// <exception cref="T:System.ArrayTypeMismatchException">Thrown when coefficients array does not have the same number of values as the number of lines of the matrix</exception>
 		public void RunCommand(byte destinationLine, params Nullable<T>[] coefficients)
 		{
 			if (destinationLine >= this.Lines) {
@@ -594,7 +594,7 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		/// <param name="first">Zero-based rank of one line to swap.</param>
 		/// <param name="second">Zero-based rank of the other line to swap.</param>
-		/// <exception cref="ArgumentOutOfRangeException">Thrown when the line number are over the line count of the matrix</exception>
+		/// <exception cref="T:System.ArgumentOutOfRangeException">Thrown when the line number are over the line count of the matrix</exception>
 		public void SwapLines(byte first, byte second)
 		{
 			const string kOutOfRange = "The line index is bigger than the number of lines in the matrix.";
@@ -761,7 +761,7 @@ namespace Repzilon.Libraries.Core
 		/// When the Cramer technique cannot find a solution, returns null. It does not necessarily mean the
 		/// equation system is unsolvable, however.
 		/// </returns>
-		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
+		/// <exception cref="T:System.ArgumentNullException">When no variable names are supplied.</exception>
 		private Dictionary<char, AffineBinomial<T>> SolveWithCramer(Matrix<T> constants, params char[] variables)
 		{
 			byte a, b;
@@ -962,8 +962,8 @@ namespace Repzilon.Libraries.Core
 		/// When a unique solution exists, a set of key-value pairs with the variable name and the solved value for each.
 		/// When there is no possible solution, returns null. Otherwise, throws an NotSupportedException.
 		/// </returns>
-		/// <exception cref="ArgumentNullException">When no variable names are supplied.</exception>
-		/// <exception cref="NotSupportedException">When an infinity of linked solutions exists.</exception>
+		/// <exception cref="T:System.ArgumentNullException">When no variable names are supplied.</exception>
+		/// <exception cref="T:System.NotSupportedException">When an infinity of linked solutions exists.</exception>
 #if NET40 || NET35 || NET20
 		public IDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
 #else
