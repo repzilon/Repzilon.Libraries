@@ -67,9 +67,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 #pragma warning restore CC0091 // Use static method
 		{
-			if (obj == null) {
-				return 0;
-			}
 #pragma warning disable U2U1000
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
 			// ReSharper disable once SuggestVarOrType_BuiltInTypes

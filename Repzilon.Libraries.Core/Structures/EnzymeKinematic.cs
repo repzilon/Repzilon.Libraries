@@ -464,7 +464,6 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #if DEBUG
 			double dx;
 #endif
-			var dblTargetDelta = TargetDelta;
 			do {
 				fx = ExperimentalMinusTheorical(michaelisMenten, kinematic, candidate);
 #if DEBUG
@@ -474,7 +473,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 				candidate -= fx / ExperimentalMinusTheoricalDerivative(michaelisMenten, kinematic, candidate);
 #endif
 				k++;
-			} while ((k <= 100) && (candidate > 0) && (Math.Abs(fx) > dblTargetDelta));
+			} while ((k <= 100) && (candidate > 0) && (Math.Abs(fx) > TargetDelta));
 			//        ^ candidate is a concentration in practise, and can only be positive
 #if DEBUG && !NETSTANDARD1_1
 			Console.WriteLine("Newton: différence de {0} après {1} itérations", fx, k);
