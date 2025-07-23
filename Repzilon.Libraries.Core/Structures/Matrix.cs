@@ -215,9 +215,11 @@ namespace Repzilon.Libraries.Core
 		{
 			unchecked {
 #pragma warning disable U2U1000
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 				// ReSharper disable once SuggestVarOrType_BuiltInTypes
 				// ReSharper disable once ConvertToConstant.Local
 				/*const*/ int magic = -1521134295;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000
 				var hashCode = (1832363379 * -1521134295) + Lines;
 				hashCode = (hashCode * magic) + Columns;

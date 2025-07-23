@@ -80,7 +80,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			ValueType cz = this.Z;
 #pragma warning restore U2U1018
 #pragma warning restore U2U1019
-			return cx is decimal ? Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy, (decimal)cz)) : 
+			return cx is decimal ? Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy, (decimal)cz)) :
 			 ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy), Convert.ToDouble(cz));
 		}
 
@@ -141,9 +141,11 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			unchecked {
 #pragma warning disable U2U1000
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 				// ReSharper disable once SuggestVarOrType_BuiltInTypes
 				// ReSharper disable once ConvertToConstant.Local
 				/*const*/ int magic = -1521134295;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000
 				var hashCode = (-307843816 * -1521134295) + X.GetHashCode();
 				hashCode = (hashCode * magic) + Y.GetHashCode();

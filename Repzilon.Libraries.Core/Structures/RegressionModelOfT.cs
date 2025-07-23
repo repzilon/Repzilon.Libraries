@@ -115,9 +115,11 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			unchecked {
 #pragma warning disable U2U1000 // Local variable can be inlined or declared const
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 				// ReSharper disable once SuggestVarOrType_BuiltInTypes
 				// ReSharper disable once ConvertToConstant.Local
-				/*const*/  int magic = -1521134295;
+				/*const*/ int magic = -1521134295;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000 // Local variable can be inlined or declared const
 				var hashCode = (-1053832008 * -1521134295) + A.GetHashCode();
 				hashCode = (hashCode * magic) + B.GetHashCode();

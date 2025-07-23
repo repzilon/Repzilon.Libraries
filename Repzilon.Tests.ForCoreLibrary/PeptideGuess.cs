@@ -71,9 +71,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				return 0;
 			}
 #pragma warning disable U2U1000
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			// ReSharper disable once ConvertToConstant.Local
 			/*const*/ int magic = -1521134295;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000
 			var hashCode = -918342670;
 			unchecked {
@@ -94,7 +96,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			int a;
 			var lstLateral = Enum.GetValues(typeof(AlphaAminoAcid)).Cast<AlphaAminoAcid>().Where(AlphaAminoAcidExtension.HasPkaR).Select(x => x.ToString()).ToList();
 			var saaarLateral = AminoAcid.AlphaList.Where(x => lstLateral.Contains(x.Symbol)).ToArray();
-			
+
 			Console.Write("pH");
 			for (a = 0; a < saaarLateral.Length; a++) {
 				Console.Write('\t');

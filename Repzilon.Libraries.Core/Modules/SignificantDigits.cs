@@ -91,8 +91,11 @@ namespace Repzilon.Libraries.Core
 			var blnLessThanOne = dcmAbsolute < 1;
 			var dcmDigitalPart = dcmAbsolute - Math.Floor(dcmAbsolute);
 #pragma warning disable U2U1000 // Local variable can be inlined or declared const
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
 			// ReSharper disable once ConvertToConstant.Local
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ decimal kTen = 10m;
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000 // Local variable can be inlined or declared const
 			while ((value % kTen) == 0) {
 				value /= kTen;
@@ -341,9 +344,11 @@ namespace Repzilon.Libraries.Core
 		{
 #pragma warning disable U2U1017
 #pragma warning disable U2U1000 // Local variable can be inlined or declared const
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
 			// ReSharper disable once ConvertToConstant.Local
 			// ReSharper disable once SuggestVarOrType_BuiltInTypes
 			/*const*/ double kTen = 10.0;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000 // Local variable can be inlined or declared const
 #pragma warning restore U2U1017
 			double bubble;
