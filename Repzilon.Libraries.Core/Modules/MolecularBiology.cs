@@ -92,7 +92,7 @@ namespace Repzilon.Libraries.Core
 					blnSame = false;
 				}
 				if (blnSame) {
-					agarLast.UpperMassVolumeConcentration = (float)c;
+					agarLast = new AgaroseRetention(agarLast, (float)c);
 					lstResults[lstResults.Count - 1] = agarLast;
 				} else {
 					lstResults.Add(new AgaroseRetention((float)c, lstBasePairs.ToArray()));

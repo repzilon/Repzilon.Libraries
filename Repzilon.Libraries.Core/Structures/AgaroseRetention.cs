@@ -30,7 +30,7 @@ namespace Repzilon.Libraries.Core
 #endif
 	{
 		public readonly float LowerMassVolumeConcentration;
-		public float UpperMassVolumeConcentration;
+		public readonly float UpperMassVolumeConcentration;
 		public readonly short[] FragmentLengths;
 
 		public AgaroseRetention(float minConcentration, params short[] fragmentLengths)
@@ -45,6 +45,13 @@ namespace Repzilon.Libraries.Core
 			this.UpperMassVolumeConcentration = maxConcentration;
 			this.LowerMassVolumeConcentration = minConcentration;
 			this.FragmentLengths = fragmentLengths;
+		}
+
+		public AgaroseRetention(AgaroseRetention old, float newMaxConcentration)
+		{
+			this.UpperMassVolumeConcentration = newMaxConcentration;
+			this.LowerMassVolumeConcentration = old.LowerMassVolumeConcentration;
+			this.FragmentLengths = old.FragmentLengths;
 		}
 
 		#region Equals and GetHashCode

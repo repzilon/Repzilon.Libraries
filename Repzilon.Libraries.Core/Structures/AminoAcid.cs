@@ -28,15 +28,15 @@ namespace Repzilon.Libraries.Core.Biochemistry
 	, ICloneable
 #endif
 	{
-		public float MolarMass;
-		public float pKa1;
-		public float pKa2;
-		public float pKaR;
+		public readonly float MolarMass;
+		public readonly float pKa1;
+		public readonly float pKa2;
+		public readonly float pKaR;
 		public readonly char Letter;
-		public bool DicationWhenVeryAcid;
+		public readonly bool DicationWhenVeryAcid;
 		public readonly string Symbol;
 		public readonly string Name;
-		public string Formula;
+		public readonly string Formula;
 
 		public AminoAcid(char letter, string code, string name)
 		{
@@ -72,6 +72,37 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			this.pKaR = Single.NaN;
 			this.DicationWhenVeryAcid = false;
 			this.Formula = null;
+		}
+
+		private AminoAcid(AminoAcid basic,
+		float pKa1NewValue, float pKa2NewValue, float pKaRnewValue, bool isDicationWhenVeryAcid)
+		{
+			this.Letter = basic.Letter;
+			this.Symbol = basic.Symbol;
+			this.Name = basic.Name;
+
+			this.pKa1 = pKa1NewValue;
+			this.pKa2 = pKa2NewValue;
+			this.pKaR = pKaRnewValue;
+			this.DicationWhenVeryAcid = isDicationWhenVeryAcid;
+
+			var formula = basic.Formula;
+			if (!String.IsNullOrEmpty(formula)) {
+				this.MolarMass = Chemistry.MolarMass(formula);
+				this.Formula = formula;
+			} else {
+				this.Formula = null;
+				this.MolarMass = Single.NaN;
+			}
+		}
+
+		private AminoAcid(AminoAcid basic, string formula) :
+		this(basic, basic.pKa1, basic.pKa2, basic.pKaR, basic.DicationWhenVeryAcid)
+		{
+			if (!String.IsNullOrEmpty(formula)) {
+				this.MolarMass = Chemistry.MolarMass(formula);
+				this.Formula = formula;
+			}
 		}
 
 		#region ICloneable members
@@ -122,19 +153,12 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			} else if (isDicationWhenVeryAcid) {
 				throw new ArgumentException("An amino acid that is a dication under very acidic conditions must have a pKaR.", nameof(isDicationWhenVeryAcid));
 			}
-
-			this.pKa1 = pKa1NewValue;
-			this.pKa2 = pKa2NewValue;
-			this.pKaR = pKaRnewValue;
-			this.DicationWhenVeryAcid = isDicationWhenVeryAcid;
-			return this;
+			return new AminoAcid(this, pKa1NewValue, pKa2NewValue, pKaRnewValue, isDicationWhenVeryAcid);
 		}
 
 		public AminoAcid SetFormula(string formula)
 		{
-			this.MolarMass = Chemistry.MolarMass(formula);
-			this.Formula = formula;
-			return this;
+			return new AminoAcid(this, formula);
 		}
 
 		public float Isoelectric()
