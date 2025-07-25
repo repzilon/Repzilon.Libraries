@@ -200,9 +200,11 @@ namespace Repzilon.Libraries.Core
 		public static double StirlingApproximateFactorial(double n, StirlingMode mode)
 		{
 			var value = Math.Sqrt(RetroCompat.Tau * n) * Math.Pow(n / Math.E, n);
-			// A coarse comparison is what we were looking for
+			// A coarse comparison is what I am looking for
 			// ReSharper disable once CompareOfFloatsByEqualityOperator
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 			var blnNisInteger = Math.Round(n) == n;
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 			if (blnNisInteger && (mode >= StirlingMode.Rounded)) {
 				value = n > 1 ? RoundToMultiple(value, 2) : n;
 			}

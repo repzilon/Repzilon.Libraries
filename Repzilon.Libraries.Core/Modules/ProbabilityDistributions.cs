@@ -65,14 +65,21 @@ namespace Repzilon.Libraries.Core
 		{
 #pragma warning disable CC0001 // You should use 'var' whenever possible.
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
+			// ReSharper disable SuggestVarOrType_BuiltInTypes
+			// ReSharper disable ConvertToConstant.Local
 			/*const*/ double kZero = 0;
 			/*const*/ double kHalf = 0.5;
 			/*const*/ decimal kHalfM = 0.5m;
+			// ReSharper restore ConvertToConstant.Local
+			// ReSharper restore SuggestVarOrType_BuiltInTypes
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 			if (!cumulative) {
 				return NonCumulativeNormal(z);
-			} else if (z == kZero) {
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
+			// ReSharper disable once CompareOfFloatsByEqualityOperator
+			} else if (z == kZero) {	// A comparison against exactly 0, not almost 0, is wanted
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				return kHalf;
 			} else if (Double.IsNegativeInfinity(z)) {
 				return kZero;
@@ -348,7 +355,9 @@ namespace Repzilon.Libraries.Core
 		private static double CachedGammaRatio(byte k)
 		{
 			var ratio = StudentGammaRatioCache[k - 1];
-			if (ratio == 0) {
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
+			if (ratio == 0) {	// Zero is the initial value of any cache array entry, meaning not yet set
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				ratio = FastGammaRatio(k);
 				StudentGammaRatioCache[k - 1] = ratio;
 			}

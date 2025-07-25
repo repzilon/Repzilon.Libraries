@@ -55,7 +55,9 @@ namespace Repzilon.Libraries.Core
 		#region Count real number types overloads
 		public static byte Count(float value)
 		{
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 			if (value == 0) {
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				return 1;
 			}
 			var sngAbsolute = Math.Abs(value);
@@ -71,7 +73,9 @@ namespace Repzilon.Libraries.Core
 
 		public static byte Count(double value)
 		{
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 			if (value == 0) {
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				return 1;
 			}
 			var dblAbsolute = Math.Abs(value);
@@ -188,7 +192,9 @@ namespace Repzilon.Libraries.Core
 			} else {
 				CultureInfo ci;
 				var dblValue = ParseQty(value, out ci);
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 				return (dblValue == 0) ? (byte)1 : Count(value, dblValue, ci);
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 			}
 		}
 
@@ -203,7 +209,9 @@ namespace Repzilon.Libraries.Core
 #endif
 				return 0;
 			} else if (Double.TryParse(value, kNumberStyles, culture, out dblValue)) {
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 				if (dblValue == 0) {
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 					return 1;
 				}
 				if (culture == null) {

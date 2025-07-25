@@ -235,7 +235,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static double ExponentialSuite(double x, int k)
 		{
+#pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 			if (x == 0) {
+#pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				return 0;
 			}
 
