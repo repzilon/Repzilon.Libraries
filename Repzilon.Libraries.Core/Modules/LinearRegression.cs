@@ -45,7 +45,7 @@ namespace Repzilon.Libraries.Core.Regression
 		public static LinearRegressionResult Compute(IEnumerable<PointD> points)
 		{
 			if (points == null) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 
 			var n = 0;
@@ -69,7 +69,7 @@ namespace Repzilon.Libraries.Core.Regression
 				dblSumXy += x * y;
 			}
 			if (n < 1) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 			return FinishCompute(dblStdDevX, dblStdDevY, n, dblAverageX, dblAverageY,
 			 dblSumXy, dblMinX, dblMinY, dblMaxX, dblMaxY);
@@ -82,11 +82,11 @@ namespace Repzilon.Libraries.Core.Regression
 #endif
 		{
 			if ((points == null) || (points.Count < 1)) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 			var n = points.Count;
 			if (n < 1) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 
 			var n0 = 0;
@@ -143,7 +143,7 @@ namespace Repzilon.Libraries.Core.Regression
 		public static DecimalLinearRegressionResult Compute(IEnumerable<PointM> points)
 		{
 			if (points == null) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 
 			var n = 0;
@@ -166,7 +166,7 @@ namespace Repzilon.Libraries.Core.Regression
 				dcmSumXy += x * y;
 			}
 			if (n < 1) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 			return FinishCompute(dcmStdDevX, dcmStdDevY, n, dcmAverageX, dcmAverageY,
 			 dcmSumXy, dcmMinX, dcmMinY, dcmMaxX, dcmMaxY);
@@ -179,11 +179,11 @@ namespace Repzilon.Libraries.Core.Regression
 #endif
 		{
 			if (points == null) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 			var n = points.Count;
 			if (n < 1) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 
 			var n0 = 0;

@@ -40,7 +40,7 @@ namespace Repzilon.Libraries.Core
 		public static KeyValuePair<decimal, decimal>? SolveQuadratic(decimal a, decimal b, decimal c)
 		{
 			if (a == 0) {
-				throw new ArgumentOutOfRangeException("a", a, "a = 0 would cause a division by zero.");
+				throw new ArgumentOutOfRangeException(nameof(a), a, "a = 0 would cause a division by zero.");
 			}
 
 			var determinant = (b * b) - (4 * a * c);
@@ -140,7 +140,7 @@ namespace Repzilon.Libraries.Core
 		{
 #if !DEBUG
 			if (n > 20) {
-				throw new ArgumentOutOfRangeException("n", n, "The factorial of 21 overflows a 64-bit integer.");
+				throw new ArgumentOutOfRangeException(nameof(n), n, "The factorial of 21 overflows a 64-bit integer.");
 			}
 #endif
 			if (n <= 2) {
@@ -163,7 +163,7 @@ namespace Repzilon.Libraries.Core
 		private static decimal BigFactorialCore(byte n)
 		{
 			if (n > 27) {
-				throw new ArgumentOutOfRangeException("n", n, "The factorial of 28 overflows a decimal.");
+				throw new ArgumentOutOfRangeException(nameof(n), n, "The factorial of 28 overflows a decimal.");
 			}
 			if (n <= 2) {
 				return n;
@@ -184,7 +184,7 @@ namespace Repzilon.Libraries.Core
 		public static decimal StirlingApproximateFactorial(byte n, StirlingMode mode)
 		{
 			if (n > 27) {
-				throw new ArgumentOutOfRangeException("n", n, "The factorial of 28 overflows a decimal.");
+				throw new ArgumentOutOfRangeException(nameof(n), n, "The factorial of 28 overflows a decimal.");
 			}
 			var value = Sqrt(Tau * n) * Pow(n / E, n);
 			if (mode >= StirlingMode.Rounded) {

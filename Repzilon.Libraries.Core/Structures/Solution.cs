@@ -157,10 +157,10 @@ namespace Repzilon.Libraries.Core
 		private static Measure InitMeasure(Coefficient value, string unit)
 		{
 			if (String.IsNullOrEmpty(unit)) {
-				throw new ArgumentNullException("unit");
+				throw new ArgumentNullException(nameof(unit));
 			}
 			if (Coefficient.IsNaN(value)) {
-				throw new ArgumentNullException("value");
+				throw new ArgumentNullException(nameof(value));
 			}
 			return new Measure(unit, value);
 		}
@@ -169,7 +169,7 @@ namespace Repzilon.Libraries.Core
 		params Coefficient[] concentrations)
 		{
 			if ((concentrations == null) || (concentrations.Length < 1)) {
-				throw new ArgumentNullException("concentrations");
+				throw new ArgumentNullException(nameof(concentrations));
 			}
 			var allSolutions = new Solution[concentrations.Length];
 			for (var i = 0; i < concentrations.Length; i++) {

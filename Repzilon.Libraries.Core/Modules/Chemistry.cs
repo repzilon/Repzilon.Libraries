@@ -56,7 +56,7 @@ namespace Repzilon.Libraries.Core
 		private static MatchCollection MatchChemicalGroups(string formula, out int c)
 		{
 			if (String.IsNullOrEmpty(formula)) {
-				throw new ArgumentNullException("formula");
+				throw new ArgumentNullException(nameof(formula));
 			}
 
 			// Count chemical groups first

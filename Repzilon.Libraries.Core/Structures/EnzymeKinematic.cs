@@ -106,10 +106,10 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		EnzymeSpeedRepresentation representation) : this()
 		{
 			if (String.IsNullOrEmpty(vmaxUnit)) {
-				throw new ArgumentNullException("vmaxUnit");
+				throw new ArgumentNullException(nameof(vmaxUnit));
 			}
 			if (String.IsNullOrEmpty(kmUnit)) {
-				throw new ArgumentNullException("kmUnit");
+				throw new ArgumentNullException(nameof(kmUnit));
 			}
 			Vmax = new KeyValuePair<T, string>(vmaxValue, vmaxUnit);
 			Km = new KeyValuePair<T, string>(kmValue, kmUnit);
@@ -429,7 +429,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 
 			if (lowerBound < kZero) {
-				throw new ArgumentOutOfRangeException("lowerBound", lowerBound,
+				throw new ArgumentOutOfRangeException(nameof(lowerBound), lowerBound,
 				 "A substrate concentration cannot be negative.");
 			} else if (lowerBound >= upperBound) {
 				throw new ArgumentException("Make sure the lower concentration bound is lower than the upper one.");

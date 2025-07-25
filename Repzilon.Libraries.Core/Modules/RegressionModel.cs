@@ -74,7 +74,7 @@ namespace Repzilon.Libraries.Core.Regression
 		where T: new()
 		{
 			if (points == null) {
-				throw new ArgumentNullException("points");
+				throw new ArgumentNullException(nameof(points));
 			}
 
 			var lstarAll = new IList<T>[4];

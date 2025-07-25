@@ -54,7 +54,7 @@ namespace Repzilon.Libraries.Core
 		public static double Normal(double x, double mean, double standardDeviation, bool cumulative)
 		{
 			if (standardDeviation <= 0) {
-				throw new ArgumentOutOfRangeException("standardDeviation", standardDeviation,
+				throw new ArgumentOutOfRangeException(nameof(standardDeviation), standardDeviation,
 				 "A standard deviation cannot be neither zero nor a negative number.");
 			}
 			var z = (x - mean) / standardDeviation;
@@ -164,7 +164,7 @@ namespace Repzilon.Libraries.Core
 		public static double InverseErf(double z, short iterations)
 		{
 			if (iterations < 100) {
-				throw new ArgumentOutOfRangeException("iterations", iterations,
+				throw new ArgumentOutOfRangeException(nameof(iterations), iterations,
 				 "At least 100 iterations are needed for a reasonably accurate evaluation.");
 			}
 			//* Not clearing the CofInnerCache worsens performance, strange, but keep that block
@@ -533,7 +533,7 @@ namespace Repzilon.Libraries.Core
 
 		private static ArgumentOutOfRangeException NewZeroLibertyStudentException(byte liberties)
 		{
-			return new ArgumentOutOfRangeException("liberties", liberties,
+			return new ArgumentOutOfRangeException(nameof(liberties), liberties,
 			 "A Student distribution of 0 degrees of liberty does not exist.");
 		}
 		#endregion
@@ -640,7 +640,7 @@ namespace Repzilon.Libraries.Core
 		private static void InverseCheck(double p)
 		{
 			if ((p <= 0) || (p >= 1)) {
-				throw new ArgumentOutOfRangeException("p", p,
+				throw new ArgumentOutOfRangeException(nameof(p), p,
 				 "Must be between 0 and 1, but neither exactly 0 nor 1.");
 			}
 		}

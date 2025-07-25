@@ -36,7 +36,7 @@ namespace Repzilon.Libraries.Core
 				throw new NotSupportedException(
 				 "Counting number of theorical plates using the half-width at 60.6% of height is not supported.");
 			} else {
-				throw RetroCompat.NewUndefinedEnumException("reference", reference);
+				throw RetroCompat.NewUndefinedEnumException(nameof(reference), reference);
 			}
 		}
 
@@ -50,7 +50,7 @@ namespace Repzilon.Libraries.Core
 				throw new NotSupportedException(
 				 "Computing resolution between peaks using their half-width at 60.6% of height is not supported.");
 			} else {
-				throw RetroCompat.NewUndefinedEnumException("reference", r2);
+				throw RetroCompat.NewUndefinedEnumException(nameof(reference), r2);
 			}
 		}
 

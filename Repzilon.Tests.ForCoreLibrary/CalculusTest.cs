@@ -182,10 +182,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 		{
 			if (math == null) {
-				throw new ArgumentNullException("math");
+				throw new ArgumentNullException(nameof(math));
 			}
 			if (extraMath == null) {
-				throw new ArgumentNullException("extraMath");
+				throw new ArgumentNullException(nameof(extraMath));
 			}
 			Console.Write(name);
 			Console.Write("\t: ");

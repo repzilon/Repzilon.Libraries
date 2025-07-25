@@ -50,7 +50,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			if (AngleExtensions.IsDefined(unit)) {
 				Unit = unit;
 			} else {
-				throw RetroCompat.NewUndefinedEnumException("unit", unit);
+				throw RetroCompat.NewUndefinedEnumException(nameof(unit), unit);
 			}
 		}
 
@@ -148,7 +148,7 @@ namespace Repzilon.Libraries.Core.Vectors
 					throw NewConversionException(unit);
 				}
 			} else {
-				throw RetroCompat.NewUndefinedEnumException("unit", unit);
+				throw RetroCompat.NewUndefinedEnumException(nameof(unit), unit);
 			}
 		}
 

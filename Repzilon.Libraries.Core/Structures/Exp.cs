@@ -69,12 +69,12 @@ namespace Repzilon.Libraries.Core
 		internal static void CheckForInit(float mantissa, byte numericBase)
 		{
 			if ((mantissa <= -10) || (mantissa >= 10)) {
-				throw new ArgumentOutOfRangeException("mantissa", mantissa,
+				throw new ArgumentOutOfRangeException(nameof(mantissa), mantissa,
 				 "Absolute value of the mantissa must be under 10.");
 			}
 
 			if (numericBase < 2) {
-				throw new ArgumentOutOfRangeException("numericBase", numericBase,
+				throw new ArgumentOutOfRangeException(nameof(numericBase), numericBase,
 				 "A numeric base of 0 or 1 does not make sense.");
 			}
 		}

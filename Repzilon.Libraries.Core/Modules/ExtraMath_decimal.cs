@@ -456,7 +456,7 @@ namespace Repzilon.Libraries.Core
 		public static decimal Sqrt(decimal m)
 		{
 			if (m < 0) {
-				throw new ArgumentOutOfRangeException("m", m, "Cannot extract the square root of a negative number.");
+				throw new ArgumentOutOfRangeException(nameof(m), m, "Cannot extract the square root of a negative number.");
 			}
 
 			// Prevent divide-by-zero errors below. Dividing either
@@ -501,7 +501,7 @@ namespace Repzilon.Libraries.Core
 		private static decimal ExpBySquaring(decimal x, int y)
 		{
 			if (y < 0) {
-				throw new ArgumentOutOfRangeException("y", y, "Negative exponents are not supported");
+				throw new ArgumentOutOfRangeException(nameof(y), y, "Negative exponents are not supported");
 			}
 
 			var result = 1m;
@@ -617,7 +617,7 @@ namespace Repzilon.Libraries.Core
 			// ReSharper disable once TooWideLocalVariableScope
 			byte k, n;
 			if (a <= 0) {
-				throw new ArgumentOutOfRangeException("a", "The logarithm of 0 or a negative number does not exist.");
+				throw new ArgumentOutOfRangeException(nameof(a), "The logarithm of 0 or a negative number does not exist.");
 			} else if (a < kOne) {
 				x = a;	// mantissa
 				k = 0;	// magnitude
@@ -672,7 +672,7 @@ namespace Repzilon.Libraries.Core
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			if (a <= kZero) {
-				throw new ArgumentOutOfRangeException("a", "The logarithm of 0 or a negative number does not exist.");
+				throw new ArgumentOutOfRangeException(nameof(a), "The logarithm of 0 or a negative number does not exist.");
 			} else if (a == kOne) {
 				return kZero;
 			} else if (a == 10) {

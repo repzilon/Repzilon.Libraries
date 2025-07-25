@@ -281,7 +281,7 @@ namespace Repzilon.Libraries.Core.Regression
 		private T RisingConcaveUpwards(Func<T, T, T> mul, double radix, double exponent)
 		{
 			if (mul == null) {
-				throw new ArgumentNullException("mul");
+				throw new ArgumentNullException(nameof(mul));
 			}
 			return mul(A, ExtraMath.ConvertTo<T>(Math.Pow(radix, exponent)));
 		}

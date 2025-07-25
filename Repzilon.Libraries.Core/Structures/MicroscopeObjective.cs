@@ -34,10 +34,10 @@ namespace Repzilon.Libraries.Core
 		public MicroscopeObjective(float focalLengthInMeters, float focalNumber)
 		{
 			if (focalLengthInMeters <= 0) {
-				throw new ArgumentOutOfRangeException("focalLengthInMeters");
+				throw new ArgumentOutOfRangeException(nameof(focalLengthInMeters));
 			}
 			if (focalNumber <= 0) {
-				throw new ArgumentOutOfRangeException("focalNumber");
+				throw new ArgumentOutOfRangeException(nameof(focalNumber));
 			}
 			FocalLengthInMeters = focalLengthInMeters;
 			FocalNumber = focalNumber;

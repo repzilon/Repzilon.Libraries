@@ -41,25 +41,25 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public AminoAcid(char letter, string code, string name)
 		{
 			if (!Char.IsLetter(letter)) {
-				throw new ArgumentOutOfRangeException("letter");
+				throw new ArgumentOutOfRangeException(nameof(letter));
 			}
 #if NET35 || NET20
 			if (RetroCompat.IsNullOrWhiteSpace(code)) {
-				throw new ArgumentNullException("code");
+				throw new ArgumentNullException(nameof(code));
 			}
 			if (RetroCompat.IsNullOrWhiteSpace(name)) {
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 #else
 			if (String.IsNullOrWhiteSpace(code)) {
-				throw new ArgumentNullException("code");
+				throw new ArgumentNullException(nameof(code));
 			}
 			if (String.IsNullOrWhiteSpace(name)) {
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 #endif
 			if (code.Trim().Length != 3) {
-				throw new ArgumentException("An amino acid symbol is made of three letters.", "code");
+				throw new ArgumentException("An amino acid symbol is made of three letters.", nameof(code));
 			}
 
 			this.Letter = letter;
@@ -110,17 +110,17 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public AminoAcid SetPkas(float pKa1NewValue, float pKa2NewValue, float pKaRnewValue, bool isDicationWhenVeryAcid)
 		{
 			if (Single.IsNaN(pKa1NewValue) || (pKa1NewValue < 1.5f) || (pKa1NewValue >= 14)) {
-				throw new ArgumentOutOfRangeException("pKa1NewValue");
+				throw new ArgumentOutOfRangeException(nameof(pKa1NewValue));
 			}
 			if (Single.IsNaN(pKa2NewValue) || (pKa2NewValue < 8) || (pKa2NewValue >= 14)) {
-				throw new ArgumentOutOfRangeException("pKa2NewValue");
+				throw new ArgumentOutOfRangeException(nameof(pKa2NewValue));
 			}
 			if (!Single.IsNaN(pKaRnewValue)) {
 				if ((pKaRnewValue < 3) || (pKaRnewValue >= 14)) {
-					throw new ArgumentOutOfRangeException("pKaRnewValue");
+					throw new ArgumentOutOfRangeException(nameof(pKaRnewValue));
 				}
 			} else if (isDicationWhenVeryAcid) {
-				throw new ArgumentException("An amino acid that is a dication under very acidic conditions must have a pKaR.", "isDicationWhenVeryAcid");
+				throw new ArgumentException("An amino acid that is a dication under very acidic conditions must have a pKaR.", nameof(isDicationWhenVeryAcid));
 			}
 
 			this.pKa1 = pKa1NewValue;
@@ -265,7 +265,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		public float WeightedCharge(float pH)
 		{
 			if ((pH < 1) || (pH > 14)) {
-				throw new ArgumentOutOfRangeException("pH");
+				throw new ArgumentOutOfRangeException(nameof(pH));
 			}
 			var dicat = this.DicationWhenVeryAcid;
 			var ar = this.pKaR;
@@ -334,7 +334,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private static float Isoelectric(float pKa1, float pKa2, byte cationCountAtPh1AndHalf, float pKaR)
 		{
 			if (cationCountAtPh1AndHalf > 2) {
-				throw new ArgumentOutOfRangeException("cationCountAtPh1AndHalf", cationCountAtPh1AndHalf,
+				throw new ArgumentOutOfRangeException(nameof(cationCountAtPh1AndHalf), cationCountAtPh1AndHalf,
 				 "The lateral chain of a amino acid can only form a cation, a dication or no cation at all under very acidic conditions.");
 			} else {
 				float sum;

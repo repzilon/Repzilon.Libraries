@@ -81,7 +81,7 @@ namespace Repzilon.Libraries.Core
 		private static void ValidateLength(Solution[] children)
 		{
 			if ((children == null) || (children.Length < 1)) {
-				throw new ArgumentNullException("children");
+				throw new ArgumentNullException(nameof(children));
 			}
 		}
 

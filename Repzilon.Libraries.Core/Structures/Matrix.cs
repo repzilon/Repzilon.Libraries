@@ -44,10 +44,10 @@ namespace Repzilon.Libraries.Core
 		internal Matrix(byte lines, byte columns, byte? augmentedColumn)
 		{
 			if (lines < 1) {
-				throw new ArgumentOutOfRangeException("lines", lines, "There must be at least one line in the matrix.");
+				throw new ArgumentOutOfRangeException(nameof(lines), lines, "There must be at least one line in the matrix.");
 			}
 			if (columns < 1) {
-				throw new ArgumentOutOfRangeException("columns", columns, "There must be at least one column in the matrix.");
+				throw new ArgumentOutOfRangeException(nameof(columns), columns, "There must be at least one column in the matrix.");
 			}
 			Lines = lines;
 			Columns = columns;
@@ -532,7 +532,7 @@ namespace Repzilon.Libraries.Core
 			coefficients[c] = Arithmetic<T>.MultiplyScalars(augmented[l, c], minusOne);
 #else
 			if (mult == null) {
-				throw new ArgumentNullException("mult");
+				throw new ArgumentNullException(nameof(mult));
 			}
 			coefficients[c] = mult(augmented[l, c], minusOne);
 #endif
@@ -552,11 +552,11 @@ namespace Repzilon.Libraries.Core
 		public void RunCommand(byte destinationLine, params Nullable<T>[] coefficients)
 		{
 			if (destinationLine >= this.Lines) {
-				throw new ArgumentOutOfRangeException("destinationLine", destinationLine,
+				throw new ArgumentOutOfRangeException(nameof(destinationLine), destinationLine,
 				 "The specified destination line is over the number of lines of the matrix.");
 			}
 			if (coefficients == null) {
-				throw new ArgumentNullException("coefficients");
+				throw new ArgumentNullException(nameof(coefficients));
 			}
 			if (coefficients.Length != this.Lines) {
 				throw new ArrayTypeMismatchException(String.Format(
@@ -600,10 +600,10 @@ namespace Repzilon.Libraries.Core
 			const string kOutOfRange = "The line index is bigger than the number of lines in the matrix.";
 			var tl = this.Lines;
 			if (first >= tl) {
-				throw new ArgumentOutOfRangeException("first", first, kOutOfRange);
+				throw new ArgumentOutOfRangeException(nameof(first), first, kOutOfRange);
 			}
 			if (second >= tl) {
-				throw new ArgumentOutOfRangeException("second", second, kOutOfRange);
+				throw new ArgumentOutOfRangeException(nameof(second), second, kOutOfRange);
 			}
 			if (second != first) {
 				for (byte j = 0; j < this.Columns; j++) {
@@ -716,10 +716,10 @@ namespace Repzilon.Libraries.Core
 			var l = this.Lines;
 			var c = this.Columns;
 			if (i >= l) {
-				throw new ArgumentOutOfRangeException("i");
+				throw new ArgumentOutOfRangeException(nameof(i));
 			}
 			if (j >= c) {
-				throw new ArgumentOutOfRangeException("j");
+				throw new ArgumentOutOfRangeException(nameof(j));
 			}
 
 			var tarValues = new T[checked((l - 1) * (c - 1))];
@@ -772,7 +772,7 @@ namespace Repzilon.Libraries.Core
 				return null;
 			} else {
 				if ((variables == null) || (variables.Length < 1)) {
-					throw new ArgumentNullException("variables");
+					throw new ArgumentNullException(nameof(variables));
 				}
 				dicSolved = new Dictionary<char, AffineBinomial<T>>();
 				var idd = 1.0 / Convert.ToDouble(det);
@@ -812,7 +812,7 @@ namespace Repzilon.Libraries.Core
 			const char kDefaultPolymorph = 't';
 
 			if ((variables == null) || (variables.Length < 1)) {
-				throw new ArgumentNullException("variables");
+				throw new ArgumentNullException(nameof(variables));
 			}
 
 			int l;

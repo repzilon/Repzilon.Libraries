@@ -130,7 +130,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var min = this.MinX;
 			var max = this.MaxX;
 			if ((x < min) || (x > max)) {
-				throw new ArgumentOutOfRangeException("x",
+				throw new ArgumentOutOfRangeException(nameof(x),
 				 String.Format("x is outside the range [{0}; {1}]", min, max));
 			}
 			return this.Intercept + (x * this.Slope);
@@ -141,7 +141,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var min = this.MinY;
 			var max = this.MaxY;
 			if ((y < min) || (y > max)) {
-				throw new ArgumentOutOfRangeException("y",
+				throw new ArgumentOutOfRangeException(nameof(y),
 				 String.Format("y is outside the range [{0}; {1}]", min, max));
 			}
 			return (y - this.Intercept) / this.Slope;
@@ -336,7 +336,7 @@ namespace Repzilon.Libraries.Core.Regression
 				na = b;
 				nb = a;
 			} else if ((newModel != MathematicalModel.Affine) && (newModel != MathematicalModel.Power)) {
-				throw new ArgumentOutOfRangeException("newModel");
+				throw new ArgumentOutOfRangeException(nameof(newModel));
 			}
 			if ((newModel == MathematicalModel.Logarithmic) || (newModel == MathematicalModel.Power)) {
 				minX = RoundOff.Error(Math.Pow(10, minX));

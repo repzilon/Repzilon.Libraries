@@ -146,7 +146,7 @@ namespace Repzilon.Libraries.Core
 		public static byte Count(IConvertible value)
 		{
 			if (value == null) {
-				throw new ArgumentNullException("value");
+				throw new ArgumentNullException(nameof(value));
 			}
 			// ReSharper disable once InconsistentNaming
 			var enuTC = value.GetTypeCode();
@@ -170,7 +170,7 @@ namespace Repzilon.Libraries.Core
 			} else if (enuTC == TypeCode.Decimal) {
 				return Count((decimal)value);
 			} else {
-				throw new ArgumentException("The argument is neither a number nor a string.", "value");
+				throw new ArgumentException("The argument is neither a number nor a string.", nameof(value));
 			}
 		}
 #endif
@@ -244,7 +244,7 @@ namespace Repzilon.Libraries.Core
 			if (value != null) {
 				value = value.Trim().Replace(" ", "");
 			} else {
-				throw new ArgumentNullException("value");
+				throw new ArgumentNullException(nameof(value));
 			}
 
 #if NETFRAMEWORK || NETSTANDARD2_0 || NET50 || NET60
@@ -373,7 +373,7 @@ namespace Repzilon.Libraries.Core
 					return Math.Floor(value * bubble) / bubble;
 				}
 			} else {
-				throw RetroCompat.NewUndefinedEnumException("rounding", rounding);
+				throw RetroCompat.NewUndefinedEnumException(nameof(rounding), rounding);
 			}
 #pragma warning restore CC0019 // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement

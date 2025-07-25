@@ -80,7 +80,7 @@ namespace Repzilon.Libraries.Core
 		{
 			Exp.CheckForInit(mantissa, numericBase);
 			if (numericBase > 65) {
-				throw new ArgumentOutOfRangeException("numericBase", numericBase,
+				throw new ArgumentOutOfRangeException(nameof(numericBase), numericBase,
 				 "A base bigger than 65 cannot be used with Exp18.");
 			}
 			data = Pack(Convert.ToInt32(mantissa * 10000), numericBase, exponent);

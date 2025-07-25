@@ -78,7 +78,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 					vmax = 1.0 / slope;
 					km = vmax * intercept;
 				} else {
-					throw RetroCompat.NewUndefinedEnumException("representation", representation);
+					throw RetroCompat.NewUndefinedEnumException(nameof(representation), representation);
 				}
 			}
 
@@ -114,7 +114,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 					vmax = 1 / slope;
 					km = vmax * intercept;
 				} else {
-					throw RetroCompat.NewUndefinedEnumException("representation", representation);
+					throw RetroCompat.NewUndefinedEnumException(nameof(representation), representation);
 				}
 			}
 			return new EnzymeKinematic<decimal>(vmax, speedUnit, km, concentrationUnit, rm.R, representation);

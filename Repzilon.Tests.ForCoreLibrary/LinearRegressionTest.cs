@@ -677,11 +677,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		params IFormattable[] arguments)
 		{
 			if (arguments == null) {
-				throw new ArgumentNullException("arguments");
+				throw new ArgumentNullException(nameof(arguments));
 			}
 			var c = arguments.Length;
 			if (c < 1) {
-				throw new ArgumentNullException("arguments");
+				throw new ArgumentNullException(nameof(arguments));
 			}
 			var objarArgs = new object[c];
 			for (var i = 0; i < c; i++) {

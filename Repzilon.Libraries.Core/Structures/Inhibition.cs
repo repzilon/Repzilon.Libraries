@@ -54,10 +54,10 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		{
 			ValidateKind(kind);
 			if (value.CompareTo(default(T)) < 0) {
-				throw new ArgumentOutOfRangeException("value", value, "Inhibition constant cannot be negative.");
+				throw new ArgumentOutOfRangeException(nameof(value), value, "Inhibition constant cannot be negative.");
 			}
 			if (unit == null) {
-				throw new ArgumentNullException("unit");
+				throw new ArgumentNullException(nameof(unit));
 			}
 			this.Kind = kind;
 			this.Value = value;
@@ -158,7 +158,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private static void ValidateKind(InhibitionKind kind)
 		{
 			if (kind > InhibitionKind.Mixed) {
-				throw RetroCompat.NewUndefinedEnumException("kind", kind);
+				throw RetroCompat.NewUndefinedEnumException(nameof(kind), kind);
 			}
 		}
 	}

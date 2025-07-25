@@ -29,7 +29,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			if (forEach == null) {
-				throw new ArgumentNullException("forEach");
+				throw new ArgumentNullException(nameof(forEach));
 			}
 
 			var sum = default(T);
@@ -59,7 +59,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 #if NET20
 			return Arithmetic<T>.SubtractScalars(expression(b), expression(a));
@@ -75,7 +75,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (forEach == null) {
-				throw new ArgumentNullException("forEach");
+				throw new ArgumentNullException(nameof(forEach));
 			}
 
 			long sum = 0;
@@ -92,7 +92,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (forEach == null) {
-				throw new ArgumentNullException("forEach");
+				throw new ArgumentNullException(nameof(forEach));
 			}
 
 			float sum = 0;
@@ -109,7 +109,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (forEach == null) {
-				throw new ArgumentNullException("forEach");
+				throw new ArgumentNullException(nameof(forEach));
 			}
 
 			double sum = 0;
@@ -126,7 +126,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (forEach == null) {
-				throw new ArgumentNullException("forEach");
+				throw new ArgumentNullException(nameof(forEach));
 			}
 
 			decimal sum = 0;
@@ -158,7 +158,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			double sum = 0;
 			var deltaXk = (b - a) / n;
@@ -176,7 +176,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			decimal sum = 0;
 			var deltaXk = (b - a) / n;
@@ -193,7 +193,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			return expression(b) - expression(a);
 		}
@@ -205,7 +205,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			return expression(b) - expression(a);
 		}
@@ -217,7 +217,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			return expression(b) - expression(a);
 		}
@@ -229,7 +229,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			const double kOneSixth = 1.0 / 6;
 			return (b - a) * kOneSixth * (expression(a) + (4 * expression(0.5 * (a + b))) + expression(b));
@@ -242,7 +242,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			const double kOneThird = 1.0 / 3;
 			return (b - a) * 0.125 * (expression(a) + (3 * expression(kOneThird * ((2 * a) + b))) + (3 * expression(kOneThird * (a + (2 * b)))) + expression(b));
@@ -255,7 +255,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			const double kOneThird = 1.0 / 3;
 			var h = (b - a) / n;
@@ -279,7 +279,7 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			const decimal kOneThird = Decimal.One / 3;
 			var h = (b - a) / n;
@@ -303,10 +303,10 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			if (n % 3 != 0) {
-				throw new ArgumentOutOfRangeException("n", n, "The number of iterations must be a multiple of 3.");
+				throw new ArgumentOutOfRangeException(nameof(n), n, "The number of iterations must be a multiple of 3.");
 			}
 			var h = (b - a) / n;
 			var sum = expression(a) + expression(b);
@@ -343,10 +343,10 @@ namespace Repzilon.Libraries.Core
 #endif
 		{
 			if (expression == null) {
-				throw new ArgumentNullException("expression");
+				throw new ArgumentNullException(nameof(expression));
 			}
 			if (n % 3 != 0) {
-				throw new ArgumentOutOfRangeException("n", n, "The number of iterations must be a multiple of 3.");
+				throw new ArgumentOutOfRangeException(nameof(n), n, "The number of iterations must be a multiple of 3.");
 			}
 			var h = (b - a) / n;
 			var sum = expression(a) + expression(b);

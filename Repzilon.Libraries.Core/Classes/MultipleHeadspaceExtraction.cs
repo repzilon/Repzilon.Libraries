@@ -35,7 +35,7 @@ namespace Repzilon.Libraries.Core
 		{
 			const float kMinCorrelation = -0.9949874f; //-0.99498743710662f; // the slope is normally downwards => negative r
 			if ((areas == null) || (areas.Length < 1)) {
-				throw new ArgumentNullException("areas");
+				throw new ArgumentNullException(nameof(areas));
 			}
 			var c = areas.Length;
 			if (c < 4) {
