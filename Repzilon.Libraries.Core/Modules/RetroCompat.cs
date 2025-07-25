@@ -34,7 +34,7 @@ namespace Repzilon.Libraries.Core
 		where T : struct
 		{
 			return new ArgumentOutOfRangeException(name,
-			 "The value of enumeration named " + name + " of type " + typeof(T) + " is not valid.");
+			 "The value " + value.ToString() + " of enumeration named " + name + " of type " + typeof(T) + " is not valid.");
 		}
 #elif NETCOREAPP1_0 || NETSTANDARD1_3 || NETSTANDARD1_6
 		internal static ArgumentOutOfRangeException NewUndefinedEnumException<T>(string name, T value)
