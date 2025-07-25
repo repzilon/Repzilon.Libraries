@@ -1,7 +1,6 @@
-<Project Sdk="Microsoft.NET.Sdk">
+﻿<Project Sdk="Microsoft.NET.Sdk">
   <PropertyGroup Condition=" '$(VisualStudioVersion)' == '17.0' ">
     <TargetFrameworks>net20;net35;net46;net5.0;net6.0;netcoreapp1.0;netcoreapp2.1;netcoreapp3.1</TargetFrameworks>
-    <NoWarn>NETSDK1138</NoWarn>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(VisualStudioVersion)' != '17.0' ">
     <TargetFrameworks>netcoreapp2.1;netcoreapp1.0;net46;net40;net35;net20</TargetFrameworks>
@@ -9,19 +8,8 @@
   <PropertyGroup>
     <OutputType>Exe</OutputType>
     <GenerateAssemblyInfo>false</GenerateAssemblyInfo>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Debug' ">
     <WarningsAsErrors>NU1605</WarningsAsErrors>
     <NoWarn>NETSDK1138;NU1902;NU1903;1701</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)' == 'Release' ">
-    <NoWarn>NETSDK1138;NU1902;NU1903;1701</NoWarn>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-	<DefineConstants>DEBUG;TRACE</DefineConstants>
-  </PropertyGroup>
-  <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Release|AnyCPU' ">
-    <DebugSymbols>true</DebugSymbols>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="..\Repzilon.Libraries.Core\Repzilon.Libraries.Core.csproj" />
