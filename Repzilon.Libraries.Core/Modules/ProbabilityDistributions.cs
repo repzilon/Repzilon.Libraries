@@ -63,22 +63,29 @@ namespace Repzilon.Libraries.Core
 
 		public static double Normal(double z, bool cumulative)
 		{
+#pragma warning disable CC0001 // You should use 'var' whenever possible.
+#pragma warning disable CC0105 // You should use 'var' whenever possible.
+			/*const*/ double kZero = 0;
+			/*const*/ double kHalf = 0.5;
+			/*const*/ decimal kHalfM = 0.5m;
+#pragma warning restore CC0105 // You should use 'var' whenever possible.
+#pragma warning restore CC0001 // You should use 'var' whenever possible.
 			if (!cumulative) {
 				return NonCumulativeNormal(z);
-			} else if (z == 0) {
-				return 0.5;
+			} else if (z == kZero) {
+				return kHalf;
 			} else if (Double.IsNegativeInfinity(z)) {
-				return 0;
+				return kZero;
 			} else if (Double.IsPositiveInfinity(z)) {
 				return 1;
 			} else if (z < -1 * MacLaurinBreakpoint) {
-				return 0.5 - SimpsonForNormal(-1 * z);
-			} else if (z < 0) {
-				return (double)(0.5m - MacLaurinPositiveNormalIntegral(-1 * (decimal)z));
+				return kHalf - SimpsonForNormal(-z);
+			} else if (z < kZero) {
+				return (double)(kHalfM - MacLaurinPositiveNormalIntegral((decimal)-z));
 			} else if (z > MacLaurinBreakpoint) {
-				return 0.5 + SimpsonForNormal(z);
+				return kHalf + SimpsonForNormal(z);
 			} else {
-				return (double)(0.5m + MacLaurinPositiveNormalIntegral((decimal)z));
+				return (double)(kHalfM + MacLaurinPositiveNormalIntegral((decimal)z));
 			}
 		}
 
