@@ -36,6 +36,19 @@ namespace Repzilon.Libraries.Core
 #endif
 		where T : struct, IEquatable<T>, IFormattable, IComparable<T>
 		{
+			if (functionF == null) {
+				throw new ArgumentNullException(nameof(functionF));
+			}
+			if (functionG == null) {
+				throw new ArgumentNullException(nameof(functionG));
+			}
+			if (derivativeF == null) {
+				throw new ArgumentNullException(nameof(derivativeF));
+			}
+			if (derivativeG == null) {
+				throw new ArgumentNullException(nameof(derivativeG));
+			}
+
 #if !NET20
 			var sub = Arithmetic<T>.Sub;
 #endif
@@ -75,6 +88,12 @@ namespace Repzilon.Libraries.Core
 #endif
 		where T : struct, IEquatable<T>, IFormattable, IComparable<T>
 		{
+			if (functionF == null) {
+				throw new ArgumentNullException(nameof(functionF));
+			}
+			if (derivativeF == null) {
+				throw new ArgumentNullException(nameof(derivativeF));
+			}
 #if !NET20
 			var sub = Arithmetic<T>.Sub;
 #endif

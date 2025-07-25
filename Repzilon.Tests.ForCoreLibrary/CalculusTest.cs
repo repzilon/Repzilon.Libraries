@@ -215,8 +215,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 		Func<double, double> math, Func<decimal, decimal> extraMath)
 #endif
 		{
+			// This is a private method for which I won't pass null
+#pragma warning disable CC0031 // Check for null before calling a delegate
 			var fr8 = math(x);
 			var fD = extraMath((decimal)x);
+#pragma warning restore CC0031 // Check for null before calling a delegate
 			var der8 = (double)fD - fr8;
 			if (!RoundOff.AreEqual(der8, 0)) {
 				throw new ArithmeticException(String.Format(
