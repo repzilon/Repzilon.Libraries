@@ -110,14 +110,14 @@ namespace Repzilon.Libraries.Core
 				formatProvider = CultureInfo.CurrentCulture;
 			}
 			var stbInterval = new StringBuilder();
-			if (format.StartsWith("G") || format.StartsWith("g")) {
+			if (format.StartsWith("G", StringComparison.OrdinalIgnoreCase)) {
 				stbInterval.Append(this.Middle.ToString(format, formatProvider)).Append(" ± ")
 				 .Append(this.Margin.ToString(format, formatProvider));
 			}
-			if (format.StartsWith("G")) {
+			if (format.StartsWith("G", StringComparison.Ordinal)) {
 				stbInterval.Append(" -> ");
 			}
-			if (!format.StartsWith("g")) {
+			if (!format.StartsWith("g", StringComparison.Ordinal)) {
 				stbInterval.Append('[').Append(this.Min().ToString(format, formatProvider)).Append("; ")
 				 .Append(this.Max().ToString(format, formatProvider)).Append(']');
 			}

@@ -348,7 +348,7 @@ STQTALA";
 		private static string Nanable(float value, string format)
 		{
 			// «Non numérique» is too long
-			return Single.IsNaN(value) && CultureInfo.CurrentCulture.Name.StartsWith("fr") ?
+			return Single.IsNaN(value) && CultureInfo.CurrentCulture.Name.StartsWith("fr", StringComparison.Ordinal) ?
 			 "!Num" : value.ToString(format);
 		}
 
@@ -368,7 +368,7 @@ STQTALA";
 		{
 			if (withKinematic) {
 				var kinematic = Enzyme.Speed("mmol/L", A240By30s, representation, dataPoints);
-				OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4), true);
+				 OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, 4), true);
 			} else {
 				LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(dataPoints));
 			}

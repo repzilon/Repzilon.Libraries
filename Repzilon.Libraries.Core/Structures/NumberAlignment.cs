@@ -82,7 +82,8 @@ namespace Repzilon.Libraries.Core
 				numberText = numberText.Trim();
 				int posOfE, posOfSep;
 				var blnNegative = false;
-				if (numberText.StartsWith(numberFormat.NegativeSign)) {
+				var enuSC = Equals(numberFormat, NumberFormatInfo.InvariantInfo) ? StringComparison.Ordinal : StringComparison.CurrentCulture;
+				if (numberText.StartsWith(numberFormat.NegativeSign, enuSC)) {
 					this[NumberAlignmentFlags.NegativeMantissa] = true;
 					blnNegative = true;
 				}
@@ -98,7 +99,7 @@ namespace Repzilon.Libraries.Core
 					 (byte)(numberText.Length - posOfE - negativeExponent));
 				}
 				var nds = numberFormat.NumberDecimalSeparator;
-				posOfSep = numberText.IndexOf(nds, Equals(numberFormat, NumberFormatInfo.InvariantInfo) ? StringComparison.Ordinal : StringComparison.CurrentCulture);
+				posOfSep = numberText.IndexOf(nds, enuSC);
 				posOfE   = (posOfE > -1) ? posOfE : numberText.Length;
 				if (posOfSep > -1) {
 					this[NumberAlignmentFlags.DecimalSeparator] = true;
@@ -117,7 +118,8 @@ namespace Repzilon.Libraries.Core
 			var nfi = FindNumberFormat(formatProvider);
 			var nds = nfi.NumberDecimalSeparator;
 			var allDecimals = this.DecimalDigits;
-			var numberIsNegative = numberText.StartsWith(nfi.NegativeSign);
+			var numberIsNegative = numberText.StartsWith(nfi.NegativeSign,
+			 Equals(nfi, NumberFormatInfo.InvariantInfo) ? StringComparison.Ordinal : StringComparison.CurrentCulture);
 			if (this[NumberAlignmentFlags.NegativeMantissa] && !numberIsNegative) {
 				numberText = " " + numberText;
 			}
