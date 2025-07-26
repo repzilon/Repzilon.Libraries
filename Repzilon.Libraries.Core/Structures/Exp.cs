@@ -158,7 +158,10 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(double other)
 		{
+			// I don't want Object.Equals here
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 			return RoundOff.Equals(this.ToDouble(), other);
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 
 		public bool Equals(decimal other)
@@ -169,7 +172,10 @@ namespace Repzilon.Libraries.Core
 #if !NETSTANDARD1_1
 		public bool Equals(IConvertible other)
 		{
+			// I don't want Object.Equals here
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 			return (other != null) && RoundOff.Equals(this.ToDouble(), Convert.ToDouble(other));
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 #endif
 
@@ -219,7 +225,7 @@ namespace Repzilon.Libraries.Core
 						return AdjustMantissaExponent(x.Mantissa * (float)Math.Pow(b, p - y.Exponent) + y.Mantissa, b, y.Exponent);
 					} else {
 						return AdjustMantissaExponent(x.Mantissa + y.Mantissa * (float)Math.Pow(b, y.Exponent - p), b, p);
-					} 
+					}
 				} else {
 					throw new ArgumentException("Base and exponent must be identical");
 				}
@@ -256,7 +262,7 @@ namespace Repzilon.Libraries.Core
 				} else {
 					return AdjustMantissaExponent(x.Mantissa * y.Mantissa, b, x.Exponent + y.Exponent);
 				}
-			}	
+			}
 		}
 
 		public static Exp operator /(Exp x, Exp y)

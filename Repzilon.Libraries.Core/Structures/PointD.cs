@@ -97,12 +97,18 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(PointD other)
 		{
+			// I don't want Object.Equals here
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 			return RoundOff.Equals(X, other.X) && RoundOff.Equals(Y, other.Y);
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 
 		public bool Equals(IPoint<double> other)
 		{
+			// I don't want Object.Equals here
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 			return (other != null) &&  RoundOff.Equals(X, other.X) && RoundOff.Equals(Y, other.Y);
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 
 		public bool Equals(PointM other)

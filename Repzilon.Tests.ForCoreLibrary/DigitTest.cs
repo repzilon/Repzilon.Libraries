@@ -80,7 +80,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 					var input = karFiveFiguresInput[f];
 					var expected = karFiveFiguresExpected[f];
 					dblComputed = SignificantDigits.Round(input, 5, RoundingMode.AwayFromZero);
+					// This is the test of RoundOff.Equals itself
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 					Console.WriteLine(RoundOff.Equals(dblComputed, expected) ? "{0,14} -> {1,10} correct" : "{0,14} -> {1,10} WRONG (should be {2})",
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 					 input, dblComputed, expected);
 				}
 			} catch (Exception ex) {

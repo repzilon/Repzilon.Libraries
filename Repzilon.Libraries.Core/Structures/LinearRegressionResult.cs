@@ -239,7 +239,9 @@ namespace Repzilon.Libraries.Core.Regression
 
 		public bool Equals(LinearRegressionResult other)
 		{
+			// I don't want Object.Equals here
 			return m_intCount == other.m_intCount &&
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 				   RoundOff.Equals(Slope, other.Slope) &&
 				   RoundOff.Equals(Intercept, other.Intercept) &&
 				   RoundOff.Equals(Correlation, other.Correlation) &&
@@ -251,6 +253,7 @@ namespace Repzilon.Libraries.Core.Regression
 				   RoundOff.Equals(MaxY, other.MaxX) &&
 				   RoundOff.Equals(MinY, other.MinY) &&
 				   RoundOff.Equals(MaxY, other.MaxY);
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 
 		public override int GetHashCode()

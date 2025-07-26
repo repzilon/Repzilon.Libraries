@@ -183,7 +183,10 @@ namespace Repzilon.Libraries.Core
 
 		public bool Equals(double other)
 		{
+			// I don't want Object.Equals here
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 			return RoundOff.Equals(this.ToDouble(), other);
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 
 		public bool Equals(decimal other)
@@ -194,7 +197,10 @@ namespace Repzilon.Libraries.Core
 #if !NETSTANDARD1_1
 		public bool Equals(IConvertible other)
 		{
+			// I don't want Object.Equals here
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 			return (other != null) && RoundOff.Equals(this.ToDouble(), Convert.ToDouble(other));
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 #endif
 

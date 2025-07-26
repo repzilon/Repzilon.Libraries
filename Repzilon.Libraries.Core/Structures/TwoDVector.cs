@@ -117,7 +117,7 @@ namespace Repzilon.Libraries.Core.Vectors
 			ValueType cy = this.Y;
 #pragma warning restore U2U1018
 #pragma warning restore U2U1019
-			return cx is decimal ? Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy)) : 
+			return cx is decimal ? Convert.ToDouble(ExtraMath.Hypoth((decimal)cx, (decimal)cy)) :
 			 ExtraMath.Hypoth(Convert.ToDouble(cx), Convert.ToDouble(cy));
 		}
 
@@ -215,7 +215,10 @@ namespace Repzilon.Libraries.Core.Vectors
 		{
 			if (other != null) {
 				var n = this.Norm();
+				// I don't want Object.Equals here
+#pragma warning disable RECS0030 // Suggests using the class declaring a static function when calling it
 				if (RoundOff.Equals(n, Convert.ToDouble(other.Norm))) {
+#pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 					var oa = other.Angle;
 					return Equals(new TwoDVector<T>(
 					 ExtraMath.ConvertTo<T>(n * oa.Cos()),
