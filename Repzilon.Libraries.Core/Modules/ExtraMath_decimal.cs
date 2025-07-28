@@ -183,8 +183,10 @@ namespace Repzilon.Libraries.Core
 					// We multiply by -1 each time so that the sign of the component
 					// changes each time. The first item is positive and it
 					// alternates back and forth after that.
+#pragma warning disable S125 // Sections of code should not be commented out
 					// Following is equivalent to: nextAdd *= y * (iteration * 2) / (iteration * 2 + 1);
 					nextAdd *= y * doubleIteration / (doubleIteration + kOne);
+#pragma warning restore S125 // Sections of code should not be commented out
 				}
 
 				if (nextAdd == kZero) {
@@ -285,8 +287,10 @@ namespace Repzilon.Libraries.Core
 					// We multiply by -1 each time so that the sign of the component
 					// changes each time. The first item is positive and it
 					// alternates back and forth after that.
+#pragma warning disable S125 // Sections of code should not be commented out
 					// Following is equivalent to: nextAdd *= -1 * x * x / ((2 * iteration - 1) * (2 * iteration));
 					nextAdd *= -1 * xSquared / ((doubleIteration * doubleIteration) - doubleIteration);
+#pragma warning restore S125 // Sections of code should not be commented out
 				}
 
 				if (nextAdd == kZero) {
@@ -426,12 +430,12 @@ namespace Repzilon.Libraries.Core
 					// We multiply by -1 each time so that the sign of the component
 					// changes each time. The first item is positive and it
 					// alternates back and forth after that.
+#pragma warning disable S125 // Sections of code should not be commented out
 					// Following is equivalent to: nextAdd *= -1 * m * m / ((2 * iteration) * (2 * iteration + 1));
 					nextAdd *= -1 * mSquared / ((doubleIteration * doubleIteration) + doubleIteration);
+#pragma warning restore S125 // Sections of code should not be commented out
 				}
 
-				// Debug.WriteLine("{0:000}:{1,33:+0.0000000000000000000000000000;-0.0000000000000000000000000000} ->{2,33:+0.0000000000000000000000000000;-0.0000000000000000000000000000}",
-				//    doubleIteration / 2, nextAdd, result + nextAdd);
 				if (nextAdd == kZero) {
 					break;
 				}

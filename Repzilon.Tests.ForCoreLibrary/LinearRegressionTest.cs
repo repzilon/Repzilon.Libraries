@@ -500,7 +500,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		}
 
 		private static void InterpolateMolecularWeight(byte pitNumber, float migrationFront, float[] bands,
-		RegressionModel<double> logarithmicFullModel, RegressionModel<double> logarithmicInnerModel, 
+		RegressionModel<double> logarithmicFullModel, RegressionModel<double> logarithmicInnerModel,
 		RegressionModel<double> powerModel)
 		{
 			for (var i = 0; i < bands.Length; i++) {
@@ -585,18 +585,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			OutputXExtrapolation(lrp, numberFormat, ciCu, yForXExtrapolation, studentLawValue, b);
 		}
-
-		/*
-		private static void OutputLinearRegression2<TRegression, TStorage>(TRegression lrp,
-		string numberFormat, bool checkBiases)
-		where TRegression : struct, ILinearRegressionResult<TStorage>
-		where TStorage : struct, IConvertible, IFormattable, IComparable<TStorage>, IEquatable<TStorage>, IComparable
-		{
-			OutputLinearRegression2(numberFormat, CultureInfo.CurrentCulture, lrp.Slope,
-			 ExtraMath.ConvertTo<TStorage>(
-			 ProbabilityDistributions.InverseStudent(RoundOff.Error(1 - 0.025f), checked((byte)(lrp.Count - 2)))),
-			 checkBiases, lrp, lrp.ResidualStdDev());
-		}// */
 
 		private static void OutputLinearRegression2<TRegression, TStorage>(string numberFormat, CultureInfo culture,
 		TStorage b, TStorage studentLawValue, bool checkBiases, TRegression lrp, TStorage sr)

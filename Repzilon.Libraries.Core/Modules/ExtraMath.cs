@@ -48,8 +48,10 @@ namespace Repzilon.Libraries.Core
 				var sqrt = Sqrt(determinant);
 				var halfA = 0.5m * a; // Avoid the SLOW division instruction on every CPU and FPU
 				return new KeyValuePair<decimal, decimal>(
+#pragma warning disable S125 // Sections of code should not be commented out
 				 (sqrt - b) * halfA, // That's (-b + sqrt(d)) / 2a in fewer operations,
 				 ((-1 * b) - sqrt) * halfA); // (-b - sqrt(d)) / 2a);
+#pragma warning restore S125 // Sections of code should not be commented out
 			} else {
 				return null;
 			}

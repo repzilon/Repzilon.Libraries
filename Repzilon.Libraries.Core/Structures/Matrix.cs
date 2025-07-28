@@ -893,18 +893,9 @@ namespace Repzilon.Libraries.Core
 					for (l = 1; l <= m; l++) {
 						var newvar = Convert.ToDouble(augmented[(byte)(m - l), k]);
 						for (c = 1; c < l; c++) {
-							/* Before code variable inlining
-							var coefficient = augmented[(byte)(m - l), (byte)(this.Columns - c)];
-							var valueOfPreviousVar = dicSolved[variables[variables.Length - c]];
-							newvar -= Convert.ToDouble(coefficient) * Convert.ToDouble(valueOfPreviousVar);
-							// */
 							newvar -= Convert.ToDouble(augmented[(byte)(m - l), (byte)(k - c)]) *
 							 Convert.ToDouble(dicSolved[variables[variables.Length - c]]);
 						}
-						/* Before code variable inlining
-						double isolated = newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]);
-						dicSolved.Add(variables[variables.Length - l], isolated.ConvertTo<T>());
-						// */
 						AffineBinomialExtensions.AddConstant(dicSolved, variables[variables.Length - l],
 						 newvar / Convert.ToDouble(augmented[(byte)(m - l), (byte)(variables.Length - l)]));
 					}

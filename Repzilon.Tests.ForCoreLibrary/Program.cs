@@ -171,7 +171,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 					return ReadKey2();
 				} catch (InvalidOperationException) {
 					workaroundCygwin = TriState.True;
-					//System.Diagnostics.Debugger.Launch();
 					return ReadFirstCharOfLine();
 				}
 			}

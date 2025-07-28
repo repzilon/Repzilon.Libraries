@@ -81,7 +81,6 @@ STQTALA";
 				aa = AminoAcid.AlphaList[i];
 				dicAminoAcids.Add(aa.Name, aa);
 			}
-			//foreach (var aa in dicAminoAcids.Values) {
 			for (i = 0; i < dicAminoAcids.Count; i++) {
 				aa = dicAminoAcids.Values[i];
 				Console.Write("{0} {1} {2,-20} ", aa.Letter, aa.Symbol, aa.Name);

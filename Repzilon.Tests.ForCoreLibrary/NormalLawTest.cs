@@ -184,7 +184,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 					} else if (delta == previousDelta) {
 						repetitions++;
 					}
-					//Console.Error.WriteLine("p={0} n={1} delta={2:e}", p, m, delta);
+#if DEBUG
+					Console.Error.WriteLine("p={0} n={1} delta={2:e}", p, m, delta);
+#endif
 				}
 
 				OutputProbitEstimate(p, probit, delta, withNewDelta);
@@ -307,7 +309,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static decimal NonCumulativeNormal(decimal z)
 		{
-			//return (decimal)ProbabilityDistributions.Normal((double)z, false);
 			return DecimalOneOfRootOfTwoPi * (decimal)Math.Exp((double)(-0.5m * z * z));
 		}
 

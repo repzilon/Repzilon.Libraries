@@ -171,19 +171,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var rev10_tetra = new List<AlphaAminoAcid>[4];
 			rev10_tetra[rev10_tetra.Length - 1] = PutSymbols(/*AlphaAminoAcid.Lys,*/ AlphaAminoAcid.Arg, AlphaAminoAcid.Ala);
 			Fill(rev10_tetra, lstAllowed);
-			//RestrictToAvailable(rev10_tetra, rev10_allowed);
 
 			var rev10_hexa_c2 = new List<AlphaAminoAcid>[2];
 			rev10_hexa_c2[0] = PutSymbols(/*AlphaAminoAcid.Phe,*/ AlphaAminoAcid.Tyr, /*AlphaAminoAcid.Trp,*/ AlphaAminoAcid.Ile/*, AlphaAminoAcid.Ser, AlphaAminoAcid.Thr*/);
 			rev10_hexa_c2[1] = PutSymbols(/*AlphaAminoAcid.Lys,*/ AlphaAminoAcid.Arg, AlphaAminoAcid.Ala, /*AlphaAminoAcid.Phe,*/ AlphaAminoAcid.Tyr/*, AlphaAminoAcid.Trp*/);
-			//RestrictToAvailable(rev10_hexa_c2, rev10_allowed);
 
 			var rev10_hexa_c4 = new List<AlphaAminoAcid>[4];
 			rev10_hexa_c4[0] = PutSymbols(AlphaAminoAcid.Asp/*, AlphaAminoAcid.Glu*/);
 			rev10_hexa_c4[1] = PutSymbols(AlphaAminoAcid.Val);
 			rev10_hexa_c4[rev10_hexa_c4.Length - 1] = PutSymbols(/*AlphaAminoAcid.Lys,*/ AlphaAminoAcid.Arg, AlphaAminoAcid.Ala, /*AlphaAminoAcid.Phe,*/ AlphaAminoAcid.Tyr/*, AlphaAminoAcid.Trp*/);
 			Fill(rev10_hexa_c4, lstAllowed);
-			//RestrictToAvailable(rev10_hexa_c4, rev10_allowed);
 
 			// Using LINQ is faster than the FindAll method
 			var lstRev10_tetra = PermutationsForQuadSlots(rev10_tetra, AlphaAminoAcid.Gly).Where(x => x.Exists(AlphaAminoAcidExtension.IsAlkali)).Where(HasPartRev10Sequence).ToList();
@@ -435,24 +432,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Fill(destination, source as IReadOnlyList<AlphaAminoAcid>);
 #endif
 		}
-
-		/* RestrictToAvailable is no longer needed if you restrict beforehand
-		private static void RestrictToAvailable<T>(List<T>[] slots, params T[] allowed)
-		{
-			for (int i = 0; i < slots.Length; i++) {
-				slots[i].RemoveAll(x => !allowed.Contains(x));
-			}
-		}// */
-
-		/*
-		private static long CountPermutations<T>(ICollection<T>[] slots)
-		{
-			long permutations = 1;
-			for (int i = 0; i < slots.Length; i++) {
-				permutations *= slots[i].Count;
-			}
-			return permutations;
-		}// */
 
 		private static List<List<AlphaAminoAcid>> PermutationsForQuadSlots(List<AlphaAminoAcid>[] quadSlotted,
 		AlphaAminoAcid dualAminoAcid)

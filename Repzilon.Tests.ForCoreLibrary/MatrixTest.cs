@@ -229,7 +229,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			t2_8ref.RunCommand(0, 1.0f / 70, null, null);
 			t2_8ref.RunCommand(1, null, 1.0f / 70, null);
 			t2_8ref.RunCommand(2, null, null, -0.2f);
-			//t2_8ref.RoundErrors();
 			Console.WriteLine(t2_8ref);
 			var t2_8rf = t2_8ref.Right() * t2_8D.Cast<float>();
 			MatrixExtensionMethods.RoundErrors(t2_8rf);

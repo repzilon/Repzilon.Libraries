@@ -30,12 +30,6 @@ namespace Repzilon.Libraries.Core.Regression
 			return Compute(RegressionOption.None, points as IList<PointD>);
 		}
 
-		/*
-		private static RegressionModel<double> Compute(RegressionOption option, params PointD[] points)
-		{
-			return Compute(option, points as IList<PointD>);
-		}// */
-
 		public static RegressionModel<double> Compute(IEnumerable<PointD> points)
 		{
 			return Compute(RegressionOption.None, points);
@@ -139,12 +133,6 @@ namespace Repzilon.Libraries.Core.Regression
 		{
 			return Compute(RegressionOption.None, points as IList<PointM>);
 		}
-
-		/*
-		private static RegressionModel<decimal> Compute(RegressionOption option, params PointM[] points)
-		{
-			return Compute(option, points as IList<PointM>);
-		}// */
 
 		public static RegressionModel<decimal> Compute(IEnumerable<PointM> points)
 		{

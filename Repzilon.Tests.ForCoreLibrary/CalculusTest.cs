@@ -228,7 +228,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
-		/*
+#if false
 		private static void TestMethodAtan2()
 		{
 			for (int i = 0; i < testCount; i++) {
@@ -270,7 +270,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			decimal dResult = ExtraMath.Pow(dx, dy);
 
 			Assert.AreEqual(dResult, 100000m);
-		}// */
+		}
+#endif
 		#endregion
 
 		private static long Fibonacci(byte n)
