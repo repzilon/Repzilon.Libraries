@@ -39,7 +39,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<ErrorMargin<double>>();
 			OutputLinearRegression2<LinearRegressionResult, double>(LinearRegression.Compute(ptarDouble),
 			 "G", true, 8.25f, 3.4); // Rounding 3.4f takes more place
-			// x can also be 7 or 8, and y can also be 7.5
+									 // x can also be 7 or 8, and y can also be 7.5
 			int j;
 			var dtmStart = DateTime.UtcNow;
 			for (j = 0; j < kBenchIterationsDouble; j++) {
@@ -147,10 +147,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(100, RoundedInverse("29,95"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
-			var vmax0   = 1.0 / lrr0.Intercept;
-			var Km0     = lrr0.Slope * vmax0;
+			var vmax0 = 1.0 / lrr0.Intercept;
+			var Km0 = lrr0.Slope * vmax0;
 			var strVmax = Program.UnicodeTerminal ? "vₘₐₓ" : "vmax";
-			var strKm   = Program.UnicodeTerminal ? "kₘ" : "Km";
+			var strKm = Program.UnicodeTerminal ? "kₘ" : "Km";
 			Console.Write("{0} = {1:g4} nmol/min\t{2} = ", strVmax, vmax0 / 60, strKm);
 			Console.WriteLine("{0:g4} mol/L", Km0);
 
@@ -363,7 +363,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 "Pit Distance  Rf   M from log10 w. tails M from log10 no tail M from power";
 
 			Console.WriteLine(strUnit);
-			InterpolateMolecularWeight(9, 53.5f, new[]{30.5f, 17}, rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner, rm);
+			InterpolateMolecularWeight(9, 53.5f, new[] { 30.5f, 17 }, rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner, rm);
 
 			Program.OutputHeading("Immunotechniques lab 4");
 			const float kFrontDistance4Std = 90.5f;
@@ -396,10 +396,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputHeading("Ecotoxicology Microtox");
 			var karSnowI0 = new byte[10] { 96, 88, 87, 86, 87, 92, 88, 87, 88, 80 };
 			var karPO4WasteI0 = new byte[10] { 92, 96, 95, 95, 98, 94, 97, 98, 94, 94 };
-			OutputMicrotox("Neige sale",  5, karSnowI0, new byte[10] { 125, 122, 129, 123, 126, 128, 116, 121, 98, 67 });
+			OutputMicrotox("Neige sale", 5, karSnowI0, new byte[10] { 125, 122, 129, 123, 126, 128, 116, 121, 98, 67 });
 			OutputMicrotox("Neige sale", 15, karSnowI0, new byte[10] { 123, 118, 125, 121, 125, 123, 115, 114, 92, 65 });
 			strUnit = Program.UnicodeTerminal ? "Rejets PO₄" : "Rejets PO4";
-			OutputMicrotox(strUnit,  5, karPO4WasteI0, new byte[10] { 126, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
+			OutputMicrotox(strUnit, 5, karPO4WasteI0, new byte[10] { 126, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
 			OutputMicrotox(strUnit, 15, karPO4WasteI0, new byte[10] { 120, 0, 0, 1, 0, 0, 0, 0, 2, 0 });
 
 			Program.OutputHeading("Instrumental analysis II Mass spectroscopy mean travel");
@@ -411,7 +411,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("  ");
 			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
 			PointD ptd;
-			for (i = 0; i < ptarDouble.Length; i++)  {
+			for (i = 0; i < ptarDouble.Length; i++) {
 				ptd = ptarDouble[i];
 				ptarDouble[i] = new PointD(ptd.X, 1.0 / ptd.Y);
 			}
@@ -462,13 +462,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void OutputMicrotox(string sample, byte minutes, byte[] i0, byte[] it)
 		{
 			const double kMicrotoxMaxC = 81.9;
-			var dblRefGamma = (double)it[0] / (double)i0[0];
+			var dblRefGamma = it[0] / (double)i0[0];
 #if true
 			// Like my Excel data
 			var ptdarDeltas = new PointD[9];
 			for (byte i = 1; i < 10; i++) {
 				ptdarDeltas[i - 1] = new PointD(Math.Pow(2, i - 9) * kMicrotoxMaxC,
-				 (dblRefGamma - ((double)it[i] / (double)i0[i])) / dblRefGamma);
+				 (dblRefGamma - (it[i] / (double)i0[i])) / dblRefGamma);
 			}
 #else
 			// More like the generated report
@@ -594,7 +594,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine(lrp.ToString(numberFormat, culture));
 #pragma warning disable U2U1104
 			Console.Write("r = {0}\t{1} = {2}", lrp.Correlation.ToString(numberFormat, culture),
-			 Program.UnicodeTerminal ? "R²" : "r^2",  lrp.Determination().ToString(numberFormat, culture));
+			 Program.UnicodeTerminal ? "R²" : "r^2", lrp.Determination().ToString(numberFormat, culture));
 #pragma warning restore U2U1104
 			if (checkBiases) {
 				// ReSharper disable once InvokeAsExtensionMethod
@@ -624,10 +624,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var em = new ErrorMargin<T>(lrp.InterpolateY(x),
 			 Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated)));
 			// FIXME : change Infinity for something language-aware
+			string condition;
+			if (repeated) {
+				condition = "1";
+			} else {
+				condition = Program.UnicodeTerminal ? "∞" : "Infinity";
+			}
 			Console.Write(
 			 Program.UnicodeTerminal ? "x = {0,-5} k = {1} ŷ  = {2} => " : "x = {0} k = {1,-8}  y^ = {2} => ",
-			 x.ToString(numberFormat, culture), repeated ? (Program.UnicodeTerminal ? "∞" : "Infinity") : "1",
-			 em.ToString(numberFormat, culture));
+			 x.ToString(numberFormat, culture), condition, em.ToString(numberFormat, culture));
 			Console.WriteLine(em.Round().ToString(numberFormat, culture));
 		}
 
@@ -746,20 +751,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		private static double SpecificActivity(IList<PointD> speedsByConcentration, double multiplier)
 		{
-			int    i;
+			int i;
 			double totalArea = 0;
 			// ReSharper disable once JoinDeclarationAndInitializer
 			double shapeBase;
-			var    c        = speedsByConcentration.Count;
+			var c = speedsByConcentration.Count;
 			PointD pt0, pt1 = default(PointD);
 			for (i = 0; i < c - 1; i++) {
-				pt0       =  speedsByConcentration[i];
-				pt1       =  speedsByConcentration[i + 1];
+				pt0 = speedsByConcentration[i];
+				pt1 = speedsByConcentration[i + 1];
 				totalArea += (pt1.X - pt0.X) * (pt1.Y + pt0.Y);
 			}
 			totalArea *= 0.5f;
-			pt0       =  speedsByConcentration[0];
-			shapeBase =  pt1.X - pt0.X;
+			pt0 = speedsByConcentration[0];
+			shapeBase = pt1.X - pt0.X;
 			return 2 * (totalArea - pt0.Y * shapeBase) / (shapeBase * shapeBase) * multiplier;
 		}
 	}

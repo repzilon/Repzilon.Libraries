@@ -168,7 +168,9 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			var a2 = this.pKa2;
 			return Single.IsNaN(ar) ?
 			 Isoelectric(a1, a2) :
+#pragma warning disable S3358 // Ternary operators should not be nested
 			 Isoelectric(a1, a2, this.DicationWhenVeryAcid ? (byte)2 : (byte)1, ar);
+#pragma warning restore S3358 // Ternary operators should not be nested
 		}
 
 		#region Equals
@@ -340,7 +342,11 @@ namespace Repzilon.Libraries.Core.Biochemistry
 		private static float ChargeOfLateral(bool pHEqualsPkar, bool pKa2LessThanPkar, bool dicat)
 		{
 			var blnEquals = pHEqualsPkar == pKa2LessThanPkar;
-			return dicat ? blnEquals ? -0.5f : 0.5f : blnEquals ? -1.5f : -0.5f;
+			if (dicat) {
+				return blnEquals ? -0.5f : 0.5f;
+			} else {
+				return blnEquals ? -1.5f : -0.5f;
+			}
 		}
 
 		private static float Isoelectric(float pKa1, float pKa2, byte cationCountAtPh1AndHalf, float pKaR)
