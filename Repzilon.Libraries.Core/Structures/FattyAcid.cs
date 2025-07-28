@@ -52,15 +52,11 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #else
 			if (String.IsNullOrWhiteSpace(name)) {
 #endif
-#pragma warning disable CC0021 // Use nameof
-#pragma warning disable RECS0163 // Suggest the usage of the nameof operator
-				throw new ArgumentNullException("name");
+				throw new ArgumentNullException(nameof(name));
 			}
 			if (meltingPointInCelsius < -273.15f) {
-				throw new ArgumentOutOfRangeException("meltingPointInCelsius");
+				throw new ArgumentOutOfRangeException(nameof(meltingPointInCelsius));
 			}
-#pragma warning restore RECS0163 // Suggest the usage of the nameof operator
-#pragma warning restore CC0021 // Use nameof
 
 			Name = name.Trim();
 			MeltingPoint = meltingPointInCelsius;

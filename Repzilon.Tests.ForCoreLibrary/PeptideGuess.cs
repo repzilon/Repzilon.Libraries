@@ -372,11 +372,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static void BenchmarkResolution(int iterations, string title, Func<List<List<AlphaAminoAcid>>> solver)
 		{
 			if (solver == null) {
-#pragma warning disable CC0021 // Use nameof
-#pragma warning disable RECS0163 // Suggest the usage of the nameof operator
-				throw new ArgumentNullException("solver");
-#pragma warning restore RECS0163 // Suggest the usage of the nameof operator
-#pragma warning restore CC0021 // Use nameof
+				throw new ArgumentNullException(nameof(solver));
 			}
 			List<List<AlphaAminoAcid>> lstResults = null;
 			var dtmStart = DateTime.UtcNow;
@@ -456,9 +452,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		AlphaAminoAcid dualAminoAcid)
 		{
 			if (quadSlotted.Length != 4) {
-#pragma warning disable CC0021 // Use nameof
-				throw new ArgumentException("quadSlotted");
-#pragma warning restore CC0021 // Use nameof
+				throw new ArgumentException(nameof(quadSlotted));
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();
@@ -486,9 +480,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		AlphaAminoAcid dualAminoAcid)
 		{
 			if (doubleSlotted.Length != 2) {
-#pragma warning disable CC0021 // Use nameof
-				throw new ArgumentException("doubleSlotted");
-#pragma warning restore CC0021 // Use nameof
+				throw new ArgumentException(nameof(doubleSlotted));
 			}
 
 			var lstOutput = new List<List<AlphaAminoAcid>>();

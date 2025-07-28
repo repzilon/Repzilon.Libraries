@@ -275,11 +275,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		{
 			if (implementation == null) {
-#pragma warning disable CC0021 // Use nameof
-#pragma warning disable RECS0163 // Suggest the usage of the nameof operator
-				throw new ArgumentNullException("implementation");
-#pragma warning restore RECS0163 // Suggest the usage of the nameof operator
-#pragma warning restore CC0021 // Use nameof
+				throw new ArgumentNullException(nameof(implementation));
 			}
 			Console.WriteLine();
 			Program.OutputSizeOf<Angle<T>>();
