@@ -64,71 +64,6 @@ namespace Repzilon.Libraries.Core.Regression
 			return FinishCompute(lstarAll);
 		}
 
-		private static IList<T>[] InitLists<T>(RegressionOption option, IList<T> points, out int c)
-		where T: new()
-		{
-			if (points == null) {
-				throw new ArgumentNullException(nameof(points));
-			}
-
-			var lstarAll = new IList<T>[4];
-			c = points.Count;
-			if (option == RegressionOption.AddZeroAtOrigin) {
-				var l1 = new List<T>(checked(c + 1));
-				l1.Add(new T());
-				l1.AddRange(points);
-				lstarAll[(int)MathematicalModel.Affine] = l1;
-			} else {
-				lstarAll[(int)MathematicalModel.Affine] = points;
-			}
-			for (var i = 1; i < 4; i++) {
-				lstarAll[i] = new List<T>(c);
-			}
-			return lstarAll;
-		}
-
-		private static void AddDataPoint(RegressionOption option, IList<PointD>[] lstarAll, PointD pt)
-		{
-			var c = 0;
-			var x = pt.X;
-			var y = pt.Y;
-			var log10X = Double.NaN;
-			var log10Y = log10X;
-			var blnDontExcludeZero = (option != RegressionOption.OmitAnyNonPositive);
-
-			if (blnDontExcludeZero || (x > 0)) {
-				log10X = Math.Log10(x);
-				lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointD(log10X, y));
-				c++;
-			}
-			if (blnDontExcludeZero || (y > 0)) {
-				log10Y = Math.Log10(y);
-				lstarAll[(int)MathematicalModel.SemiLogY].Add(new PointD(x, log10Y));
-				c++;
-			}
-			if (blnDontExcludeZero || (c == 2)) {
-				lstarAll[(int)MathematicalModel.LogLog].Add(new PointD(log10X, log10Y));
-			}
-		}
-
-		private static RegressionModel<double> FinishCompute(IList<PointD>[] allModelPoints)
-		{
-			var rmarAll = new RegressionModel<double>[4];
-			for (var i = 0; i < 4; i++) {
-				rmarAll[i] = LinearRegression.Compute(allModelPoints[i]).ChangeModel((MathematicalModel)i);
-			}
-
-			Array.Sort(rmarAll, OrderByDeterminationDesc);
-			return rmarAll[0];
-		}
-
-		private static int OrderByDeterminationDesc(RegressionModel<double> x, RegressionModel<double> y)
-		{
-			var xR = x.R;
-			var yR = y.R;
-			return -(xR * xR).CompareTo(yR * yR);
-		}
-
 		public static RegressionModel<decimal> Compute(params PointM[] points)
 		{
 			return Compute(RegressionOption.None, points as IList<PointM>);
@@ -168,6 +103,30 @@ namespace Repzilon.Libraries.Core.Regression
 			return FinishCompute(lstarAll);
 		}
 
+		private static void AddDataPoint(RegressionOption option, IList<PointD>[] lstarAll, PointD pt)
+		{
+			var c = 0;
+			var x = pt.X;
+			var y = pt.Y;
+			var log10X = Double.NaN;
+			var log10Y = log10X;
+			var blnDontExcludeZero = (option != RegressionOption.OmitAnyNonPositive);
+
+			if (blnDontExcludeZero || (x > 0)) {
+				log10X = Math.Log10(x);
+				lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointD(log10X, y));
+				c++;
+			}
+			if (blnDontExcludeZero || (y > 0)) {
+				log10Y = Math.Log10(y);
+				lstarAll[(int)MathematicalModel.SemiLogY].Add(new PointD(x, log10Y));
+				c++;
+			}
+			if (blnDontExcludeZero || (c == 2)) {
+				lstarAll[(int)MathematicalModel.LogLog].Add(new PointD(log10X, log10Y));
+			}
+		}
+
 		private static void AddDataPoint(RegressionOption option, IList<PointM>[] lstarAll, PointM pt)
 		{
 			var c      = 0;
@@ -192,6 +151,17 @@ namespace Repzilon.Libraries.Core.Regression
 			}
 		}
 
+		private static RegressionModel<double> FinishCompute(IList<PointD>[] allModelPoints)
+		{
+			var rmarAll = new RegressionModel<double>[4];
+			for (var i = 0; i < 4; i++) {
+				rmarAll[i] = LinearRegression.Compute(allModelPoints[i]).ChangeModel((MathematicalModel)i);
+			}
+
+			Array.Sort(rmarAll, OrderByDeterminationDesc);
+			return rmarAll[0];
+		}
+
 		private static RegressionModel<decimal> FinishCompute(IList<PointM>[] allModelPoints)
 		{
 			var rmarAll = new RegressionModel<decimal>[4];
@@ -203,11 +173,41 @@ namespace Repzilon.Libraries.Core.Regression
 			return rmarAll[0];
 		}
 
+		private static int OrderByDeterminationDesc(RegressionModel<double> x, RegressionModel<double> y)
+		{
+			var xR = x.R;
+			var yR = y.R;
+			return -(xR * xR).CompareTo(yR * yR);
+		}
+
 		private static int OrderByDeterminationDesc(RegressionModel<decimal> x, RegressionModel<decimal> y)
 		{
 			var xR = x.R;
 			var yR = y.R;
 			return -(xR * xR).CompareTo(yR * yR);
+		}
+
+		private static IList<T>[] InitLists<T>(RegressionOption option, IList<T> points, out int c)
+where T : new()
+		{
+			if (points == null) {
+				throw new ArgumentNullException(nameof(points));
+			}
+
+			var lstarAll = new IList<T>[4];
+			c = points.Count;
+			if (option == RegressionOption.AddZeroAtOrigin) {
+				var l1 = new List<T>(checked(c + 1));
+				l1.Add(new T());
+				l1.AddRange(points);
+				lstarAll[(int)MathematicalModel.Affine] = l1;
+			} else {
+				lstarAll[(int)MathematicalModel.Affine] = points;
+			}
+			for (var i = 1; i < 4; i++) {
+				lstarAll[i] = new List<T>(c);
+			}
+			return lstarAll;
 		}
 	}
 }

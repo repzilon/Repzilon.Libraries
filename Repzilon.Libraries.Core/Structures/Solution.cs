@@ -154,15 +154,15 @@ namespace Repzilon.Libraries.Core
 			 InitMeasure(solutionVolume, solutionUnit), null, null);
 		}
 
-		private static Measure InitMeasure(Coefficient value, string unit)
+		public static Solution Init(Solution original, Coefficient solventVolume, Coefficient soluteVolume)
 		{
-			if (String.IsNullOrEmpty(unit)) {
-				throw new ArgumentNullException(nameof(unit));
-			}
-			if (Coefficient.IsNaN(value)) {
-				throw new ArgumentNullException(nameof(value));
-			}
-			return new Measure(unit, value);
+			return new Solution(original.Concentration, original.SolutionVolume, solventVolume, soluteVolume);
+		}
+
+		public static Solution Init(Solution original, Coefficient solutionVolume, string solutionUnit)
+		{
+			return new Solution(original.Concentration, InitMeasure(solutionVolume, solutionUnit),
+			 original.SolventVolume, original.SoluteVolume);
 		}
 
 		public static Solution[] InitMany(Coefficient solutionVolume, string solutionUnit, string concentrationUnit,
@@ -178,15 +178,15 @@ namespace Repzilon.Libraries.Core
 			return allSolutions;
 		}
 
-		public static Solution Init(Solution original, Coefficient solventVolume, Coefficient soluteVolume)
+		private static Measure InitMeasure(Coefficient value, string unit)
 		{
-			return new Solution(original.Concentration, original.SolutionVolume, solventVolume, soluteVolume);
-		}
-
-		public static Solution Init(Solution original, Coefficient solutionVolume, string solutionUnit)
-		{
-			return new Solution(original.Concentration, InitMeasure(solutionVolume, solutionUnit),
-			 original.SolventVolume, original.SoluteVolume);
+			if (String.IsNullOrEmpty(unit)) {
+				throw new ArgumentNullException(nameof(unit));
+			}
+			if (Coefficient.IsNaN(value)) {
+				throw new ArgumentNullException(nameof(value));
+			}
+			return new Measure(unit, value);
 		}
 		#endregion
 	}

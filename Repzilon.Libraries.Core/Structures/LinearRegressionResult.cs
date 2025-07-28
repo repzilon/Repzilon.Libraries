@@ -256,6 +256,22 @@ namespace Repzilon.Libraries.Core.Regression
 #pragma warning restore RECS0030 // Suggests using the class declaring a static function when calling it
 		}
 
+		public bool Equals(DecimalLinearRegressionResult other)
+		{
+			return m_intCount == other.Count &&
+				   (decimal)Slope == other.Slope &&
+				   (decimal)Intercept == other.Intercept &&
+				   (decimal)Correlation == other.Correlation &&
+				   (decimal)StdDevOfY == other.StdDevOfY &&
+				   (decimal)StdDevOfX == other.StdDevOfX &&
+				   (decimal)AverageX == other.AverageX &&
+				   (decimal)AverageY == other.AverageY &&
+				   (decimal)MinX == other.MinX &&
+				   (decimal)MaxY == other.MaxX &&
+				   (decimal)MinY == other.MinY &&
+				   (decimal)MaxY == other.MaxY;
+		}
+
 		public override int GetHashCode()
 		{
 			unchecked {
@@ -279,22 +295,6 @@ namespace Repzilon.Libraries.Core.Regression
 				hashCode = (hashCode * magic) + MinY.GetHashCode();
 				return (hashCode * magic) + MaxY.GetHashCode();
 			}
-		}
-
-		public bool Equals(DecimalLinearRegressionResult other)
-		{
-			return m_intCount == other.Count &&
-				   (decimal)Slope == other.Slope &&
-				   (decimal)Intercept == other.Intercept &&
-				   (decimal)Correlation == other.Correlation &&
-				   (decimal)StdDevOfY == other.StdDevOfY &&
-				   (decimal)StdDevOfX == other.StdDevOfX &&
-				   (decimal)AverageX == other.AverageX &&
-				   (decimal)AverageY == other.AverageY &&
-				   (decimal)MinX == other.MinX &&
-				   (decimal)MaxY == other.MaxX &&
-				   (decimal)MinY == other.MinY &&
-				   (decimal)MaxY == other.MaxY;
 		}
 
 		public static bool operator ==(LinearRegressionResult left, LinearRegressionResult right)

@@ -50,24 +50,6 @@ namespace Repzilon.Libraries.Core
 			return sum;
 		}
 
-		[Obsolete("The non-generic overloads are faster.")]
-#if NET20
-		public static T DifferenceOfPrimitives<T>(T a, T b, Converter<T, T> expression)
-#else
-		public static T DifferenceOfPrimitives<T>(T a, T b, Func<T, T> expression)
-#endif
-		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
-		{
-			if (expression == null) {
-				throw new ArgumentNullException(nameof(expression));
-			}
-#if NET20
-			return Arithmetic<T>.SubtractScalars(expression(b), expression(a));
-#else
-			return Arithmetic<T>.Sub(expression(b), expression(a));
-#endif
-		}
-
 #if NETFRAMEWORK
 		public static long Summation(int m, int n, Converter<int, long> forEach)
 #else
@@ -186,6 +168,24 @@ namespace Repzilon.Libraries.Core
 			return sum;
 		}
 
+		[Obsolete("The non-generic overloads are faster.")]
+#if NET20
+		public static T DifferenceOfPrimitives<T>(T a, T b, Converter<T, T> expression)
+#else
+		public static T DifferenceOfPrimitives<T>(T a, T b, Func<T, T> expression)
+#endif
+		where T : struct, IFormattable, IComparable<T>, IEquatable<T>, IComparable
+		{
+			if (expression == null) {
+				throw new ArgumentNullException(nameof(expression));
+			}
+#if NET20
+			return Arithmetic<T>.SubtractScalars(expression(b), expression(a));
+#else
+			return Arithmetic<T>.Sub(expression(b), expression(a));
+#endif
+		}
+
 #if NETFRAMEWORK
 		public static float DifferenceOfPrimitives(float a, float b, Converter<float, float> expression)
 #else
@@ -236,19 +236,6 @@ namespace Repzilon.Libraries.Core
 		}
 
 #if NETFRAMEWORK
-		public static double SimpsonThreeEights(double a, double b, Converter<double, double> expression)
-#else
-		public static double SimpsonThreeEights(double a, double b, Func<double, double> expression)
-#endif
-		{
-			if (expression == null) {
-				throw new ArgumentNullException(nameof(expression));
-			}
-			const double kOneThird = 1.0 / 3;
-			return (b - a) * 0.125 * (expression(a) + (3 * expression(kOneThird * ((2 * a) + b))) + (3 * expression(kOneThird * (a + (2 * b)))) + expression(b));
-		}
-
-#if NETFRAMEWORK
 		public static double Simpson(double a, double b, int n, Converter<double, double> expression)
 #else
 		public static double Simpson(double a, double b, int n, Func<double, double> expression)
@@ -294,6 +281,19 @@ namespace Repzilon.Libraries.Core
 #endif
 			}
 			return kOneThird * h * sum;
+		}
+
+#if NETFRAMEWORK
+		public static double SimpsonThreeEights(double a, double b, Converter<double, double> expression)
+#else
+		public static double SimpsonThreeEights(double a, double b, Func<double, double> expression)
+#endif
+		{
+			if (expression == null) {
+				throw new ArgumentNullException(nameof(expression));
+			}
+			const double kOneThird = 1.0 / 3;
+			return (b - a) * 0.125 * (expression(a) + (3 * expression(kOneThird * ((2 * a) + b))) + (3 * expression(kOneThird * (a + (2 * b)))) + expression(b));
 		}
 
 #if NETFRAMEWORK

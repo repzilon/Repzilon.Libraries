@@ -254,6 +254,22 @@ namespace Repzilon.Libraries.Core.Regression
 				   MaxY == other.MaxY;
 		}
 
+		public bool Equals(LinearRegressionResult other)
+		{
+			return m_intCount == other.Count &&
+				   Slope == (decimal)other.Slope &&
+				   Intercept == (decimal)other.Intercept &&
+				   Correlation == (decimal)other.Correlation &&
+				   StdDevOfY == (decimal)other.StdDevOfY &&
+				   StdDevOfX == (decimal)other.StdDevOfX &&
+				   AverageX == (decimal)other.AverageX &&
+				   AverageY == (decimal)other.AverageY &&
+				   MinX == (decimal)other.MinX &&
+				   MaxY == (decimal)other.MaxX &&
+				   MinY == (decimal)other.MinY &&
+				   MaxY == (decimal)other.MaxY;
+		}
+
 		public override int GetHashCode()
 		{
 			unchecked {
@@ -277,22 +293,6 @@ namespace Repzilon.Libraries.Core.Regression
 				hashCode = (hashCode * magic) + MinY.GetHashCode();
 				return (hashCode * magic) + MaxY.GetHashCode();
 			}
-		}
-
-		public bool Equals(LinearRegressionResult other)
-		{
-			return m_intCount == other.Count &&
-				   Slope == (decimal)other.Slope &&
-				   Intercept == (decimal)other.Intercept &&
-				   Correlation == (decimal)other.Correlation &&
-				   StdDevOfY == (decimal)other.StdDevOfY &&
-				   StdDevOfX == (decimal)other.StdDevOfX &&
-				   AverageX == (decimal)other.AverageX &&
-				   AverageY == (decimal)other.AverageY &&
-				   MinX == (decimal)other.MinX &&
-				   MaxY == (decimal)other.MaxX &&
-				   MinY == (decimal)other.MinY &&
-				   MaxY == (decimal)other.MaxY;
 		}
 
 		public static bool operator ==(DecimalLinearRegressionResult left, DecimalLinearRegressionResult right)

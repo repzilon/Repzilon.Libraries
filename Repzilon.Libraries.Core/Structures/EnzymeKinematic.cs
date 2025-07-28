@@ -161,14 +161,14 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			}
 		}
 
-		bool IEquatable<IComparableEnzymeKinematic>.Equals(IComparableEnzymeKinematic other)
-		{
-			return this.Equals(other);
-		}
-
 		public override bool Equals(object obj)
 		{
 			return obj is EnzymeKinematic<T> ? Equals((EnzymeKinematic<T>)obj) : Equals(obj as IComparableEnzymeKinematic);
+		}
+
+		bool IEquatable<IComparableEnzymeKinematic>.Equals(IComparableEnzymeKinematic other)
+		{
+			return this.Equals(other);
 		}
 
 		public override int GetHashCode()

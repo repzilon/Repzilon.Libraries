@@ -67,6 +67,9 @@ namespace Repzilon.Libraries.Core.Regression
 			MaxX = maxX;
 		}
 
+		public RegressionModel(RegressionModel<T> source) :
+		this(source.A, source.B, source.R, source.Model, source.MinX, source.MaxX) { }
+
 		internal static RegressionModel<T> Affine(T a, T b, T minX, T maxX)
 		{
 			return new RegressionModel<T>(a, b, ExtraMath.ConvertTo<T>(b.CompareTo(default(T))),
@@ -74,9 +77,6 @@ namespace Repzilon.Libraries.Core.Regression
 		}
 
 		#region Clone
-		public RegressionModel(RegressionModel<T> source) :
-		this(source.A, source.B, source.R, source.Model, source.MinX, source.MaxX) { }
-
 		public RegressionModel<T> Clone()
 		{
 			return new RegressionModel<T>(this);

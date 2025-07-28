@@ -44,16 +44,6 @@ namespace Repzilon.Libraries.Core.Vectors
 		#endregion
 
 		#region Constructors
-		public Angle(T value, AngleUnit unit) : this()
-		{
-			Value = value;
-			if (AngleExtensions.IsDefined(unit)) {
-				Unit = unit;
-			} else {
-				throw RetroCompat.NewUndefinedEnumException(nameof(unit), unit);
-			}
-		}
-
 		private static Angle<T> FromOtherType<TFrom>(TFrom valueInOtherDataType, AngleUnit unit)
 		where TFrom : struct
 		{
@@ -80,6 +70,16 @@ namespace Repzilon.Libraries.Core.Vectors
 		public static Angle<T> Gradians(T value)
 		{
 			return new Angle<T>(value, AngleUnit.Gradian);
+		}
+
+		public Angle(T value, AngleUnit unit) : this()
+		{
+			Value = value;
+			if (AngleExtensions.IsDefined(unit)) {
+				Unit = unit;
+			} else {
+				throw RetroCompat.NewUndefinedEnumException(nameof(unit), unit);
+			}
 		}
 		#endregion
 

@@ -42,29 +42,6 @@ namespace Repzilon.Libraries.Core.Vectors
 			get { return Y; }
 		}
 
-		public TwoDVector(T x, T y) : this()
-		{
-			X = x;
-			Y = y;
-		}
-
-		public TwoDVector(PolarVector<T> vector) : this()
-		{
-			var nt = vector.Norm;
-			var va = vector.Angle;
-			KeyValuePair<T, T> kvp;
-			var vau = va.Unit;
-			if (vau == AngleUnit.Degree) {
-				kvp = ToCartesian(90, nt, va);
-			} else if (vau == AngleUnit.Gradian) {
-				kvp = ToCartesian(100, nt, va);
-			} else {
-				kvp = ToCartesian(Convert.ToDouble(nt), va);
-			}
-			X = kvp.Key;
-			Y = kvp.Value;
-		}
-
 		private static KeyValuePair<T, T> ToCartesian(byte quarterTurn, T nt, Angle<T> va)
 		{
 			var vav = Convert.ToDouble(va.Value);
@@ -90,6 +67,29 @@ namespace Repzilon.Libraries.Core.Vectors
 			return new KeyValuePair<T, T>(
 			 ExtraMath.ConvertTo<T>(n * Math.Cos(theta)),
 			 ExtraMath.ConvertTo<T>(n * Math.Sin(theta)));
+		}
+
+		public TwoDVector(T x, T y) : this()
+		{
+			X = x;
+			Y = y;
+		}
+
+		public TwoDVector(PolarVector<T> vector) : this()
+		{
+			var nt = vector.Norm;
+			var va = vector.Angle;
+			KeyValuePair<T, T> kvp;
+			var vau = va.Unit;
+			if (vau == AngleUnit.Degree) {
+				kvp = ToCartesian(90, nt, va);
+			} else if (vau == AngleUnit.Gradian) {
+				kvp = ToCartesian(100, nt, va);
+			} else {
+				kvp = ToCartesian(Convert.ToDouble(nt), va);
+			}
+			X = kvp.Key;
+			Y = kvp.Value;
 		}
 
 		#region ICloneable members
@@ -206,11 +206,6 @@ namespace Repzilon.Libraries.Core.Vectors
 				   (this.Y.CompareTo(Convert.ChangeType(other.Y, typT)) == 0);
 		}
 
-		bool IEquatable<IComparableTwoDVector>.Equals(IComparableTwoDVector other)
-		{
-			return this.Equals(other);
-		}
-
 		private bool Equals(IComparablePolarVector other)
 		{
 			if (other != null) {
@@ -226,6 +221,11 @@ namespace Repzilon.Libraries.Core.Vectors
 				}
 			}
 			return false;
+		}
+
+		bool IEquatable<IComparableTwoDVector>.Equals(IComparableTwoDVector other)
+		{
+			return this.Equals(other);
 		}
 
 		bool IEquatable<IComparablePolarVector>.Equals(IComparablePolarVector other)

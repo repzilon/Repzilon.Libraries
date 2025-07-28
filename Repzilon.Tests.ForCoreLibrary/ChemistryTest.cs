@@ -386,14 +386,6 @@ STQTALA";
 			}
 		}
 
-		private static void OutputRoundedEnzymeKinematic(byte significantDigits,
-		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten)
-		{
-			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, significantDigits), false);
-			Console.WriteLine(Program.UnicodeTerminal ? "\t[Δ²={0} u²]" : "\t[A={0} u^2]",
-			 EnzymeKinematicExtension.AreaBetween(kinematic, michaelisMenten, false));
-		}
-
 		private static void OutputEnzymeKinematic(string concentrationUnit, string speedUnit,
 		byte significantDigits, ref EnzymeKinematic<double> ek, params PointD[] dataPoints)
 		{
@@ -405,6 +397,14 @@ STQTALA";
 				Console.Error.WriteLine(excNS.Message);
 				LinearRegressionTest.OutputRegressionModel(rm);
 			}
+		}
+
+		private static void OutputRoundedEnzymeKinematic(byte significantDigits,
+		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten)
+		{
+			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, significantDigits), false);
+			Console.WriteLine(Program.UnicodeTerminal ? "\t[Δ²={0} u²]" : "\t[A={0} u^2]",
+			 EnzymeKinematicExtension.AreaBetween(kinematic, michaelisMenten, false));
 		}
 	}
 }

@@ -259,13 +259,6 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			}
 		}
 
-		private static int ApproximateRelativeDifferenceSign(double original, double inhibited)
-		{
-			// FIXME : Have something less hardcoded than -8 and 8
-			var dblRelativeDiff = RoundOff.Error(100 * (inhibited - original) / original);
-			return (dblRelativeDiff > -8) && (dblRelativeDiff < 8) ? 0 : Math.Sign(dblRelativeDiff);
-		}
-
 		public static Inhibition<decimal> Compare(EnzymeKinematic<decimal> original,
 		EnzymeKinematic<decimal> inhibited)
 		{
@@ -298,6 +291,13 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			} else {
 				throw new NotSupportedException();
 			}
+		}
+
+		private static int ApproximateRelativeDifferenceSign(double original, double inhibited)
+		{
+			// FIXME : Have something less hardcoded than -8 and 8
+			var dblRelativeDiff = RoundOff.Error(100 * (inhibited - original) / original);
+			return (dblRelativeDiff > -8) && (dblRelativeDiff < 8) ? 0 : Math.Sign(dblRelativeDiff);
 		}
 
 		private static int ApproximateRelativeDifferenceSign(decimal original, decimal inhibited)

@@ -18,6 +18,11 @@ namespace Repzilon.Libraries.Core
 {
 	public static class RoundOff
 	{
+		public static double UpsizeError(double formerSingle)
+		{
+			return Math.Round(formerSingle, 15 - 2 - 7, MidpointRounding.ToEven);
+		}
+
 		public static float Error(float value)
 		{
 			return (float)Math.Round(value, 7 - 2, MidpointRounding.ToEven);
@@ -26,11 +31,6 @@ namespace Repzilon.Libraries.Core
 		public static double Error(double value)
 		{
 			return Math.Round(value, 15 - 2, MidpointRounding.ToEven);
-		}
-
-		public static double UpsizeError(double formerSingle)
-		{
-			return Math.Round(formerSingle, 15 - 2 - 7, MidpointRounding.ToEven);
 		}
 
 		public static decimal Error(decimal value)

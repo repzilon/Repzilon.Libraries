@@ -76,6 +76,20 @@ namespace Repzilon.Libraries.Core
 			return MantissaTenThousandths == 0;
 		}
 
+		private static int Pack(int mantissa, byte numericBase, SByte exponent)
+		{
+#if DEBUG
+			var newData = (exponent << 24);
+			newData |= ((numericBase - 2) << 18);
+			newData |= (Math.Abs(mantissa) & 0x1ffff);
+			newData |= (mantissa < 0 ? 0x20000 : 0);
+			return newData;
+#else
+			return (exponent << 24) | ((numericBase - 2) << 18) | (Math.Abs(mantissa) & 0x1ffff) |
+				   (mantissa < 0 ? 0x20000 : 0);
+#endif
+		}
+
 		public Exp18(float mantissa, byte numericBase, SByte exponent)
 		{
 			Exp.CheckForInit(mantissa, numericBase);
@@ -96,20 +110,6 @@ namespace Repzilon.Libraries.Core
 		private Exp18(int mantissa, byte numericBase, SByte exponent)
 		{
 			data = Pack(mantissa, numericBase, exponent);
-		}
-
-		private static int Pack(int mantissa, byte numericBase, SByte exponent)
-		{
-#if DEBUG
-			var newData = (exponent << 24);
-			newData |= ((numericBase - 2) << 18);
-			newData |= (Math.Abs(mantissa) & 0x1ffff);
-			newData |= (mantissa < 0 ? 0x20000 : 0);
-			return newData;
-#else
-			return (exponent << 24) | ((numericBase - 2) << 18) | (Math.Abs(mantissa) & 0x1ffff) |
-				   (mantissa < 0 ? 0x20000 : 0);
-#endif
 		}
 
 		#region ICloneable members

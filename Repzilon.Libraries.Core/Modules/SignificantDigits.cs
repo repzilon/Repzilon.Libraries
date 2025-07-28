@@ -108,40 +108,6 @@ namespace Repzilon.Libraries.Core
 			bytDigits += DecimalDigits(blnLessThanOne, dcmDigitalPart, "f17", true);
 			return bytDigits;
 		}
-
-		private static byte IntegerPartDigits<T>(T value, bool absoluteLessThanOne, bool absoluteEqualsOne, T digitalPart) where T : IEquatable<T>
-#if !NETSTANDARD1_1
-		, IConvertible
-#endif
-		{
-			if (absoluteLessThanOne) {
-				var z = default(T);
-				return digitalPart.Equals(z) ? (byte)1 : (byte)0;
-			} else if (absoluteEqualsOne) {
-				return 1;
-			} else {
-				return Magnitude(Convert.ToDouble(value));
-			}
-		}
-
-		private static byte DecimalDigits<T>(bool absoluteLessThanOne, T digitalPart, string roundTrip, bool removeTrailingZeros) where T : IFormattable, IEquatable<T>
-		{
-			// Microsoft recommends G9 instead of R for Single and G17 for Double, but they cause trouble
-			var kDigitZero = new char[] { '0' };
-			var z = default(T);
-			if (!digitalPart.Equals(z)) {
-				var strForCount = digitalPart.ToString(roundTrip, CultureInfo.InvariantCulture).Replace("0.", "");
-				if (removeTrailingZeros) {
-					strForCount = strForCount.TrimEnd(kDigitZero);
-				}
-				if (absoluteLessThanOne) {
-					strForCount = strForCount.TrimStart(kDigitZero);
-				}
-				return (byte)strForCount.Length;
-			} else {
-				return 0;
-			}
-		}
 		#endregion
 
 		#region Count IConvertible dispatch
@@ -274,6 +240,40 @@ namespace Repzilon.Libraries.Core
 			throw new FormatException("Unable to parse text as a number.");
 		}
 		#endregion
+
+		private static byte DecimalDigits<T>(bool absoluteLessThanOne, T digitalPart, string roundTrip, bool removeTrailingZeros) where T : IFormattable, IEquatable<T>
+		{
+			// Microsoft recommends G9 instead of R for Single and G17 for Double, but they cause trouble
+			var kDigitZero = new char[] { '0' };
+			var z = default(T);
+			if (!digitalPart.Equals(z)) {
+				var strForCount = digitalPart.ToString(roundTrip, CultureInfo.InvariantCulture).Replace("0.", "");
+				if (removeTrailingZeros) {
+					strForCount = strForCount.TrimEnd(kDigitZero);
+				}
+				if (absoluteLessThanOne) {
+					strForCount = strForCount.TrimStart(kDigitZero);
+				}
+				return (byte)strForCount.Length;
+			} else {
+				return 0;
+			}
+		}
+
+		private static byte IntegerPartDigits<T>(T value, bool absoluteLessThanOne, bool absoluteEqualsOne, T digitalPart) where T : IEquatable<T>
+#if !NETSTANDARD1_1
+		, IConvertible
+#endif
+		{
+			if (absoluteLessThanOne) {
+				var z = default(T);
+				return digitalPart.Equals(z) ? (byte)1 : (byte)0;
+			} else if (absoluteEqualsOne) {
+				return 1;
+			} else {
+				return Magnitude(Convert.ToDouble(value));
+			}
+		}
 
 		private static byte IntegerPartDigits(double value, double absolute, double digitalPart)
 		{

@@ -202,14 +202,14 @@ namespace Repzilon.Libraries.Core
 			return false;
 		}
 
-		bool IEquatable<IComparableMatrix>.Equals(IComparableMatrix other)
-		{
-			return this.Equals(other);
-		}
-
 		public override bool Equals(object obj)
 		{
 			return obj is Matrix<T> ? this.Equals((Matrix<T>)obj) : this.Equals(obj as IComparableMatrix);
+		}
+
+		bool IEquatable<IComparableMatrix>.Equals(IComparableMatrix other)
+		{
+			return this.Equals(other);
 		}
 
 		public override int GetHashCode()

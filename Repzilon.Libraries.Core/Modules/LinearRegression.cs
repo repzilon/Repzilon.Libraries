@@ -112,29 +112,6 @@ namespace Repzilon.Libraries.Core.Regression
 			 dblSumXy, dblMinX, dblMinY, dblMaxX, dblMaxY);
 		}
 
-		private static void Aggregate(double newValue, ref double average, ref double m2,
-		ref double minimum, ref double maximum, int n)
-		{
-			var delta = newValue - average;
-			average += delta / n;
-			var delta2 = newValue - average;
-			m2 += delta * delta2;
-
-			minimum = Math.Min(minimum, newValue);
-			maximum = Math.Max(maximum, newValue);
-		}
-
-		private static LinearRegressionResult FinishCompute(double stdDevX, double stdDevY, int n,
-		double averageX, double averageY, double sumXy, double minX, double minY, double maxX, double maxY)
-		{
-			stdDevX = Math.Sqrt(stdDevX / (n - 1));
-			stdDevY = Math.Sqrt(stdDevY / (n - 1));
-			var b = (sumXy - (n * averageX * averageY)) / ((n - 1) * stdDevX * stdDevX);
-			return new LinearRegressionResult(n, RoundOff.Error(averageY - (b * averageX)), RoundOff.Error(b),
-			 RoundOff.Error(b * stdDevX / stdDevY), minX, minY, maxX, maxY, averageX,
-			 RoundOff.Error(averageY), stdDevX, stdDevY);
-		}
-
 		public static DecimalLinearRegressionResult Compute(params PointM[] points)
 		{
 			return Compute(points as IList<PointM>);
@@ -219,6 +196,29 @@ namespace Repzilon.Libraries.Core.Regression
 
 			minimum = Math.Min(minimum, newValue);
 			maximum = Math.Max(maximum, newValue);
+		}
+
+		private static void Aggregate(double newValue, ref double average, ref double m2,
+		ref double minimum, ref double maximum, int n)
+		{
+			var delta = newValue - average;
+			average += delta / n;
+			var delta2 = newValue - average;
+			m2 += delta * delta2;
+
+			minimum = Math.Min(minimum, newValue);
+			maximum = Math.Max(maximum, newValue);
+		}
+
+		private static LinearRegressionResult FinishCompute(double stdDevX, double stdDevY, int n,
+		double averageX, double averageY, double sumXy, double minX, double minY, double maxX, double maxY)
+		{
+			stdDevX = Math.Sqrt(stdDevX / (n - 1));
+			stdDevY = Math.Sqrt(stdDevY / (n - 1));
+			var b = (sumXy - (n * averageX * averageY)) / ((n - 1) * stdDevX * stdDevX);
+			return new LinearRegressionResult(n, RoundOff.Error(averageY - (b * averageX)), RoundOff.Error(b),
+			 RoundOff.Error(b * stdDevX / stdDevY), minX, minY, maxX, maxY, averageX,
+			 RoundOff.Error(averageY), stdDevX, stdDevY);
 		}
 
 		private static DecimalLinearRegressionResult FinishCompute(decimal stdDevX, decimal stdDevY, int n,

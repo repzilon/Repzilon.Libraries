@@ -119,14 +119,14 @@ namespace Repzilon.Libraries.Core.Vectors
 			 this.Angle.Equals(other.Angle);
 		}
 
-		bool IEquatable<IComparablePolarVector>.Equals(IComparablePolarVector other)
-		{
-			return this.Equals(other);
-		}
-
 		private bool Equals(IComparableTwoDVector other)
 		{
 			return (other != null) && this.Equals(this.ToCartesian());
+		}
+
+		bool IEquatable<IComparablePolarVector>.Equals(IComparablePolarVector other)
+		{
+			return this.Equals(other);
 		}
 
 		bool IEquatable<IComparableTwoDVector>.Equals(IComparableTwoDVector other)
