@@ -365,7 +365,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			return Math.Abs(value - expected) < target;
 		}
 
-		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, double[] expected,
+		private static void FindBestIterationCountForNormalLawIntegral(float[] allZ, double[] expected,
 		double targetDelta)
 		{
 			// ReSharper disable once TooWideLocalVariableScope
@@ -407,10 +407,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("x_={0} itérations  s={1}  n={2}  ", average, stddev, c);
 			Console.WriteLine(Program.UnicodeTerminal ? "t₉₉({2})={0}  x^={1} itérations" : "t(99;{2})={0}  x^={1} itérations",
 			 dblT99Percent, ideal, c - 1);
-			return Convert.ToInt32(ideal);
 		}
 
-		private static int FindBestIterationCountForNormalLawIntegral(float[] allZ, decimal[] expected,
+		private static void FindBestIterationCountForNormalLawIntegral(float[] allZ, decimal[] expected,
 		decimal targetDelta)
 		{
 			// ReSharper disable once TooWideLocalVariableScope
@@ -478,8 +477,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			var rm = RegressionModel.Compute(ptmarIter);
 			Console.WriteLine("{0}\t r={1}", rm, rm.R);
-
-			return Convert.ToInt32(ideal);
 		}
 
 		private static void FindMacLaurinBreakpointForNormalLawIntegral(decimal targetDelta)

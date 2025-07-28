@@ -103,7 +103,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Zeros for 1x² + {0}x + {1} : {2}", b, c, ExtraMath.SolveQuadratic(1, b, c));
 		}
 
-		private static bool[] TestDigitCount<T>(
+		private static void TestDigitCount<T>(
 		T[] values, byte[] expectedCounts, Action<string> messageWriter) where T : IConvertible
 		{
 			if ((values != null) && (expectedCounts != null)) {
@@ -115,25 +115,18 @@ namespace Repzilon.Tests.ForCoreLibrary
 					messageWriter("Data type: " + typeof(T).Name);
 				}
 
-				var blnarOk = new bool[c];
 				for (var i = 0; i < c; i++) {
 					var value = values[i];
 					var expectedCount = expectedCounts[i];
 					var d = SignificantDigits.Count(value);
-					blnarOk[i] = d == expectedCount;
+					var ok = d == expectedCount;
 					if (messageWriter != null) {
 						messageWriter(String.Format(
-						 blnarOk[i] ? "{0,13} -> {1} correct" : "{0,13} -> {1} WRONG (should be {2})",
+						 ok ? "{0,13} -> {1} correct" : "{0,13} -> {1} WRONG (should be {2})",
 						 value, d, expectedCount));
 					}
 				}
-				return blnarOk;
 			}
-#if NET40 || NET35 || NET20
-			return new bool[0];
-#else
-			return Array.Empty<bool>();
-#endif
 		}
 
 		private static void WriteCompact(string text)
