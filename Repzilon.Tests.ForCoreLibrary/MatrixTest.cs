@@ -281,8 +281,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var coords = matrix.Find(valueToFind);
 			if (coords != null) {
-				var x = coords[0];
-				var y = coords[1];
+				var x = coords.Value.X;
+				var y = coords.Value.Y;
 				Console.WriteLine("a({1};{2})={0} sig={3} M({1};{2})=", valueToFind, x + 1, y + 1,
 				 MatrixExtensionMethods.Signature(x, y));
 				Console.WriteLine(matrix.Minor(x, y));

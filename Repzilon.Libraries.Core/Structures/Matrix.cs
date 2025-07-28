@@ -11,6 +11,7 @@
 // not distributed with this file, You can obtain one at
 // https://mozilla.org/MPL/2.0/.
 //
+using Repzilon.Libraries.Core.Vectors;
 using System;
 using System.Collections.Generic;
 #if !(NET20 || NET35 || NET40)
@@ -737,13 +738,12 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public byte[] Find(T value)
+		public TwoDVector<byte>? Find(T value)
 		{
 			for (byte i = 0; i < this.Lines; i++) {
 				for (byte j = 0; j < this.Columns; j++) {
 					if (this[i, j].Equals(value)) {
-						// ReSharper disable once RedundantExplicitArrayCreation
-						return new byte[] { i, j };
+						return new TwoDVector<byte>(i, j);
 					}
 				}
 			}
@@ -769,7 +769,11 @@ namespace Repzilon.Libraries.Core
 			Matrix<T> ma;
 			var det = this.Determinant();
 			if (det.Equals(default(T))) {
+				// Returning null has a documented specific meaning and returning an empty collection would
+				// convey the meaning there is a solution, but there are no variables, which is illogical.
+#pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
 				return null;
+#pragma warning restore S1168 // Empty arrays and collections should be returned instead of null
 			} else {
 				if ((variables == null) || (variables.Length < 1)) {
 					throw new ArgumentNullException(nameof(variables));
@@ -879,7 +883,11 @@ namespace Repzilon.Libraries.Core
 					}
 				}
 				if (l == k) {
+					// Returning null has a documented specific meaning and returning an empty collection would
+					// convey the meaning there is a solution, but there are no variables, which is illogical.
+#pragma warning disable S1168 // Empty arrays and collections should be returned instead of null
 					return null; // No solution exists
+#pragma warning restore S1168 // Empty arrays and collections should be returned instead of null
 				} else { // Single solution
 					// Compute solution in a loop, starting with the last algebraic variable.
 					for (l = 1; l <= m; l++) {
