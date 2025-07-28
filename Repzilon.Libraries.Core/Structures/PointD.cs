@@ -86,12 +86,14 @@ namespace Repzilon.Libraries.Core
 				return Equals((PointD)obj);
 			} else if (obj is PointM) {
 				return Equals((PointM)obj);
-			} else if (obj is IPoint<double>) {
-				return Equals((IPoint<double>)obj);
-			} else if (obj is IPoint<decimal>) {
-				return Equals((IPoint<decimal>)obj);
 			} else {
-				return false;
+				var ptd = obj as IPoint<double>;
+				if (ptd != null) {
+					return Equals(ptd);
+				} else {
+					var ptm = obj as IPoint<decimal>;
+					return (ptm != null) && Equals(ptm);
+				}
 			}
 		}
 
