@@ -15,7 +15,6 @@ using System;
 using System.Globalization;
 using System.Runtime.InteropServices;
 
-
 namespace Repzilon.Libraries.Core
 {
 	[Flags]
@@ -57,20 +56,9 @@ namespace Repzilon.Libraries.Core
 #pragma warning restore S3265 // Non-flags enums should not be used in bitwise operations
 		}
 
-		private static NumberFormatInfo FindNumberFormat(IFormatProvider formatProvider)
-		{
-			var ci = formatProvider as CultureInfo;
-			if (ci != null) {
-				return ci.NumberFormat;
-			} else {
-				var nfi = formatProvider as NumberFormatInfo;
-				return (nfi == null) ? NumberFormatInfo.CurrentInfo : nfi;
-			}
-		}
-
 		public void FromNumeric(string numberText, IFormatProvider formatProvider)
 		{
-			FromNumeric(numberText, FindNumberFormat(formatProvider));
+			FromNumeric(numberText, InternationalizationExtension.FindNumberFormat(formatProvider));
 		}
 
 		public void FromNumeric(string numberText, NumberFormatInfo numberFormat)
@@ -115,7 +103,7 @@ namespace Repzilon.Libraries.Core
 		public string Format(IFormattable number, string format, IFormatProvider formatProvider)
 		{
 			var numberText = number.ToString(format, formatProvider);
-			var nfi = FindNumberFormat(formatProvider);
+			var nfi = InternationalizationExtension.FindNumberFormat(formatProvider);
 			var nds = nfi.NumberDecimalSeparator;
 			var allDecimals = this.DecimalDigits;
 			var numberIsNegative = numberText.StartsWith(nfi.NegativeSign,
@@ -169,6 +157,24 @@ namespace Repzilon.Libraries.Core
 				}
 			} else {
 				return numberText;
+			}
+		}
+	}
+
+	public static class InternationalizationExtension
+	{
+#if NET20
+		public static NumberFormatInfo FindNumberFormat(IFormatProvider formatProvider)
+#else
+		public static NumberFormatInfo FindNumberFormat(this IFormatProvider formatProvider)
+#endif
+		{
+			var ci = formatProvider as CultureInfo;
+			if (ci != null) {
+				return ci.NumberFormat;
+			} else {
+				var nfi = formatProvider as NumberFormatInfo;
+				return (nfi == null) ? NumberFormatInfo.CurrentInfo : nfi;
 			}
 		}
 	}

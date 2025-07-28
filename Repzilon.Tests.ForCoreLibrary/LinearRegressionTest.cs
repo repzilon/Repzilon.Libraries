@@ -623,12 +623,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var em = new ErrorMargin<T>(lrp.InterpolateY(x),
 			 Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated)));
-			// FIXME : change Infinity for something language-aware
 			string condition;
 			if (repeated) {
 				condition = "1";
 			} else {
-				condition = Program.UnicodeTerminal ? "∞" : "Infinity";
+				condition = Program.UnicodeTerminal ? "∞" :
+				 InternationalizationExtension.FindNumberFormat(culture).PositiveInfinitySymbol.Replace("+", "");
 			}
 			Console.Write(
 			 Program.UnicodeTerminal ? "x = {0,-5} k = {1} ŷ  = {2} => " : "x = {0} k = {1,-8}  y^ = {2} => ",
