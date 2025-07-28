@@ -212,22 +212,12 @@ namespace Repzilon.Tests.ForCoreLibrary
 					var candidate = new List<AlphaAminoAcid>(peptideLength);
 					candidate.AddRange(firstPermutations[i]);
 					candidate.AddRange(secondPermutations[j]);
-#pragma warning disable CC0031 // Check for null before calling a delegate
-					if ((conditions == null) || conditions(candidate)) {
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
-						}
-					}
+					AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 
 					candidate = new List<AlphaAminoAcid>(peptideLength);
 					candidate.AddRange(secondPermutations[j]);
 					candidate.AddRange(firstPermutations[i]);
-					if ((conditions == null) || conditions(candidate)) {
-#pragma warning restore CC0031 // Check for null before calling a delegate
-						if (UniqueExcept(candidate, dualAminoAcid)) {
-							lstOutput.Add(candidate);
-						}
-					}
+					AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 				}
 			}
 			return lstOutput;
@@ -325,63 +315,37 @@ namespace Repzilon.Tests.ForCoreLibrary
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(thirdPermutations[k]);
-#pragma warning disable CC0031 // Check for null before calling a delegate
-						if ((conditions == null) || conditions(candidate)) {
-							if (UniqueExcept(candidate, dualAminoAcid)) {
-								lstOutput.Add(candidate);
-							}
-						}
+						AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(secondPermutations[j]);
-						if ((conditions == null) || conditions(candidate)) {
-							if (UniqueExcept(candidate, dualAminoAcid)) {
-								lstOutput.Add(candidate);
-							}
-						}
+						AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(thirdPermutations[k]);
-						if ((conditions == null) || conditions(candidate)) {
-							if (UniqueExcept(candidate, dualAminoAcid)) {
-								lstOutput.Add(candidate);
-							}
-						}
+						AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(firstPermutations[i]);
-						if ((conditions == null) || conditions(candidate)) {
-							if (UniqueExcept(candidate, dualAminoAcid)) {
-								lstOutput.Add(candidate);
-							}
-						}
+						AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(firstPermutations[i]);
 						candidate.AddRange(secondPermutations[j]);
-						if ((conditions == null) || conditions(candidate)) {
-							if (UniqueExcept(candidate, dualAminoAcid)) {
-								lstOutput.Add(candidate);
-							}
-						}
+						AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 
 						candidate = new List<AlphaAminoAcid>(peptideLength);
 						candidate.AddRange(thirdPermutations[k]);
 						candidate.AddRange(secondPermutations[j]);
 						candidate.AddRange(firstPermutations[i]);
-						if ((conditions == null) || conditions(candidate)) {
-#pragma warning restore CC0031 // Check for null before calling a delegate
-							if (UniqueExcept(candidate, dualAminoAcid)) {
-								lstOutput.Add(candidate);
-							}
-						}
+						AddMatchingCandidate(lstOutput, candidate, dualAminoAcid, conditions);
 					}
 				}
 			}
@@ -395,6 +359,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 		#endregion
 
 		#region Common code
+		private static void AddMatchingCandidate(List<List<AlphaAminoAcid>> output, List<AlphaAminoAcid> candidate,
+		AlphaAminoAcid dualAminoAcid, Predicate<List<AlphaAminoAcid>> conditions)
+		{
+#pragma warning disable CC0031 // Check for null before calling a delegate
+			if (((conditions == null) || conditions(candidate)) && UniqueExcept(candidate, dualAminoAcid)) {
+#pragma warning restore CC0031 // Check for null before calling a delegate
+				output.Add(candidate);
+			}
+		}
+
 		private static void BenchmarkResolution(int iterations, string title, Func<List<List<AlphaAminoAcid>>> solver)
 		{
 			if (solver == null) {
@@ -543,10 +517,8 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			foreach (var kvp in dicCounts) {
 				freq = kvp.Value;
-				if (freq > 1) {
-					if ((kvp.Key != allowExactlyTwoOfThese) || (freq > 2)) {
-						return false;
-					}
+				if ((freq > 1) && ((kvp.Key != allowExactlyTwoOfThese) || (freq > 2))) {
+					return false;
 				}
 			}
 			return true;

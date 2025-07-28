@@ -25,7 +25,7 @@ namespace Repzilon.Libraries.Core
 
 			var blnInitialMotherVolume = mother.SolutionVolume.HasValue;
 			// Do not use a ref local variable because we change an array of value types
-#pragma warning disable U2U1015 
+#pragma warning disable U2U1015
 			for (var i = 0; i < children.Length; i++) {
 #pragma warning restore U2U1015
 				var child = children[i];
@@ -90,12 +90,10 @@ namespace Repzilon.Libraries.Core
 			if (child.Concentration.Key != mother.Concentration.Key) {
 				throw new ArgumentException("Child solution concentration unit is different from the mother solution.");
 			}
-			if (checkVolume) {
-				// ReSharper disable PossibleInvalidOperationException
-				if (child.SolutionVolume.Value.Key != other.SolutionVolume.Value.Key) {
-					// ReSharper restore PossibleInvalidOperationException
-					throw new ArgumentException(volumeUnitDifferentMessage);
-				}
+			// ReSharper disable PossibleInvalidOperationException
+			if (checkVolume && (child.SolutionVolume.Value.Key != other.SolutionVolume.Value.Key)) {
+			// ReSharper restore PossibleInvalidOperationException
+				throw new ArgumentException(volumeUnitDifferentMessage);
 			}
 		}
 	}
