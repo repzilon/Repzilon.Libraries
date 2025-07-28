@@ -138,7 +138,9 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("{0} kiB -> {1} kiB", lngRamBefore, lngRamAfterNoGC);
 			// Call GC.Collect only when memory usage blows up, otherwise it makes the process consume more RAM
 			if (lngRamAfterNoGC > 50 * 1024) {
+#pragma warning disable S1215 // "GC.Collect" should not be called
 				GC.Collect();
+#pragma warning restore S1215 // "GC.Collect" should not be called
 				Console.WriteLine(" -> {0} kiB", Math.Ceiling(CurrentMemoryUsage() * kToKiB));
 			}
 			Console.WriteLine();
