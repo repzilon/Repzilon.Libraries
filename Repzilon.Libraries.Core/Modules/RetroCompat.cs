@@ -96,7 +96,7 @@ namespace Repzilon.Libraries.Core
 
 	internal class ReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
 	{
-		private IDictionary<TKey, TValue> m_dicInner;
+		private readonly IDictionary<TKey, TValue> m_dicInner;
 
 		public ReadOnlyDictionary(IDictionary<TKey, TValue> toWrap)
 		{
