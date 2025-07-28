@@ -963,11 +963,7 @@ namespace Repzilon.Libraries.Core
 		/// </returns>
 		/// <exception cref="T:System.ArgumentNullException">When no variable names are supplied.</exception>
 		/// <exception cref="T:System.NotSupportedException">When an infinity of linked solutions exists.</exception>
-#if NET40 || NET35 || NET20
-		public IDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
-#else
 		public IReadOnlyDictionary<char, AffineBinomial<T>> Solve(Matrix<T> constants, params char[] variables)
-#endif
 		{
 			IDictionary<char, AffineBinomial<T>> dicSolved = null;
 			if (this.IsSquare) {
@@ -976,11 +972,7 @@ namespace Repzilon.Libraries.Core
 			if (dicSolved == null) {
 				dicSolved = SolveDiagonally(constants, variables);
 			}
-#if NET40 || NET35 || NET20
-			return dicSolved;
-#else
 			return dicSolved != null ? new ReadOnlyDictionary<char, AffineBinomial<T>>(dicSolved) : null;
-#endif
 		}
 	}
 

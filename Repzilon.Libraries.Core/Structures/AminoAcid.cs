@@ -257,17 +257,9 @@ namespace Repzilon.Libraries.Core.Biochemistry
 			return new ReadOnlyCollection<AminoAcid>(lstAminoAcids);
 		}
 
-#if NET40 || NET35 || NET20 || NETSTANDARD1_1
-		public static readonly IDictionary<AlphaAminoAcid, AminoAcid> AlphaLookup = MakeAlphaLookup();
-#else
 		public static readonly IReadOnlyDictionary<AlphaAminoAcid, AminoAcid> AlphaLookup = MakeAlphaLookup();
-#endif
 
-#if NET40 || NET35 || NET20 || NETSTANDARD1_1
-		private static SortedDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
-#else
 		private static ReadOnlyDictionary<AlphaAminoAcid, AminoAcid> MakeAlphaLookup()
-#endif
 		{
 			var lstAminoAcids = AminoAcid.AlphaList;
 			var dicAminoAcids = new SortedDictionary<AlphaAminoAcid, AminoAcid>();
@@ -279,11 +271,7 @@ namespace Repzilon.Libraries.Core.Biochemistry
 #endif
 				dicAminoAcids.Add(enuSymbol, lstAminoAcids[i]);
 			}
-#if NET40 || NET35 || NET20 || NETSTANDARD1_1
-			return dicAminoAcids;
-#else
 			return new ReadOnlyDictionary<AlphaAminoAcid, AminoAcid>(dicAminoAcids);
-#endif
 		}
 
 		public float WeightedCharge(float pH)

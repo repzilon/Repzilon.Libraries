@@ -258,11 +258,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
-#if NET40 || NET35 || NET20
-		private static void OutputSolution<T>(string prefix, IDictionary<char, T> solution)
-#else
 		private static void OutputSolution<T>(string prefix, IReadOnlyDictionary<char, T> solution)
-#endif
 		{
 			Console.Write(prefix);
 			if ((solution == null) || (solution.Count < 1)) {

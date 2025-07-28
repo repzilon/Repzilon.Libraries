@@ -12,6 +12,10 @@
 // https://mozilla.org/MPL/2.0/.
 //
 using System;
+#if NET20 || NET35 || NET40 || NETSTANDARD1_1
+using System.Collections;
+using System.Collections.Generic;
+#endif
 #if !(NETSTANDARD1_1 || NETCOREAPP1_0 || NETSTANDARD1_3 || NETSTANDARD1_6)
 using System.ComponentModel;
 #else
@@ -69,5 +73,51 @@ namespace Repzilon.Libraries.Core
 	public delegate TResult Func<in T1, in T2, out TResult>(T1 arg1, T2 arg2);
 
 	internal delegate TResult Func<out TResult>();
+#endif
+
+#if NET40 || NET35 || NET20 || NETSTANDARD1_1
+	public interface IReadOnlyDictionary<TKey, TValue> : IReadOnlyCollection<KeyValuePair<TKey, TValue>>
+	{
+		TValue this[TKey key] { get; }
+
+		IEnumerable<TKey> Keys { get; }
+
+		IEnumerable<TValue> Values { get; }
+
+		bool ContainsKey(TKey key);
+
+		bool TryGetValue(TKey key, out TValue value);
+	}
+
+	public interface IReadOnlyCollection<T> : IEnumerable<T>
+	{
+		int Count { get; }
+	}
+
+	internal class ReadOnlyDictionary<TKey, TValue> : IReadOnlyDictionary<TKey, TValue>
+	{
+		private IDictionary<TKey, TValue> m_dicInner;
+
+		public ReadOnlyDictionary(IDictionary<TKey, TValue> toWrap)
+		{
+			m_dicInner = toWrap ?? throw new ArgumentNullException(nameof(toWrap));
+		}
+
+		public TValue this[TKey key] => m_dicInner[key];
+
+		public IEnumerable<TKey> Keys => m_dicInner.Keys;
+
+		public IEnumerable<TValue> Values => m_dicInner.Values;
+
+		public int Count => m_dicInner.Count;
+
+		public bool ContainsKey(TKey key) => m_dicInner.ContainsKey(key);
+
+		public IEnumerator<KeyValuePair<TKey, TValue>> GetEnumerator() => m_dicInner.GetEnumerator();
+
+		public bool TryGetValue(TKey key, out TValue value) => m_dicInner.TryGetValue(key, out value);
+
+		IEnumerator IEnumerable.GetEnumerator() => GetEnumerator();
+	}
 #endif
 }

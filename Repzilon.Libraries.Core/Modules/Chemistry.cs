@@ -22,17 +22,9 @@ namespace Repzilon.Libraries.Core
 {
 	public static class Chemistry
 	{
-#if NET40 || NET35 || NET20
-		public static readonly IDictionary<string, float> ElementMasses = InitElementMasses();
-#else
 		public static readonly IReadOnlyDictionary<string, float> ElementMasses = InitElementMasses();
-#endif
 
-#if NET40 || NET35 || NET20
-		private static Dictionary<string, float> InitElementMasses()
-#else
 		private static ReadOnlyDictionary<string, float> InitElementMasses()
-#endif
 		{
 			const int k = 19;
 			var dicMasses = new Dictionary<string, float>(k);
@@ -46,11 +38,7 @@ namespace Repzilon.Libraries.Core
 				dicMasses.Add(karSymbols[i], karMasses[i]);
 			}
 
-#if NET40 || NET35 || NET20
-			return dicMasses;
-#else
 			return new ReadOnlyDictionary<string, float>(dicMasses);
-#endif
 		}
 
 		private static MatchCollection MatchChemicalGroups(string formula, out int c)
