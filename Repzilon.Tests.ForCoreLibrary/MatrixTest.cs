@@ -206,14 +206,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var t2_8ra = t2_8A + t2_8B;
 			Console.WriteLine(t2_8ra);
 			try {
-				var t2_8rb = t2_8A + t2_8C;
+				_ = t2_8A + t2_8C;
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex.Message);
 			}
 			var t2_8rc = t2_8C * t2_8A;
 			Console.WriteLine(t2_8rc);
 			try {
-				var t3_8rd = t2_8D * t2_8A;
+				_ = t2_8D * t2_8A;
 			} catch (Exception ex) {
 				Console.Error.WriteLine(ex.Message);
 			}

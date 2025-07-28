@@ -29,7 +29,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				z = RoundOff.Error(x * 0.01);
 				for (k = 1; k <= 255; k++) {
 					try {
-						var t = ProbabilityDistributions.Student(z, (byte)k, false);
+						_ = ProbabilityDistributions.Student(z, (byte)k, false);
 					} catch (OverflowException exO) {
 #if NETCOREAPP1_0
 						throw new Exception(
