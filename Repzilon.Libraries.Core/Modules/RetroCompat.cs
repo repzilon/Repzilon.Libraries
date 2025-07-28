@@ -89,7 +89,11 @@ namespace Repzilon.Libraries.Core
 		bool TryGetValue(TKey key, out TValue value);
 	}
 
+#if NET40 || NETSTANDARD1_1
+	public interface IReadOnlyCollection<out T> : IEnumerable<T>
+#else
 	public interface IReadOnlyCollection<T> : IEnumerable<T>
+#endif
 	{
 		int Count { get; }
 	}
