@@ -200,7 +200,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			if ((conditions == null) && (checked(firstPermutations.Count * secondPermutations.Count * 2) > 1000000)) {
 #if NETCOREAPP1_0
+				// I would rather throw the more specific exception, if only it existed
+#pragma warning disable S112 // General exceptions should never be thrown
 				throw new OutOfMemoryException();
+#pragma warning restore S112 // General exceptions should never be thrown
 #else
 				throw new InsufficientMemoryException();
 #endif
@@ -301,7 +304,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			if ((conditions == null) && (checked(firstPermutations.Count * secondPermutations.Count * 2) > 1000000)) {
 #if NETCOREAPP1_0
+				// I would rather throw the more specific exception, if only it existed
+#pragma warning disable S112 // General exceptions should never be thrown
 				throw new OutOfMemoryException();
+#pragma warning restore S112 // General exceptions should never be thrown
 #else
 				throw new InsufficientMemoryException();
 #endif
