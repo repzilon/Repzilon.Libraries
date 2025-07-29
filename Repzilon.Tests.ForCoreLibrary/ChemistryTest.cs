@@ -140,7 +140,8 @@ STQTALA";
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			Program.OutputSizeOf<Inhibition<double>>();
-			strSpeedUnit = Program.UnicodeTerminal != SupportLevel.None ? "A₄₈₀/min" : "A<sub>480</sub>/min";
+			var blnPartialCode = Program.UnicodeTerminal != SupportLevel.None;
+			strSpeedUnit = blnPartialCode ? "A₄₈₀/min" : "A<sub>480</sub>/min";
 			var ekO = new EnzymeKinematic<double>();
 			var ekI = new EnzymeKinematic<double>();
 			var ekIp = new EnzymeKinematic<double>();
@@ -157,11 +158,11 @@ STQTALA";
 			OutputEnzymeKinematic("mol/L", "nmol/h", 4, ref ekO,
 			 new PointD(1e-6f, 1.16f), new PointD(1e-5f, 8.46f), new PointD(1e-4f, 24.94f), new PointD(1e-3f, 27.94f),
 			 new PointD(1e-2f, 29.95f));
-			var strVmax = Program.UnicodeTerminal != SupportLevel.None ? "vₘₐₓ" : "vmax";
+			var strVmax = blnPartialCode ? "vₘₐₓ" : "vmax";
 			Console.WriteLine("{1}: {0:f4} nmol/min", Math.Round(ekO.Vmax.Key / 60, 4), strVmax);
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
-			strSpeedUnit = Program.UnicodeTerminal != SupportLevel.None ? "µmol/L•min" : "umol/L*min";
+			strSpeedUnit = blnPartialCode ? "µmol/L•min" : "umol/L*min";
 			OutputEnzymeKinematic("mol/L", strSpeedUnit, 3, ref ekO,
 			 new PointD(0.01f, 16.7f), new PointD(0.0133f, 20f), new PointD(0.02f, 25f),
 			 new PointD(0.025f, 27f), new PointD(0.05f, 35.7f), new PointD(0.1f, 41.7f));

@@ -147,10 +147,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(100, RoundedInverse("29,95"))
 			);
 			OutputRegressionModel(lrr0.ChangeModel(MathematicalModel.Affine));
-			var vmax0   = 1.0 / lrr0.Intercept;
-			var Km0     = lrr0.Slope * vmax0;
-			var strVmax = Program.UnicodeTerminal != SupportLevel.None ? "vₘₐₓ" : "vmax";
-			var strKm   = Program.UnicodeTerminal != SupportLevel.None ? "kₘ" : "Km";
+			var vmax0          = 1.0 / lrr0.Intercept;
+			var Km0            = lrr0.Slope * vmax0;
+			var blnPartialCode = Program.UnicodeTerminal != SupportLevel.None;
+			var strVmax        = blnPartialCode ? "vₘₐₓ" : "vmax";
+			var strKm          = blnPartialCode ? "kₘ" : "Km";
 			Console.Write("{0} = {1:g4} nmol/min\t{2} = ", strVmax, vmax0 / 60, strKm);
 			Console.WriteLine("{0:g4} mol/L", Km0);
 
@@ -169,14 +170,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
 			vmax0 = 1.0 / lrr0.Intercept;
 			Km0 = lrr0.Slope * vmax0;
-			var strUnit = Program.UnicodeTerminal != SupportLevel.None ? "µmol/L•min" : "umol/L*min";
+			var strUnit = blnPartialCode ? "µmol/L•min" : "umol/L*min";
 			Console.Write("{0}  = {1,-4:g3} {2}  ", strVmax, vmax0, strUnit);
 			Console.WriteLine("{0}  = {1:g3} mol/L", strKm, Km0);
 			var vmax1 = 1.0 / lrr1.Intercept;
 			var Km1 = lrr1.Slope * vmax1;
 			Console.Write("{0}' = {1,-4:g3} {2}  ", strVmax, vmax1, strUnit);
 			Console.WriteLine("{0}' = {1:g3} mol/L", strKm, Km1);
-			Console.WriteLine("{1} = {0:g3} mol/L", 0.02 / ((Km1 / Km0) - 1), Program.UnicodeTerminal != SupportLevel.None ? "kᵢ" : "Ki");
+			Console.WriteLine("{1} = {0:g3} mol/L", 0.02 / ((Km1 / Km0) - 1), blnPartialCode ? "kᵢ" : "Ki");
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 5");
 			OutputRegressionModel(LinearRegression.Compute(new PointD(RoundedInverse("0,010"), RoundedInverse("0,27")),
@@ -265,15 +266,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 new PointD(49.82f, 0.2445f), new PointD(59.83f, 0.2787f), new PointD(69.88f, 0.3117f),
 			 new PointD(79.90f, 0.3452f), new PointD(89.91f, 0.3800f), new PointD(99.92f, 0.4161f),
 			 new PointD(109.93f, 0.4514f), new PointD(119.94f, 0.4884f));
-			Console.Write(Program.UnicodeTerminal != SupportLevel.None ? "Speed [dA/(dt•dC)]: " : "Speed [dA/(dt*dC)]: ");
+			Console.Write(blnPartialCode ? "Speed [dA/(dt•dC)]: " : "Speed [dA/(dt*dC)]: ");
 			lrr1 = LinearRegression.Compute(lstSpeeds);
 			OutputRegressionModel(lrr1.ChangeModel(MathematicalModel.Affine));
-			Console.Write(Program.UnicodeTerminal != SupportLevel.None ? "Speed [dA/(dt•dC)]: " : "Speed [dA/(dt*dC)]: ");
+			Console.Write(blnPartialCode ? "Speed [dA/(dt•dC)]: " : "Speed [dA/(dt*dC)]: ");
 			var rm = RegressionModel.Compute(lstSpeeds);
 			OutputRegressionModel(rm);
 			Km1 *= 0.2;
 			const double kEnzymeIU2Katal = 0.000001 / 60;
-			strUnit = Program.UnicodeTerminal != SupportLevel.None ? "BCA•min" : "BCA*min";
+			strUnit = blnPartialCode ? "BCA•min" : "BCA*min";
 			Console.WriteLine(
 			 "Specific activity average={0,-6:f3} µmol PNPA/mg {2} or {0,-6:f3} UI/mg BCA or {1:g3} katal/mg",
 			 Km1, Km1 * kEnzymeIU2Katal, strUnit);
@@ -358,7 +359,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			CalibrateGelElectrophoresis(ptarDouble,
 			 out rmdImmunoLabWeightLogOuter, out rmdImmunoLabWeightLogInner, out rm);
 
-			strUnit = Program.UnicodeTerminal != SupportLevel.None ?
+			strUnit = blnPartialCode ?
 			 "Pit Distance  Rf   M from log₁₀ w. tails M from log₁₀ no tail M from power" :
 			 "Pit Distance  Rf   M from log10 w. tails M from log10 no tail M from power";
 
@@ -398,7 +399,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var karPO4WasteI0 = new byte[10] { 92, 96, 95, 95, 98, 94, 97, 98, 94, 94 };
 			OutputMicrotox("Neige sale", 5, karSnowI0, new byte[10] { 125, 122, 129, 123, 126, 128, 116, 121, 98, 67 });
 			OutputMicrotox("Neige sale", 15, karSnowI0, new byte[10] { 123, 118, 125, 121, 125, 123, 115, 114, 92, 65 });
-			strUnit = Program.UnicodeTerminal != SupportLevel.None ? "Rejets PO₄" : "Rejets PO4";
+			strUnit = blnPartialCode ? "Rejets PO₄" : "Rejets PO4";
 			OutputMicrotox(strUnit, 5, karPO4WasteI0, new byte[10] { 126, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
 			OutputMicrotox(strUnit, 15, karPO4WasteI0, new byte[10] { 120, 0, 0, 1, 0, 0, 0, 0, 2, 0 });
 
@@ -623,14 +624,15 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var em = new ErrorMargin<T>(lrp.InterpolateY(x),
 			 Arithmetic<T>.MultiplyScalars(studentLawValue, sr, lrp.YExtrapolationConfidenceFactor(x, repeated)));
+			var    blnPartialCode = Program.UnicodeTerminal != SupportLevel.None;
 			string condition;
 			if (repeated) {
 				condition = "1";
 			} else {
-				condition = Program.UnicodeTerminal != SupportLevel.None ? "∞" :
+				condition = blnPartialCode ? "∞" :
 				 InternationalizationExtension.FindNumberFormat(culture).PositiveInfinitySymbol.Replace("+", "");
 			}
-			Console.Write(Program.UnicodeTerminal != SupportLevel.None ?
+			Console.Write(blnPartialCode ?
 			 "x = {0,-5} k = {1} ŷ  = {2} => " : "x = {0} k = {1,-8}  y^ = {2} => ",
 			 x.ToString(numberFormat, culture), condition, em.ToString(numberFormat, culture));
 			Console.WriteLine(em.Round().ToString(numberFormat, culture));

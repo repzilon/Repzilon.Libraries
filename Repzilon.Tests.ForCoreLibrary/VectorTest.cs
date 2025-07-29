@@ -68,12 +68,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa62 = new PolarVector<float>(3, 210, AngleUnit.Degree).ToCartesian();
 			Console.WriteLine("Exemple 62  : v={0}", exa62);
 
-			var exa63_u = new PolarVector<float>(2, 45, AngleUnit.Degree);
-			var exa63_v = new PolarVector<float>(4, -30, AngleUnit.Degree);
-			var exa63_a = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
-			var exa63_ng = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
-			var exa63_s = exa63_u + exa63_v;
-			var strNorm = Program.UnicodeTerminal != SupportLevel.None ? "‖" : "||";
+			var exa63_u        = new PolarVector<float>(2, 45, AngleUnit.Degree);
+			var exa63_v        = new PolarVector<float>(4, -30, AngleUnit.Degree);
+			var exa63_a        = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
+			var exa63_ng       = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
+			var exa63_s        = exa63_u + exa63_v;
+			var blnPartialCode = Program.UnicodeTerminal != SupportLevel.None;
+			var strNorm        = blnPartialCode ? "‖" : "||";
 			Console.Write("Exemple 63  : {2}R{2}={0} u+v={1} {2}u+v{2}=", exa63_ng, exa63_s, strNorm);
 			Console.WriteLine(exa63_s.Norm);
 
@@ -121,7 +122,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<PolarVector<short>>();
 			var exa70_u = Vector.New<short>(2, 30, AngleUnit.Degree);
 			var exa70_v = Vector.New<short>(4, 0, AngleUnit.Degree);
-			var strDot = Program.UnicodeTerminal != SupportLevel.None ? "•" : ".";
+			var strDot = blnPartialCode ? "•" : ".";
 			Console.WriteLine("Exemple 70  : u{1}v={0}", exa70_u * exa70_v, strDot);
 
 			var exa71_u = Vector.New<short>(4, -2, 2);
@@ -134,7 +135,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 72a : u={0} et v={1} perpendiculaires : {2}", exa72_u, exa72_v,
 			 ThreeDVector<short>.ArePerpendicular(exa72_u, exa72_v));
 			var exa72_theta = ThreeDVector<short>.AngleBetween(exa72_u, exa72_v).ToDegrees();
-			Console.WriteLine("Exemple 72b : {1}={0:g3}", exa72_theta, Program.UnicodeTerminal != SupportLevel.None ? "θ" : "theta");
+			Console.WriteLine("Exemple 72b : {1}={0:g3}", exa72_theta, blnPartialCode ? "θ" : "theta");
 
 			var exa74_w = Vector<float>.Dot(5, 12, 20, AngleUnit.Degree);
 			Console.WriteLine("Exemple 74  : W={0:f2}", exa74_w);
@@ -142,7 +143,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_u = Vector.New<short>(-2, 3, 1);
 			var exa78_v = Vector.New<short>(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
-			Console.WriteLine(Program.UnicodeTerminal != SupportLevel.None ?
+			Console.WriteLine(blnPartialCode ?
 			 "Exemple 78b : A=bh=‖u‖•‖v‖•sin(θ)=‖u x v‖≈{0}" :
 			 "Exemple 78b : A=bh=||u||.||v||.sin(theta)=||u x v||~={0}",
 			 (exa78_u % exa78_v).Norm());
