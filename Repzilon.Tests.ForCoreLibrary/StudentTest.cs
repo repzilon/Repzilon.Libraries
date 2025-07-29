@@ -75,7 +75,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputHeading("Réciproques d'intégrales de distributions de Student");
 			// ReSharper disable once RedundantExplicitArrayCreation
 			var karAlphas = new float[] { 0.4f, 0.25f, 0.1f, 0.05f, 0.025f, 0.010f, 0.005f, 0.0025f, 0.001f, 0.0005f };
-			TableHeader(Program.UnicodeTerminal ? "ν/p" : "nu/p", " {0,9:f4}", karAlphas);
+			TableHeader(Program.UnicodeTerminal != SupportLevel.None ? "ν/p" : "nu/p", " {0,9:f4}", karAlphas);
 			for (k = 1; k <= 40; k++) {
 				InverseStudentTableRow(k, karAlphas);
 			}
@@ -83,10 +83,13 @@ namespace Repzilon.Tests.ForCoreLibrary
 				InverseStudentTableRow(k, karAlphas);
 			}
 
-			var t99Ref  = NormalLawTest.StudentT99TwoSidedScores[4];
-			var t99Calc = ProbabilityDistributions.InverseStudent(Math.Round(0.995f, 3), 4);
-			Console.Write("t(99;4)\tRef: {0}\tCalc: {1}\tDiff: {2:e}", t99Ref, t99Calc, (decimal)t99Calc - t99Ref);
-			Console.WriteLine(" i.e. {0} epsilon", ((decimal)t99Calc - t99Ref) / dcmTarget);
+			var t99Ref         = NormalLawTest.StudentT99TwoSidedScores[4];
+			var t99Calc        = ProbabilityDistributions.InverseStudent(Math.Round(0.995f, 3), 4);
+			var blnPartialCode = Program.UnicodeTerminal != SupportLevel.None;
+			Console.Write(blnPartialCode ? "t₉₉(4)\tRef: {0}\tCalc: {1}\tΔ: {2:e}" : "t(99;4)\tRef: {0}\tCalc: {1}\tDiff: {2:e}",
+			 t99Ref, t99Calc, (decimal)t99Calc - t99Ref);
+			Console.WriteLine(blnPartialCode ? " i.e. {0} ε" : " i.e. {0} epsilon",
+			 ((decimal)t99Calc - t99Ref) / dcmTarget);
 		}
 
 		private static void InverseStudentTableRow(int k, float[] karAlphas)

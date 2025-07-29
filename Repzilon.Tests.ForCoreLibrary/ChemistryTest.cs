@@ -25,7 +25,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class ChemistryTest
 	{
-		private static readonly string A240By30s = Program.UnicodeTerminal ? "A₂₄₀/30 s" : "A<sub>240</sub>/30 s";
+		private static readonly string A240By30s = Program.UnicodeTerminal != SupportLevel.None ? "A₂₄₀/30 s" : "A<sub>240</sub>/30 s";
 
 		internal static void Run(string[] args)
 		{
@@ -140,7 +140,7 @@ STQTALA";
 
 			Program.OutputHeading("Biochemistry II ch. 1 pp. 22-23");
 			Program.OutputSizeOf<Inhibition<double>>();
-			strSpeedUnit = Program.UnicodeTerminal ? "A₄₈₀/min" : "A<sub>480</sub>/min";
+			strSpeedUnit = Program.UnicodeTerminal != SupportLevel.None ? "A₄₈₀/min" : "A<sub>480</sub>/min";
 			var ekO = new EnzymeKinematic<double>();
 			var ekI = new EnzymeKinematic<double>();
 			var ekIp = new EnzymeKinematic<double>();
@@ -157,11 +157,11 @@ STQTALA";
 			OutputEnzymeKinematic("mol/L", "nmol/h", 4, ref ekO,
 			 new PointD(1e-6f, 1.16f), new PointD(1e-5f, 8.46f), new PointD(1e-4f, 24.94f), new PointD(1e-3f, 27.94f),
 			 new PointD(1e-2f, 29.95f));
-			var strVmax = Program.UnicodeTerminal ? "vₘₐₓ" : "vmax";
+			var strVmax = Program.UnicodeTerminal != SupportLevel.None ? "vₘₐₓ" : "vmax";
 			Console.WriteLine("{1}: {0:f4} nmol/min", Math.Round(ekO.Vmax.Key / 60, 4), strVmax);
 
 			Program.OutputHeading("Biochemistry II ch. 1 exercise 4");
-			strSpeedUnit = Program.UnicodeTerminal ? "µmol/L•min" : "µmol/L*min";
+			strSpeedUnit = Program.UnicodeTerminal != SupportLevel.None ? "µmol/L•min" : "umol/L*min";
 			OutputEnzymeKinematic("mol/L", strSpeedUnit, 3, ref ekO,
 			 new PointD(0.01f, 16.7f), new PointD(0.0133f, 20f), new PointD(0.02f, 25f),
 			 new PointD(0.025f, 27f), new PointD(0.05f, 35.7f), new PointD(0.1f, 41.7f));
@@ -203,7 +203,7 @@ STQTALA";
 
 		private static string PrettyFormula(string formula)
 		{
-			return Program.UnicodeTerminal ? Regex.Replace(formula, "<sub>([0-9]+)</sub>", UnicodeSubscript) : formula;
+			return Program.UnicodeTerminal != SupportLevel.None ? Regex.Replace(formula, "<sub>([0-9]+)</sub>", UnicodeSubscript) : formula;
 		}
 
 		private static string UnicodeSubscript(Match m)
@@ -214,7 +214,7 @@ STQTALA";
 		private static string UnicodeSubscript(int number)
 		{
 			var strDigits = number.ToString();
-			return Program.UnicodeTerminal ? UnicodeSubscript(strDigits) : strDigits;
+			return Program.UnicodeTerminal != SupportLevel.None ? UnicodeSubscript(strDigits) : strDigits;
 		}
 
 		private static string UnicodeSubscript(string digits)
@@ -234,7 +234,7 @@ STQTALA";
 			var inhibition = InhibitionExtensions.RoundedToPrecision(
 			 Enzyme.Compare(original, inhibited, inhibitorConcentration), significantsDigits);
 			var strInhibition = inhibition.ToString().Replace("k<sub>i</sub>",
-			 Program.UnicodeTerminal ? "kᵢ" : "Ki");
+			 Program.UnicodeTerminal != SupportLevel.None ? "kᵢ" : "Ki");
 			Console.WriteLine(strInhibition);
 		}
 
@@ -377,7 +377,7 @@ STQTALA";
 		where T : struct, IComparable, IComparable<T>, IEquatable<T>, IFormattable
 		{
 			var strKinematic = kinematic.ToString("g", CultureInfo.CurrentCulture);
-			if (Program.UnicodeTerminal) {
+			if (Program.UnicodeTerminal != SupportLevel.None) {
 				strKinematic = strKinematic.Replace("<sub>max</sub>", "ₘₐₓ").Replace("<sub>m</sub>", "ₘ");
 			}
 			Console.Write(strKinematic);
@@ -403,7 +403,7 @@ STQTALA";
 		EnzymeKinematic<double> kinematic, RegressionModel<double> michaelisMenten)
 		{
 			OutputEnzymeKinematic(EnzymeKinematicExtension.RoundedToPrecision(kinematic, significantDigits), false);
-			Console.WriteLine(Program.UnicodeTerminal ? "\t[Δ²={0} u²]" : "\t[A={0} u^2]",
+			Console.WriteLine(Program.UnicodeTerminal != SupportLevel.None ? "\t[Δ²={0} u²]" : "\t[A={0} u^2]",
 			 EnzymeKinematicExtension.AreaBetween(kinematic, michaelisMenten, false));
 		}
 	}

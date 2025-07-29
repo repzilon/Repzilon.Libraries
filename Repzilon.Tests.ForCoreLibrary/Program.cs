@@ -30,9 +30,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 		True
 	}
 
+	internal enum SupportLevel : byte
+	{
+		None,
+		Partial,
+		Complete
+	}
+
 	internal static class Program
 	{
-		internal static readonly bool UnicodeTerminal = SupportsUnicodeTerminal();
+		internal static readonly SupportLevel UnicodeTerminal = SupportsUnicodeTerminal();
 
 		private static void Main(string[] args)
 		{
@@ -275,23 +282,24 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 		}
 
-		private static bool SupportsUnicodeTerminal()
+		private static SupportLevel SupportsUnicodeTerminal()
 		{
 			if (IsMacOsX()) {
-				return true;
+				return SupportLevel.Complete;
 			} else {
 #if NETFRAMEWORK
 				var os = Environment.OSVersion;
 				if (os.Platform == PlatformID.Win32NT) {
-					return os.Version.CompareTo(new Version(6, 2)) >= 0;
+					return os.Version.CompareTo(new Version(6, 2)) >= 0 ? SupportLevel.Partial : SupportLevel.None;
 				}
 #else
 				if (RuntimeInformation.IsOSPlatform(OSPlatform.Windows)) {
-					return true;
+					return SupportLevel.Partial;
 				}
 #endif
 				else {
-					return (Console.OutputEncoding is UTF8Encoding) || (Console.OutputEncoding is UnicodeEncoding);
+					return (Console.OutputEncoding is UTF8Encoding) || (Console.OutputEncoding is UnicodeEncoding) ?
+					 SupportLevel.Complete : SupportLevel.None;
 				}
 			}
 		}

@@ -73,7 +73,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa63_a = (Angle<float>)(exa63_u.Angle - exa63_v.Angle);
 			var exa63_ng = Vector<float>.Sum(exa63_u.Norm, exa63_v.Norm, exa63_a);
 			var exa63_s = exa63_u + exa63_v;
-			var strNorm = Program.UnicodeTerminal ? "‖" : "||";
+			var strNorm = Program.UnicodeTerminal != SupportLevel.None ? "‖" : "||";
 			Console.Write("Exemple 63  : {2}R{2}={0} u+v={1} {2}u+v{2}=", exa63_ng, exa63_s, strNorm);
 			Console.WriteLine(exa63_s.Norm);
 
@@ -121,7 +121,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Program.OutputSizeOf<PolarVector<short>>();
 			var exa70_u = Vector.New<short>(2, 30, AngleUnit.Degree);
 			var exa70_v = Vector.New<short>(4, 0, AngleUnit.Degree);
-			var strDot = Program.UnicodeTerminal ? "•" : ".";
+			var strDot = Program.UnicodeTerminal != SupportLevel.None ? "•" : ".";
 			Console.WriteLine("Exemple 70  : u{1}v={0}", exa70_u * exa70_v, strDot);
 
 			var exa71_u = Vector.New<short>(4, -2, 2);
@@ -134,7 +134,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Exemple 72a : u={0} et v={1} perpendiculaires : {2}", exa72_u, exa72_v,
 			 ThreeDVector<short>.ArePerpendicular(exa72_u, exa72_v));
 			var exa72_theta = ThreeDVector<short>.AngleBetween(exa72_u, exa72_v).ToDegrees();
-			Console.WriteLine("Exemple 72b : {1}={0:g3}", exa72_theta, Program.UnicodeTerminal ? "θ" : "theta");
+			Console.WriteLine("Exemple 72b : {1}={0:g3}", exa72_theta, Program.UnicodeTerminal != SupportLevel.None ? "θ" : "theta");
 
 			var exa74_w = Vector<float>.Dot(5, 12, 20, AngleUnit.Degree);
 			Console.WriteLine("Exemple 74  : W={0:f2}", exa74_w);
@@ -142,7 +142,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var exa78_u = Vector.New<short>(-2, 3, 1);
 			var exa78_v = Vector.New<short>(2, 5, -5);
 			Console.WriteLine("Exemple 78a : u x v={0}", exa78_u % exa78_v);
-			Console.WriteLine(Program.UnicodeTerminal ?
+			Console.WriteLine(Program.UnicodeTerminal != SupportLevel.None ?
 			 "Exemple 78b : A=bh=‖u‖•‖v‖•sin(θ)=‖u x v‖≈{0}" :
 			 "Exemple 78b : A=bh=||u||.||v||.sin(theta)=||u x v||~={0}",
 			 (exa78_u % exa78_v).Norm());
@@ -314,7 +314,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		where T : struct, IFormattable, IEquatable<T>, IComparable<T>, IComparable
 		{
 			if (consoleOutput) {
-				var strNorm = Program.UnicodeTerminal ? "‖" : "||";
+				var strNorm = Program.UnicodeTerminal != SupportLevel.None ? "‖" : "||";
 				Console.Write("Exemple 69a : {1}F13{1}={2}{0}Exemple 69b : {1}F23{1}=",
 				 Environment.NewLine, strNorm, exa69_f13);
 				Console.WriteLine(exa69_f23);

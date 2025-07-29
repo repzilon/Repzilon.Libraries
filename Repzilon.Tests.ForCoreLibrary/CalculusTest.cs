@@ -61,7 +61,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var ln3d = Math.Log(3);
 			var ln3m = ExtraMath.Ln(3);
 			var strFormat = "ln(3)\t{0}   {1}m   Δ FPU: {2:g13}   Δ MATH: {3:g13}";
-			if (!Program.UnicodeTerminal) {
+			if (Program.UnicodeTerminal == SupportLevel.None) {
 				strFormat = strFormat.Replace("Δ", "Delta");
 			}
 			Console.WriteLine(strFormat, ln3d, ln3m, ln3m - (decimal)ln3d,
