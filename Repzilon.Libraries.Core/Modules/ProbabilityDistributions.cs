@@ -18,33 +18,29 @@ namespace Repzilon.Libraries.Core
 {
 	public static class ProbabilityDistributions
 	{
-#pragma warning disable S3963 // "static" fields should be initialized inline
+		#region Normal distribution
+		private const byte MacLaurinIterations = 22; // 16 for Int64+Double, 22 for Decimal (higher accuracy)
+		private const float MacLaurinBreakpoint = 2.07f;
+		private static readonly decimal DecimalOneOfRootOfTwoPi;
+		private static readonly double DoubleOneOfRootOfTwoPi;
+		private static readonly double HalfSqrtOfPi;
+
+#pragma warning disable S3963 // "static" fields should be initialized inlin
 		static ProbabilityDistributions()
 		{
 #pragma warning disable U2U1000
 #pragma warning disable CC0105 // You should use 'var' whenever possible.
-			// ReSharper disable ConvertToConstant.Local
-			// ReSharper disable SuggestVarOrType_BuiltInTypes
-			/*const*/ byte kTwo = 2;
-			/*const*/ byte kThree = 3;
-			/*const*/ double kPi = Math.PI;
-			// ReSharper restore SuggestVarOrType_BuiltInTypes
-			// ReSharper restore ConvertToConstant.Local
+			// ReSharper disable once SuggestVarOrType_BuiltInTypes
+			/*const*/ decimal kPi = ExtraMath.Pi;
 #pragma warning restore CC0105 // You should use 'var' whenever possible.
 #pragma warning restore U2U1000
-			var sqrtPi = Math.Sqrt(kPi);
-			DoubleOneOfRootOfTwoPi = Math.Sqrt(kTwo) / (kTwo * sqrtPi); // 1÷√2π equals to √2÷(2√π)
-			HalfSqrtOfPi = sqrtPi / kTwo;
-			LogisticQ = kThree / kPi;
+			HalfSqrtOfPi = (double)(ExtraMath.Sqrt(kPi) / 2);
+			LogisticQ = (double)(3 / kPi);
+			var dcmOneOfSqrtTau = Decimal.One / ExtraMath.Sqrt(ExtraMath.Tau);
+			DecimalOneOfRootOfTwoPi = dcmOneOfSqrtTau;
+			DoubleOneOfRootOfTwoPi = (double)dcmOneOfSqrtTau;
 		}
 #pragma warning restore S3963 // "static" fields should be initialized inline
-
-		#region Normal distribution
-		private const byte MacLaurinIterations = 22; // 16 for Int64+Double, 22 for Decimal (higher accuracy)
-		private const float MacLaurinBreakpoint = 2.07f;
-		private static readonly decimal DecimalOneOfRootOfTwoPi = 1 / ExtraMath.Sqrt(ExtraMath.Tau);
-		private static readonly double DoubleOneOfRootOfTwoPi;
-		private static readonly double HalfSqrtOfPi;
 
 		private static short _lastProbitIterationCall;
 		private static readonly Dictionary<int, double> CofCache = new Dictionary<int, double>();
