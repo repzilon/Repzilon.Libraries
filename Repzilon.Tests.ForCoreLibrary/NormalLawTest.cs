@@ -22,26 +22,16 @@ namespace Repzilon.Tests.ForCoreLibrary
 	internal static class NormalLawTest
 	{
 		private static readonly decimal DecimalOneOfRootOfTwoPi = Decimal.One / ExtraMath.Sqrt(ExtraMath.Tau);
-		private static readonly double DoubleOneOfRootOfTwoPi;
-		private static readonly double SqrtEighthOfPi;
-		internal static readonly Dictionary<int, decimal> StudentT99TwoSidedScores;
+		private static readonly double DoubleOneOfRootOfTwoPi = (double)DecimalOneOfRootOfTwoPi;
+		private static readonly double SqrtEighthOfPi = (double)ExtraMath.Sqrt(ExtraMath.Pi / 8);
+		internal static readonly IDictionary<int, decimal> StudentT99TwoSidedScores = InitStudentScores();
 
-#pragma warning disable S3963 // "static" fields should be initialized inline
-		static NormalLawTest()
+		private static IDictionary<int, decimal> InitStudentScores()
 		{
-#pragma warning disable U2U1000 // Local variable can be inlined or declared const
-			// ReSharper disable once ConvertToConstant.Local
-			/*const*/ byte kTwo = 2;
-#pragma warning restore U2U1000 // Local variable can be inlined or declared const
-			var sqrtPi = Math.Sqrt(Math.PI);
-			var sqrt2 = Math.Sqrt(kTwo);
-			DoubleOneOfRootOfTwoPi = sqrt2 / (kTwo * sqrtPi);	// 1÷√2π equals to √2÷(2√π)
-			SqrtEighthOfPi = sqrtPi / (kTwo * sqrt2);			// √(π÷8) = √π÷√8 = √π÷(2√2)
 			var dicStudent = new Dictionary<int, decimal>();
 			dicStudent.Add(4, 4.604094871349993225385464412853251257128286533876668465m);
-			StudentT99TwoSidedScores = dicStudent;
+			return dicStudent;
 		}
-#pragma warning restore S3963 // "static" fields should be initialized inline
 
 		#region Target delta
 		internal static decimal FinalTargetDelta()
