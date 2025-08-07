@@ -22,6 +22,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 	internal enum MathFunction : byte
 	{
 		Other,
+		Exp,
 		Trigonometric,
 		InverseTrigo,
 		Hyperbolic
@@ -57,7 +58,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			/*const*/ decimal kVerySmallSquare = 6.681844869362281E-18m;
 #pragma warning restore U2U1000
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
-			TestMathAnalog((double)kVerySmallSquare, Math.Sqrt, ExtraMath.Sqrt);
+			TestMathAnalog((double)kVerySmallSquare, MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
 			var ln3d = Math.Log(3);
 			var ln3m = ExtraMath.Ln(3);
 			var strFormat = "ln(3)\t{0}   {1}m   Δ FPU: {2:g13}   Δ MATH: {3:g13}";
@@ -66,27 +67,27 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 			Console.WriteLine(strFormat, ln3d, ln3m, ln3m - (decimal)ln3d,
 			 ln3m - 1.098612288668109691395245236922525704647490557822749451734694333637494293218609m);
-			TestMathAnalog((double)kVerySmallSquare, Math.Log, ExtraMath.Ln);
+			TestMathAnalog((double)kVerySmallSquare, MathFunction.Other, Math.Log, ExtraMath.Ln);
 
-			//const decimal exponent     = 2.51059145358269m;
-			//const decimal referenceExp = 12.3122100081427838867620839168142458108126104545775059648361387825733687m;
-			const decimal exponent = 2.3988421091824654m;
-			const decimal referenceExp = 11.0104201325268752089128775065992851571285119260399503911266699103786971m;
+			const decimal exponent     = 2.51059145358269m;
+			const decimal referenceExp = 12.3122100081427838867620839168142458108126104545775059648361387825733687m;
+			//const decimal exponent = 2.3988421091824654m;
+			//const decimal referenceExp = 11.0104201325268752089128775065992851571285119260399503911266699103786971m;
 
 			var expd  = Math.Exp((double)exponent);
 			var expm0 = ExtraMath.Exp(exponent);
-			var expm1 = ExtraMath.ExpRepzi1(exponent);
 			var expm2 = ExtraMath.ExpRepzi2(exponent);
 			strFormat = "e^x ({4})\t{0}   {1}m   Δ FPU: {2:g13}   Δ MATH: {3:g13}";
 			if (Program.UnicodeTerminal == SupportLevel.None) {
 				strFormat = strFormat.Replace("Δ", "Delta");
 			}
 			Console.WriteLine(strFormat, expd, expm0, expm0 - (decimal)expd, expm0 - referenceExp, 'N');
-			Console.WriteLine(strFormat, expd, expm1, expm1 - (decimal)expd, expm1 - referenceExp, 'R');
-			Console.WriteLine(strFormat, expd, expm2, expm2 - (decimal)expd, expm2 - referenceExp, '2');
+			Console.WriteLine(strFormat, expd, expm2, expm2 - (decimal)expd, expm2 - referenceExp, 'R');
+
+			TestMathAnalog("Exp (N)", MathFunction.Exp, Math.Exp, ExtraMath.Exp);
+			TestMathAnalog("Exp (R)", MathFunction.Exp, Math.Exp, ExtraMath.ExpRepzi2);
 
 			TestMathAnalog("Sqrt", MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
-			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.ExpRepzi2);
 			TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Ln);
 			TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
 
@@ -213,7 +214,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					} else {
 						x = Math.Exp(Random.NextDouble()) * Math.Pow(Random.NextDouble(), Math.E);
 					}
-					TestMathAnalog(x, math, extraMath);
+					TestMathAnalog(x, kind, math, extraMath);
 				}
 				var hertz = TestCount / (DateTime.UtcNow - dtmStart).TotalSeconds;
 				Console.WriteLine("success at {0:n0} Hz", hertz);
@@ -223,7 +224,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			}
 		}
 
-		private static void TestMathAnalog(double x,
+		private static void TestMathAnalog(double x, MathFunction kind,
 #if NET20
 		Converter<double, double> math, Converter<decimal, decimal> extraMath)
 #else
@@ -236,11 +237,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 			var fD = extraMath((decimal)x);
 #pragma warning restore CC0031 // Check for null before calling a delegate
 			var der8 = (double)fD - fr8;
-			if (!RoundOff.AreEqual(der8, 0)) {
-				throw new ArithmeticException(String.Format(
-				 "Too big difference: x={1}{0}\tf(x[r8])={2,-29} Δ[r8]={4:e16}{0}\t f(x[D])={3} Δ[D]={5:e25}",
-				 Environment.NewLine, x, fr8, fD, der8, fD - (decimal)fr8));
+
+			if (kind == MathFunction.Exp) {
+				if (Math.Abs(der8) > 7e-14) {
+					ThrowUnacceptableDeviation(x, fr8, fD, der8);
+				}
+			} else if (!RoundOff.AreEqual(der8, 0)) {
+				ThrowUnacceptableDeviation(x, fr8, fD, der8);
 			}
+		}
+
+		private static void ThrowUnacceptableDeviation(double x, double fr8, decimal fD, double der8)
+		{
+			throw new ArithmeticException(String.Format(
+			 "Too big difference: x={1}{0}\tf(x[r8])={2,-29} Δ[r8]={4:e16}{0}\t f(x[D])={3} Δ[D]={5:e25}",
+			 Environment.NewLine, x, fr8, fD, der8, fD - (decimal)fr8));
 		}
 
 #if false

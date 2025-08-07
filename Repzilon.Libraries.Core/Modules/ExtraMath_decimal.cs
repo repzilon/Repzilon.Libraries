@@ -685,25 +685,6 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
-		public static decimal ExpRepzi1(decimal exponent)
-		{
-			if (exponent == Decimal.Zero) {
-				return Decimal.One;
-			} else if (exponent == Decimal.One) {
-				return E;
-			} else {
-				var value = Decimal.One + exponent;
-				for (byte n = 2; n <= 27; n++) {
-					decimal numerator = 1;
-					for (byte k = 1; k <= n; k++) {
-						numerator *= exponent;
-					}
-					value += numerator / BigFactorial(n);
-				}
-				return value;
-			}
-		}
-
 		public static decimal ExpRepzi2(decimal exponent)
 		{
 			if (exponent == Decimal.Zero) {
