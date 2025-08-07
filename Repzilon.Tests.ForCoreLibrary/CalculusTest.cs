@@ -68,10 +68,25 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 ln3m - 1.098612288668109691395245236922525704647490557822749451734694333637494293218609m);
 			TestMathAnalog((double)kVerySmallSquare, Math.Log, ExtraMath.Ln);
 
+			//const decimal exponent     = 2.51059145358269m;
+			//const decimal referenceExp = 12.3122100081427838867620839168142458108126104545775059648361387825733687m;
+			const decimal exponent = 2.3988421091824654m;
+			const decimal referenceExp = 11.0104201325268752089128775065992851571285119260399503911266699103786971m;
+
+			var expd  = Math.Exp((double)exponent);
+			var expm0 = ExtraMath.Exp(exponent);
+			var expm1 = ExtraMath.ExpRepzi1(exponent);
+			var expm2 = ExtraMath.ExpRepzi2(exponent);
+			strFormat = "e^x ({4})\t{0}   {1}m   Δ FPU: {2:g13}   Δ MATH: {3:g13}";
+			if (Program.UnicodeTerminal == SupportLevel.None) {
+				strFormat = strFormat.Replace("Δ", "Delta");
+			}
+			Console.WriteLine(strFormat, expd, expm0, expm0 - (decimal)expd, expm0 - referenceExp, 'N');
+			Console.WriteLine(strFormat, expd, expm1, expm1 - (decimal)expd, expm1 - referenceExp, 'R');
+			Console.WriteLine(strFormat, expd, expm2, expm2 - (decimal)expd, expm2 - referenceExp, '2');
+
 			TestMathAnalog("Sqrt", MathFunction.Other, Math.Sqrt, ExtraMath.Sqrt);
-#if false
-			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.Exp);
-#endif
+			TestMathAnalog("Exp", MathFunction.Other, Math.Exp, ExtraMath.ExpRepzi2);
 			TestMathAnalog("Ln", MathFunction.Other, Math.Log, ExtraMath.Ln);
 			TestMathAnalog("Log10", MathFunction.Other, Math.Log10, ExtraMath.Log10);
 

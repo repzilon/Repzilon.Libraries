@@ -310,7 +310,7 @@ namespace Repzilon.Libraries.Core
 		/// </summary>
 		/// <param name="m">A number specifying a power.</param>
 		/// <returns></returns>
-#if false
+#if true
 		public static decimal Exp(decimal m)
 #else
 		private static decimal Exp(decimal m)
@@ -672,7 +672,6 @@ namespace Repzilon.Libraries.Core
 			// ReSharper restore ConvertToConstant.Local
 			// ReSharper restore SuggestVarOrType_BuiltInTypes
 #pragma warning restore U2U1000 // Local variable can be inlined or declared const
-
 #pragma warning restore CC0001 // You should use 'var' whenever possible.
 
 			if (a <= kZero) {
@@ -683,6 +682,56 @@ namespace Repzilon.Libraries.Core
 				return kOne;
 			} else {
 				return Ln(a) * OneOfLn10;
+			}
+		}
+
+		public static decimal ExpRepzi1(decimal exponent)
+		{
+			if (exponent == Decimal.Zero) {
+				return Decimal.One;
+			} else if (exponent == Decimal.One) {
+				return E;
+			} else {
+				var value = Decimal.One + exponent;
+				for (byte n = 2; n <= 27; n++) {
+					decimal numerator = 1;
+					for (byte k = 1; k <= n; k++) {
+						numerator *= exponent;
+					}
+					value += numerator / BigFactorial(n);
+				}
+				return value;
+			}
+		}
+
+		public static decimal ExpRepzi2(decimal exponent)
+		{
+			if (exponent == Decimal.Zero) {
+				return Decimal.One;
+			} else if (exponent == Decimal.One) {
+				return E;
+			} else {
+				var intExponent    = (int)Math.Floor(exponent);
+				var intAbsExponent = Math.Abs(intExponent);
+				var valueI         = Decimal.One;
+				for (var i = 1; i <= intAbsExponent; i++) {
+					valueI *= E;
+				}
+				if (intExponent < 0) {
+					valueI = Decimal.One / valueI;
+				}
+
+				exponent -= intExponent;
+				var valueR = Decimal.One + exponent;
+				for (byte n = 2; n <= 27; n++) {
+					decimal numerator = 1;
+					for (byte k = 1; k <= n; k++) {
+						numerator *= exponent;
+					}
+					valueR += numerator / BigFactorial(n);
+				}
+
+				return valueI * valueR; // e^(x+y) = e^x * e^y
 			}
 		}
 	}
