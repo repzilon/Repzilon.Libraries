@@ -25,6 +25,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		private static readonly double DoubleOneOfRootOfTwoPi = (double)DecimalOneOfRootOfTwoPi;
 		private static readonly double SqrtEighthOfPi = (double)ExtraMath.Sqrt(ExtraMath.Pi / 8);
 		internal static readonly IDictionary<int, decimal> StudentT99TwoSidedScores = InitStudentScores();
+		private static readonly LogarithmicFormatter Log10Format = new LogarithmicFormatter();
 
 		private static IDictionary<int, decimal> InitStudentScores()
 		{
@@ -92,10 +93,11 @@ namespace Repzilon.Tests.ForCoreLibrary
 			};
 			var dblTargetDelta = DoubleTargetDelta();
 			var blnUnicode     = Program.UnicodeTerminal == SupportLevel.Complete;
-			Console.WriteLine(blnUnicode ?
-			 "∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}   Δ =  {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)" :
-			 "S[0; 1][N(0; 1)]\t~= {0:f16} delta= {1:e7}   Série de MacLaurin (n=16 o=30 z=1 seulement)",
-			 DoubleOneOfRootOfTwoPi * IntegralInDouble(), dblTargetDelta);
+			var fmtLogTen      = Log10Format;
+			Console.WriteLine(String.Format(fmtLogTen, blnUnicode ?
+			 "∫[0; 1][𝒩(0; 1)]\t≈ {0:f16}   Δ = {1,-15:l8}   Série de MacLaurin (n=16 o=30 z=1 seulement)" :
+			 "S[0; 1][N(0; 1)]\t~= {0:f16} delta={1,-15:l8}   Série de MacLaurin (n=16 o=30 z=1 seulement)",
+			 DoubleOneOfRootOfTwoPi * IntegralInDouble(), dblTargetDelta));
 
 			const int n = 7968; // must be a multiple of 6
 			for (i = 0; i < karZ.Length; i++) {
@@ -129,10 +131,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				0.9986501019683699054733481852324050226221706318416193506357780146441942792354278997319614187139957829m
 			};
 			Console.WriteLine();
-			Console.WriteLine(blnUnicode ?
-			 "∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)" :
-			 "S[0; 1][N(0; 1)]\t~= {0} delta= {1:e} Série de MacLaurin (n=16 o=30 z=1 seulement)",
-			 DecimalOneOfRootOfTwoPi * IntegralInDecimal(), DecimalTargetDelta());
+			Console.WriteLine(String.Format(fmtLogTen, blnUnicode ?
+			 "∫[0; 1][𝒩(0; 1)]\t≈ {0} Δ = {1:l} Série de MacLaurin (n=16 o=30 z=1 seulement)" :
+			 "S[0; 1][N(0; 1)]\t~= {0} delta= {1:l} Série de MacLaurin (n=16 o=30 z=1 seulement)",
+			 DecimalOneOfRootOfTwoPi * IntegralInDecimal(), DecimalTargetDelta()));
 
 			var dcmFinalTargetDelta = FinalTargetDelta();
 			Program.OutputHeading("Détermination du nombre d'itérations idéales pour estimer l'intégrale (Decimal)");
@@ -268,7 +270,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 #pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator
 				delta = 1e-18;
 			}
-			BeginOutputNormalIntegral(z, integral, delta, delta >= 0);
+			BeginOutputNormalIntegral(z, integral, delta);
 			EndOutputNormalIntegral(algorithm, n, o);
 		}
 
@@ -276,21 +278,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 		int n, int o)
 		{
 			var delta = integral - expected;
-			BeginOutputNormalIntegral(z, integral, delta, delta >= 0);
+			BeginOutputNormalIntegral(z, integral, delta);
 			EndOutputNormalIntegral(algorithm, n, o);
 		}
 
-		private static void BeginOutputNormalIntegral<T>(T z, T integral, T delta, bool nonNegativeDelta)
+		private static void BeginOutputNormalIntegral<T>(T z, T integral, T delta)
 		{
-			Console.Write(Program.UnicodeTerminal == SupportLevel.Complete ?
-			 "∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}" : "S[-∞; {0}][N(0; 1)]\t~= {1:f16} delta={2}",
-			 z, integral, nonNegativeDelta ? " " : "");
-			Console.Write("{0:e7}   ", delta);
+			Console.Write(String.Format(Log10Format, Program.UnicodeTerminal == SupportLevel.Complete ?
+			 "∫[-∞; {0}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2,-15:l8}" : "S[-∞; {0}][N(0; 1)]\t~= {1:f16} delta={2,-15:l8}",
+			 z, integral, delta));
 		}
 
 		private static void EndOutputNormalIntegral(string algorithm, int n, int o)
 		{
-			Console.WriteLine("{0,-33} (n={1,4} o={2,4})", algorithm, n, o);
+			Console.WriteLine("   {0,-33} (n={1,4} o={2,4})", algorithm, n, o);
 		}
 
 		private static double NonCumulativeNormal(double z)
@@ -493,10 +494,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 				}
 				ml = MacLaurinPositiveNormalIntegral(z, bestK);
 				delta = ml - simpson;
-				Console.Write(Program.UnicodeTerminal == SupportLevel.Complete ?
-				 "∫[0; {0:f2}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2}" : "S[0; {0:f2}][N(0; 1)]\t~= {1:f16} delta={2}",
-				 z, ml, delta >= 0 ? " " : "");
-				Console.WriteLine("{0:e7} (s={1} m={2})", delta, n, bestK);
+				Console.Write(String.Format(Log10Format, Program.UnicodeTerminal == SupportLevel.Complete ?
+				 "∫[0; {0:f2}][𝒩(0; 1)]\t≈ {1:f16}   Δ = {2,-15:l8}" : "S[0; {0:f2}][N(0; 1)]\t~= {1:f16} delta={2,-15:l8}",
+				 z, ml, delta));
+				Console.WriteLine(" (s={0} m={1})", n, bestK);
 
 				if (Math.Abs(delta) > Math.Abs(targetDelta) * 10) {
 					blnBroken = true;
@@ -511,7 +512,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("{0,5:f2} {1,7:f3} {2:f16} ", RoundOff.Error(2 * (1 - p)), p, logit);
 			Console.Write("{0:f16} {1:f16} {2:f16} ", logit * SqrtEighthOfPi,
 			 ProbabilityDistributions.InverseNormalEstimate(p), probit);
-			Console.WriteLine("{0}{1:e7} {2,4}", delta >= 0 ? " " : "", delta, iterations);
+			Console.WriteLine(String.Format(Log10Format, "{0,-15:l8} {1,4}", delta, iterations));
 		}
 
 		private static void LogisticModel(params PointM[] points)
