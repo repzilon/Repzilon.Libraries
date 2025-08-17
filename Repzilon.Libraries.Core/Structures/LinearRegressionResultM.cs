@@ -27,9 +27,9 @@ namespace Repzilon.Libraries.Core.Regression
 	IEquatable<DecimalLinearRegressionResult>, IEquatable<LinearRegressionResult>
 	{
 		private readonly int m_intCount;
-		public decimal Slope { get; set; }
-		public decimal Intercept { get; set; }
-		public decimal Correlation { get; set; }
+		public decimal Slope { get; private set; }
+		public decimal Intercept { get; private set; }
+		public decimal Correlation { get; private set; }
 		public readonly decimal StdDevOfY;
 		public readonly decimal StdDevOfX;
 		public readonly decimal AverageX;

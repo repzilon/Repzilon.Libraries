@@ -59,6 +59,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			dicTests.Add("Normal law", NormalLawTest.Run);
 			dicTests.Add("Student distribution", StudentTest.Run);
 			dicTests.Add("Instrumental Analysis", InstrumentalAnalysisTest.Run);
+			dicTests.Add("Logistic model", LogisticModelTest.Run);
 
 			// Needed on Windows to enable Unicode support
 #if NETFRAMEWORK

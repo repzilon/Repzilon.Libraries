@@ -11,8 +11,6 @@
 	<LangVersion>7.3</LangVersion>
   </PropertyGroup>
   <ItemGroup>
-    <Folder Include="Structures\" />
-    <Folder Include="Interfaces\" />
     <Folder Include="Classes\" />
   </ItemGroup>
   <ProjectExtensions>

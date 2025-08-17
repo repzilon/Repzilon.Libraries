@@ -73,15 +73,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			// ReSharper disable once TooWideLocalVariableScope
 			double z, p;
 
-			Program.OutputHeading("Biofermentation semaine 3 exercice");
-			LogisticModel(new PointM(0, 1.5m), new PointM(5, 2), new PointM(9, 3.5m), new PointM(13, 6.2m),
-			 new PointM(16, 8.2m), new PointM(20, 9.4m), new PointM(24, 9.8m), new PointM(28, 9.9m));
-
-			Program.OutputHeading("Biofermentation laboratoire 5 saturation en oxygène");
-			LogisticModel(new PointM(0, 105.1m), new PointM(0.5m, 103.7m), new PointM(1, 98.4m),
-			 new PointM(1.5m, 85.5m), new PointM(2, 51.6m), new PointM(2.5m, 1), new PointM(3, 0.8m),
-			 new PointM(3.5m, 0.3m));
-
 			Program.OutputHeading("Intégrale d'une loi normale centrée réduite");
 			var karZ = new float[] { 1, 1.23f, 1.96f, 2, 3 };
 			var karExpected = new double[] {
@@ -513,55 +504,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.Write("{0:f16} {1:f16} {2:f16} ", logit * SqrtEighthOfPi,
 			 ProbabilityDistributions.InverseNormalEstimate(p), probit);
 			Console.WriteLine(String.Format(Log10Format, "{0,-15:l8} {1,4}", delta, iterations));
-		}
-
-		private static void LogisticModel(params PointM[] points)
-		{
-			var iLast = points.Length - 1;
-			var last = points[iLast].Y;
-			var intercept = Math.Min(last, points[0].Y);
-			var amplitude = Math.Abs(last - points[0].Y);
-			// Find the point which is the observed middle
-			var yMid = 0.5m * (last + points[0].Y);
-			var iMid = points.Length / 2;
-			var ixyMid = -1;
-			int k;
-			last = Decimal.MaxValue;
-			for (k = iMid - 1; k <= iMid + 1; k++) {
-				var diff = Math.Abs(points[k].Y - yMid);
-				if (diff < last) {
-					last = diff;
-					ixyMid = k;
-				}
-			}
-
-			var lrrSecant = LinearRegression.Compute(points[ixyMid - 1], points[ixyMid], points[ixyMid + 1]);
-			var location = lrrSecant.InterpolateX(yMid);
-			last = LinearRegression.Compute(points).Slope;
-			// The scale parameter is the hardest to adjust
-			var scale = Math.Sign(last) * Math.Max(lrrSecant.Slope, last) / Math.Min(lrrSecant.Slope, last);
-
-			var ptmarRoughModel = new PointM[points.Length];
-			EvaluateLogisticModel(points, intercept, amplitude, location, scale, ptmarRoughModel);
-			lrrSecant = LinearRegression.Compute(ptmarRoughModel[0], ptmarRoughModel[iLast]);
-			Console.WriteLine("{0}\tr={1}", lrrSecant, RoundOff.Error(lrrSecant.Correlation));
-
-			intercept = lrrSecant.Intercept + lrrSecant.Slope * intercept;
-			amplitude *= lrrSecant.Slope;
-			EvaluateLogisticModel(points, intercept, amplitude, location, scale, ptmarRoughModel);
-		}
-
-		private static void EvaluateLogisticModel(PointM[] points,
-		decimal intercept, decimal amplitude, decimal location, decimal scale, PointM[] ptmarRoughModel)
-		{
-			for (var k = 0; k < points.Length; k++) {
-				var exponent = (points[k].X - location) / -scale;
-				var unscaled = 1 / (1 + (decimal)Math.Exp((double)exponent));
-				ptmarRoughModel[k] = new PointM(intercept + (amplitude * unscaled), points[k].Y);
-				Console.WriteLine("{0}\t{1}\t{2:f1}", points[k].X, points[k].Y, ptmarRoughModel[k].X);
-			}
-			Console.Write("y = {0} + {1}*[1/(1+e^((x-{2})/-", intercept, amplitude, location);
-			Console.WriteLine("{0}))]", scale);
 		}
 	}
 }
