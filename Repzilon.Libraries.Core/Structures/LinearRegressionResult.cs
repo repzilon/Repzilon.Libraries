@@ -349,5 +349,17 @@ namespace Repzilon.Libraries.Core.Regression
 #pragma warning restore CC0019   // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
 		}
+
+		public double Derivative(double dummyX)
+		{
+			return this.Slope;
+		}
+
+		public double Primitive(double x)
+		{
+			var m = this.Slope;
+			var b = this.Intercept;
+			return (m * x * x * 0.5) + (b * x);
+		}
 	}
 }

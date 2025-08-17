@@ -36,7 +36,7 @@ namespace Repzilon.Libraries.Core.Regression
 			var lowTwoBits = options & LogisticRegressionOptions.Average;
 			var blnStretch = (options & LogisticRegressionOptions.StretchToSource) != 0;
 
-			DecimalLogisticRegressionResult result = new DecimalLogisticRegressionResult();
+			DecimalLogisticRegressionResult result;
 			if (lowTwoBits == LogisticRegressionOptions.MidwaySecant) {
 				result = MidwaySecant(points);
 			} else if (lowTwoBits == LogisticRegressionOptions.Linearization) {
@@ -127,5 +127,166 @@ namespace Repzilon.Libraries.Core.Regression
 			var y = obj.Y;
 			return (y == 0) || (y == 1);
 		}
+
+		#region Area between observed trapezes and modelized curve
+		// ReSharper disable once ConvertToConstant.Local
+		private static readonly decimal TargetIntersectDelta = 1e-19m;
+
+#if NET20
+		public static decimal AreaBetween(DecimalLogisticRegressionResult logistic, params PointM[] points)
+#else
+		public static decimal AreaBetween(this DecimalLogisticRegressionResult logistic, params PointM[] points)
+#endif
+		{
+			decimal areaBetween = 0;
+			for (var j = 0; j < points.Length - 1; j++) {
+				var secantReal = LinearRegression.Compute(points[j], points[j + 1]);
+				var lerpPoints = new PointM[] { LerpPoint(logistic, points[j]), LerpPoint(logistic, points[j + 1]) };
+				var secantLine = LinearRegression.Compute(lerpPoints);
+				decimal? crossing = null;
+				decimal? crossing2 = null;
+				var x = points[j].X;
+
+				if (secantLine.Slope != secantReal.Slope) { // They could cross
+					crossing = (secantLine.Intercept - secantReal.Intercept) / (secantReal.Slope - secantLine.Slope);
+					if ((crossing >= x) && (crossing <= points[j + 1].X)) { // secant crosses
+						// Find the Newton crossing using the secant crossing as first estimate
+						crossing = FindBoundCrossing(crossing.Value, secantReal, logistic, points, j);
+						if (crossing == null) {
+							crossing = FindBoundCrossing(0.5m * (x + points[j + 1].X), secantReal, logistic, points, j);
+						}
+					} else {
+						// Using only the secant of the segment may miss a concave curve inside the segment
+						var w = points[j + 1].X - x;
+						crossing  = FindBoundCrossing(x + 0.25m * w, secantReal, logistic, points, j);
+						crossing2 = FindBoundCrossing(x + 0.75m * w, secantReal, logistic, points, j);
+						if (crossing2.HasValue && (RoundOff.Error(crossing2.Value) == points[j + 1].X)) {
+							crossing2 = null;
+						}
+					}
+				}
+
+#if NET20
+				Converter<decimal, decimal> funcFirst, funcSecond;
+#else
+				Func<decimal, decimal> funcFirst, funcSecond;
+#endif
+				if (points[j].Y > lerpPoints[0].Y) {
+					funcFirst  = secantReal.Primitive;
+					funcSecond = logistic.Primitive;
+				} else {
+					funcFirst  = logistic.Primitive;
+					funcSecond = secantReal.Primitive;
+				}
+
+				if (crossing2.HasValue) {
+					try {
+						areaBetween += AreaBetweenCrosses(x, points[j + 1].X, crossing.Value, crossing2.Value, funcFirst, funcSecond);
+					} catch (OverflowException) {
+						if (RoundOff.Error(crossing.Value) == x) {
+							areaBetween += AreaBetweenCrosses(x, points[j + 1].X, crossing2.Value, funcSecond, funcFirst);
+						} else {
+							throw;
+						}
+					}
+				} else if (crossing.HasValue) {
+					try {
+						areaBetween += AreaBetweenCrosses(x, points[j + 1].X, crossing.Value, funcFirst, funcSecond);
+					} catch (OverflowException) {
+						if (crossing.Value == x) {
+							areaBetween += AreaBetweenCrosses(x, points[j + 1].X, crossing.Value, funcSecond, funcFirst);
+						} else {
+							throw;
+						}
+					}
+				} else {
+					areaBetween += DifferenceOfPrimitives(x, points[j + 1].X, funcFirst, funcSecond);
+				}
+			}
+
+			return areaBetween;
+		}
+
+		private static decimal? FindBoundCrossing(decimal candidate, DecimalLinearRegressionResult observedSecant,
+		DecimalLogisticRegressionResult logisticModel, PointM[] points, int j)
+		{
+			try {
+				var found = BoundCrossing(FindCrossing(candidate, observedSecant, logisticModel), points, j);
+				if (found.HasValue) {
+					var val = found.Value;
+					var fx  = observedSecant.InterpolateY(val);
+					var gx  = logisticModel.InterpolateY(val);
+					if (Math.Abs(fx - gx) > TargetIntersectDelta) {
+						found = null;
+					}
+				}
+				return found;
+			} catch (OverflowException) {
+				return null;
+			}
+		}
+
+		private static decimal? BoundCrossing(decimal? crossing, PointM[] points, int j)
+		{
+			if ((crossing < points[j].X) || (crossing > points[j + 1].X)) {
+				crossing = null;
+			}
+			return crossing;
+		}
+
+		private static decimal FindCrossing(decimal candidate, DecimalLinearRegressionResult observedSecant,
+		DecimalLogisticRegressionResult logisticModel)
+		{
+			return Differential.NewtonCrossing(candidate, TargetIntersectDelta, observedSecant.ExtrapolateY,
+			 logisticModel.ExtrapolateY, observedSecant.Derivative, logisticModel.Derivative);
+		}
+
+#if NET20
+		private static PointM LerpPoint(DecimalLogisticRegressionResult logistic, PointM forX)
+#else
+		private static PointM LerpPoint(this DecimalLogisticRegressionResult logistic, PointM forX)
+#endif
+		{
+			var x = forX.X;
+			return new PointM(x, logistic.InterpolateY(x));
+		}
+
+		private static decimal DifferenceOfPrimitives(decimal a, decimal b,
+#if NET20
+		Converter<decimal, decimal> top, Converter<decimal, decimal> bottom)
+#else
+		Func<decimal, decimal> top, Func<decimal, decimal> bottom)
+#endif
+		{
+			var area = Integral.DifferenceOfPrimitives(a, b, top) - Integral.DifferenceOfPrimitives(a, b, bottom);
+			if (area < 0) {
+				throw new OverflowException(String.Format("Underflow, area for [{0};{1}] is {2}", a, b, area));
+			}
+			return area;
+		}
+
+		private static decimal AreaBetweenCrosses(decimal a, decimal b, decimal crossing,
+#if NET20
+		Converter<decimal, decimal> firstTop, Converter<decimal, decimal> secondTopOrFirstBottom)
+#else
+		Func<decimal, decimal> firstTop, Func<decimal, decimal> secondTopOrFirstBottom)
+#endif
+		{
+			return DifferenceOfPrimitives(a, crossing, firstTop, secondTopOrFirstBottom) +
+				   DifferenceOfPrimitives(crossing, b, secondTopOrFirstBottom, firstTop);
+		}
+
+		private static decimal AreaBetweenCrosses(decimal a, decimal b, decimal crossing1, decimal crossing2,
+#if NET20
+		Converter<decimal, decimal> firstTop, Converter<decimal, decimal> secondTopOrFirstBottom)
+#else
+		Func<decimal, decimal> firstTop, Func<decimal, decimal> secondTopOrFirstBottom)
+#endif
+		{
+			return DifferenceOfPrimitives(a, crossing1, firstTop, secondTopOrFirstBottom) +
+				   DifferenceOfPrimitives(crossing1, crossing2, secondTopOrFirstBottom, firstTop) +
+				   DifferenceOfPrimitives(crossing2, b, firstTop, secondTopOrFirstBottom);
+		}
+		#endregion
 	}
 }

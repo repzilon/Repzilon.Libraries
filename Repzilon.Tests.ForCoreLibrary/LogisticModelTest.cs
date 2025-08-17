@@ -19,11 +19,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 {
 	internal static class LogisticModelTest
 	{
+
 		internal static void Run(string[] args)
 		{
 			Program.OutputHeading("Biofermentation semaine 3 exercice");
-			LogisticModelSix(new PointM(0, 1.5m), new PointM(5, 2), new PointM(9, 3.5m), new PointM(13, 6.2m),
-			 new PointM(16, 8.2m), new PointM(20, 9.4m), new PointM(24, 9.8m), new PointM(28, 9.9m));
+			Program.OutputSizeOf<DecimalLogisticRegressionResult>();
+			LogisticModelSix(new PointM(0, 1.5m), new PointM(5, 2), new PointM(9, 3.5m),
+			 new PointM(13, 6.2m), new PointM(16, 8.2m), new PointM(20, 9.4m), new PointM(24, 9.8m),
+			 new PointM(28, 9.9m));
 
 			Program.OutputHeading("Biofermentation laboratoire 5 saturation en oxygène");
 			LogisticModelSix(new PointM(0, 105.1m), new PointM(0.5m, 103.7m), new PointM(1, 98.4m),
@@ -39,17 +42,20 @@ namespace Repzilon.Tests.ForCoreLibrary
 			for (i = 0; i < 6; i++) {
 				lorarAll[i] = LogisticRegression.Compute((LogisticRegressionOptions)karValidCombos[i], points);
 			}
+
 			Console.WriteLine("X\tY\ty m\ty l\ty a\ty ms\ty ls\ty as");
+			int j;
 			for (i = 0; i < points.Length; i++) {
 				Console.Write("{0}\t{1,5:f1}", points[i].X, points[i].Y);
-				for (var j = 0; j < 6; j++) {
+				for (j = 0; j < 6; j++) {
 					Console.Write("\t{0,6:f2}", lorarAll[j].InterpolateY(points[i].X));
 				}
 				Console.WriteLine();
 			}
+
 			for (i = 0; i < 6; i++) {
-				Console.WriteLine("{0,-30}  r={1}",
-				 (LogisticRegressionOptions)karValidCombos[i], lorarAll[i].Correlation);
+				Console.WriteLine("{0,-30}  r={1}\tA={2} u^2", (LogisticRegressionOptions)karValidCombos[i],
+				 lorarAll[i].Correlation, LogisticRegression.AreaBetween(lorarAll[i], points));
 				Console.WriteLine(lorarAll[i]);
 			}
 		}

@@ -133,6 +133,11 @@ namespace Repzilon.Libraries.Core.Regression
 				throw new ArgumentOutOfRangeException(nameof(x),
 				 String.Format("x is outside the range [{0}; {1}]", min, max));
 			}
+			return ExtrapolateY(x);
+		}
+
+		public decimal ExtrapolateY(decimal x)
+		{
 			return RoundOff.Error(this.Intercept + (x * this.Slope));
 		}
 
@@ -346,6 +351,18 @@ namespace Repzilon.Libraries.Core.Regression
 			return new RegressionModel<decimal>(na, nb, r, newModel, minX, maxX);
 #pragma warning restore CC0019   // Use 'switch'
 #pragma warning restore RECS0012 // 'if' statement can be re-written as 'switch' statement
+		}
+
+		public decimal Derivative(decimal dummyX)
+		{
+			return this.Slope;
+		}
+
+		public decimal Primitive(decimal x)
+		{
+			var m = this.Slope;
+			var b = this.Intercept;
+			return (m * x * x * 0.5m) + (b * x);
 		}
 	}
 }

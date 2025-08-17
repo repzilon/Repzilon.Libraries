@@ -128,9 +128,30 @@ namespace Repzilon.Libraries.Core.Regression
 				throw new ArgumentOutOfRangeException(nameof(x),
 				 String.Format("x is outside the range [{0}; {1}]", min, max));
 			}
+			return ExtrapolateY(x);
+		}
+
+		public decimal ExtrapolateY(decimal x)
+		{
 			var exponent = (x - this.Location) / -this.Scale;
 			var unscaled = 1 / (1 + ExtraMath.Exp(exponent));
 			return RoundOff.Error(this.Intercept + (this.Amplitude * unscaled));
+		}
+
+		public decimal Derivative(decimal x)
+		{
+			var scale   = this.Scale;
+			var powered = ExtraMath.Exp((x - this.Location) / -scale);
+			var denom   = 1 + powered;
+			denom = scale * denom * denom;
+			return this.Amplitude * powered / denom;
+		}
+
+		public decimal Primitive(decimal x)
+		{
+			var s = this.Scale;
+			return this.Amplitude * s * ExtraMath.Ln(ExtraMath.Exp(this.Location / s) + ExtraMath.Exp(x / s)) +
+				   this.Intercept * x;
 		}
 
 		#region Equals
