@@ -26,7 +26,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 		internal static void Run(string[] args)
 		{
-			const int kBenchIterationsDecimal = 70000;
+			const int kBenchIterationsDecimal = 7000;
 			const int kBenchIterationsDouble = 25 * kBenchIterationsDecimal;
 
 			var ptarDouble = new PointD[] {
@@ -384,7 +384,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			InterpolateMolecularWeight(5, 90, new float[] { 57.5f, 66.5f }, rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner, rm);
 			InterpolateMolecularWeight(6, kFrontDistance4Std, new float[] { 59, 65 }, rmdImmunoLabWeightLogOuter, rmdImmunoLabWeightLogInner, rm);
 
-			Program.OutputHeading("Biofermentation week 3 exercice");
+			Program.OutputHeading("Biofermentation week 3 exercise");
 			ptarDouble = new PointD[] {
 				new PointD(0, 1.5f), new PointD(5, 2), new PointD(9, 3.5f), new PointD(13, 6.2f),
 				new PointD(16, 8.2f), new PointD(20, 9.4f), new PointD(24, 9.8f), new PointD(28, 9.9f)
@@ -393,6 +393,30 @@ namespace Repzilon.Tests.ForCoreLibrary
 				Console.Write("{0,2}h : ", ptarDouble[i - 1].X);
 				OutputRegressionModel(RegressionModel.Compute(Take(i, ptarDouble)));
 			}
+			var ptarLn = new PointD[ptarDouble.Length];
+			for (i = 0; i < ptarDouble.Length; i++) {
+				ptarLn[i] = new PointD(ptarDouble[i].X, Math.Log(ptarDouble[i].Y));
+			}
+			vmax1 = 0;
+			for (i = 0; i < ptarDouble.Length - 1; i++) {
+				vmax0 = LinearRegression.Compute(ptarLn[i], ptarLn[i + 1]).Slope;
+				if (vmax0 > vmax1) {
+					vmax1 = vmax0;
+				}
+			}
+			Console.WriteLine(blnPartialCode ? "µₘₐₓ = {0:g2} h^-1\tG = {1:g2} h^-1" : "umax = {0:g2} h^-1\tG = {1:g2} h^-1",
+			 vmax1, Math.Log(2) / vmax1);
+			Km0   = ptarDouble[ptarDouble.Length - 1].Y - ptarDouble[0].Y;
+			vmax0 = Km0 / (250 - 20);
+			Km1   = (90f - 6.25f) / Km0;
+			Console.WriteLine("Yx/s = {0:g2} %\tYp/s = {1:g2} %\tYp/x = {2} %",
+			 100 * vmax0, 100 * ((90f - 6.25f) / (250 - 20)), SignificantDigits.Round(100 * Km1, 2));
+			Console.WriteLine(blnPartialCode ?
+			 "Pₓ tot = {0:g2} g/(L*h)\tPₓ ₘₐₓ = {1:g2} g/(L•h)" : "Px tot = {0:g2} g/(L*h)\tPx max = {1:g2} g/(L*h)",
+			 Km0 / 28f, (8.2f - 1.5f) / 16f);
+			Console.WriteLine(blnPartialCode ?
+			 "Pp = {0:g2} g/(L•h)\tQp ₘₐₓ = {1:g2} h^-1" : "Pp = {0:g2} g/(L*h)\tQp max = {1:g2} h^-1",
+			 (90f - 6.25f) / 28f, Km1 * vmax1);
 
 			Program.OutputHeading("Ecotoxicology Microtox");
 			var karSnowI0 = new byte[10] { 96, 88, 87, 86, 87, 92, 88, 87, 88, 80 };

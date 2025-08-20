@@ -131,7 +131,7 @@ namespace Repzilon.Libraries.Core.Regression
 			return ExtrapolateY(x);
 		}
 
-		public decimal ExtrapolateY(decimal x)
+		internal decimal ExtrapolateY(decimal x)
 		{
 			var exponent = (x - this.Location) / -this.Scale;
 			var unscaled = 1 / (1 + ExtraMath.Exp(exponent));
@@ -152,6 +152,35 @@ namespace Repzilon.Libraries.Core.Regression
 			var s = this.Scale;
 			return this.Amplitude * s * ExtraMath.Ln(ExtraMath.Exp(this.Location / s) + ExtraMath.Exp(x / s)) +
 				   this.Intercept * x;
+		}
+
+		internal decimal ProductivityFirstDerivative(decimal x)
+		{
+			var a    = this.Amplitude;
+			var n    = this.Location;
+			var s    = this.Scale;
+			var exs  = ExtraMath.Exp(x / s);
+			var ens  = ExtraMath.Exp(n / s);
+			var enxs = ens + exs;
+			// -((A E^(x/s) (E^(x/s) s + E^(n/s) (s - x)))/((E^(n/s) + E^(x/s))^2 s x^2))
+			return (-a * exs * (ens * (s - x) + s * exs)) / (s * x * x * enxs * enxs);
+		}
+
+		internal decimal ProductivitySecondDerivative(decimal x)
+		{
+			var a     = this.Amplitude;
+			var n     = this.Location;
+			var s     = this.Scale;
+			var exs   = ExtraMath.Exp(x / s);
+			var fq1   = (4 * s * s) - (2 * s * x) - (x * x);
+			var enxs  = ExtraMath.Exp((n + x) / s);
+			var e2ns  = ExtraMath.Exp((2 * n) / s);
+			var fq2   = (2 * s * s) - (2 * s * x) + (x * x);
+			var e2xs  = ExtraMath.Exp((2 * x) / s);
+			var ensxs = ExtraMath.Exp(n / s) + ExtraMath.Exp(x / s);
+			// (A E^(x/s) (2 E^((2 x)/s) s^2 + E^((n + x)/s) (4 s^2 - 2 s x - x^2) + E^((2 n)/s) (2 s^2 - 2 s x + x^2)))/((E^(n/s) + E^(x/s))^3 s^2 x^3)
+			return (a * exs * (fq1 * enxs + e2ns * fq2 + 2 * s * s * e2xs)) /
+				   (s * s * x * x * x * ensxs * ensxs * ensxs);
 		}
 
 		#region Equals

@@ -288,5 +288,20 @@ namespace Repzilon.Libraries.Core.Regression
 				   DifferenceOfPrimitives(crossing2, b, firstTop, secondTopOrFirstBottom);
 		}
 		#endregion
+
+#if NET20
+		public static KeyValuePair<PointM, decimal> MaxProductivity(DecimalLogisticRegressionResult model, decimal x0)
+#else
+		public static KeyValuePair<PointM, decimal> MaxProductivity(this DecimalLogisticRegressionResult model, decimal x0)
+#endif
+		{
+			// Productivity P = (Xm - X0) / (tm - t0) where Xm = f(m) [our model at time m], t0 = 0, tm = m
+			// becomes P = (f(m) - X0) / m. The maximum productivity is a local maximum, and occurs when the
+			// derivative of P changes its sign. So we are going to solve 0 = d/dx[(f(m) - X0) / m]
+			var tm = Differential.NewtonCrossing(model.Location * ExtraMath.E * 0.5m, TargetIntersectDelta,
+				model.ProductivityFirstDerivative, 0, model.ProductivitySecondDerivative);
+			var xm = model.InterpolateY(tm);
+			return new KeyValuePair<PointM, decimal>(new PointM(tm, xm), (xm - x0) / tm);
+		}
 	}
 }
