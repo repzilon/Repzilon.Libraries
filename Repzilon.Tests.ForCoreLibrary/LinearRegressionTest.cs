@@ -404,7 +404,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 					vmax1 = vmax0;
 				}
 			}
-			Console.WriteLine(blnPartialCode ? "µₘₐₓ = {0:g2} h^-1\tG = {1:g2} h^-1" : "umax = {0:g2} h^-1\tG = {1:g2} h^-1",
+			Console.WriteLine(blnPartialCode ? "µₘₐₓ = {0:g2} h^-1\tG = {1:g2} h" : "umax = {0:g2} h^-1\tG = {1:g2} h",
 			 vmax1, Math.Log(2) / vmax1);
 			Km0   = ptarDouble[ptarDouble.Length - 1].Y - ptarDouble[0].Y;
 			vmax0 = Km0 / (250 - 20);

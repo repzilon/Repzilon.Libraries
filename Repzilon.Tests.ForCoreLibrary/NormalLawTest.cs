@@ -255,7 +255,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var delta = integral - expected;
 			// When the FP subtraction gives 0, it is not really zero here,
-			// it is just so small it cannot be computed correctly on a FPU.
+			// it is just so small it cannot be computed correctly on an FPU.
 #pragma warning disable RECS0018 // Comparison of floating point numbers with equality operator
 			if (delta == 0) {
 #pragma warning restore RECS0018 // Comparison of floating point numbers with equality operator

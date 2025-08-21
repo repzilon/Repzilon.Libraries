@@ -25,7 +25,7 @@ namespace Repzilon.Libraries.Core
 		private static readonly double DoubleOneOfRootOfTwoPi;
 		private static readonly double HalfSqrtOfPi;
 
-#pragma warning disable S3963 // "static" fields should be initialized inlin
+#pragma warning disable S3963 // "static" fields should be initialized inline
 		static ProbabilityDistributions()
 		{
 #pragma warning disable U2U1000
