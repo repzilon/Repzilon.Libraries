@@ -160,7 +160,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 				// Microsoft is too lazy to provide a libproc wrapper. But libproc is poorly documented, so I will not
 				// dwell into it right now. Working set is also a poor metric: it is only reliable when swapping
 				// and memory compression are disabled. I will use the GC memory, while underestimating memory usage
-				// by a large measure, it does not have the relibility problem.
+				// by a large measure, it does not have the reliability problem.
 				return GC.GetTotalMemory(false);
 			} else {
 				// A Process instance is more like a snapshot
