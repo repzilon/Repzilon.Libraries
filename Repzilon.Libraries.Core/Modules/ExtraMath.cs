@@ -178,6 +178,18 @@ namespace Repzilon.Libraries.Core
 			}
 		}
 
+		/// <summary>
+		/// Computes iteratively the factorial of a natural number.
+		/// </summary>
+		/// <param name="n">A natural number</param>
+		/// <returns>The factorial</returns>
+		/// <remarks>
+		/// This version returning a Decimal can go to 27 inclusively, while Int64 returning Factorial
+		/// goes to 20 inclusively. A double has a higher range but is unable to represent 28! exactly.
+		/// There will be no double returning version for this reason. There will be no BigInteger
+		/// returning version either, this time because the BigInteger inner workings generate too
+		/// much memory garbage, hindering performance.
+		/// </remarks>
 		public static decimal BigFactorial(byte n)
 		{
 			return n > 20 ? BigFactorialCore(n) : Factorial(n);
