@@ -56,10 +56,10 @@ namespace Repzilon.Tests.ForCoreLibrary
 #endif
 			dicTests.Add("Calculus", CalculusTest.Run);
 			dicTests.Add("Optics", OpticsTest.Run);
-			dicTests.Add("Normal law", NormalLawTest.Run);
-			dicTests.Add("Student distribution", StudentTest.Run);
+			dicTests.Add("Normal Distribution", NormalLawTest.Run);
+			dicTests.Add("Student T-distribution", StudentTest.Run);
 			dicTests.Add("Instrumental Analysis", InstrumentalAnalysisTest.Run);
-			dicTests.Add("Logistic model", LogisticModelTest.Run);
+			dicTests.Add("Specialized Regressions", SpecializedRegressionTest.Run);
 
 			// Needed on Windows to enable Unicode support
 #if NETFRAMEWORK
