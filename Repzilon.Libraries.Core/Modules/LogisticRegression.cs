@@ -166,7 +166,7 @@ namespace Repzilon.Libraries.Core.Regression
 					}
 				}
 
-#if NET20
+#if NETFRAMEWORK
 				Converter<decimal, decimal> funcFirst, funcSecond;
 #else
 				Func<decimal, decimal> funcFirst, funcSecond;
@@ -252,7 +252,7 @@ namespace Repzilon.Libraries.Core.Regression
 		}
 
 		private static decimal DifferenceOfPrimitives(decimal a, decimal b,
-#if NET20
+#if NETFRAMEWORK
 		Converter<decimal, decimal> top, Converter<decimal, decimal> bottom)
 #else
 		Func<decimal, decimal> top, Func<decimal, decimal> bottom)
@@ -266,7 +266,7 @@ namespace Repzilon.Libraries.Core.Regression
 		}
 
 		private static decimal AreaBetweenCrosses(decimal a, decimal b, decimal crossing,
-#if NET20
+#if NETFRAMEWORK
 		Converter<decimal, decimal> firstTop, Converter<decimal, decimal> secondTopOrFirstBottom)
 #else
 		Func<decimal, decimal> firstTop, Func<decimal, decimal> secondTopOrFirstBottom)
@@ -277,7 +277,7 @@ namespace Repzilon.Libraries.Core.Regression
 		}
 
 		private static decimal AreaBetweenCrosses(decimal a, decimal b, decimal crossing1, decimal crossing2,
-#if NET20
+#if NETFRAMEWORK
 		Converter<decimal, decimal> firstTop, Converter<decimal, decimal> secondTopOrFirstBottom)
 #else
 		Func<decimal, decimal> firstTop, Func<decimal, decimal> secondTopOrFirstBottom)
