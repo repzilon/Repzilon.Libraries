@@ -48,6 +48,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 
 			// https://www.youtube.com/watch?v=m-k84cCves8
 			Program.OutputHeading("Multiple Regression: Two Independent Variables Case - Part 1");
+			Program.OutputSizeOf<TwoXPoint<float>>();
 			var coeffs =  MultipleLinearRegression.Compute(X1X2Y(3,8,-3.7f),
 			 X1X2Y(4,5,3.5f), X1X2Y(5,7,2.5f), X1X2Y(6,3,11.5f), X1X2Y(2,1,5.7f));
 			Console.WriteLine(blnPartialCode ? "y = {0} + {1}•x₁ + {2}•x₂" : "y = {0} + {1}*x1 + {2}*x2", coeffs[0], coeffs[1], coeffs[2]);
@@ -59,7 +60,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 6.078f, 4.881f, 4.055f, 5.157f, 4.085f, 3.388f, 4.428f, 3.517f, 2.911f);
 			CapillaryElectrophoresisTimeFunction(blnPartialCode, "méthylparabène",
 			 6.258f, 5.025f, 4.176f, 5.306f, 4.205f, 3.487f, 4.558f, 3.620f, 2.996f);
-			Console.WriteLine("tr[s] T[K] E[V]");
+			Console.WriteLine(blnPartialCode ? "tᵣ[s] T°[K] ΔE[V]" : "tr[s] T[K] E[V]");
 		}
 
 		private static void LogisticModelSix(bool useSymbols, params PointM[] points)
@@ -140,7 +141,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var coeffs = MultipleLinearRegression.Compute(MakeCapillaryElectrophoresisPoints(retentionTimes));
 			Console.Write(substance);
-			Console.WriteLine(useSymbols ? "\ttᵣ = {0:g4} + {1:g4}•T + {2:g4}•E" : "\ttr = {0:g4} + {1:g4}*T + {2:g4}*E",
+			Console.WriteLine(useSymbols ? "\ttᵣ = {0:g4} + {1:g4}•T° + {2:g4}•ΔE" : "\ttr = {0:g4} + {1:g4}*T + {2:g4}*E",
 			 coeffs[0], coeffs[1], coeffs[2]);
 		}
 	}

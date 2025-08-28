@@ -412,7 +412,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("Yx/s = {0:g2} %\tYp/s = {1:g2} %\tYp/x = {2} %",
 			 100 * vmax0, 100 * ((90f - 6.25f) / (250 - 20)), SignificantDigits.Round(100 * Km1, 2));
 			Console.WriteLine(blnPartialCode ?
-			 "Pₓ tot = {0:g2} g/(L*h)\tPₓ ₘₐₓ = {1:g2} g/(L•h)" : "Px tot = {0:g2} g/(L*h)\tPx max = {1:g2} g/(L*h)",
+			 "Pₓ tot = {0:g2} g/(L•h)\tPₓ ₘₐₓ = {1:g2} g/(L•h)" : "Px tot = {0:g2} g/(L*h)\tPx max = {1:g2} g/(L*h)",
 			 Km0 / 28f, (8.2f - 1.5f) / 16f);
 			Console.WriteLine(blnPartialCode ?
 			 "Pp = {0:g2} g/(L•h)\tQp ₘₐₓ = {1:g2} h^-1" : "Pp = {0:g2} g/(L*h)\tQp max = {1:g2} h^-1",
