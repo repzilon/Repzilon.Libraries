@@ -433,23 +433,14 @@ namespace Repzilon.Tests.ForCoreLibrary
 				new PointD(0.013f, 45f), new PointD(0.0013f, 450f), new PointD(0.00013f, 4500f),
 				new PointD(1.3e-5f, 45000f), new PointD(1.3e-7, 4500000)
 			};
-			Console.Write("  ");
 			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
 			PointD ptd;
 			for (i = 0; i < ptarDouble.Length; i++) {
-				ptd = ptarDouble[i];
-				ptarDouble[i] = new PointD(ptd.X, 1.0 / ptd.Y);
-			}
-			Console.Write("1/");
-			rm = RegressionModel.Compute(ptarDouble);
-			OutputRegressionModel(rm);
-			var b = 1.0 / rm.B;
-			for (i = 0; i < ptarDouble.Length; i++) {
-				ptd = ptarDouble[i];
-				ptarDouble[i] = new PointD(b / ptd.X, 1.0 / ptd.Y);
+				ptd           = ptarDouble[i];
+				ptarDouble[i] = new PointD(1.0 / ptd.X, ptd.Y);
 			}
 			rm = RegressionModel.Compute(ptarDouble);
-			Console.Write("  y = {1:g6} + {0:g6} * x^-1 r={2,-8:g6} S/N=", b * rm.B, rm.A, rm.R);
+			Console.Write("y = {1:g6} + {0:g6} * x^-1\tr={2,-9:g6} S/N=", rm.B, rm.A, rm.R);
 			Console.WriteLine("{0:g6} dB", -10 * Math.Log10(1 - rm.R));
 
 			Program.OutputHeading("Factorial (1 to " + MaxFactorial + ")");
