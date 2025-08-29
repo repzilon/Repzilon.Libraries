@@ -427,22 +427,6 @@ namespace Repzilon.Tests.ForCoreLibrary
 			OutputMicrotox(strUnit, 5, karPO4WasteI0, new byte[10] { 126, 0, 0, 1, 0, 0, 0, 0, 0, 0 });
 			OutputMicrotox(strUnit, 15, karPO4WasteI0, new byte[10] { 120, 0, 0, 1, 0, 0, 0, 0, 2, 0 });
 
-			Program.OutputHeading("Instrumental analysis II Mass spectroscopy mean travel");
-			ptarDouble = new PointD[] {
-				new PointD(101325, 0.000006f), new PointD(130, 0.0045f), new PointD(0.13f, 4.5f),
-				new PointD(0.013f, 45f), new PointD(0.0013f, 450f), new PointD(0.00013f, 4500f),
-				new PointD(1.3e-5f, 45000f), new PointD(1.3e-7, 4500000)
-			};
-			OutputRegressionModel(RegressionModel.Compute(ptarDouble));
-			PointD ptd;
-			for (i = 0; i < ptarDouble.Length; i++) {
-				ptd           = ptarDouble[i];
-				ptarDouble[i] = new PointD(1.0 / ptd.X, ptd.Y);
-			}
-			rm = RegressionModel.Compute(ptarDouble);
-			Console.Write("y = {1:g6} + {0:g6} * x^-1\tr={2,-9:g6} S/N=", rm.B, rm.A, rm.R);
-			Console.WriteLine("{0:g6} dB", -10 * Math.Log10(1 - rm.R));
-
 			Program.OutputHeading("Factorial (1 to " + MaxFactorial + ")");
 			var factorialSuite = new List<PointM>(MaxFactorial);
 			for (i = 1; i <= MaxFactorial; i++) {
@@ -462,9 +446,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 			Console.WriteLine("28! ≈ {0,39:n0}", ExtraMath.StirlingApproximateFactorial(28.0, StirlingMode.Corrected));
 
 			Program.OutputHeading("German imperialists are out of luck");
-			rm = RegressionModel.Compute(new PointD(1, 1006), new PointD(2, 1918 - 1871), new PointD(3, 1945 - 1933));
+			ptarDouble = new PointD[] { new PointD(1, 1006), new PointD(2, 1918 - 1871), new PointD(3, 1945 - 1933) };
+			rm         = RegressionModel.Compute(ptarDouble);
 			OutputRegressionModel(rm);
 			Console.WriteLine("The fourth reich would only last {0:g4} years.", rm.Evaluate(4));
+			for (i = 0; i < ptarDouble.Length; i++) {
+				Km0 = ptarDouble[i].X;
+				ptarDouble[i] = new PointD(1 / (Km0 * Km0 * Km0 * Km0), ptarDouble[i].Y);
+			}
+			lrr0  = LinearRegression.Compute(ptarDouble);
+			vmax0 = lrr0.Intercept + (lrr0.Slope / (4 * 4 * 4 * 4));
+			if (vmax0 > 0) {
+				Console.Write("y = {1:g6} + {0:g6} * x^-4\tr={2,-9:g6} S/N=", lrr0.Slope, lrr0.Intercept, lrr0.Correlation);
+				Console.WriteLine("{0:g6} dB", -10 * Math.Log10(1 - lrr0.Correlation));
+				Console.WriteLine("The fourth reich would only last {0:g4} years.", vmax0);
+			}
 		}
 
 		private static void OutputBenchResults<T>(int iterations, TimeSpan withEnumerable, TimeSpan withList)

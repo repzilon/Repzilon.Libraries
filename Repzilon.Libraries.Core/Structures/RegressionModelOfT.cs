@@ -28,7 +28,9 @@ namespace Repzilon.Libraries.Core.Regression
 		LinLog = 2,
 		Logarithmic = 3,
 		SemiLogX = 3,
-		LogLin = 3
+		LogLin = 3,
+		Scaling = 4,
+		ReciprocalLin = 4
 	}
 
 #if DEBUG
@@ -154,7 +156,7 @@ namespace Repzilon.Libraries.Core.Regression
 		/// A .NET format specification to format numbers, with the following extra:
 		/// If there are two letters, the first one being 'e' or 'E', the formula will be expressed so that you
 		/// can derivate it (with calculus) later on. Watch out, a single 'e' will keep the normal behavior,
-		/// which is to express numbers with the "scientific" notation.
+		/// which is to express numbers with the scientific notation.
 		/// </param>
 		/// <param name="formatProvider">
 		/// NumberFormatInfo or CultureInfo object giving parameters such as decimal separator or digit groupings.
@@ -164,7 +166,8 @@ namespace Repzilon.Libraries.Core.Regression
 		/// * will be used for multiplication, ^ for exponentiation.
 		/// </returns>
 		/// <remarks>
-		/// To imitate what Microsoft Excel outputs for the equation of a trend line on a graph, use "eg4" for format.
+		/// To imitate what Microsoft Excel outputs by default for the equation of a trend line on a graph,
+		/// use "eg4" for format.
 		/// </remarks>
 		public string ToString(string format, IFormatProvider formatProvider)
 		{
@@ -197,6 +200,8 @@ namespace Repzilon.Libraries.Core.Regression
 				stbFormula.Append(strA).Append(" + ").Append(strB).Append('x');
 			} else if (enuModel == MathematicalModel.Power) {
 				stbFormula.Append(strA).Append(" * x^").Append(strB);
+			} else if (enuModel == MathematicalModel.Scaling) {
+				stbFormula.Append(strB).Append(" + ").Append(strA).Append(" * x^-1");
 			} else if (enuModel == MathematicalModel.Exponential) {
 				// To derivate, b^x must be converted to base e
 				stbFormula.Append(strA);
@@ -267,6 +272,13 @@ namespace Repzilon.Libraries.Core.Regression
 #else
 				return RisingConcaveUpwards(mul, dblX, Convert.ToDouble(b));
 #endif
+			} else if (model == MathematicalModel.Scaling) {
+#if NET20
+				return Arithmetic<T>.AddScalars(b,
+				 Arithmetic<T>.DivideScalars(ExtraMath.ConvertTo<T>(1), A));
+#else
+				return add(b, Arithmetic<T>.DivideScalars(1.ConvertTo<T>(), A));
+#endif
 			} else {
 				throw new NotSupportedException();
 			}
@@ -295,9 +307,9 @@ namespace Repzilon.Libraries.Core.Regression
 			double dblSolution;
 			if (model == MathematicalModel.Affine) {
 #if NET20
-				dblSolution = Convert.ToDouble(Arithmetic<T>.SubtractScalars(y, A)) / dblB;
+				return Arithmetic<T>.DivideScalars(Arithmetic<T>.SubtractScalars(y, A), B);
 #else
-				dblSolution = Convert.ToDouble(Arithmetic<T>.Sub(y, A)) / dblB;
+				return Arithmetic<T>.DivideScalars(Arithmetic<T>.Sub(y, A), B);
 #endif
 			} else if (model == MathematicalModel.Exponential) {
 				dblSolution = Math.Log(yDivA, dblB);
@@ -309,6 +321,12 @@ namespace Repzilon.Libraries.Core.Regression
 #endif
 			} else if (model == MathematicalModel.Power) {
 				dblSolution = Math.Pow(yDivA, 1.0 / dblB);
+			} else if (model == MathematicalModel.Scaling) {
+#if NET20
+				return Arithmetic<T>.DivideScalars(A, Arithmetic<T>.SubtractScalars(y, B));
+#else
+				return Arithmetic<T>.DivideScalars(A, Arithmetic<T>.Sub(y, B));
+#endif
 			} else {
 				throw new NotSupportedException();
 			}
@@ -341,6 +359,13 @@ namespace Repzilon.Libraries.Core.Regression
 				 ExtraMath.ConvertTo<T>(Math.Pow(dblX, dblB - 1)));
 #else
 				return mul(mul(this.A, this.B), ExtraMath.ConvertTo<T>(Math.Pow(dblX, dblB - 1)));
+#endif
+			} else if (model == MathematicalModel.Scaling) {
+#if NET20
+				return Arithmetic<T>.DivideScalars(Arithmetic<T>.MultiplyScalars(ExtraMath.ConvertTo<T>(-1), A),
+				 Arithmetic<T>.MultiplyScalars(x, x));
+#else
+				return Arithmetic<T>.DivideScalars(mul((-1).ConvertTo<T>(), A), mul(x, x));
 #endif
 			} else {
 				throw new NotSupportedException();
@@ -388,6 +413,14 @@ namespace Repzilon.Libraries.Core.Regression
 #else
 				coeff = Convert.ToDouble(add(B, ExtraMath.ConvertTo<T>(1)));
 				return mul(this.A, ExtraMath.ConvertTo<T>(Math.Pow(dblX, coeff) / coeff));
+#endif
+			} else if (model == MathematicalModel.Scaling) {
+#if NET20
+				return Arithmetic<T>.AddScalars(
+				 Arithmetic<T>.MultiplyScalars(A, ExtraMath.ConvertTo<T>(Math.Log(Math.Abs(dblX)))),
+				 Arithmetic<T>.MultiplyScalars(B, x));
+#else
+				return add(mul(A, Math.Log(Math.Abs(dblX)).ConvertTo<T>()), mul(B, x));
 #endif
 			} else {
 				throw new NotSupportedException();

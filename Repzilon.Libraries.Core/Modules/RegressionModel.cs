@@ -25,6 +25,8 @@ namespace Repzilon.Libraries.Core.Regression
 
 	public static class RegressionModel
 	{
+		private const int kModels = 5;
+
 		public static RegressionModel<double> Compute(params PointD[] points)
 		{
 			return Compute(RegressionOption.None, points as IList<PointD>);
@@ -115,6 +117,7 @@ namespace Repzilon.Libraries.Core.Regression
 			if (blnDontExcludeZero || (x > 0)) {
 				log10X = Math.Log10(x);
 				lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointD(log10X, y));
+				lstarAll[(int)MathematicalModel.Scaling].Add(new PointD(1 / x, y));
 				c++;
 			}
 			if (blnDontExcludeZero || (y > 0)) {
@@ -139,6 +142,7 @@ namespace Repzilon.Libraries.Core.Regression
 			if (blnDontExcludeZero || (x > 0)) {
 				log10X = ExtraMath.Log10(x);
 				lstarAll[(int)MathematicalModel.SemiLogX].Add(new PointM(log10X, y));
+				lstarAll[(int)MathematicalModel.Scaling].Add(new PointM(Decimal.One / x, y));
 				c++;
 			}
 			if (blnDontExcludeZero || (y > 0)) {
@@ -153,8 +157,8 @@ namespace Repzilon.Libraries.Core.Regression
 
 		private static RegressionModel<double> FinishCompute(IList<PointD>[] allModelPoints)
 		{
-			var rmarAll = new RegressionModel<double>[4];
-			for (var i = 0; i < 4; i++) {
+			var rmarAll = new RegressionModel<double>[kModels];
+			for (var i = 0; i < kModels; i++) {
 				rmarAll[i] = LinearRegression.Compute(allModelPoints[i]).ChangeModel((MathematicalModel)i);
 			}
 
@@ -164,8 +168,8 @@ namespace Repzilon.Libraries.Core.Regression
 
 		private static RegressionModel<decimal> FinishCompute(IList<PointM>[] allModelPoints)
 		{
-			var rmarAll = new RegressionModel<decimal>[4];
-			for (var i = 0; i < 4; i++) {
+			var rmarAll = new RegressionModel<decimal>[kModels];
+			for (var i = 0; i < kModels; i++) {
 				rmarAll[i] = LinearRegression.Compute(allModelPoints[i]).ChangeModel((MathematicalModel)i);
 			}
 
@@ -187,14 +191,13 @@ namespace Repzilon.Libraries.Core.Regression
 			return -(xR * xR).CompareTo(yR * yR);
 		}
 
-		private static IList<T>[] InitLists<T>(RegressionOption option, IList<T> points, out int c)
-where T : new()
+		private static IList<T>[] InitLists<T>(RegressionOption option, IList<T> points, out int c) where T : new()
 		{
 			if (points == null) {
 				throw new ArgumentNullException(nameof(points));
 			}
 
-			var lstarAll = new IList<T>[4];
+			var lstarAll = new IList<T>[kModels];
 			c = points.Count;
 			if (option == RegressionOption.AddZeroAtOrigin) {
 				var l1 = new List<T>(checked(c + 1));
@@ -204,7 +207,7 @@ where T : new()
 			} else {
 				lstarAll[(int)MathematicalModel.Affine] = points;
 			}
-			for (var i = 1; i < 4; i++) {
+			for (var i = 1; i < kModels; i++) {
 				lstarAll[i] = new List<T>(c);
 			}
 			return lstarAll;

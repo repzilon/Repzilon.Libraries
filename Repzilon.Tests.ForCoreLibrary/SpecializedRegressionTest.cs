@@ -24,6 +24,21 @@ namespace Repzilon.Tests.ForCoreLibrary
 		{
 			var blnPartialCode = Program.UnicodeTerminal != SupportLevel.None;
 
+			Program.OutputHeading("Analyse instrumentale II parcours moyen en spectrométrie de masse");
+			var ptarDouble = new PointD[] {
+				new PointD(101325, 0.000006f), new PointD(130, 0.0045f), new PointD(0.13f, 4.5f),
+				new PointD(0.013f, 45f), new PointD(0.0013f, 450f), new PointD(0.00013f, 4500f),
+				new PointD(1.3e-5f, 45000f), new PointD(1.3e-7, 4500000)
+			};
+			LinearRegressionTest.OutputRegressionModel(RegressionModel.Compute(ptarDouble));
+			for (var i = 0; i < ptarDouble.Length; i++) {
+				var ptd = ptarDouble[i];
+				ptarDouble[i] = new PointD(1.0 / ptd.X, ptd.Y);
+			}
+			var lrd = LinearRegression.Compute(ptarDouble);
+			Console.Write("y = {1:g6} + {0:g6} * x^-1\tr={2,-9:g6} S/N=", lrd.Slope, lrd.Intercept, lrd.Correlation);
+			Console.WriteLine("{0:g6} dB", -10 * Math.Log10(1 - lrd.Correlation));
+
 			Program.OutputHeading("Biofermentation semaine 3 exercice");
 			Program.OutputSizeOf<DecimalLogisticRegressionResult>();
 			var ptmarBiofermW3 = new PointM[] {
@@ -53,7 +68,7 @@ namespace Repzilon.Tests.ForCoreLibrary
 			 X1X2Y(4,5,3.5f), X1X2Y(5,7,2.5f), X1X2Y(6,3,11.5f), X1X2Y(2,1,5.7f));
 			Console.WriteLine(blnPartialCode ? "y = {0} + {1}•x₁ + {2}•x₂" : "y = {0} + {1}*x1 + {2}*x2", coeffs[0], coeffs[1], coeffs[2]);
 
-			Program.OutputHeading("Analyse instrumentale 2 laboratoire EC");
+			Program.OutputHeading("Analyse instrumentale II laboratoire 1E0-CE-Benzoates");
 			CapillaryElectrophoresisTimeFunction(blnPartialCode, "butylparabène",
 			 5.881f, 4.721f, 3.922f, 4.989f, 3.952f, 3.277f, 4.284f, 3.401f, 2.815f);
 			CapillaryElectrophoresisTimeFunction(blnPartialCode, "éthylparabène",

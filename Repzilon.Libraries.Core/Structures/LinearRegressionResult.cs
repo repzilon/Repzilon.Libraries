@@ -335,7 +335,7 @@ namespace Repzilon.Libraries.Core.Regression
 			}
 			if (newModel == MathematicalModel.Exponential) {
 				nb = Math.Pow(10, b);
-			} else if (newModel == MathematicalModel.Logarithmic) { // this is weird
+			} else if ((newModel == MathematicalModel.Logarithmic) || (newModel == MathematicalModel.Scaling)) { // this looks weird
 				na = b;
 				nb = a;
 			} else if ((newModel != MathematicalModel.Affine) && (newModel != MathematicalModel.Power)) {
@@ -344,6 +344,9 @@ namespace Repzilon.Libraries.Core.Regression
 			if ((newModel == MathematicalModel.Logarithmic) || (newModel == MathematicalModel.Power)) {
 				minX = RoundOff.Error(Math.Pow(10, minX));
 				maxX = RoundOff.Error(Math.Pow(10, maxX));
+			} else if (newModel == MathematicalModel.Scaling) {
+				maxX = RoundOff.Error(1.0 / minX);
+				minX = RoundOff.Error(1.0 / maxX);
 			}
 			return new RegressionModel<double>(na, nb, r, newModel, minX, maxX);
 #pragma warning restore CC0019   // Use 'switch'
