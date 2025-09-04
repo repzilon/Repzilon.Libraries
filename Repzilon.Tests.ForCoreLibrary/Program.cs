@@ -327,7 +327,7 @@ DESCRIPTION
 	if no sequence is supplied, it will revert to the interactive mode,
 	just like when no arguments are passed.
 
-CONATCT INFO
+CONTACT INFO
 	(C) 2022-2025 René Rhéaume <repzilon@users.noreply.github.com>
 	Licensed under the MPL 2.0, available at https://mozilla.org/MPL/2.0/
 	There is NO WARRANTY, to the extent of the law.

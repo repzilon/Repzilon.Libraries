@@ -361,7 +361,7 @@ namespace Repzilon.Libraries.Core
 		}
 
 		/// <summary>
-		/// Computes the part of the Student dealing with the ratio of Gamma functions
+		/// Computes the part of the Student density dealing with the ratio of Gamma functions
 		/// [1/sqrt(k*pi) * GAMMA(0.5*/(k+1)) / GAMMA(0.5k)] by simplifying the numerators and denominators
 		/// of the developments of gamma for positive integers and halves AND leaving
 		/// irrational numbers outside the developments
